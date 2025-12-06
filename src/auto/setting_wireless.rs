@@ -4,21 +4,25 @@
 // DO NOT EDIT
 #![allow(deprecated)]
 
-use crate::{80211ApFlags,80211ApSecurityFlags,80211Mode,ffi,Setting,SettingWirelessSecurity};
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-use crate::{SettingMacRandomization};
-#[cfg(feature = "v1_12")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-use crate::{SettingWirelessWakeOnWLan};
-#[cfg(feature = "v1_28")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
-use crate::{Ternary};
+use crate::SettingMacRandomization;
 #[cfg(feature = "v1_50")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
-use crate::{SettingWirelessChannelWidth};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::SettingWirelessChannelWidth;
+#[cfg(feature = "v1_12")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+use crate::SettingWirelessWakeOnWLan;
+#[cfg(feature = "v1_28")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
+use crate::Ternary;
+use crate::{ApFlags80211, ApSecurityFlags80211, Mode80211, Setting, SettingWirelessSecurity, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSettingWireless")]
@@ -33,26 +37,26 @@ impl SettingWireless {
     #[doc(alias = "nm_setting_wireless_new")]
     pub fn new() -> SettingWireless {
         assert_initialized_main_thread!();
-        unsafe {
-            Setting::from_glib_full(ffi::nm_setting_wireless_new()).unsafe_cast()
-        }
+        unsafe { Setting::from_glib_full(ffi::nm_setting_wireless_new()).unsafe_cast() }
     }
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`SettingWireless`] objects.
-            ///
-            /// This method returns an instance of [`SettingWirelessBuilder`](crate::builders::SettingWirelessBuilder) which can be used to create [`SettingWireless`] objects.
-            pub fn builder() -> SettingWirelessBuilder {
-                SettingWirelessBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`SettingWireless`] objects.
+    ///
+    /// This method returns an instance of [`SettingWirelessBuilder`](crate::builders::SettingWirelessBuilder) which can be used to create [`SettingWireless`] objects.
+    pub fn builder() -> SettingWirelessBuilder {
+        SettingWirelessBuilder::new()
+    }
 
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_add_mac_blacklist_item")]
     pub fn add_mac_blacklist_item(&self, mac: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_add_mac_blacklist_item(self.to_glib_none().0, mac.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_add_mac_blacklist_item(
+                self.to_glib_none().0,
+                mac.to_glib_none().0,
+            ))
         }
     }
 
@@ -61,21 +65,41 @@ impl SettingWireless {
     #[doc(alias = "nm_setting_wireless_add_mac_denylist_item")]
     pub fn add_mac_denylist_item(&self, mac: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_add_mac_denylist_item(self.to_glib_none().0, mac.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_add_mac_denylist_item(
+                self.to_glib_none().0,
+                mac.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_wireless_add_seen_bssid")]
     pub fn add_seen_bssid(&self, bssid: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_add_seen_bssid(self.to_glib_none().0, bssid.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_add_seen_bssid(
+                self.to_glib_none().0,
+                bssid.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_wireless_ap_security_compatible")]
-    pub fn ap_security_compatible(&self, s_wireless_sec: &SettingWirelessSecurity, ap_flags: 80211ApFlags, ap_wpa: 80211ApSecurityFlags, ap_rsn: 80211ApSecurityFlags, ap_mode: 80211Mode) -> bool {
+    pub fn ap_security_compatible(
+        &self,
+        s_wireless_sec: &SettingWirelessSecurity,
+        ap_flags: ApFlags80211,
+        ap_wpa: ApSecurityFlags80211,
+        ap_rsn: ApSecurityFlags80211,
+        ap_mode: Mode80211,
+    ) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_ap_security_compatible(self.to_glib_none().0, s_wireless_sec.to_glib_none().0, ap_flags.into_glib(), ap_wpa.into_glib(), ap_rsn.into_glib(), ap_mode.into_glib()))
+            from_glib(ffi::nm_setting_wireless_ap_security_compatible(
+                self.to_glib_none().0,
+                s_wireless_sec.to_glib_none().0,
+                ap_flags.into_glib(),
+                ap_wpa.into_glib(),
+                ap_rsn.into_glib(),
+                ap_mode.into_glib(),
+            ))
         }
     }
 
@@ -104,32 +128,28 @@ impl SettingWireless {
     #[doc(alias = "ap-isolation")]
     pub fn ap_isolation(&self) -> Ternary {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_get_ap_isolation(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_get_ap_isolation(
+                self.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_wireless_get_band")]
     #[doc(alias = "get_band")]
     pub fn band(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_band(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_setting_wireless_get_band(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_setting_wireless_get_bssid")]
     #[doc(alias = "get_bssid")]
     pub fn bssid(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_bssid(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_setting_wireless_get_bssid(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_setting_wireless_get_channel")]
     #[doc(alias = "get_channel")]
     pub fn channel(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_wireless_get_channel(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_wireless_get_channel(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_50")]
@@ -139,7 +159,9 @@ impl SettingWireless {
     #[doc(alias = "channel-width")]
     pub fn channel_width(&self) -> SettingWirelessChannelWidth {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_get_channel_width(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_get_channel_width(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -148,7 +170,9 @@ impl SettingWireless {
     #[doc(alias = "cloned-mac-address")]
     pub fn cloned_mac_address(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_cloned_mac_address(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_wireless_get_cloned_mac_address(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -159,7 +183,9 @@ impl SettingWireless {
     #[doc(alias = "generate-mac-address-mask")]
     pub fn generate_mac_address_mask(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_generate_mac_address_mask(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_wireless_get_generate_mac_address_mask(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -167,9 +193,7 @@ impl SettingWireless {
     #[doc(alias = "get_hidden")]
     #[doc(alias = "hidden")]
     pub fn is_hidden(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_setting_wireless_get_hidden(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_setting_wireless_get_hidden(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_setting_wireless_get_mac_address")]
@@ -177,7 +201,9 @@ impl SettingWireless {
     #[doc(alias = "mac-address")]
     pub fn mac_address(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_mac_address(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_wireless_get_mac_address(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -188,7 +214,9 @@ impl SettingWireless {
     #[doc(alias = "mac-address-blacklist")]
     pub fn mac_address_blacklist(&self) -> Vec<glib::GString> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_setting_wireless_get_mac_address_blacklist(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(
+                ffi::nm_setting_wireless_get_mac_address_blacklist(self.to_glib_none().0),
+            )
         }
     }
 
@@ -199,7 +227,9 @@ impl SettingWireless {
     #[doc(alias = "mac-address-denylist")]
     pub fn mac_address_denylist(&self) -> Vec<glib::GString> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_setting_wireless_get_mac_address_denylist(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(ffi::nm_setting_wireless_get_mac_address_denylist(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -210,7 +240,9 @@ impl SettingWireless {
     #[doc(alias = "mac-address-randomization")]
     pub fn mac_address_randomization(&self) -> SettingMacRandomization {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_get_mac_address_randomization(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_get_mac_address_randomization(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -220,7 +252,10 @@ impl SettingWireless {
     #[doc(alias = "get_mac_blacklist_item")]
     pub fn mac_blacklist_item(&self, idx: u32) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_mac_blacklist_item(self.to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_wireless_get_mac_blacklist_item(
+                self.to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -230,24 +265,23 @@ impl SettingWireless {
     #[doc(alias = "get_mac_denylist_item")]
     pub fn mac_denylist_item(&self, idx: u32) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_mac_denylist_item(self.to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_wireless_get_mac_denylist_item(
+                self.to_glib_none().0,
+                idx,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_wireless_get_mode")]
     #[doc(alias = "get_mode")]
     pub fn mode(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_mode(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_setting_wireless_get_mode(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_setting_wireless_get_mtu")]
     #[doc(alias = "get_mtu")]
     pub fn mtu(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_wireless_get_mtu(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_wireless_get_mtu(self.to_glib_none().0) }
     }
 
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
@@ -255,9 +289,7 @@ impl SettingWireless {
     #[doc(alias = "nm_setting_wireless_get_num_mac_blacklist_items")]
     #[doc(alias = "get_num_mac_blacklist_items")]
     pub fn num_mac_blacklist_items(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_wireless_get_num_mac_blacklist_items(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_wireless_get_num_mac_blacklist_items(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_48")]
@@ -265,17 +297,13 @@ impl SettingWireless {
     #[doc(alias = "nm_setting_wireless_get_num_mac_denylist_items")]
     #[doc(alias = "get_num_mac_denylist_items")]
     pub fn num_mac_denylist_items(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_wireless_get_num_mac_denylist_items(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_wireless_get_num_mac_denylist_items(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_wireless_get_num_seen_bssids")]
     #[doc(alias = "get_num_seen_bssids")]
     pub fn num_seen_bssids(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_wireless_get_num_seen_bssids(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_wireless_get_num_seen_bssids(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_2")]
@@ -283,9 +311,7 @@ impl SettingWireless {
     #[doc(alias = "nm_setting_wireless_get_powersave")]
     #[doc(alias = "get_powersave")]
     pub fn powersave(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_wireless_get_powersave(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_wireless_get_powersave(self.to_glib_none().0) }
     }
 
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
@@ -293,16 +319,17 @@ impl SettingWireless {
     #[doc(alias = "nm_setting_wireless_get_rate")]
     #[doc(alias = "get_rate")]
     pub fn rate(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_wireless_get_rate(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_wireless_get_rate(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_wireless_get_seen_bssid")]
     #[doc(alias = "get_seen_bssid")]
     pub fn seen_bssid(&self, i: u32) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_wireless_get_seen_bssid(self.to_glib_none().0, i))
+            from_glib_none(ffi::nm_setting_wireless_get_seen_bssid(
+                self.to_glib_none().0,
+                i,
+            ))
         }
     }
 
@@ -318,9 +345,7 @@ impl SettingWireless {
     #[doc(alias = "get_tx_power")]
     #[doc(alias = "tx-power")]
     pub fn tx_power(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_wireless_get_tx_power(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_wireless_get_tx_power(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_12")]
@@ -330,7 +355,9 @@ impl SettingWireless {
     #[doc(alias = "wake-on-wlan")]
     pub fn wake_on_wlan(&self) -> SettingWirelessWakeOnWLan {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_get_wake_on_wlan(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_get_wake_on_wlan(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -348,7 +375,10 @@ impl SettingWireless {
     #[doc(alias = "nm_setting_wireless_remove_mac_blacklist_item_by_value")]
     pub fn remove_mac_blacklist_item_by_value(&self, mac: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_remove_mac_blacklist_item_by_value(self.to_glib_none().0, mac.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_remove_mac_blacklist_item_by_value(
+                self.to_glib_none().0,
+                mac.to_glib_none().0,
+            ))
         }
     }
 
@@ -366,7 +396,10 @@ impl SettingWireless {
     #[doc(alias = "nm_setting_wireless_remove_mac_denylist_item_by_value")]
     pub fn remove_mac_denylist_item_by_value(&self, mac: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_wireless_remove_mac_denylist_item_by_value(self.to_glib_none().0, mac.to_glib_none().0))
+            from_glib(ffi::nm_setting_wireless_remove_mac_denylist_item_by_value(
+                self.to_glib_none().0,
+                mac.to_glib_none().0,
+            ))
         }
     }
 
@@ -374,31 +407,31 @@ impl SettingWireless {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "ap-isolation")]
     pub fn set_ap_isolation(&self, ap_isolation: Ternary) {
-        ObjectExt::set_property(self,"ap-isolation", ap_isolation)
+        ObjectExt::set_property(self, "ap-isolation", ap_isolation)
     }
 
     pub fn set_band(&self, band: Option<&str>) {
-        ObjectExt::set_property(self,"band", band)
+        ObjectExt::set_property(self, "band", band)
     }
 
     pub fn set_bssid(&self, bssid: Option<&str>) {
-        ObjectExt::set_property(self,"bssid", bssid)
+        ObjectExt::set_property(self, "bssid", bssid)
     }
 
     pub fn set_channel(&self, channel: u32) {
-        ObjectExt::set_property(self,"channel", channel)
+        ObjectExt::set_property(self, "channel", channel)
     }
 
     #[cfg(feature = "v1_50")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
     #[doc(alias = "channel-width")]
     pub fn set_channel_width(&self, channel_width: i32) {
-        ObjectExt::set_property(self,"channel-width", channel_width)
+        ObjectExt::set_property(self, "channel-width", channel_width)
     }
 
     #[doc(alias = "cloned-mac-address")]
     pub fn set_cloned_mac_address(&self, cloned_mac_address: Option<&str>) {
-        ObjectExt::set_property(self,"cloned-mac-address", cloned_mac_address)
+        ObjectExt::set_property(self, "cloned-mac-address", cloned_mac_address)
     }
 
     #[cfg(not(feature = "v1_4"))]
@@ -410,21 +443,21 @@ impl SettingWireless {
 
     #[doc(alias = "generate-mac-address-mask")]
     pub fn set_generate_mac_address_mask(&self, generate_mac_address_mask: Option<&str>) {
-        ObjectExt::set_property(self,"generate-mac-address-mask", generate_mac_address_mask)
+        ObjectExt::set_property(self, "generate-mac-address-mask", generate_mac_address_mask)
     }
 
     pub fn set_hidden(&self, hidden: bool) {
-        ObjectExt::set_property(self,"hidden", hidden)
+        ObjectExt::set_property(self, "hidden", hidden)
     }
 
     #[doc(alias = "mac-address")]
     pub fn set_mac_address(&self, mac_address: Option<&str>) {
-        ObjectExt::set_property(self,"mac-address", mac_address)
+        ObjectExt::set_property(self, "mac-address", mac_address)
     }
 
     #[doc(alias = "mac-address-blacklist")]
     pub fn set_mac_address_blacklist(&self, mac_address_blacklist: &[&str]) {
-        ObjectExt::set_property(self,"mac-address-blacklist", mac_address_blacklist)
+        ObjectExt::set_property(self, "mac-address-blacklist", mac_address_blacklist)
     }
 
     #[cfg(not(feature = "v1_48"))]
@@ -436,7 +469,7 @@ impl SettingWireless {
 
     #[doc(alias = "mac-address-denylist")]
     pub fn set_mac_address_denylist(&self, mac_address_denylist: &[&str]) {
-        ObjectExt::set_property(self,"mac-address-denylist", mac_address_denylist)
+        ObjectExt::set_property(self, "mac-address-denylist", mac_address_denylist)
     }
 
     #[cfg_attr(feature = "v1_4", deprecated = "Since 1.4")]
@@ -444,26 +477,26 @@ impl SettingWireless {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "mac-address-randomization")]
     pub fn set_mac_address_randomization(&self, mac_address_randomization: u32) {
-        ObjectExt::set_property(self,"mac-address-randomization", mac_address_randomization)
+        ObjectExt::set_property(self, "mac-address-randomization", mac_address_randomization)
     }
 
     pub fn set_mode(&self, mode: Option<&str>) {
-        ObjectExt::set_property(self,"mode", mode)
+        ObjectExt::set_property(self, "mode", mode)
     }
 
     pub fn set_mtu(&self, mtu: u32) {
-        ObjectExt::set_property(self,"mtu", mtu)
+        ObjectExt::set_property(self, "mtu", mtu)
     }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_powersave(&self, powersave: u32) {
-        ObjectExt::set_property(self,"powersave", powersave)
+        ObjectExt::set_property(self, "powersave", powersave)
     }
 
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     pub fn set_rate(&self, rate: u32) {
-        ObjectExt::set_property(self,"rate", rate)
+        ObjectExt::set_property(self, "rate", rate)
     }
 
     #[doc(alias = "seen-bssids")]
@@ -473,7 +506,7 @@ impl SettingWireless {
 
     #[doc(alias = "seen-bssids")]
     pub fn set_seen_bssids(&self, seen_bssids: &[&str]) {
-        ObjectExt::set_property(self,"seen-bssids", seen_bssids)
+        ObjectExt::set_property(self, "seen-bssids", seen_bssids)
     }
 
     //pub fn set_ssid(&self, ssid: /*Ignored*/Option<&glib::Bytes>) {
@@ -483,67 +516,107 @@ impl SettingWireless {
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     #[doc(alias = "tx-power")]
     pub fn set_tx_power(&self, tx_power: u32) {
-        ObjectExt::set_property(self,"tx-power", tx_power)
+        ObjectExt::set_property(self, "tx-power", tx_power)
     }
 
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "wake-on-wlan")]
     pub fn set_wake_on_wlan(&self, wake_on_wlan: u32) {
-        ObjectExt::set_property(self,"wake-on-wlan", wake_on_wlan)
+        ObjectExt::set_property(self, "wake-on-wlan", wake_on_wlan)
     }
 
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "ap-isolation")]
     pub fn connect_ap_isolation_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_ap_isolation_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_ap_isolation_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::ap-isolation".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_ap_isolation_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::ap-isolation".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_ap_isolation_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "band")]
     pub fn connect_band_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_band_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_band_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::band".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_band_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::band".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_band_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "bssid")]
     pub fn connect_bssid_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_bssid_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_bssid_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::bssid".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_bssid_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::bssid".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_bssid_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "channel")]
     pub fn connect_channel_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_channel_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_channel_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::channel".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_channel_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::channel".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_channel_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -551,92 +624,182 @@ impl SettingWireless {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
     #[doc(alias = "channel-width")]
     pub fn connect_channel_width_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_channel_width_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_channel_width_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::channel-width".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_channel_width_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::channel-width".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_channel_width_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "cloned-mac-address")]
-    pub fn connect_cloned_mac_address_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_cloned_mac_address_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_cloned_mac_address_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_cloned_mac_address_trampoline<
+            F: Fn(&SettingWireless) + 'static,
+        >(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::cloned-mac-address".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_cloned_mac_address_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::cloned-mac-address".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_cloned_mac_address_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "generate-mac-address-mask")]
-    pub fn connect_generate_mac_address_mask_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_generate_mac_address_mask_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_generate_mac_address_mask_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_generate_mac_address_mask_trampoline<
+            F: Fn(&SettingWireless) + 'static,
+        >(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::generate-mac-address-mask".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_generate_mac_address_mask_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::generate-mac-address-mask".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_generate_mac_address_mask_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "hidden")]
     pub fn connect_hidden_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_hidden_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_hidden_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::hidden".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_hidden_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::hidden".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_hidden_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "mac-address")]
     pub fn connect_mac_address_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mac_address_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_mac_address_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mac-address".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mac_address_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mac-address".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mac_address_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "mac-address-blacklist")]
-    pub fn connect_mac_address_blacklist_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mac_address_blacklist_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_mac_address_blacklist_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_mac_address_blacklist_trampoline<
+            F: Fn(&SettingWireless) + 'static,
+        >(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mac-address-blacklist".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mac_address_blacklist_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mac-address-blacklist".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mac_address_blacklist_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "mac-address-denylist")]
-    pub fn connect_mac_address_denylist_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mac_address_denylist_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_mac_address_denylist_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_mac_address_denylist_trampoline<
+            F: Fn(&SettingWireless) + 'static,
+        >(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mac-address-denylist".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mac_address_denylist_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mac-address-denylist".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mac_address_denylist_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -644,41 +807,76 @@ impl SettingWireless {
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "mac-address-randomization")]
-    pub fn connect_mac_address_randomization_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mac_address_randomization_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_mac_address_randomization_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_mac_address_randomization_trampoline<
+            F: Fn(&SettingWireless) + 'static,
+        >(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mac-address-randomization".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mac_address_randomization_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mac-address-randomization".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mac_address_randomization_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "mode")]
     pub fn connect_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mode_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_mode_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "mtu")]
     pub fn connect_mtu_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mtu_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_mtu_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mtu".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mtu_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mtu".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mtu_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -686,68 +884,118 @@ impl SettingWireless {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "powersave")]
     pub fn connect_powersave_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_powersave_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_powersave_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::powersave".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_powersave_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::powersave".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_powersave_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     #[doc(alias = "rate")]
     pub fn connect_rate_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_rate_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_rate_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::rate".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_rate_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::rate".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_rate_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "seen-bssids")]
     pub fn connect_seen_bssids_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_seen_bssids_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_seen_bssids_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::seen-bssids".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_seen_bssids_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::seen-bssids".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_seen_bssids_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "ssid")]
     pub fn connect_ssid_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_ssid_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_ssid_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::ssid".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_ssid_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::ssid".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_ssid_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     #[doc(alias = "tx-power")]
     pub fn connect_tx_power_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_tx_power_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_tx_power_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::tx-power".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_tx_power_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::tx-power".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_tx_power_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -755,135 +1003,200 @@ impl SettingWireless {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "wake-on-wlan")]
     pub fn connect_wake_on_wlan_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wake_on_wlan_trampoline<F: Fn(&SettingWireless) + 'static>(this: *mut ffi::NMSettingWireless, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_wake_on_wlan_trampoline<F: Fn(&SettingWireless) + 'static>(
+            this: *mut ffi::NMSettingWireless,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wake-on-wlan".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wake_on_wlan_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wake-on-wlan".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wake_on_wlan_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
 
 impl Default for SettingWireless {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`SettingWireless`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`SettingWireless`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct SettingWirelessBuilder {
-            builder: glib::object::ObjectBuilder<'static, SettingWireless>,
-        }
+    builder: glib::object::ObjectBuilder<'static, SettingWireless>,
+}
 
-        impl SettingWirelessBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+impl SettingWirelessBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-                            #[cfg(feature = "v1_28")]
+    #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     pub fn ap_isolation(self, ap_isolation: Ternary) -> Self {
-                            Self { builder: self.builder.property("ap-isolation", ap_isolation), }
-                        }
+        Self {
+            builder: self.builder.property("ap-isolation", ap_isolation),
+        }
+    }
 
-                            pub fn band(self, band: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("band", band.into()), }
-                        }
+    pub fn band(self, band: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self.builder.property("band", band.into()),
+        }
+    }
 
-                            pub fn bssid(self, bssid: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("bssid", bssid.into()), }
-                        }
+    pub fn bssid(self, bssid: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self.builder.property("bssid", bssid.into()),
+        }
+    }
 
-                            pub fn channel(self, channel: u32) -> Self {
-                            Self { builder: self.builder.property("channel", channel), }
-                        }
+    pub fn channel(self, channel: u32) -> Self {
+        Self {
+            builder: self.builder.property("channel", channel),
+        }
+    }
 
-                            #[cfg(feature = "v1_50")]
+    #[cfg(feature = "v1_50")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
     pub fn channel_width(self, channel_width: i32) -> Self {
-                            Self { builder: self.builder.property("channel-width", channel_width), }
-                        }
+        Self {
+            builder: self.builder.property("channel-width", channel_width),
+        }
+    }
 
-                            pub fn cloned_mac_address(self, cloned_mac_address: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("cloned-mac-address", cloned_mac_address.into()), }
-                        }
+    pub fn cloned_mac_address(self, cloned_mac_address: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("cloned-mac-address", cloned_mac_address.into()),
+        }
+    }
 
-                            pub fn generate_mac_address_mask(self, generate_mac_address_mask: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("generate-mac-address-mask", generate_mac_address_mask.into()), }
-                        }
+    pub fn generate_mac_address_mask(
+        self,
+        generate_mac_address_mask: impl Into<glib::GString>,
+    ) -> Self {
+        Self {
+            builder: self.builder.property(
+                "generate-mac-address-mask",
+                generate_mac_address_mask.into(),
+            ),
+        }
+    }
 
-                            pub fn hidden(self, hidden: bool) -> Self {
-                            Self { builder: self.builder.property("hidden", hidden), }
-                        }
+    pub fn hidden(self, hidden: bool) -> Self {
+        Self {
+            builder: self.builder.property("hidden", hidden),
+        }
+    }
 
-                            pub fn mac_address(self, mac_address: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("mac-address", mac_address.into()), }
-                        }
+    pub fn mac_address(self, mac_address: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self.builder.property("mac-address", mac_address.into()),
+        }
+    }
 
-                            pub fn mac_address_blacklist(self, mac_address_blacklist: impl Into<glib::StrV>) -> Self {
-                            Self { builder: self.builder.property("mac-address-blacklist", mac_address_blacklist.into()), }
-                        }
+    pub fn mac_address_blacklist(self, mac_address_blacklist: impl Into<glib::StrV>) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("mac-address-blacklist", mac_address_blacklist.into()),
+        }
+    }
 
-                            pub fn mac_address_denylist(self, mac_address_denylist: impl Into<glib::StrV>) -> Self {
-                            Self { builder: self.builder.property("mac-address-denylist", mac_address_denylist.into()), }
-                        }
+    pub fn mac_address_denylist(self, mac_address_denylist: impl Into<glib::StrV>) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("mac-address-denylist", mac_address_denylist.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_2")]
+    #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[cfg_attr(feature = "v1_4", deprecated = "Since 1.4")]
     pub fn mac_address_randomization(self, mac_address_randomization: u32) -> Self {
-                            Self { builder: self.builder.property("mac-address-randomization", mac_address_randomization), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("mac-address-randomization", mac_address_randomization),
+        }
+    }
 
-                            pub fn mode(self, mode: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("mode", mode.into()), }
-                        }
+    pub fn mode(self, mode: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self.builder.property("mode", mode.into()),
+        }
+    }
 
-                            pub fn mtu(self, mtu: u32) -> Self {
-                            Self { builder: self.builder.property("mtu", mtu), }
-                        }
+    pub fn mtu(self, mtu: u32) -> Self {
+        Self {
+            builder: self.builder.property("mtu", mtu),
+        }
+    }
 
-                            #[cfg(feature = "v1_2")]
+    #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn powersave(self, powersave: u32) -> Self {
-                            Self { builder: self.builder.property("powersave", powersave), }
-                        }
+        Self {
+            builder: self.builder.property("powersave", powersave),
+        }
+    }
 
-                            #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
+    #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     pub fn rate(self, rate: u32) -> Self {
-                            Self { builder: self.builder.property("rate", rate), }
-                        }
+        Self {
+            builder: self.builder.property("rate", rate),
+        }
+    }
 
-                            pub fn seen_bssids(self, seen_bssids: impl Into<glib::StrV>) -> Self {
-                            Self { builder: self.builder.property("seen-bssids", seen_bssids.into()), }
-                        }
+    pub fn seen_bssids(self, seen_bssids: impl Into<glib::StrV>) -> Self {
+        Self {
+            builder: self.builder.property("seen-bssids", seen_bssids.into()),
+        }
+    }
 
-                            //pub fn ssid(self, ssid: /*Ignored*/&glib::Bytes) -> Self {
-                        //    Self { builder: self.builder.property("ssid", ssid), }
-                        //}
+    //pub fn ssid(self, ssid: /*Ignored*/&glib::Bytes) -> Self {
+    //    Self { builder: self.builder.property("ssid", ssid), }
+    //}
 
-                            #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
+    #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     pub fn tx_power(self, tx_power: u32) -> Self {
-                            Self { builder: self.builder.property("tx-power", tx_power), }
-                        }
+        Self {
+            builder: self.builder.property("tx-power", tx_power),
+        }
+    }
 
-                            #[cfg(feature = "v1_12")]
+    #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn wake_on_wlan(self, wake_on_wlan: u32) -> Self {
-                            Self { builder: self.builder.property("wake-on-wlan", wake_on_wlan), }
-                        }
+        Self {
+            builder: self.builder.property("wake-on-wlan", wake_on_wlan),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`SettingWireless`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> SettingWireless {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

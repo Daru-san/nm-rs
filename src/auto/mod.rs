@@ -529,7 +529,6 @@ mod wire_guard_peer;
 pub use self::wire_guard_peer::WireGuardPeer;
 
 mod enums;
-pub use self::enums::80211Mode;
 pub use self::enums::ActiveConnectionState;
 #[cfg(feature = "v1_8")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
@@ -564,6 +563,7 @@ pub use self::enums::ManagerError;
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 pub use self::enums::Metered;
+pub use self::enums::Mode80211;
 #[cfg(feature = "v1_4")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
 pub use self::enums::RollbackResult;
@@ -681,11 +681,11 @@ pub use self::enums::WepKeyType;
 pub use self::enums::WimaxNspNetworkType;
 
 mod flags;
-pub use self::flags::80211ApFlags;
-pub use self::flags::80211ApSecurityFlags;
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
 pub use self::flags::ActivationStateFlags;
+pub use self::flags::ApFlags80211;
+pub use self::flags::ApSecurityFlags80211;
 pub use self::flags::BluetoothCapabilities;
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
@@ -797,27 +797,27 @@ pub use self::constants::CHECKPOINT_CREATED;
 pub use self::constants::CHECKPOINT_DEVICES;
 pub use self::constants::CHECKPOINT_ROLLBACK_TIMEOUT;
 pub use self::constants::CLIENT_ACTIVATING_CONNECTION;
-pub use self::constants::CLIENT_ACTIVE_CONNECTIONS;
 pub use self::constants::CLIENT_ACTIVE_CONNECTION_ADDED;
 pub use self::constants::CLIENT_ACTIVE_CONNECTION_REMOVED;
+pub use self::constants::CLIENT_ACTIVE_CONNECTIONS;
 pub use self::constants::CLIENT_ALL_DEVICES;
 pub use self::constants::CLIENT_ANY_DEVICE_ADDED;
 pub use self::constants::CLIENT_ANY_DEVICE_REMOVED;
 pub use self::constants::CLIENT_CAN_MODIFY;
 pub use self::constants::CLIENT_CAPABILITIES;
 pub use self::constants::CLIENT_CHECKPOINTS;
-pub use self::constants::CLIENT_CONNECTIONS;
 pub use self::constants::CLIENT_CONNECTION_ADDED;
 pub use self::constants::CLIENT_CONNECTION_REMOVED;
+pub use self::constants::CLIENT_CONNECTIONS;
 pub use self::constants::CLIENT_CONNECTIVITY;
 pub use self::constants::CLIENT_CONNECTIVITY_CHECK_AVAILABLE;
 pub use self::constants::CLIENT_CONNECTIVITY_CHECK_ENABLED;
 pub use self::constants::CLIENT_CONNECTIVITY_CHECK_URI;
 pub use self::constants::CLIENT_DBUS_CONNECTION;
 pub use self::constants::CLIENT_DBUS_NAME_OWNER;
-pub use self::constants::CLIENT_DEVICES;
 pub use self::constants::CLIENT_DEVICE_ADDED;
 pub use self::constants::CLIENT_DEVICE_REMOVED;
+pub use self::constants::CLIENT_DEVICES;
 pub use self::constants::CLIENT_DNS_CONFIGURATION;
 pub use self::constants::CLIENT_DNS_MODE;
 pub use self::constants::CLIENT_DNS_RC_MANAGER;
@@ -826,8 +826,8 @@ pub use self::constants::CLIENT_INSTANCE_FLAGS;
 pub use self::constants::CLIENT_METERED;
 pub use self::constants::CLIENT_NETWORKING_ENABLED;
 pub use self::constants::CLIENT_NM_RUNNING;
-pub use self::constants::CLIENT_PERMISSIONS_STATE;
 pub use self::constants::CLIENT_PERMISSION_CHANGED;
+pub use self::constants::CLIENT_PERMISSIONS_STATE;
 pub use self::constants::CLIENT_PRIMARY_CONNECTION;
 pub use self::constants::CLIENT_RADIO_FLAGS;
 pub use self::constants::CLIENT_STARTUP;
@@ -870,8 +870,8 @@ pub use self::constants::DBUS_VPN_BAD_ARGUMENTS;
 pub use self::constants::DBUS_VPN_ERROR_PREFIX;
 pub use self::constants::DBUS_VPN_INTERACTIVE_NOT_SUPPORTED;
 pub use self::constants::DBUS_VPN_SIGNAL_CONNECT_FAILED;
-pub use self::constants::DBUS_VPN_SIGNAL_IP4_CONFIG;
 pub use self::constants::DBUS_VPN_SIGNAL_IP_CONFIG_BAD;
+pub use self::constants::DBUS_VPN_SIGNAL_IP4_CONFIG;
 pub use self::constants::DBUS_VPN_SIGNAL_LAUNCH_FAILED;
 pub use self::constants::DBUS_VPN_SIGNAL_LOGIN_BANNER;
 pub use self::constants::DBUS_VPN_SIGNAL_LOGIN_FAILED;
@@ -921,14 +921,6 @@ pub use self::constants::DEVICE_INFINIBAND_CARRIER;
 pub use self::constants::DEVICE_INFINIBAND_HW_ADDRESS;
 pub use self::constants::DEVICE_INTERFACE;
 pub use self::constants::DEVICE_INTERFACE_FLAGS;
-pub use self::constants::DEVICE_IP4_CONFIG;
-pub use self::constants::DEVICE_IP4_CONNECTIVITY;
-pub use self::constants::DEVICE_IP6_CONFIG;
-pub use self::constants::DEVICE_IP6_CONNECTIVITY;
-pub use self::constants::DEVICE_IPVLAN_MODE;
-pub use self::constants::DEVICE_IPVLAN_PARENT;
-pub use self::constants::DEVICE_IPVLAN_PRIVATE;
-pub use self::constants::DEVICE_IPVLAN_VEPA;
 pub use self::constants::DEVICE_IP_INTERFACE;
 pub use self::constants::DEVICE_IP_TUNNEL_ENCAPSULATION_LIMIT;
 pub use self::constants::DEVICE_IP_TUNNEL_FLAGS;
@@ -943,6 +935,14 @@ pub use self::constants::DEVICE_IP_TUNNEL_PATH_MTU_DISCOVERY;
 pub use self::constants::DEVICE_IP_TUNNEL_REMOTE;
 pub use self::constants::DEVICE_IP_TUNNEL_TOS;
 pub use self::constants::DEVICE_IP_TUNNEL_TTL;
+pub use self::constants::DEVICE_IP4_CONFIG;
+pub use self::constants::DEVICE_IP4_CONNECTIVITY;
+pub use self::constants::DEVICE_IP6_CONFIG;
+pub use self::constants::DEVICE_IP6_CONNECTIVITY;
+pub use self::constants::DEVICE_IPVLAN_MODE;
+pub use self::constants::DEVICE_IPVLAN_PARENT;
+pub use self::constants::DEVICE_IPVLAN_PRIVATE;
+pub use self::constants::DEVICE_IPVLAN_VEPA;
 pub use self::constants::DEVICE_LLDP_NEIGHBORS;
 pub use self::constants::DEVICE_MACSEC_CIPHER_SUITE;
 pub use self::constants::DEVICE_MACSEC_ENCODING_SA;
@@ -1086,8 +1086,6 @@ pub use self::constants::ETHTOOL_OPTNAME_FEATURE_LRO;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_MACSEC_HW_OFFLOAD;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_NTUPLE;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RX;
-pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RXHASH;
-pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RXVLAN;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RX_ALL;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RX_FCS;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RX_GRO_HW;
@@ -1097,17 +1095,18 @@ pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RX_UDP_TUNNEL_PORT_OFFLOAD;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RX_VLAN_FILTER;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RX_VLAN_STAG_FILTER;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RX_VLAN_STAG_HW_PARSE;
+pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RXHASH;
+pub use self::constants::ETHTOOL_OPTNAME_FEATURE_RXVLAN;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_SG;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TLS_HW_RECORD;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TLS_HW_RX_OFFLOAD;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TLS_HW_TX_OFFLOAD;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TSO;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX;
-pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TXVLAN;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_FCOE_CRC;
+pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_IP_GENERIC;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_IPV4;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_IPV6;
-pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_IP_GENERIC;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_SCTP;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_ESP_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_FCOE_SEGMENTATION;
@@ -1122,15 +1121,16 @@ pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_NOCACHE_COPY;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_SCATTER_GATHER;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_SCATTER_GATHER_FRAGLIST;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_SCTP_SEGMENTATION;
-pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_TCP6_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_TCP_ECN_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_TCP_MANGLEID_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_TCP_SEGMENTATION;
+pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_TCP6_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_TUNNEL_REMCSUM_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_UDP_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_UDP_TNL_CSUM_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_UDP_TNL_SEGMENTATION;
 pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TX_VLAN_STAG_HW_INSERT;
+pub use self::constants::ETHTOOL_OPTNAME_FEATURE_TXVLAN;
 pub use self::constants::ETHTOOL_OPTNAME_FEC_MODE;
 pub use self::constants::ETHTOOL_OPTNAME_PAUSE_AUTONEG;
 pub use self::constants::ETHTOOL_OPTNAME_PAUSE_RX;
@@ -1174,12 +1174,12 @@ pub use self::constants::LLDP_ATTR_CHASSIS_ID;
 pub use self::constants::LLDP_ATTR_CHASSIS_ID_TYPE;
 pub use self::constants::LLDP_ATTR_DESTINATION;
 pub use self::constants::LLDP_ATTR_IEEE_802_1_PPVID;
-pub use self::constants::LLDP_ATTR_IEEE_802_1_PPVIDS;
 pub use self::constants::LLDP_ATTR_IEEE_802_1_PPVID_FLAGS;
+pub use self::constants::LLDP_ATTR_IEEE_802_1_PPVIDS;
 pub use self::constants::LLDP_ATTR_IEEE_802_1_PVID;
 pub use self::constants::LLDP_ATTR_IEEE_802_1_VID;
-pub use self::constants::LLDP_ATTR_IEEE_802_1_VLANS;
 pub use self::constants::LLDP_ATTR_IEEE_802_1_VLAN_NAME;
+pub use self::constants::LLDP_ATTR_IEEE_802_1_VLANS;
 pub use self::constants::LLDP_ATTR_IEEE_802_3_MAC_PHY_CONF;
 pub use self::constants::LLDP_ATTR_IEEE_802_3_MAX_FRAME_SIZE;
 pub use self::constants::LLDP_ATTR_IEEE_802_3_POWER_VIA_MDI;
@@ -1284,10 +1284,9 @@ pub use self::constants::SETTING_BLUETOOTH_TYPE;
 pub use self::constants::SETTING_BLUETOOTH_TYPE_DUN;
 pub use self::constants::SETTING_BLUETOOTH_TYPE_NAP;
 pub use self::constants::SETTING_BLUETOOTH_TYPE_PANU;
-pub use self::constants::SETTING_BOND_OPTIONS;
 pub use self::constants::SETTING_BOND_OPTION_ACTIVE_SLAVE;
-pub use self::constants::SETTING_BOND_OPTION_AD_ACTOR_SYSTEM;
 pub use self::constants::SETTING_BOND_OPTION_AD_ACTOR_SYS_PRIO;
+pub use self::constants::SETTING_BOND_OPTION_AD_ACTOR_SYSTEM;
 pub use self::constants::SETTING_BOND_OPTION_AD_SELECT;
 pub use self::constants::SETTING_BOND_OPTION_AD_USER_PORT_KEY;
 pub use self::constants::SETTING_BOND_OPTION_ALL_SLAVES_ACTIVE;
@@ -1317,6 +1316,7 @@ pub use self::constants::SETTING_BOND_OPTION_TLB_DYNAMIC_LB;
 pub use self::constants::SETTING_BOND_OPTION_UPDELAY;
 pub use self::constants::SETTING_BOND_OPTION_USE_CARRIER;
 pub use self::constants::SETTING_BOND_OPTION_XMIT_HASH_POLICY;
+pub use self::constants::SETTING_BOND_OPTIONS;
 pub use self::constants::SETTING_BOND_PORT_PRIO;
 pub use self::constants::SETTING_BOND_PORT_QUEUE_ID;
 pub use self::constants::SETTING_BOND_PORT_SETTING_NAME;
@@ -1349,11 +1349,11 @@ pub use self::constants::SETTING_BRIDGE_PORT_VLANS;
 pub use self::constants::SETTING_BRIDGE_PRIORITY;
 pub use self::constants::SETTING_BRIDGE_SETTING_NAME;
 pub use self::constants::SETTING_BRIDGE_STP;
-pub use self::constants::SETTING_BRIDGE_VLANS;
 pub use self::constants::SETTING_BRIDGE_VLAN_DEFAULT_PVID;
 pub use self::constants::SETTING_BRIDGE_VLAN_FILTERING;
 pub use self::constants::SETTING_BRIDGE_VLAN_PROTOCOL;
 pub use self::constants::SETTING_BRIDGE_VLAN_STATS_ENABLED;
+pub use self::constants::SETTING_BRIDGE_VLANS;
 pub use self::constants::SETTING_CDMA_MTU;
 pub use self::constants::SETTING_CDMA_NUMBER;
 pub use self::constants::SETTING_CDMA_PASSWORD;
@@ -1476,10 +1476,57 @@ pub use self::constants::SETTING_HSR_PRP;
 pub use self::constants::SETTING_HSR_SETTING_NAME;
 pub use self::constants::SETTING_INFINIBAND_MAC_ADDRESS;
 pub use self::constants::SETTING_INFINIBAND_MTU;
-pub use self::constants::SETTING_INFINIBAND_PARENT;
 pub use self::constants::SETTING_INFINIBAND_P_KEY;
+pub use self::constants::SETTING_INFINIBAND_PARENT;
 pub use self::constants::SETTING_INFINIBAND_SETTING_NAME;
 pub use self::constants::SETTING_INFINIBAND_TRANSPORT_MODE;
+pub use self::constants::SETTING_IP_CONFIG_ADDRESSES;
+pub use self::constants::SETTING_IP_CONFIG_AUTO_ROUTE_EXT_GW;
+pub use self::constants::SETTING_IP_CONFIG_DAD_TIMEOUT;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_DSCP;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_HOSTNAME;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_HOSTNAME_FLAGS;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_IAID;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_REJECT_SERVERS;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_SEND_HOSTNAME;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_SEND_HOSTNAME_V2;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_SEND_RELEASE;
+pub use self::constants::SETTING_IP_CONFIG_DHCP_TIMEOUT;
+pub use self::constants::SETTING_IP_CONFIG_DNS;
+pub use self::constants::SETTING_IP_CONFIG_DNS_OPTIONS;
+pub use self::constants::SETTING_IP_CONFIG_DNS_PRIORITY;
+pub use self::constants::SETTING_IP_CONFIG_DNS_SEARCH;
+pub use self::constants::SETTING_IP_CONFIG_FORWARDING;
+pub use self::constants::SETTING_IP_CONFIG_GATEWAY;
+pub use self::constants::SETTING_IP_CONFIG_IGNORE_AUTO_DNS;
+pub use self::constants::SETTING_IP_CONFIG_IGNORE_AUTO_ROUTES;
+pub use self::constants::SETTING_IP_CONFIG_MAY_FAIL;
+pub use self::constants::SETTING_IP_CONFIG_METHOD;
+pub use self::constants::SETTING_IP_CONFIG_NEVER_DEFAULT;
+pub use self::constants::SETTING_IP_CONFIG_REPLACE_LOCAL_RULE;
+pub use self::constants::SETTING_IP_CONFIG_REQUIRED_TIMEOUT;
+pub use self::constants::SETTING_IP_CONFIG_ROUTE_METRIC;
+pub use self::constants::SETTING_IP_CONFIG_ROUTE_TABLE;
+pub use self::constants::SETTING_IP_CONFIG_ROUTED_DNS;
+pub use self::constants::SETTING_IP_CONFIG_ROUTES;
+pub use self::constants::SETTING_IP_CONFIG_ROUTING_RULES;
+pub use self::constants::SETTING_IP_CONFIG_SHARED_DHCP_LEASE_TIME;
+pub use self::constants::SETTING_IP_CONFIG_SHARED_DHCP_RANGE;
+pub use self::constants::SETTING_IP_TUNNEL_ENCAPSULATION_LIMIT;
+pub use self::constants::SETTING_IP_TUNNEL_FLAGS;
+pub use self::constants::SETTING_IP_TUNNEL_FLOW_LABEL;
+pub use self::constants::SETTING_IP_TUNNEL_FWMARK;
+pub use self::constants::SETTING_IP_TUNNEL_INPUT_KEY;
+pub use self::constants::SETTING_IP_TUNNEL_LOCAL;
+pub use self::constants::SETTING_IP_TUNNEL_MODE;
+pub use self::constants::SETTING_IP_TUNNEL_MTU;
+pub use self::constants::SETTING_IP_TUNNEL_OUTPUT_KEY;
+pub use self::constants::SETTING_IP_TUNNEL_PARENT;
+pub use self::constants::SETTING_IP_TUNNEL_PATH_MTU_DISCOVERY;
+pub use self::constants::SETTING_IP_TUNNEL_REMOTE;
+pub use self::constants::SETTING_IP_TUNNEL_SETTING_NAME;
+pub use self::constants::SETTING_IP_TUNNEL_TOS;
+pub use self::constants::SETTING_IP_TUNNEL_TTL;
 pub use self::constants::SETTING_IP4_CONFIG_DHCP_CLIENT_ID;
 pub use self::constants::SETTING_IP4_CONFIG_DHCP_FQDN;
 pub use self::constants::SETTING_IP4_CONFIG_DHCP_IPV6_ONLY_PREFERRED;
@@ -1515,53 +1562,6 @@ pub use self::constants::SETTING_IPVLAN_PARENT;
 pub use self::constants::SETTING_IPVLAN_PRIVATE;
 pub use self::constants::SETTING_IPVLAN_SETTING_NAME;
 pub use self::constants::SETTING_IPVLAN_VEPA;
-pub use self::constants::SETTING_IP_CONFIG_ADDRESSES;
-pub use self::constants::SETTING_IP_CONFIG_AUTO_ROUTE_EXT_GW;
-pub use self::constants::SETTING_IP_CONFIG_DAD_TIMEOUT;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_DSCP;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_HOSTNAME;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_HOSTNAME_FLAGS;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_IAID;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_REJECT_SERVERS;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_SEND_HOSTNAME;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_SEND_HOSTNAME_V2;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_SEND_RELEASE;
-pub use self::constants::SETTING_IP_CONFIG_DHCP_TIMEOUT;
-pub use self::constants::SETTING_IP_CONFIG_DNS;
-pub use self::constants::SETTING_IP_CONFIG_DNS_OPTIONS;
-pub use self::constants::SETTING_IP_CONFIG_DNS_PRIORITY;
-pub use self::constants::SETTING_IP_CONFIG_DNS_SEARCH;
-pub use self::constants::SETTING_IP_CONFIG_FORWARDING;
-pub use self::constants::SETTING_IP_CONFIG_GATEWAY;
-pub use self::constants::SETTING_IP_CONFIG_IGNORE_AUTO_DNS;
-pub use self::constants::SETTING_IP_CONFIG_IGNORE_AUTO_ROUTES;
-pub use self::constants::SETTING_IP_CONFIG_MAY_FAIL;
-pub use self::constants::SETTING_IP_CONFIG_METHOD;
-pub use self::constants::SETTING_IP_CONFIG_NEVER_DEFAULT;
-pub use self::constants::SETTING_IP_CONFIG_REPLACE_LOCAL_RULE;
-pub use self::constants::SETTING_IP_CONFIG_REQUIRED_TIMEOUT;
-pub use self::constants::SETTING_IP_CONFIG_ROUTED_DNS;
-pub use self::constants::SETTING_IP_CONFIG_ROUTES;
-pub use self::constants::SETTING_IP_CONFIG_ROUTE_METRIC;
-pub use self::constants::SETTING_IP_CONFIG_ROUTE_TABLE;
-pub use self::constants::SETTING_IP_CONFIG_ROUTING_RULES;
-pub use self::constants::SETTING_IP_CONFIG_SHARED_DHCP_LEASE_TIME;
-pub use self::constants::SETTING_IP_CONFIG_SHARED_DHCP_RANGE;
-pub use self::constants::SETTING_IP_TUNNEL_ENCAPSULATION_LIMIT;
-pub use self::constants::SETTING_IP_TUNNEL_FLAGS;
-pub use self::constants::SETTING_IP_TUNNEL_FLOW_LABEL;
-pub use self::constants::SETTING_IP_TUNNEL_FWMARK;
-pub use self::constants::SETTING_IP_TUNNEL_INPUT_KEY;
-pub use self::constants::SETTING_IP_TUNNEL_LOCAL;
-pub use self::constants::SETTING_IP_TUNNEL_MODE;
-pub use self::constants::SETTING_IP_TUNNEL_MTU;
-pub use self::constants::SETTING_IP_TUNNEL_OUTPUT_KEY;
-pub use self::constants::SETTING_IP_TUNNEL_PARENT;
-pub use self::constants::SETTING_IP_TUNNEL_PATH_MTU_DISCOVERY;
-pub use self::constants::SETTING_IP_TUNNEL_REMOTE;
-pub use self::constants::SETTING_IP_TUNNEL_SETTING_NAME;
-pub use self::constants::SETTING_IP_TUNNEL_TOS;
-pub use self::constants::SETTING_IP_TUNNEL_TTL;
 pub use self::constants::SETTING_LINK_GRO_MAX_SIZE;
 pub use self::constants::SETTING_LINK_GSO_MAX_SEGMENTS;
 pub use self::constants::SETTING_LINK_GSO_MAX_SIZE;
@@ -1624,12 +1624,6 @@ pub use self::constants::SETTING_OVS_PORT_SETTING_NAME;
 pub use self::constants::SETTING_OVS_PORT_TAG;
 pub use self::constants::SETTING_OVS_PORT_TRUNKS;
 pub use self::constants::SETTING_OVS_PORT_VLAN_MODE;
-pub use self::constants::SETTING_PPPOE_PARENT;
-pub use self::constants::SETTING_PPPOE_PASSWORD;
-pub use self::constants::SETTING_PPPOE_PASSWORD_FLAGS;
-pub use self::constants::SETTING_PPPOE_SERVICE;
-pub use self::constants::SETTING_PPPOE_SETTING_NAME;
-pub use self::constants::SETTING_PPPOE_USERNAME;
 pub use self::constants::SETTING_PPP_BAUD;
 pub use self::constants::SETTING_PPP_CRTSCTS;
 pub use self::constants::SETTING_PPP_LCP_ECHO_FAILURE;
@@ -1637,10 +1631,10 @@ pub use self::constants::SETTING_PPP_LCP_ECHO_INTERVAL;
 pub use self::constants::SETTING_PPP_MPPE_STATEFUL;
 pub use self::constants::SETTING_PPP_MRU;
 pub use self::constants::SETTING_PPP_MTU;
+pub use self::constants::SETTING_PPP_NO_VJ_COMP;
 pub use self::constants::SETTING_PPP_NOAUTH;
 pub use self::constants::SETTING_PPP_NOBSDCOMP;
 pub use self::constants::SETTING_PPP_NODEFLATE;
-pub use self::constants::SETTING_PPP_NO_VJ_COMP;
 pub use self::constants::SETTING_PPP_REFUSE_CHAP;
 pub use self::constants::SETTING_PPP_REFUSE_EAP;
 pub use self::constants::SETTING_PPP_REFUSE_MSCHAP;
@@ -1649,6 +1643,12 @@ pub use self::constants::SETTING_PPP_REFUSE_PAP;
 pub use self::constants::SETTING_PPP_REQUIRE_MPPE;
 pub use self::constants::SETTING_PPP_REQUIRE_MPPE_128;
 pub use self::constants::SETTING_PPP_SETTING_NAME;
+pub use self::constants::SETTING_PPPOE_PARENT;
+pub use self::constants::SETTING_PPPOE_PASSWORD;
+pub use self::constants::SETTING_PPPOE_PASSWORD_FLAGS;
+pub use self::constants::SETTING_PPPOE_SERVICE;
+pub use self::constants::SETTING_PPPOE_SETTING_NAME;
+pub use self::constants::SETTING_PPPOE_USERNAME;
 pub use self::constants::SETTING_PREFIX_DELEGATION_SETTING_NAME;
 pub use self::constants::SETTING_PREFIX_DELEGATION_SUBNET_ID;
 pub use self::constants::SETTING_PROXY_BROWSER_ONLY;
@@ -1785,8 +1785,8 @@ pub use self::constants::SETTING_WIREGUARD_IP4_AUTO_DEFAULT_ROUTE;
 pub use self::constants::SETTING_WIREGUARD_IP6_AUTO_DEFAULT_ROUTE;
 pub use self::constants::SETTING_WIREGUARD_LISTEN_PORT;
 pub use self::constants::SETTING_WIREGUARD_MTU;
-pub use self::constants::SETTING_WIREGUARD_PEERS;
 pub use self::constants::SETTING_WIREGUARD_PEER_ROUTES;
+pub use self::constants::SETTING_WIREGUARD_PEERS;
 pub use self::constants::SETTING_WIREGUARD_PRIVATE_KEY;
 pub use self::constants::SETTING_WIREGUARD_PRIVATE_KEY_FLAGS;
 pub use self::constants::SETTING_WIREGUARD_SETTING_NAME;
@@ -1825,12 +1825,12 @@ pub use self::constants::SETTING_WIRELESS_SECURITY_PROTO;
 pub use self::constants::SETTING_WIRELESS_SECURITY_PSK;
 pub use self::constants::SETTING_WIRELESS_SECURITY_PSK_FLAGS;
 pub use self::constants::SETTING_WIRELESS_SECURITY_SETTING_NAME;
+pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_KEY_FLAGS;
+pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_KEY_TYPE;
 pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_KEY0;
 pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_KEY1;
 pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_KEY2;
 pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_KEY3;
-pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_KEY_FLAGS;
-pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_KEY_TYPE;
 pub use self::constants::SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX;
 pub use self::constants::SETTING_WIRELESS_SECURITY_WPS_METHOD;
 pub use self::constants::SETTING_WIRELESS_SEEN_BSSIDS;
@@ -1934,83 +1934,79 @@ pub(crate) mod traits {
     pub use super::vpn_editor_plugin::VpnEditorPluginExt;
     pub use super::vpn_plugin_old::VpnPluginOldExt;
     #[cfg(feature = "v1_2")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub use super::vpn_service_plugin::VpnServicePluginExt;
 }
 pub(crate) mod builders {
     pub use super::client::ClientBuilder;
-    #[cfg(feature = "v1_14")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub use super::device6_lowpan::Device6LowpanBuilder;
     pub use super::device_adsl::DeviceAdslBuilder;
     pub use super::device_bond::DeviceBondBuilder;
     pub use super::device_bridge::DeviceBridgeBuilder;
     pub use super::device_bt::DeviceBtBuilder;
     #[cfg(feature = "v1_8")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     pub use super::device_dummy::DeviceDummyBuilder;
     pub use super::device_ethernet::DeviceEthernetBuilder;
     pub use super::device_generic::DeviceGenericBuilder;
     #[cfg(feature = "v1_46")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub use super::device_hsr::DeviceHsrBuilder;
-    #[cfg(feature = "v1_2")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub use super::device_ip_tunnel::DeviceIPTunnelBuilder;
     pub use super::device_infiniband::DeviceInfinibandBuilder;
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    pub use super::device_ip_tunnel::DeviceIPTunnelBuilder;
     #[cfg(feature = "v1_52")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub use super::device_ipvlan::DeviceIpvlanBuilder;
     #[cfg(feature = "v1_42")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub use super::device_loopback::DeviceLoopbackBuilder;
     #[cfg(feature = "v1_6")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub use super::device_macsec::DeviceMacsecBuilder;
     #[cfg(feature = "v1_2")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub use super::device_macvlan::DeviceMacvlanBuilder;
     pub use super::device_modem::DeviceModemBuilder;
     pub use super::device_olpc_mesh::DeviceOlpcMeshBuilder;
     #[cfg(feature = "v1_10")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub use super::device_ovs_bridge::DeviceOvsBridgeBuilder;
     #[cfg(feature = "v1_10")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub use super::device_ovs_port::DeviceOvsPortBuilder;
     #[cfg(feature = "v1_10")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub use super::device_ppp::DevicePppBuilder;
     pub use super::device_team::DeviceTeamBuilder;
     #[cfg(feature = "v1_2")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub use super::device_tun::DeviceTunBuilder;
     #[cfg(feature = "v1_30")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     pub use super::device_veth::DeviceVethBuilder;
     pub use super::device_vlan::DeviceVlanBuilder;
     #[cfg(feature = "v1_24")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub use super::device_vrf::DeviceVrfBuilder;
     #[cfg(feature = "v1_2")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub use super::device_vxlan::DeviceVxlanBuilder;
     pub use super::device_wifi::DeviceWifiBuilder;
     #[cfg(feature = "v1_16")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub use super::device_wifi_p2p::DeviceWifiP2PBuilder;
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     pub use super::device_wimax::DeviceWimaxBuilder;
     #[cfg(feature = "v1_14")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub use super::device_wire_guard::DeviceWireGuardBuilder;
     #[cfg(feature = "v1_14")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub use super::device_wpan::DeviceWpanBuilder;
     #[cfg(feature = "v1_14")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub use super::setting6_lowpan::Setting6LowpanBuilder;
-    pub use super::setting8021x::Setting8021xBuilder;
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
+    pub use super::device6_lowpan::Device6LowpanBuilder;
     pub use super::setting_adsl::SettingAdslBuilder;
     pub use super::setting_bluetooth::SettingBluetoothBuilder;
     pub use super::setting_bond::SettingBondBuilder;
@@ -2023,72 +2019,76 @@ pub(crate) mod builders {
     pub use super::setting_generic::SettingGenericBuilder;
     pub use super::setting_gsm::SettingGsmBuilder;
     #[cfg(feature = "v1_30")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     pub use super::setting_hostname::SettingHostnameBuilder;
     pub use super::setting_hsr::SettingHsrBuilder;
+    pub use super::setting_infiniband::SettingInfinibandBuilder;
+    pub use super::setting_ip_tunnel::SettingIPTunnelBuilder;
     pub use super::setting_ip4_config::SettingIP4ConfigBuilder;
     pub use super::setting_ip6_config::SettingIP6ConfigBuilder;
-    pub use super::setting_ip_tunnel::SettingIPTunnelBuilder;
-    pub use super::setting_infiniband::SettingInfinibandBuilder;
     pub use super::setting_ipvlan::SettingIpvlanBuilder;
     #[cfg(feature = "v1_44")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub use super::setting_link::SettingLinkBuilder;
     #[cfg(feature = "v1_42")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub use super::setting_loopback::SettingLoopbackBuilder;
     pub use super::setting_macsec::SettingMacsecBuilder;
     pub use super::setting_macvlan::SettingMacvlanBuilder;
     #[cfg(feature = "v1_14")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub use super::setting_match::SettingMatchBuilder;
     pub use super::setting_olpc_mesh::SettingOlpcMeshBuilder;
     pub use super::setting_ovs_bridge::SettingOvsBridgeBuilder;
     pub use super::setting_ovs_dpdk::SettingOvsDpdkBuilder;
     pub use super::setting_ovs_external_ids::SettingOvsExternalIDsBuilder;
     #[cfg(feature = "v1_42")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub use super::setting_ovs_other_config::SettingOvsOtherConfigBuilder;
     pub use super::setting_ovs_patch::SettingOvsPatchBuilder;
     pub use super::setting_ovs_port::SettingOvsPortBuilder;
     pub use super::setting_ppp::SettingPppBuilder;
     pub use super::setting_pppoe::SettingPppoeBuilder;
     #[cfg(feature = "v1_54")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     pub use super::setting_prefix_delegation::SettingPrefixDelegationBuilder;
     pub use super::setting_proxy::SettingProxyBuilder;
     pub use super::setting_serial::SettingSerialBuilder;
     #[cfg(feature = "v1_14")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub use super::setting_sriov::SettingSriovBuilder;
     #[cfg(feature = "v1_12")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub use super::setting_tc_config::SettingTCConfigBuilder;
     pub use super::setting_team::SettingTeamBuilder;
     pub use super::setting_team_port::SettingTeamPortBuilder;
     pub use super::setting_tun::SettingTunBuilder;
     #[cfg(feature = "v1_8")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     pub use super::setting_user::SettingUserBuilder;
     pub use super::setting_veth::SettingVethBuilder;
     pub use super::setting_vlan::SettingVlanBuilder;
     pub use super::setting_vpn::SettingVpnBuilder;
     #[cfg(feature = "v1_24")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub use super::setting_vrf::SettingVrfBuilder;
     pub use super::setting_vxlan::SettingVxlanBuilder;
     #[cfg(feature = "v1_16")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub use super::setting_wifi_p2p::SettingWifiP2PBuilder;
     pub use super::setting_wimax::SettingWimaxBuilder;
     #[cfg(feature = "v1_16")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub use super::setting_wire_guard::SettingWireGuardBuilder;
     pub use super::setting_wired::SettingWiredBuilder;
     pub use super::setting_wireless::SettingWirelessBuilder;
     pub use super::setting_wireless_security::SettingWirelessSecurityBuilder;
     #[cfg(feature = "v1_14")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub use super::setting_wpan::SettingWpanBuilder;
+    #[cfg(feature = "v1_14")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
+    pub use super::setting6_lowpan::Setting6LowpanBuilder;
+    pub use super::setting8021x::Setting8021xBuilder;
     pub use super::vpn_plugin_info::VpnPluginInfoBuilder;
 }

@@ -4,9 +4,13 @@
 // DO NOT EDIT
 #![allow(deprecated)]
 
-use crate::{80211Mode,ffi,AccessPoint,Device,DeviceWifiCapabilities,Object};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::{AccessPoint, Device, DeviceWifiCapabilities, Mode80211, Object, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMDeviceWifi")]
@@ -18,20 +22,22 @@ glib::wrapper! {
 }
 
 impl DeviceWifi {
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`DeviceWifi`] objects.
-            ///
-            /// This method returns an instance of [`DeviceWifiBuilder`](crate::builders::DeviceWifiBuilder) which can be used to create [`DeviceWifi`] objects.
-            pub fn builder() -> DeviceWifiBuilder {
-                DeviceWifiBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`DeviceWifi`] objects.
+    ///
+    /// This method returns an instance of [`DeviceWifiBuilder`](crate::builders::DeviceWifiBuilder) which can be used to create [`DeviceWifi`] objects.
+    pub fn builder() -> DeviceWifiBuilder {
+        DeviceWifiBuilder::new()
+    }
 
     #[doc(alias = "nm_device_wifi_get_access_point_by_path")]
     #[doc(alias = "get_access_point_by_path")]
     pub fn access_point_by_path(&self, path: &str) -> AccessPoint {
         unsafe {
-            from_glib_none(ffi::nm_device_wifi_get_access_point_by_path(self.to_glib_none().0, path.to_glib_none().0))
+            from_glib_none(ffi::nm_device_wifi_get_access_point_by_path(
+                self.to_glib_none().0,
+                path.to_glib_none().0,
+            ))
         }
     }
 
@@ -40,7 +46,9 @@ impl DeviceWifi {
     #[doc(alias = "access-points")]
     pub fn access_points(&self) -> Vec<AccessPoint> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_device_wifi_get_access_points(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(ffi::nm_device_wifi_get_access_points(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -49,24 +57,22 @@ impl DeviceWifi {
     #[doc(alias = "active-access-point")]
     pub fn active_access_point(&self) -> AccessPoint {
         unsafe {
-            from_glib_none(ffi::nm_device_wifi_get_active_access_point(self.to_glib_none().0))
+            from_glib_none(ffi::nm_device_wifi_get_active_access_point(
+                self.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_device_wifi_get_bitrate")]
     #[doc(alias = "get_bitrate")]
     pub fn bitrate(&self) -> u32 {
-        unsafe {
-            ffi::nm_device_wifi_get_bitrate(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_device_wifi_get_bitrate(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_device_wifi_get_capabilities")]
     #[doc(alias = "get_capabilities")]
     pub fn capabilities(&self) -> DeviceWifiCapabilities {
-        unsafe {
-            from_glib(ffi::nm_device_wifi_get_capabilities(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_device_wifi_get_capabilities(self.to_glib_none().0)) }
     }
 
     #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
@@ -74,9 +80,7 @@ impl DeviceWifi {
     #[doc(alias = "nm_device_wifi_get_hw_address")]
     #[doc(alias = "get_hw_address")]
     pub fn hw_address(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_device_wifi_get_hw_address(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_device_wifi_get_hw_address(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_12")]
@@ -85,24 +89,22 @@ impl DeviceWifi {
     #[doc(alias = "get_last_scan")]
     #[doc(alias = "last-scan")]
     pub fn last_scan(&self) -> i64 {
-        unsafe {
-            ffi::nm_device_wifi_get_last_scan(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_device_wifi_get_last_scan(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_device_wifi_get_mode")]
     #[doc(alias = "get_mode")]
-    pub fn mode(&self) -> 80211Mode {
-        unsafe {
-            from_glib(ffi::nm_device_wifi_get_mode(self.to_glib_none().0))
-        }
+    pub fn mode(&self) -> Mode80211 {
+        unsafe { from_glib(ffi::nm_device_wifi_get_mode(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_device_wifi_get_permanent_hw_address")]
     #[doc(alias = "get_permanent_hw_address")]
     pub fn permanent_hw_address(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_device_wifi_get_permanent_hw_address(self.to_glib_none().0))
+            from_glib_none(ffi::nm_device_wifi_get_permanent_hw_address(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -121,14 +123,14 @@ impl DeviceWifi {
     //
     //pub fn request_scan_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.request_scan_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
+    //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+    //    obj.request_scan_async(
+    //        Some(cancellable),
+    //        move |res| {
+    //            send.resolve(res);
+    //        },
+    //    );
+    //}))
     //}
 
     //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
@@ -169,40 +171,73 @@ impl DeviceWifi {
 
     #[doc(alias = "access-points")]
     pub fn connect_access_points_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_access_points_trampoline<F: Fn(&DeviceWifi) + 'static>(this: *mut ffi::NMDeviceWifi, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_access_points_trampoline<F: Fn(&DeviceWifi) + 'static>(
+            this: *mut ffi::NMDeviceWifi,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::access-points".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_access_points_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::access-points".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_access_points_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "active-access-point")]
-    pub fn connect_active_access_point_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_active_access_point_trampoline<F: Fn(&DeviceWifi) + 'static>(this: *mut ffi::NMDeviceWifi, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_active_access_point_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_active_access_point_trampoline<F: Fn(&DeviceWifi) + 'static>(
+            this: *mut ffi::NMDeviceWifi,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::active-access-point".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_active_access_point_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::active-access-point".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_active_access_point_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "bitrate")]
     pub fn connect_bitrate_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_bitrate_trampoline<F: Fn(&DeviceWifi) + 'static>(this: *mut ffi::NMDeviceWifi, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_bitrate_trampoline<F: Fn(&DeviceWifi) + 'static>(
+            this: *mut ffi::NMDeviceWifi,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::bitrate".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_bitrate_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::bitrate".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_bitrate_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -210,79 +245,129 @@ impl DeviceWifi {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "last-scan")]
     pub fn connect_last_scan_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_last_scan_trampoline<F: Fn(&DeviceWifi) + 'static>(this: *mut ffi::NMDeviceWifi, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_last_scan_trampoline<F: Fn(&DeviceWifi) + 'static>(
+            this: *mut ffi::NMDeviceWifi,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::last-scan".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_last_scan_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::last-scan".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_last_scan_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "mode")]
     pub fn connect_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mode_trampoline<F: Fn(&DeviceWifi) + 'static>(this: *mut ffi::NMDeviceWifi, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_mode_trampoline<F: Fn(&DeviceWifi) + 'static>(
+            this: *mut ffi::NMDeviceWifi,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "perm-hw-address")]
     pub fn connect_perm_hw_address_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_perm_hw_address_trampoline<F: Fn(&DeviceWifi) + 'static>(this: *mut ffi::NMDeviceWifi, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_perm_hw_address_trampoline<F: Fn(&DeviceWifi) + 'static>(
+            this: *mut ffi::NMDeviceWifi,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::perm-hw-address".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_perm_hw_address_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::perm-hw-address".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_perm_hw_address_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "wireless-capabilities")]
-    pub fn connect_wireless_capabilities_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wireless_capabilities_trampoline<F: Fn(&DeviceWifi) + 'static>(this: *mut ffi::NMDeviceWifi, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_wireless_capabilities_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_wireless_capabilities_trampoline<
+            F: Fn(&DeviceWifi) + 'static,
+        >(
+            this: *mut ffi::NMDeviceWifi,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wireless-capabilities".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wireless_capabilities_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wireless-capabilities".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wireless_capabilities_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`DeviceWifi`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`DeviceWifi`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct DeviceWifiBuilder {
-            builder: glib::object::ObjectBuilder<'static, DeviceWifi>,
-        }
+    builder: glib::object::ObjectBuilder<'static, DeviceWifi>,
+}
 
-        impl DeviceWifiBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+impl DeviceWifiBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-                            pub fn autoconnect(self, autoconnect: bool) -> Self {
-                            Self { builder: self.builder.property("autoconnect", autoconnect), }
-                        }
+    pub fn autoconnect(self, autoconnect: bool) -> Self {
+        Self {
+            builder: self.builder.property("autoconnect", autoconnect),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`DeviceWifi`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> DeviceWifi {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

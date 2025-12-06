@@ -3,9 +3,13 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{80211ApFlags,80211ApSecurityFlags,80211Mode,ffi,Connection,Object};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::{ApFlags80211, ApSecurityFlags80211, Connection, Mode80211, Object, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMAccessPoint")]
@@ -20,14 +24,20 @@ impl AccessPoint {
     #[doc(alias = "nm_access_point_connection_valid")]
     pub fn connection_valid(&self, connection: &impl IsA<Connection>) -> bool {
         unsafe {
-            from_glib(ffi::nm_access_point_connection_valid(self.to_glib_none().0, connection.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_access_point_connection_valid(
+                self.to_glib_none().0,
+                connection.as_ref().to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_access_point_filter_connections")]
     pub fn filter_connections(&self, connections: &[Connection]) -> Vec<Connection> {
         unsafe {
-            FromGlibPtrContainer::from_glib_full(ffi::nm_access_point_filter_connections(self.to_glib_none().0, connections.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_full(ffi::nm_access_point_filter_connections(
+                self.to_glib_none().0,
+                connections.to_glib_none().0,
+            ))
         }
     }
 
@@ -36,33 +46,25 @@ impl AccessPoint {
     #[doc(alias = "nm_access_point_get_bandwidth")]
     #[doc(alias = "get_bandwidth")]
     pub fn bandwidth(&self) -> u32 {
-        unsafe {
-            ffi::nm_access_point_get_bandwidth(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_access_point_get_bandwidth(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_access_point_get_bssid")]
     #[doc(alias = "get_bssid")]
     pub fn bssid(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_access_point_get_bssid(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_access_point_get_bssid(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_access_point_get_flags")]
     #[doc(alias = "get_flags")]
-    pub fn flags(&self) -> 80211ApFlags {
-        unsafe {
-            from_glib(ffi::nm_access_point_get_flags(self.to_glib_none().0))
-        }
+    pub fn flags(&self) -> ApFlags80211 {
+        unsafe { from_glib(ffi::nm_access_point_get_flags(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_access_point_get_frequency")]
     #[doc(alias = "get_frequency")]
     pub fn frequency(&self) -> u32 {
-        unsafe {
-            ffi::nm_access_point_get_frequency(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_access_point_get_frequency(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_2")]
@@ -71,35 +73,27 @@ impl AccessPoint {
     #[doc(alias = "get_last_seen")]
     #[doc(alias = "last-seen")]
     pub fn last_seen(&self) -> i32 {
-        unsafe {
-            ffi::nm_access_point_get_last_seen(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_access_point_get_last_seen(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_access_point_get_max_bitrate")]
     #[doc(alias = "get_max_bitrate")]
     #[doc(alias = "max-bitrate")]
     pub fn max_bitrate(&self) -> u32 {
-        unsafe {
-            ffi::nm_access_point_get_max_bitrate(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_access_point_get_max_bitrate(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_access_point_get_mode")]
     #[doc(alias = "get_mode")]
-    pub fn mode(&self) -> 80211Mode {
-        unsafe {
-            from_glib(ffi::nm_access_point_get_mode(self.to_glib_none().0))
-        }
+    pub fn mode(&self) -> Mode80211 {
+        unsafe { from_glib(ffi::nm_access_point_get_mode(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_access_point_get_rsn_flags")]
     #[doc(alias = "get_rsn_flags")]
     #[doc(alias = "rsn-flags")]
-    pub fn rsn_flags(&self) -> 80211ApSecurityFlags {
-        unsafe {
-            from_glib(ffi::nm_access_point_get_rsn_flags(self.to_glib_none().0))
-        }
+    pub fn rsn_flags(&self) -> ApSecurityFlags80211 {
+        unsafe { from_glib(ffi::nm_access_point_get_rsn_flags(self.to_glib_none().0)) }
     }
 
     //#[doc(alias = "nm_access_point_get_ssid")]
@@ -111,71 +105,107 @@ impl AccessPoint {
     #[doc(alias = "nm_access_point_get_strength")]
     #[doc(alias = "get_strength")]
     pub fn strength(&self) -> u8 {
-        unsafe {
-            ffi::nm_access_point_get_strength(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_access_point_get_strength(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_access_point_get_wpa_flags")]
     #[doc(alias = "get_wpa_flags")]
     #[doc(alias = "wpa-flags")]
-    pub fn wpa_flags(&self) -> 80211ApSecurityFlags {
-        unsafe {
-            from_glib(ffi::nm_access_point_get_wpa_flags(self.to_glib_none().0))
-        }
+    pub fn wpa_flags(&self) -> ApSecurityFlags80211 {
+        unsafe { from_glib(ffi::nm_access_point_get_wpa_flags(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "bandwidth")]
     pub fn connect_bandwidth_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_bandwidth_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_bandwidth_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::bandwidth".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_bandwidth_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::bandwidth".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_bandwidth_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "bssid")]
     pub fn connect_bssid_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_bssid_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_bssid_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::bssid".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_bssid_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::bssid".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_bssid_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "flags")]
     pub fn connect_flags_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_flags_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_flags_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::flags".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_flags_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::flags".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_flags_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "frequency")]
     pub fn connect_frequency_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_frequency_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_frequency_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::frequency".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_frequency_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::frequency".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_frequency_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -183,92 +213,162 @@ impl AccessPoint {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "last-seen")]
     pub fn connect_last_seen_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_last_seen_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_last_seen_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::last-seen".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_last_seen_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::last-seen".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_last_seen_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "max-bitrate")]
     pub fn connect_max_bitrate_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_max_bitrate_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_max_bitrate_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::max-bitrate".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_max_bitrate_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::max-bitrate".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_max_bitrate_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "mode")]
     pub fn connect_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mode_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_mode_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "rsn-flags")]
     pub fn connect_rsn_flags_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_rsn_flags_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_rsn_flags_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::rsn-flags".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_rsn_flags_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::rsn-flags".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_rsn_flags_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "ssid")]
     pub fn connect_ssid_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_ssid_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_ssid_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::ssid".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_ssid_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::ssid".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_ssid_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "strength")]
     pub fn connect_strength_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_strength_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_strength_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::strength".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_strength_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::strength".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_strength_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "wpa-flags")]
     pub fn connect_wpa_flags_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wpa_flags_trampoline<F: Fn(&AccessPoint) + 'static>(this: *mut ffi::NMAccessPoint, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_wpa_flags_trampoline<F: Fn(&AccessPoint) + 'static>(
+            this: *mut ffi::NMAccessPoint,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wpa-flags".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wpa_flags_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wpa-flags".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wpa_flags_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
