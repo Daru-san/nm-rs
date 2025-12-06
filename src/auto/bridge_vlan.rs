@@ -3,10 +3,10 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi};
+use crate::ffi;
 #[cfg(feature = "v1_18")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-use glib::{translate::*};
+use glib::translate::*;
 
 glib::wrapper! {
     #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -25,18 +25,14 @@ impl BridgeVlan {
     #[doc(alias = "nm_bridge_vlan_new")]
     pub fn new(vid_start: u16, vid_end: u16) -> BridgeVlan {
         assert_initialized_main_thread!();
-        unsafe {
-            from_glib_full(ffi::nm_bridge_vlan_new(vid_start, vid_end))
-        }
+        unsafe { from_glib_full(ffi::nm_bridge_vlan_new(vid_start, vid_end)) }
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_cmp")]
     pub fn cmp(&self, b: &BridgeVlan) -> i32 {
-        unsafe {
-            ffi::nm_bridge_vlan_cmp(self.to_glib_none().0, b.to_glib_none().0)
-        }
+        unsafe { ffi::nm_bridge_vlan_cmp(self.to_glib_none().0, b.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -47,8 +43,16 @@ impl BridgeVlan {
         unsafe {
             let mut vid_start = std::mem::MaybeUninit::uninit();
             let mut vid_end = std::mem::MaybeUninit::uninit();
-            let ret = from_glib(ffi::nm_bridge_vlan_get_vid_range(self.to_glib_none().0, vid_start.as_mut_ptr(), vid_end.as_mut_ptr()));
-            if ret { Some((vid_start.assume_init(), vid_end.assume_init())) } else { None }
+            let ret = from_glib(ffi::nm_bridge_vlan_get_vid_range(
+                self.to_glib_none().0,
+                vid_start.as_mut_ptr(),
+                vid_end.as_mut_ptr(),
+            ));
+            if ret {
+                Some((vid_start.assume_init(), vid_end.assume_init()))
+            } else {
+                None
+            }
         }
     }
 
@@ -56,37 +60,29 @@ impl BridgeVlan {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_is_pvid")]
     pub fn is_pvid(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_bridge_vlan_is_pvid(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_bridge_vlan_is_pvid(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_is_sealed")]
     pub fn is_sealed(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_bridge_vlan_is_sealed(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_bridge_vlan_is_sealed(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_is_untagged")]
     pub fn is_untagged(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_bridge_vlan_is_untagged(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_bridge_vlan_is_untagged(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_new_clone")]
-#[must_use]
+    #[must_use]
     pub fn new_clone(&self) -> BridgeVlan {
-        unsafe {
-            from_glib_full(ffi::nm_bridge_vlan_new_clone(self.to_glib_none().0))
-        }
+        unsafe { from_glib_full(ffi::nm_bridge_vlan_new_clone(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
