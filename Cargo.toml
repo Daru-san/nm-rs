@@ -5,13 +5,13 @@ edition = "2024"
 
 [dependencies]
 gio = "0.21.5"
-gio-sys = "0.21.5"
-
-[workspace.dependencies]
-gio = "0.21.5"
-gio-sys = "0.21.5"
+glib = "0.21.5"
+nm-sys = { path = "libnm-sys" }
 
 [workspace]
 resolver = "2"
 
 members = ["libnm-sys"]
+
+[workspace.dependencies]
+nm-sys = { path = "libnm-sys" }

@@ -7,4 +7,4 @@ work_mode = "sys"
 single_version_file = "."
 min_cfg_version = "1.0"
 
-external_libraries = ["Gio"]
+external_libraries = ["Gio", "GLib"]

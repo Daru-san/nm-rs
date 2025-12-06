@@ -98,10 +98,10 @@ all-features = true
 name = "nm_sys"
 
 [dependencies]
+gio-sys = "0.21.5"
+glib-sys = "0.21.5"
+gobject-sys = "0.21.5"
 libc = "0.2"
-
-[dependencies.gio-sys]
-workspace = true
 
 [build-dependencies]
 system-deps = "7"

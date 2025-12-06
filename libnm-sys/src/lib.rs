@@ -4,19 +4,29 @@
 // DO NOT EDIT
 
 #![allow(non_camel_case_types, non_upper_case_globals, non_snake_case)]
-#![allow(clippy::approx_constant, clippy::type_complexity, clippy::unreadable_literal, clippy::upper_case_acronyms)]
+#![allow(
+    clippy::approx_constant,
+    clippy::type_complexity,
+    clippy::unreadable_literal,
+    clippy::upper_case_acronyms
+)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 use gio_sys as gio;
+use glib_sys as glib;
+use gobject_sys as gobject;
+use libc::in6_addr;
+use libc::stat;
 
-#[allow(unused_imports)]
-use std::ffi::{c_int, c_char, c_uchar, c_float, c_uint, c_double,
-    c_short, c_ushort, c_long, c_ulong, c_void};
-#[allow(unused_imports)]
-use libc::{size_t, ssize_t, time_t, off_t, intptr_t, uintptr_t, FILE};
 #[cfg(unix)]
 #[allow(unused_imports)]
 use libc::{dev_t, gid_t, pid_t, socklen_t, uid_t};
+#[allow(unused_imports)]
+use libc::{intptr_t, off_t, size_t, ssize_t, time_t, uintptr_t, FILE};
+#[allow(unused_imports)]
+use std::ffi::{
+    c_char, c_double, c_float, c_int, c_long, c_short, c_uchar, c_uint, c_ulong, c_ushort, c_void,
+};
 
 #[allow(unused_imports)]
 use glib::{gboolean, gconstpointer, gpointer, GType};
@@ -44,13 +54,15 @@ pub const NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED: NMActiveConnect
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_STOPPED: NMActiveConnectionStateReason = 4;
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_IP_CONFIG_INVALID: NMActiveConnectionStateReason = 5;
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_CONNECT_TIMEOUT: NMActiveConnectionStateReason = 6;
-pub const NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT: NMActiveConnectionStateReason = 7;
+pub const NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT: NMActiveConnectionStateReason =
+    7;
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_FAILED: NMActiveConnectionStateReason = 8;
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_NO_SECRETS: NMActiveConnectionStateReason = 9;
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_LOGIN_FAILED: NMActiveConnectionStateReason = 10;
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_CONNECTION_REMOVED: NMActiveConnectionStateReason = 11;
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_DEPENDENCY_FAILED: NMActiveConnectionStateReason = 12;
-pub const NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REALIZE_FAILED: NMActiveConnectionStateReason = 13;
+pub const NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REALIZE_FAILED: NMActiveConnectionStateReason =
+    13;
 pub const NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REMOVED: NMActiveConnectionStateReason = 14;
 
 pub type NMAgentManagerError = c_int;
@@ -358,7 +370,8 @@ pub const NM_SETTING_COMPARE_FLAG_DIFF_RESULT_NO_DEFAULT: NMSettingCompareFlags 
 pub const NM_SETTING_COMPARE_FLAG_IGNORE_TIMESTAMP: NMSettingCompareFlags = 128;
 
 pub type NMSettingConnectionAutoconnectSlaves = c_int;
-pub const NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_DEFAULT: NMSettingConnectionAutoconnectSlaves = -1;
+pub const NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_DEFAULT: NMSettingConnectionAutoconnectSlaves =
+    -1;
 pub const NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_NO: NMSettingConnectionAutoconnectSlaves = 0;
 pub const NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_YES: NMSettingConnectionAutoconnectSlaves = 1;
 
@@ -733,19 +746,26 @@ pub const NM_CONNECTION_SECRETS_UPDATED: &[u8] = b"secrets-updated\0";
 pub const NM_DBUS_INTERFACE: &[u8] = b"org.freedesktop.NetworkManager\0";
 pub const NM_DBUS_INTERFACE_DNS_MANAGER: &[u8] = b"org.freedesktop.NetworkManager.DnsManager\0";
 pub const NM_DBUS_INTERFACE_SETTINGS: &[u8] = b"org.freedesktop.NetworkManager.Settings\0";
-pub const NM_DBUS_INTERFACE_SETTINGS_CONNECTION: &[u8] = b"org.freedesktop.NetworkManager.Settings.Connection\0";
-pub const NM_DBUS_INTERFACE_SETTINGS_CONNECTION_SECRETS: &[u8] = b"org.freedesktop.NetworkManager.Settings.Connection.Secrets\0";
+pub const NM_DBUS_INTERFACE_SETTINGS_CONNECTION: &[u8] =
+    b"org.freedesktop.NetworkManager.Settings.Connection\0";
+pub const NM_DBUS_INTERFACE_SETTINGS_CONNECTION_SECRETS: &[u8] =
+    b"org.freedesktop.NetworkManager.Settings.Connection.Secrets\0";
 pub const NM_DBUS_INTERFACE_VPN: &[u8] = b"org.freedesktop.NetworkManager.VPN.Manager\0";
-pub const NM_DBUS_INTERFACE_VPN_CONNECTION: &[u8] = b"org.freedesktop.NetworkManager.VPN.Connection\0";
-pub const NM_DBUS_INVALID_VPN_CONNECTION: &[u8] = b"org.freedesktop.NetworkManager.VPNConnections.InvalidVPNConnection\0";
-pub const NM_DBUS_NO_ACTIVE_VPN_CONNECTION: &[u8] = b"org.freedesktop.NetworkManager.VPNConnections.NoActiveVPNConnection\0";
-pub const NM_DBUS_NO_VPN_CONNECTIONS: &[u8] = b"org.freedesktop.NetworkManager.VPNConnections.NoVPNConnections\0";
+pub const NM_DBUS_INTERFACE_VPN_CONNECTION: &[u8] =
+    b"org.freedesktop.NetworkManager.VPN.Connection\0";
+pub const NM_DBUS_INVALID_VPN_CONNECTION: &[u8] =
+    b"org.freedesktop.NetworkManager.VPNConnections.InvalidVPNConnection\0";
+pub const NM_DBUS_NO_ACTIVE_VPN_CONNECTION: &[u8] =
+    b"org.freedesktop.NetworkManager.VPNConnections.NoActiveVPNConnection\0";
+pub const NM_DBUS_NO_VPN_CONNECTIONS: &[u8] =
+    b"org.freedesktop.NetworkManager.VPNConnections.NoVPNConnections\0";
 pub const NM_DBUS_PATH: &[u8] = b"/org/freedesktop/NetworkManager\0";
 pub const NM_DBUS_PATH_AGENT_MANAGER: &[u8] = b"/org/freedesktop/NetworkManager/AgentManager\0";
 pub const NM_DBUS_PATH_DNS_MANAGER: &[u8] = b"/org/freedesktop/NetworkManager/DnsManager\0";
 pub const NM_DBUS_PATH_SECRET_AGENT: &[u8] = b"/org/freedesktop/NetworkManager/SecretAgent\0";
 pub const NM_DBUS_PATH_SETTINGS: &[u8] = b"/org/freedesktop/NetworkManager/Settings\0";
-pub const NM_DBUS_PATH_SETTINGS_CONNECTION: &[u8] = b"/org/freedesktop/NetworkManager/Settings/Connection\0";
+pub const NM_DBUS_PATH_SETTINGS_CONNECTION: &[u8] =
+    b"/org/freedesktop/NetworkManager/Settings/Connection\0";
 pub const NM_DBUS_PATH_VPN: &[u8] = b"/org/freedesktop/NetworkManager/VPN/Manager\0";
 pub const NM_DBUS_PATH_VPN_CONNECTION: &[u8] = b"/org/freedesktop/NetworkManager/VPN/Connection\0";
 pub const NM_DBUS_SERVICE: &[u8] = b"org.freedesktop.NetworkManager\0";
@@ -959,7 +979,8 @@ pub const NM_ETHTOOL_OPTNAME_COALESCE_TX_USECS_IRQ: &[u8] = b"coalesce-tx-usecs-
 pub const NM_ETHTOOL_OPTNAME_COALESCE_TX_USECS_LOW: &[u8] = b"coalesce-tx-usecs-low\0";
 pub const NM_ETHTOOL_OPTNAME_EEE_ENABLED: &[u8] = b"eee-enabled\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_ESP_HW_OFFLOAD: &[u8] = b"feature-esp-hw-offload\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_ESP_TX_CSUM_HW_OFFLOAD: &[u8] = b"feature-esp-tx-csum-hw-offload\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_ESP_TX_CSUM_HW_OFFLOAD: &[u8] =
+    b"feature-esp-tx-csum-hw-offload\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_FCOE_MTU: &[u8] = b"feature-fcoe-mtu\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_GRO: &[u8] = b"feature-gro\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_GSO: &[u8] = b"feature-gso\0";
@@ -977,11 +998,14 @@ pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_ALL: &[u8] = b"feature-rx-all\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_FCS: &[u8] = b"feature-rx-fcs\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_GRO_HW: &[u8] = b"feature-rx-gro-hw\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_GRO_LIST: &[u8] = b"feature-rx-gro-list\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_UDP_GRO_FORWARDING: &[u8] = b"feature-rx-udp-gro-forwarding\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_UDP_TUNNEL_PORT_OFFLOAD: &[u8] = b"feature-rx-udp_tunnel-port-offload\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_UDP_GRO_FORWARDING: &[u8] =
+    b"feature-rx-udp-gro-forwarding\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_UDP_TUNNEL_PORT_OFFLOAD: &[u8] =
+    b"feature-rx-udp_tunnel-port-offload\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_VLAN_FILTER: &[u8] = b"feature-rx-vlan-filter\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_VLAN_STAG_FILTER: &[u8] = b"feature-rx-vlan-stag-filter\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_VLAN_STAG_HW_PARSE: &[u8] = b"feature-rx-vlan-stag-hw-parse\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_RX_VLAN_STAG_HW_PARSE: &[u8] =
+    b"feature-rx-vlan-stag-hw-parse\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_SG: &[u8] = b"feature-sg\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TLS_HW_RECORD: &[u8] = b"feature-tls-hw-record\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TLS_HW_RX_OFFLOAD: &[u8] = b"feature-tls-hw-rx-offload\0";
@@ -989,33 +1013,48 @@ pub const NM_ETHTOOL_OPTNAME_FEATURE_TLS_HW_TX_OFFLOAD: &[u8] = b"feature-tls-hw
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TSO: &[u8] = b"feature-tso\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX: &[u8] = b"feature-tx\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TXVLAN: &[u8] = b"feature-txvlan\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_FCOE_CRC: &[u8] = b"feature-tx-checksum-fcoe-crc\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_FCOE_CRC: &[u8] =
+    b"feature-tx-checksum-fcoe-crc\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_IPV4: &[u8] = b"feature-tx-checksum-ipv4\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_IPV6: &[u8] = b"feature-tx-checksum-ipv6\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_IP_GENERIC: &[u8] = b"feature-tx-checksum-ip-generic\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_IP_GENERIC: &[u8] =
+    b"feature-tx-checksum-ip-generic\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_CHECKSUM_SCTP: &[u8] = b"feature-tx-checksum-sctp\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_ESP_SEGMENTATION: &[u8] = b"feature-tx-esp-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_FCOE_SEGMENTATION: &[u8] = b"feature-tx-fcoe-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_GRE_CSUM_SEGMENTATION: &[u8] = b"feature-tx-gre-csum-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_FCOE_SEGMENTATION: &[u8] =
+    b"feature-tx-fcoe-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_GRE_CSUM_SEGMENTATION: &[u8] =
+    b"feature-tx-gre-csum-segmentation\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_GRE_SEGMENTATION: &[u8] = b"feature-tx-gre-segmentation\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_GSO_LIST: &[u8] = b"feature-tx-gso-list\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_GSO_PARTIAL: &[u8] = b"feature-tx-gso-partial\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_GSO_ROBUST: &[u8] = b"feature-tx-gso-robust\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_IPXIP4_SEGMENTATION: &[u8] = b"feature-tx-ipxip4-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_IPXIP6_SEGMENTATION: &[u8] = b"feature-tx-ipxip6-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_IPXIP4_SEGMENTATION: &[u8] =
+    b"feature-tx-ipxip4-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_IPXIP6_SEGMENTATION: &[u8] =
+    b"feature-tx-ipxip6-segmentation\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_NOCACHE_COPY: &[u8] = b"feature-tx-nocache-copy\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_SCATTER_GATHER: &[u8] = b"feature-tx-scatter-gather\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_SCATTER_GATHER_FRAGLIST: &[u8] = b"feature-tx-scatter-gather-fraglist\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_SCTP_SEGMENTATION: &[u8] = b"feature-tx-sctp-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TCP6_SEGMENTATION: &[u8] = b"feature-tx-tcp6-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TCP_ECN_SEGMENTATION: &[u8] = b"feature-tx-tcp-ecn-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TCP_MANGLEID_SEGMENTATION: &[u8] = b"feature-tx-tcp-mangleid-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_SCATTER_GATHER_FRAGLIST: &[u8] =
+    b"feature-tx-scatter-gather-fraglist\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_SCTP_SEGMENTATION: &[u8] =
+    b"feature-tx-sctp-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TCP6_SEGMENTATION: &[u8] =
+    b"feature-tx-tcp6-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TCP_ECN_SEGMENTATION: &[u8] =
+    b"feature-tx-tcp-ecn-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TCP_MANGLEID_SEGMENTATION: &[u8] =
+    b"feature-tx-tcp-mangleid-segmentation\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TCP_SEGMENTATION: &[u8] = b"feature-tx-tcp-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TUNNEL_REMCSUM_SEGMENTATION: &[u8] = b"feature-tx-tunnel-remcsum-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_TUNNEL_REMCSUM_SEGMENTATION: &[u8] =
+    b"feature-tx-tunnel-remcsum-segmentation\0";
 pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_UDP_SEGMENTATION: &[u8] = b"feature-tx-udp-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_UDP_TNL_CSUM_SEGMENTATION: &[u8] = b"feature-tx-udp_tnl-csum-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_UDP_TNL_SEGMENTATION: &[u8] = b"feature-tx-udp_tnl-segmentation\0";
-pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_VLAN_STAG_HW_INSERT: &[u8] = b"feature-tx-vlan-stag-hw-insert\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_UDP_TNL_CSUM_SEGMENTATION: &[u8] =
+    b"feature-tx-udp_tnl-csum-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_UDP_TNL_SEGMENTATION: &[u8] =
+    b"feature-tx-udp_tnl-segmentation\0";
+pub const NM_ETHTOOL_OPTNAME_FEATURE_TX_VLAN_STAG_HW_INSERT: &[u8] =
+    b"feature-tx-vlan-stag-hw-insert\0";
 pub const NM_ETHTOOL_OPTNAME_FEC_MODE: &[u8] = b"fec-mode\0";
 pub const NM_ETHTOOL_OPTNAME_PAUSE_AUTONEG: &[u8] = b"pause-autoneg\0";
 pub const NM_ETHTOOL_OPTNAME_PAUSE_RX: &[u8] = b"pause-rx\0";
@@ -1134,16 +1173,19 @@ pub const NM_SETTING_802_1X_PHASE2_AUTH: &[u8] = b"phase2-auth\0";
 pub const NM_SETTING_802_1X_PHASE2_AUTHEAP: &[u8] = b"phase2-autheap\0";
 pub const NM_SETTING_802_1X_PHASE2_CA_CERT: &[u8] = b"phase2-ca-cert\0";
 pub const NM_SETTING_802_1X_PHASE2_CA_CERT_PASSWORD: &[u8] = b"phase2-ca-cert-password\0";
-pub const NM_SETTING_802_1X_PHASE2_CA_CERT_PASSWORD_FLAGS: &[u8] = b"phase2-ca-cert-password-flags\0";
+pub const NM_SETTING_802_1X_PHASE2_CA_CERT_PASSWORD_FLAGS: &[u8] =
+    b"phase2-ca-cert-password-flags\0";
 pub const NM_SETTING_802_1X_PHASE2_CA_PATH: &[u8] = b"phase2-ca-path\0";
 pub const NM_SETTING_802_1X_PHASE2_CLIENT_CERT: &[u8] = b"phase2-client-cert\0";
 pub const NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD: &[u8] = b"phase2-client-cert-password\0";
-pub const NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD_FLAGS: &[u8] = b"phase2-client-cert-password-flags\0";
+pub const NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD_FLAGS: &[u8] =
+    b"phase2-client-cert-password-flags\0";
 pub const NM_SETTING_802_1X_PHASE2_DOMAIN_MATCH: &[u8] = b"phase2-domain-match\0";
 pub const NM_SETTING_802_1X_PHASE2_DOMAIN_SUFFIX_MATCH: &[u8] = b"phase2-domain-suffix-match\0";
 pub const NM_SETTING_802_1X_PHASE2_PRIVATE_KEY: &[u8] = b"phase2-private-key\0";
 pub const NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD: &[u8] = b"phase2-private-key-password\0";
-pub const NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD_FLAGS: &[u8] = b"phase2-private-key-password-flags\0";
+pub const NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD_FLAGS: &[u8] =
+    b"phase2-private-key-password-flags\0";
 pub const NM_SETTING_802_1X_PHASE2_SUBJECT_MATCH: &[u8] = b"phase2-subject-match\0";
 pub const NM_SETTING_802_1X_PIN: &[u8] = b"pin\0";
 pub const NM_SETTING_802_1X_PIN_FLAGS: &[u8] = b"pin-flags\0";
@@ -1218,17 +1260,22 @@ pub const NM_SETTING_BRIDGE_MAC_ADDRESS: &[u8] = b"mac-address\0";
 pub const NM_SETTING_BRIDGE_MAX_AGE: &[u8] = b"max-age\0";
 pub const NM_SETTING_BRIDGE_MULTICAST_HASH_MAX: &[u8] = b"multicast-hash-max\0";
 pub const NM_SETTING_BRIDGE_MULTICAST_LAST_MEMBER_COUNT: &[u8] = b"multicast-last-member-count\0";
-pub const NM_SETTING_BRIDGE_MULTICAST_LAST_MEMBER_INTERVAL: &[u8] = b"multicast-last-member-interval\0";
-pub const NM_SETTING_BRIDGE_MULTICAST_MEMBERSHIP_INTERVAL: &[u8] = b"multicast-membership-interval\0";
+pub const NM_SETTING_BRIDGE_MULTICAST_LAST_MEMBER_INTERVAL: &[u8] =
+    b"multicast-last-member-interval\0";
+pub const NM_SETTING_BRIDGE_MULTICAST_MEMBERSHIP_INTERVAL: &[u8] =
+    b"multicast-membership-interval\0";
 pub const NM_SETTING_BRIDGE_MULTICAST_QUERIER: &[u8] = b"multicast-querier\0";
 pub const NM_SETTING_BRIDGE_MULTICAST_QUERIER_INTERVAL: &[u8] = b"multicast-querier-interval\0";
 pub const NM_SETTING_BRIDGE_MULTICAST_QUERY_INTERVAL: &[u8] = b"multicast-query-interval\0";
-pub const NM_SETTING_BRIDGE_MULTICAST_QUERY_RESPONSE_INTERVAL: &[u8] = b"multicast-query-response-interval\0";
+pub const NM_SETTING_BRIDGE_MULTICAST_QUERY_RESPONSE_INTERVAL: &[u8] =
+    b"multicast-query-response-interval\0";
 pub const NM_SETTING_BRIDGE_MULTICAST_QUERY_USE_IFADDR: &[u8] = b"multicast-query-use-ifaddr\0";
 pub const NM_SETTING_BRIDGE_MULTICAST_ROUTER: &[u8] = b"multicast-router\0";
 pub const NM_SETTING_BRIDGE_MULTICAST_SNOOPING: &[u8] = b"multicast-snooping\0";
-pub const NM_SETTING_BRIDGE_MULTICAST_STARTUP_QUERY_COUNT: &[u8] = b"multicast-startup-query-count\0";
-pub const NM_SETTING_BRIDGE_MULTICAST_STARTUP_QUERY_INTERVAL: &[u8] = b"multicast-startup-query-interval\0";
+pub const NM_SETTING_BRIDGE_MULTICAST_STARTUP_QUERY_COUNT: &[u8] =
+    b"multicast-startup-query-count\0";
+pub const NM_SETTING_BRIDGE_MULTICAST_STARTUP_QUERY_INTERVAL: &[u8] =
+    b"multicast-startup-query-interval\0";
 pub const NM_SETTING_BRIDGE_PORT_HAIRPIN_MODE: &[u8] = b"hairpin-mode\0";
 pub const NM_SETTING_BRIDGE_PORT_PATH_COST: &[u8] = b"path-cost\0";
 pub const NM_SETTING_BRIDGE_PORT_PRIORITY: &[u8] = b"priority\0";
@@ -1264,7 +1311,8 @@ pub const NM_SETTING_CONNECTION_GATEWAY_PING_TIMEOUT: &[u8] = b"gateway-ping-tim
 pub const NM_SETTING_CONNECTION_ID: &[u8] = b"id\0";
 pub const NM_SETTING_CONNECTION_INTERFACE_NAME: &[u8] = b"interface-name\0";
 pub const NM_SETTING_CONNECTION_IP_PING_ADDRESSES: &[u8] = b"ip-ping-addresses\0";
-pub const NM_SETTING_CONNECTION_IP_PING_ADDRESSES_REQUIRE_ALL: &[u8] = b"ip-ping-addresses-require-all\0";
+pub const NM_SETTING_CONNECTION_IP_PING_ADDRESSES_REQUIRE_ALL: &[u8] =
+    b"ip-ping-addresses-require-all\0";
 pub const NM_SETTING_CONNECTION_IP_PING_TIMEOUT: &[u8] = b"ip-ping-timeout\0";
 pub const NM_SETTING_CONNECTION_LLDP: &[u8] = b"lldp\0";
 pub const NM_SETTING_CONNECTION_LLMNR: &[u8] = b"llmnr\0";
@@ -1337,11 +1385,15 @@ pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_APN: &[u8] = b"initial-eps-bearer-ap
 pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_CONFIGURE: &[u8] = b"initial-eps-bearer-configure\0";
 pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_NOAUTH: &[u8] = b"initial-eps-bearer-noauth\0";
 pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_PASSWORD: &[u8] = b"initial-eps-bearer-password\0";
-pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_PASSWORD_FLAGS: &[u8] = b"initial-eps-bearer-password-flags\0";
-pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_REFUSE_CHAP: &[u8] = b"initial-eps-bearer-refuse-chap\0";
+pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_PASSWORD_FLAGS: &[u8] =
+    b"initial-eps-bearer-password-flags\0";
+pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_REFUSE_CHAP: &[u8] =
+    b"initial-eps-bearer-refuse-chap\0";
 pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_REFUSE_EAP: &[u8] = b"initial-eps-bearer-refuse-eap\0";
-pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_REFUSE_MSCHAP: &[u8] = b"initial-eps-bearer-refuse-mschap\0";
-pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_REFUSE_MSCHAPV2: &[u8] = b"initial-eps-bearer-refuse-mschapv2\0";
+pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_REFUSE_MSCHAP: &[u8] =
+    b"initial-eps-bearer-refuse-mschap\0";
+pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_REFUSE_MSCHAPV2: &[u8] =
+    b"initial-eps-bearer-refuse-mschapv2\0";
 pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_REFUSE_PAP: &[u8] = b"initial-eps-bearer-refuse-pap\0";
 pub const NM_SETTING_GSM_INITIAL_EPS_BEARER_USERNAME: &[u8] = b"initial-eps-bearer-username\0";
 pub const NM_SETTING_GSM_MTU: &[u8] = b"mtu\0";
@@ -1374,7 +1426,8 @@ pub const NM_SETTING_INFINIBAND_TRANSPORT_MODE: &[u8] = b"transport-mode\0";
 pub const NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID: &[u8] = b"dhcp-client-id\0";
 pub const NM_SETTING_IP4_CONFIG_DHCP_FQDN: &[u8] = b"dhcp-fqdn\0";
 pub const NM_SETTING_IP4_CONFIG_DHCP_IPV6_ONLY_PREFERRED: &[u8] = b"dhcp-ipv6-only-preferred\0";
-pub const NM_SETTING_IP4_CONFIG_DHCP_VENDOR_CLASS_IDENTIFIER: &[u8] = b"dhcp-vendor-class-identifier\0";
+pub const NM_SETTING_IP4_CONFIG_DHCP_VENDOR_CLASS_IDENTIFIER: &[u8] =
+    b"dhcp-vendor-class-identifier\0";
 pub const NM_SETTING_IP4_CONFIG_LINK_LOCAL: &[u8] = b"link-local\0";
 pub const NM_SETTING_IP4_CONFIG_METHOD_AUTO: &[u8] = b"auto\0";
 pub const NM_SETTING_IP4_CONFIG_METHOD_DISABLED: &[u8] = b"disabled\0";
@@ -1859,7 +1912,8 @@ pub const NM_ACTIVATION_STATE_FLAG_LAYER2_READY: NMActivationStateFlags = 4;
 pub const NM_ACTIVATION_STATE_FLAG_IP4_READY: NMActivationStateFlags = 8;
 pub const NM_ACTIVATION_STATE_FLAG_IP6_READY: NMActivationStateFlags = 16;
 pub const NM_ACTIVATION_STATE_FLAG_CONTROLLER_HAS_PORTS: NMActivationStateFlags = 32;
-pub const NM_ACTIVATION_STATE_FLAG_LIFETIME_BOUND_TO_PROFILE_VISIBILITY: NMActivationStateFlags = 64;
+pub const NM_ACTIVATION_STATE_FLAG_LIFETIME_BOUND_TO_PROFILE_VISIBILITY: NMActivationStateFlags =
+    64;
 pub const NM_ACTIVATION_STATE_FLAG_EXTERNAL: NMActivationStateFlags = 128;
 
 pub type NMBluetoothCapabilities = c_uint;
@@ -2103,15 +2157,56 @@ pub const NM_VPN_EDITOR_PLUGIN_CAPABILITY_IPV6: NMVpnEditorPluginCapability = 4;
 pub const NM_VPN_EDITOR_PLUGIN_CAPABILITY_NO_EDITOR: NMVpnEditorPluginCapability = 8;
 
 // Callbacks
-pub type NMKeyfileReadHandler = Option<unsafe extern "C" fn(*mut glib::GKeyFile, *mut NMConnection, NMKeyfileHandlerType, *mut NMKeyfileHandlerData, *mut c_void) -> gboolean>;
-pub type NMKeyfileWriteHandler = Option<unsafe extern "C" fn(*mut NMConnection, *mut glib::GKeyFile, NMKeyfileHandlerType, *mut NMKeyfileHandlerData, *mut c_void) -> gboolean>;
-pub type NMSecretAgentOldDeleteSecretsFunc = Option<unsafe extern "C" fn(*mut NMSecretAgentOld, *mut NMConnection, *mut glib::GError, gpointer)>;
-pub type NMSecretAgentOldGetSecretsFunc = Option<unsafe extern "C" fn(*mut NMSecretAgentOld, *mut NMConnection, *mut glib::GVariant, *mut glib::GError, gpointer)>;
-pub type NMSecretAgentOldSaveSecretsFunc = Option<unsafe extern "C" fn(*mut NMSecretAgentOld, *mut NMConnection, *mut glib::GError, gpointer)>;
-pub type NMSettingClearSecretsWithFlagsFn = Option<unsafe extern "C" fn(*mut NMSetting, *const c_char, NMSettingSecretFlags, gpointer) -> gboolean>;
-pub type NMSettingValueIterFn = Option<unsafe extern "C" fn(*mut NMSetting, *const c_char, *const gobject::GValue, gobject::GParamFlags, gpointer)>;
-pub type NMUtilsCheckFilePredicate = Option<unsafe extern "C" fn(*const c_char, *const stat, gpointer, *mut *mut glib::GError) -> gboolean>;
-pub type NMUtilsFileSearchInPathsPredicate = Option<unsafe extern "C" fn(*const c_char, gpointer) -> gboolean>;
+pub type NMKeyfileReadHandler = Option<
+    unsafe extern "C" fn(
+        *mut glib::GKeyFile,
+        *mut NMConnection,
+        NMKeyfileHandlerType,
+        *mut NMKeyfileHandlerData,
+        *mut c_void,
+    ) -> gboolean,
+>;
+pub type NMKeyfileWriteHandler = Option<
+    unsafe extern "C" fn(
+        *mut NMConnection,
+        *mut glib::GKeyFile,
+        NMKeyfileHandlerType,
+        *mut NMKeyfileHandlerData,
+        *mut c_void,
+    ) -> gboolean,
+>;
+pub type NMSecretAgentOldDeleteSecretsFunc = Option<
+    unsafe extern "C" fn(*mut NMSecretAgentOld, *mut NMConnection, *mut glib::GError, gpointer),
+>;
+pub type NMSecretAgentOldGetSecretsFunc = Option<
+    unsafe extern "C" fn(
+        *mut NMSecretAgentOld,
+        *mut NMConnection,
+        *mut glib::GVariant,
+        *mut glib::GError,
+        gpointer,
+    ),
+>;
+pub type NMSecretAgentOldSaveSecretsFunc = Option<
+    unsafe extern "C" fn(*mut NMSecretAgentOld, *mut NMConnection, *mut glib::GError, gpointer),
+>;
+pub type NMSettingClearSecretsWithFlagsFn = Option<
+    unsafe extern "C" fn(*mut NMSetting, *const c_char, NMSettingSecretFlags, gpointer) -> gboolean,
+>;
+pub type NMSettingValueIterFn = Option<
+    unsafe extern "C" fn(
+        *mut NMSetting,
+        *const c_char,
+        *const gobject::GValue,
+        gobject::GParamFlags,
+        gpointer,
+    ),
+>;
+pub type NMUtilsCheckFilePredicate = Option<
+    unsafe extern "C" fn(*const c_char, *const stat, gpointer, *mut *mut glib::GError) -> gboolean,
+>;
+pub type NMUtilsFileSearchInPathsPredicate =
+    Option<unsafe extern "C" fn(*const c_char, gpointer) -> gboolean>;
 pub type NMUtilsPredicateStr = Option<unsafe extern "C" fn(*const c_char) -> gboolean>;
 pub type NMVpnIterFunc = Option<unsafe extern "C" fn(*const c_char, *const c_char, gpointer)>;
 
@@ -2143,8 +2238,7 @@ pub struct NMBridgeVlan {
 
 impl ::std::fmt::Debug for NMBridgeVlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMBridgeVlan @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMBridgeVlan @ {self:p}")).finish()
     }
 }
 
@@ -2178,11 +2272,11 @@ pub struct NMConnectionInterface {
 impl ::std::fmt::Debug for NMConnectionInterface {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMConnectionInterface @ {self:p}"))
-         .field("parent", &self.parent)
-         .field("secrets_updated", &self.secrets_updated)
-         .field("secrets_cleared", &self.secrets_cleared)
-         .field("changed", &self.changed)
-         .finish()
+            .field("parent", &self.parent)
+            .field("secrets_updated", &self.secrets_updated)
+            .field("secrets_cleared", &self.secrets_cleared)
+            .field("changed", &self.changed)
+            .finish()
     }
 }
 
@@ -2501,8 +2595,7 @@ pub struct NMDnsEntry {
 
 impl ::std::fmt::Debug for NMDnsEntry {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDnsEntry @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDnsEntry @ {self:p}")).finish()
     }
 }
 
@@ -2515,8 +2608,7 @@ pub struct NMIPAddress {
 
 impl ::std::fmt::Debug for NMIPAddress {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMIPAddress @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMIPAddress @ {self:p}")).finish()
     }
 }
 
@@ -2538,8 +2630,7 @@ pub struct NMIPRoute {
 
 impl ::std::fmt::Debug for NMIPRoute {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMIPRoute @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMIPRoute @ {self:p}")).finish()
     }
 }
 
@@ -2553,7 +2644,7 @@ pub struct NMIPRoutingRule {
 impl ::std::fmt::Debug for NMIPRoutingRule {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMIPRoutingRule @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -2576,7 +2667,7 @@ pub struct NMLldpNeighbor {
 impl ::std::fmt::Debug for NMLldpNeighbor {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMLldpNeighbor @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -2598,8 +2689,7 @@ pub struct NMRange {
 
 impl ::std::fmt::Debug for NMRange {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMRange @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMRange @ {self:p}")).finish()
     }
 }
 
@@ -2616,22 +2706,50 @@ pub type NMRemoteConnectionClass = _NMRemoteConnectionClass;
 #[repr(C)]
 pub struct NMSecretAgentOldClass {
     pub parent: gobject::GObjectClass,
-    pub get_secrets: Option<unsafe extern "C" fn(*mut NMSecretAgentOld, *mut NMConnection, *const c_char, *const c_char, *mut *const c_char, NMSecretAgentGetSecretsFlags, NMSecretAgentOldGetSecretsFunc, gpointer)>,
-    pub cancel_get_secrets: Option<unsafe extern "C" fn(*mut NMSecretAgentOld, *const c_char, *const c_char)>,
-    pub save_secrets: Option<unsafe extern "C" fn(*mut NMSecretAgentOld, *mut NMConnection, *const c_char, NMSecretAgentOldSaveSecretsFunc, gpointer)>,
-    pub delete_secrets: Option<unsafe extern "C" fn(*mut NMSecretAgentOld, *mut NMConnection, *const c_char, NMSecretAgentOldDeleteSecretsFunc, gpointer)>,
+    pub get_secrets: Option<
+        unsafe extern "C" fn(
+            *mut NMSecretAgentOld,
+            *mut NMConnection,
+            *const c_char,
+            *const c_char,
+            *mut *const c_char,
+            NMSecretAgentGetSecretsFlags,
+            NMSecretAgentOldGetSecretsFunc,
+            gpointer,
+        ),
+    >,
+    pub cancel_get_secrets:
+        Option<unsafe extern "C" fn(*mut NMSecretAgentOld, *const c_char, *const c_char)>,
+    pub save_secrets: Option<
+        unsafe extern "C" fn(
+            *mut NMSecretAgentOld,
+            *mut NMConnection,
+            *const c_char,
+            NMSecretAgentOldSaveSecretsFunc,
+            gpointer,
+        ),
+    >,
+    pub delete_secrets: Option<
+        unsafe extern "C" fn(
+            *mut NMSecretAgentOld,
+            *mut NMConnection,
+            *const c_char,
+            NMSecretAgentOldDeleteSecretsFunc,
+            gpointer,
+        ),
+    >,
     pub padding: [gpointer; 8],
 }
 
 impl ::std::fmt::Debug for NMSecretAgentOldClass {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSecretAgentOldClass @ {self:p}"))
-         .field("parent", &self.parent)
-         .field("get_secrets", &self.get_secrets)
-         .field("cancel_get_secrets", &self.cancel_get_secrets)
-         .field("save_secrets", &self.save_secrets)
-         .field("delete_secrets", &self.delete_secrets)
-         .finish()
+            .field("parent", &self.parent)
+            .field("get_secrets", &self.get_secrets)
+            .field("cancel_get_secrets", &self.cancel_get_secrets)
+            .field("save_secrets", &self.save_secrets)
+            .field("delete_secrets", &self.delete_secrets)
+            .finish()
     }
 }
 
@@ -3193,8 +3311,7 @@ pub struct NMSriovVF {
 
 impl ::std::fmt::Debug for NMSriovVF {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSriovVF @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSriovVF @ {self:p}")).finish()
     }
 }
 
@@ -3207,8 +3324,7 @@ pub struct NMTCAction {
 
 impl ::std::fmt::Debug for NMTCAction {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMTCAction @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMTCAction @ {self:p}")).finish()
     }
 }
 
@@ -3221,8 +3337,7 @@ pub struct NMTCQdisc {
 
 impl ::std::fmt::Debug for NMTCQdisc {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMTCQdisc @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMTCQdisc @ {self:p}")).finish()
     }
 }
 
@@ -3235,8 +3350,7 @@ pub struct NMTCTfilter {
 
 impl ::std::fmt::Debug for NMTCTfilter {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMTCTfilter @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMTCTfilter @ {self:p}")).finish()
     }
 }
 
@@ -3250,7 +3364,7 @@ pub struct NMTeamLinkWatcher {
 impl ::std::fmt::Debug for NMTeamLinkWatcher {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMTeamLinkWatcher @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3278,19 +3392,25 @@ pub struct NMVpnEditorInterface {
     pub g_iface: gobject::GTypeInterface,
     pub get_widget: Option<unsafe extern "C" fn(*mut NMVpnEditor) -> *mut gobject::GObject>,
     pub placeholder: Option<unsafe extern "C" fn()>,
-    pub update_connection: Option<unsafe extern "C" fn(*mut NMVpnEditor, *mut NMConnection, *mut *mut glib::GError) -> gboolean>,
+    pub update_connection: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnEditor,
+            *mut NMConnection,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
     pub changed: Option<unsafe extern "C" fn(*mut NMVpnEditor)>,
 }
 
 impl ::std::fmt::Debug for NMVpnEditorInterface {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMVpnEditorInterface @ {self:p}"))
-         .field("g_iface", &self.g_iface)
-         .field("get_widget", &self.get_widget)
-         .field("placeholder", &self.placeholder)
-         .field("update_connection", &self.update_connection)
-         .field("changed", &self.changed)
-         .finish()
+            .field("g_iface", &self.g_iface)
+            .field("get_widget", &self.get_widget)
+            .field("placeholder", &self.placeholder)
+            .field("update_connection", &self.update_connection)
+            .field("changed", &self.changed)
+            .finish()
     }
 }
 
@@ -3298,27 +3418,51 @@ impl ::std::fmt::Debug for NMVpnEditorInterface {
 #[repr(C)]
 pub struct NMVpnEditorPluginInterface {
     pub g_iface: gobject::GTypeInterface,
-    pub get_editor: Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin, *mut NMConnection, *mut *mut glib::GError) -> *mut NMVpnEditor>,
-    pub get_capabilities: Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin) -> NMVpnEditorPluginCapability>,
-    pub import_from_file: Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin, *const c_char, *mut *mut glib::GError) -> *mut NMConnection>,
-    pub export_to_file: Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin, *const c_char, *mut NMConnection, *mut *mut glib::GError) -> gboolean>,
-    pub get_suggested_filename: Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin, *mut NMConnection) -> *mut c_char>,
-    pub notify_plugin_info_set: Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin, *mut NMVpnPluginInfo)>,
-    pub get_vt: Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin, *mut size_t) -> *const NMVpnEditorPluginVT>,
+    pub get_editor: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnEditorPlugin,
+            *mut NMConnection,
+            *mut *mut glib::GError,
+        ) -> *mut NMVpnEditor,
+    >,
+    pub get_capabilities:
+        Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin) -> NMVpnEditorPluginCapability>,
+    pub import_from_file: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnEditorPlugin,
+            *const c_char,
+            *mut *mut glib::GError,
+        ) -> *mut NMConnection,
+    >,
+    pub export_to_file: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnEditorPlugin,
+            *const c_char,
+            *mut NMConnection,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
+    pub get_suggested_filename:
+        Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin, *mut NMConnection) -> *mut c_char>,
+    pub notify_plugin_info_set:
+        Option<unsafe extern "C" fn(*mut NMVpnEditorPlugin, *mut NMVpnPluginInfo)>,
+    pub get_vt: Option<
+        unsafe extern "C" fn(*mut NMVpnEditorPlugin, *mut size_t) -> *const NMVpnEditorPluginVT,
+    >,
 }
 
 impl ::std::fmt::Debug for NMVpnEditorPluginInterface {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMVpnEditorPluginInterface @ {self:p}"))
-         .field("g_iface", &self.g_iface)
-         .field("get_editor", &self.get_editor)
-         .field("get_capabilities", &self.get_capabilities)
-         .field("import_from_file", &self.import_from_file)
-         .field("export_to_file", &self.export_to_file)
-         .field("get_suggested_filename", &self.get_suggested_filename)
-         .field("notify_plugin_info_set", &self.notify_plugin_info_set)
-         .field("get_vt", &self.get_vt)
-         .finish()
+            .field("g_iface", &self.g_iface)
+            .field("get_editor", &self.get_editor)
+            .field("get_capabilities", &self.get_capabilities)
+            .field("import_from_file", &self.import_from_file)
+            .field("export_to_file", &self.export_to_file)
+            .field("get_suggested_filename", &self.get_suggested_filename)
+            .field("notify_plugin_info_set", &self.notify_plugin_info_set)
+            .field("get_vt", &self.get_vt)
+            .finish()
     }
 }
 
@@ -3351,31 +3495,58 @@ pub struct NMVpnPluginOldClass {
     pub quit: Option<unsafe extern "C" fn(*mut NMVpnPluginOld)>,
     pub config: Option<unsafe extern "C" fn(*mut NMVpnPluginOld, *mut glib::GVariant)>,
     pub ip6_config: Option<unsafe extern "C" fn(*mut NMVpnPluginOld, *mut glib::GVariant)>,
-    pub connect: Option<unsafe extern "C" fn(*mut NMVpnPluginOld, *mut NMConnection, *mut *mut glib::GError) -> gboolean>,
-    pub need_secrets: Option<unsafe extern "C" fn(*mut NMVpnPluginOld, *mut NMConnection, *mut *const c_char, *mut *mut glib::GError) -> gboolean>,
-    pub disconnect: Option<unsafe extern "C" fn(*mut NMVpnPluginOld, *mut *mut glib::GError) -> gboolean>,
-    pub new_secrets: Option<unsafe extern "C" fn(*mut NMVpnPluginOld, *mut NMConnection, *mut *mut glib::GError) -> gboolean>,
-    pub connect_interactive: Option<unsafe extern "C" fn(*mut NMVpnPluginOld, *mut NMConnection, *mut glib::GVariant, *mut *mut glib::GError) -> gboolean>,
+    pub connect: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnPluginOld,
+            *mut NMConnection,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
+    pub need_secrets: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnPluginOld,
+            *mut NMConnection,
+            *mut *const c_char,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
+    pub disconnect:
+        Option<unsafe extern "C" fn(*mut NMVpnPluginOld, *mut *mut glib::GError) -> gboolean>,
+    pub new_secrets: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnPluginOld,
+            *mut NMConnection,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
+    pub connect_interactive: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnPluginOld,
+            *mut NMConnection,
+            *mut glib::GVariant,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
     pub padding: [gpointer; 8],
 }
 
 impl ::std::fmt::Debug for NMVpnPluginOldClass {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMVpnPluginOldClass @ {self:p}"))
-         .field("parent", &self.parent)
-         .field("state_changed", &self.state_changed)
-         .field("ip4_config", &self.ip4_config)
-         .field("login_banner", &self.login_banner)
-         .field("failure", &self.failure)
-         .field("quit", &self.quit)
-         .field("config", &self.config)
-         .field("ip6_config", &self.ip6_config)
-         .field("connect", &self.connect)
-         .field("need_secrets", &self.need_secrets)
-         .field("disconnect", &self.disconnect)
-         .field("new_secrets", &self.new_secrets)
-         .field("connect_interactive", &self.connect_interactive)
-         .finish()
+            .field("parent", &self.parent)
+            .field("state_changed", &self.state_changed)
+            .field("ip4_config", &self.ip4_config)
+            .field("login_banner", &self.login_banner)
+            .field("failure", &self.failure)
+            .field("quit", &self.quit)
+            .field("config", &self.config)
+            .field("ip6_config", &self.ip6_config)
+            .field("connect", &self.connect)
+            .field("need_secrets", &self.need_secrets)
+            .field("disconnect", &self.disconnect)
+            .field("new_secrets", &self.new_secrets)
+            .field("connect_interactive", &self.connect_interactive)
+            .finish()
     }
 }
 
@@ -3390,31 +3561,58 @@ pub struct NMVpnServicePluginClass {
     pub quit: Option<unsafe extern "C" fn(*mut NMVpnServicePlugin)>,
     pub config: Option<unsafe extern "C" fn(*mut NMVpnServicePlugin, *mut glib::GVariant)>,
     pub ip6_config: Option<unsafe extern "C" fn(*mut NMVpnServicePlugin, *mut glib::GVariant)>,
-    pub connect: Option<unsafe extern "C" fn(*mut NMVpnServicePlugin, *mut NMConnection, *mut *mut glib::GError) -> gboolean>,
-    pub need_secrets: Option<unsafe extern "C" fn(*mut NMVpnServicePlugin, *mut NMConnection, *mut *const c_char, *mut *mut glib::GError) -> gboolean>,
-    pub disconnect: Option<unsafe extern "C" fn(*mut NMVpnServicePlugin, *mut *mut glib::GError) -> gboolean>,
-    pub new_secrets: Option<unsafe extern "C" fn(*mut NMVpnServicePlugin, *mut NMConnection, *mut *mut glib::GError) -> gboolean>,
-    pub connect_interactive: Option<unsafe extern "C" fn(*mut NMVpnServicePlugin, *mut NMConnection, *mut glib::GVariant, *mut *mut glib::GError) -> gboolean>,
+    pub connect: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnServicePlugin,
+            *mut NMConnection,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
+    pub need_secrets: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnServicePlugin,
+            *mut NMConnection,
+            *mut *const c_char,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
+    pub disconnect:
+        Option<unsafe extern "C" fn(*mut NMVpnServicePlugin, *mut *mut glib::GError) -> gboolean>,
+    pub new_secrets: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnServicePlugin,
+            *mut NMConnection,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
+    pub connect_interactive: Option<
+        unsafe extern "C" fn(
+            *mut NMVpnServicePlugin,
+            *mut NMConnection,
+            *mut glib::GVariant,
+            *mut *mut glib::GError,
+        ) -> gboolean,
+    >,
     pub padding: [gpointer; 8],
 }
 
 impl ::std::fmt::Debug for NMVpnServicePluginClass {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMVpnServicePluginClass @ {self:p}"))
-         .field("parent", &self.parent)
-         .field("state_changed", &self.state_changed)
-         .field("ip4_config", &self.ip4_config)
-         .field("login_banner", &self.login_banner)
-         .field("failure", &self.failure)
-         .field("quit", &self.quit)
-         .field("config", &self.config)
-         .field("ip6_config", &self.ip6_config)
-         .field("connect", &self.connect)
-         .field("need_secrets", &self.need_secrets)
-         .field("disconnect", &self.disconnect)
-         .field("new_secrets", &self.new_secrets)
-         .field("connect_interactive", &self.connect_interactive)
-         .finish()
+            .field("parent", &self.parent)
+            .field("state_changed", &self.state_changed)
+            .field("ip4_config", &self.ip4_config)
+            .field("login_banner", &self.login_banner)
+            .field("failure", &self.failure)
+            .field("quit", &self.quit)
+            .field("config", &self.config)
+            .field("ip6_config", &self.ip6_config)
+            .field("connect", &self.connect)
+            .field("need_secrets", &self.need_secrets)
+            .field("disconnect", &self.disconnect)
+            .field("new_secrets", &self.new_secrets)
+            .field("connect_interactive", &self.connect_interactive)
+            .finish()
     }
 }
 
@@ -3446,7 +3644,7 @@ pub struct NMWireGuardPeer {
 impl ::std::fmt::Debug for NMWireGuardPeer {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMWireGuardPeer @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3461,7 +3659,7 @@ pub struct NMAccessPoint {
 impl ::std::fmt::Debug for NMAccessPoint {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMAccessPoint @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3475,7 +3673,7 @@ pub struct NMActiveConnection {
 impl ::std::fmt::Debug for NMActiveConnection {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMActiveConnection @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3488,8 +3686,7 @@ pub struct NMCheckpoint {
 
 impl ::std::fmt::Debug for NMCheckpoint {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMCheckpoint @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMCheckpoint @ {self:p}")).finish()
     }
 }
 
@@ -3502,8 +3699,7 @@ pub struct NMClient {
 
 impl ::std::fmt::Debug for NMClient {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMClient @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMClient @ {self:p}")).finish()
     }
 }
 
@@ -3516,8 +3712,7 @@ pub struct NMDevice {
 
 impl ::std::fmt::Debug for NMDevice {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDevice @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDevice @ {self:p}")).finish()
     }
 }
 
@@ -3531,7 +3726,7 @@ pub struct NMDevice6Lowpan {
 impl ::std::fmt::Debug for NMDevice6Lowpan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDevice6Lowpan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3544,8 +3739,7 @@ pub struct NMDeviceAdsl {
 
 impl ::std::fmt::Debug for NMDeviceAdsl {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceAdsl @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceAdsl @ {self:p}")).finish()
     }
 }
 
@@ -3558,8 +3752,7 @@ pub struct NMDeviceBond {
 
 impl ::std::fmt::Debug for NMDeviceBond {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceBond @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceBond @ {self:p}")).finish()
     }
 }
 
@@ -3573,7 +3766,7 @@ pub struct NMDeviceBridge {
 impl ::std::fmt::Debug for NMDeviceBridge {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceBridge @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3586,8 +3779,7 @@ pub struct NMDeviceBt {
 
 impl ::std::fmt::Debug for NMDeviceBt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceBt @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceBt @ {self:p}")).finish()
     }
 }
 
@@ -3601,7 +3793,7 @@ pub struct NMDeviceDummy {
 impl ::std::fmt::Debug for NMDeviceDummy {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceDummy @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3615,7 +3807,7 @@ pub struct NMDeviceEthernet {
 impl ::std::fmt::Debug for NMDeviceEthernet {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceEthernet @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3629,7 +3821,7 @@ pub struct NMDeviceGeneric {
 impl ::std::fmt::Debug for NMDeviceGeneric {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceGeneric @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3642,8 +3834,7 @@ pub struct NMDeviceHsr {
 
 impl ::std::fmt::Debug for NMDeviceHsr {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceHsr @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceHsr @ {self:p}")).finish()
     }
 }
 
@@ -3657,7 +3848,7 @@ pub struct NMDeviceIPTunnel {
 impl ::std::fmt::Debug for NMDeviceIPTunnel {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceIPTunnel @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3671,7 +3862,7 @@ pub struct NMDeviceInfiniband {
 impl ::std::fmt::Debug for NMDeviceInfiniband {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceInfiniband @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3685,7 +3876,7 @@ pub struct NMDeviceIpvlan {
 impl ::std::fmt::Debug for NMDeviceIpvlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceIpvlan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3699,7 +3890,7 @@ pub struct NMDeviceLoopback {
 impl ::std::fmt::Debug for NMDeviceLoopback {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceLoopback @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3713,7 +3904,7 @@ pub struct NMDeviceMacsec {
 impl ::std::fmt::Debug for NMDeviceMacsec {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceMacsec @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3727,7 +3918,7 @@ pub struct NMDeviceMacvlan {
 impl ::std::fmt::Debug for NMDeviceMacvlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceMacvlan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3741,7 +3932,7 @@ pub struct NMDeviceModem {
 impl ::std::fmt::Debug for NMDeviceModem {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceModem @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3755,7 +3946,7 @@ pub struct NMDeviceOlpcMesh {
 impl ::std::fmt::Debug for NMDeviceOlpcMesh {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceOlpcMesh @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3769,7 +3960,7 @@ pub struct NMDeviceOvsBridge {
 impl ::std::fmt::Debug for NMDeviceOvsBridge {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceOvsBridge @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3783,7 +3974,7 @@ pub struct NMDeviceOvsInterface {
 impl ::std::fmt::Debug for NMDeviceOvsInterface {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceOvsInterface @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3797,7 +3988,7 @@ pub struct NMDeviceOvsPort {
 impl ::std::fmt::Debug for NMDeviceOvsPort {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceOvsPort @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3810,8 +4001,7 @@ pub struct NMDevicePpp {
 
 impl ::std::fmt::Debug for NMDevicePpp {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDevicePpp @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDevicePpp @ {self:p}")).finish()
     }
 }
 
@@ -3824,8 +4014,7 @@ pub struct NMDeviceTeam {
 
 impl ::std::fmt::Debug for NMDeviceTeam {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceTeam @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceTeam @ {self:p}")).finish()
     }
 }
 
@@ -3838,8 +4027,7 @@ pub struct NMDeviceTun {
 
 impl ::std::fmt::Debug for NMDeviceTun {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceTun @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceTun @ {self:p}")).finish()
     }
 }
 
@@ -3852,8 +4040,7 @@ pub struct NMDeviceVeth {
 
 impl ::std::fmt::Debug for NMDeviceVeth {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceVeth @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceVeth @ {self:p}")).finish()
     }
 }
 
@@ -3866,8 +4053,7 @@ pub struct NMDeviceVlan {
 
 impl ::std::fmt::Debug for NMDeviceVlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceVlan @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceVlan @ {self:p}")).finish()
     }
 }
 
@@ -3880,8 +4066,7 @@ pub struct NMDeviceVrf {
 
 impl ::std::fmt::Debug for NMDeviceVrf {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceVrf @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceVrf @ {self:p}")).finish()
     }
 }
 
@@ -3895,7 +4080,7 @@ pub struct NMDeviceVxlan {
 impl ::std::fmt::Debug for NMDeviceVxlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceVxlan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3908,8 +4093,7 @@ pub struct NMDeviceWifi {
 
 impl ::std::fmt::Debug for NMDeviceWifi {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceWifi @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceWifi @ {self:p}")).finish()
     }
 }
 
@@ -3923,7 +4107,7 @@ pub struct NMDeviceWifiP2P {
 impl ::std::fmt::Debug for NMDeviceWifiP2P {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceWifiP2P @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3937,7 +4121,7 @@ pub struct NMDeviceWimax {
 impl ::std::fmt::Debug for NMDeviceWimax {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceWimax @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3951,7 +4135,7 @@ pub struct NMDeviceWireGuard {
 impl ::std::fmt::Debug for NMDeviceWireGuard {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMDeviceWireGuard @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -3964,8 +4148,7 @@ pub struct NMDeviceWpan {
 
 impl ::std::fmt::Debug for NMDeviceWpan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDeviceWpan @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDeviceWpan @ {self:p}")).finish()
     }
 }
 
@@ -3978,8 +4161,7 @@ pub struct NMDhcpConfig {
 
 impl ::std::fmt::Debug for NMDhcpConfig {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMDhcpConfig @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMDhcpConfig @ {self:p}")).finish()
     }
 }
 
@@ -3992,8 +4174,7 @@ pub struct NMIPConfig {
 
 impl ::std::fmt::Debug for NMIPConfig {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMIPConfig @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMIPConfig @ {self:p}")).finish()
     }
 }
 
@@ -4006,8 +4187,7 @@ pub struct NMObject {
 
 impl ::std::fmt::Debug for NMObject {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMObject @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMObject @ {self:p}")).finish()
     }
 }
 
@@ -4021,7 +4201,7 @@ pub struct NMRemoteConnection {
 impl ::std::fmt::Debug for NMRemoteConnection {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMRemoteConnection @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4034,8 +4214,8 @@ pub struct NMSecretAgentOld {
 impl ::std::fmt::Debug for NMSecretAgentOld {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSecretAgentOld @ {self:p}"))
-         .field("parent", &self.parent)
-         .finish()
+            .field("parent", &self.parent)
+            .finish()
     }
 }
 
@@ -4048,8 +4228,7 @@ pub struct NMSetting {
 
 impl ::std::fmt::Debug for NMSetting {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSetting @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSetting @ {self:p}")).finish()
     }
 }
 
@@ -4063,7 +4242,7 @@ pub struct NMSetting6Lowpan {
 impl ::std::fmt::Debug for NMSetting6Lowpan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSetting6Lowpan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4077,7 +4256,7 @@ pub struct NMSetting8021x {
 impl ::std::fmt::Debug for NMSetting8021x {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSetting8021x @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4091,7 +4270,7 @@ pub struct NMSettingAdsl {
 impl ::std::fmt::Debug for NMSettingAdsl {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingAdsl @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4105,7 +4284,7 @@ pub struct NMSettingBluetooth {
 impl ::std::fmt::Debug for NMSettingBluetooth {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingBluetooth @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4119,7 +4298,7 @@ pub struct NMSettingBond {
 impl ::std::fmt::Debug for NMSettingBond {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingBond @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4133,7 +4312,7 @@ pub struct NMSettingBondPort {
 impl ::std::fmt::Debug for NMSettingBondPort {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingBondPort @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4147,7 +4326,7 @@ pub struct NMSettingBridge {
 impl ::std::fmt::Debug for NMSettingBridge {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingBridge @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4161,7 +4340,7 @@ pub struct NMSettingBridgePort {
 impl ::std::fmt::Debug for NMSettingBridgePort {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingBridgePort @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4175,7 +4354,7 @@ pub struct NMSettingCdma {
 impl ::std::fmt::Debug for NMSettingCdma {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingCdma @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4189,7 +4368,7 @@ pub struct NMSettingConnection {
 impl ::std::fmt::Debug for NMSettingConnection {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingConnection @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4202,8 +4381,7 @@ pub struct NMSettingDcb {
 
 impl ::std::fmt::Debug for NMSettingDcb {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSettingDcb @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSettingDcb @ {self:p}")).finish()
     }
 }
 
@@ -4217,7 +4395,7 @@ pub struct NMSettingDummy {
 impl ::std::fmt::Debug for NMSettingDummy {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingDummy @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4231,7 +4409,7 @@ pub struct NMSettingEthtool {
 impl ::std::fmt::Debug for NMSettingEthtool {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingEthtool @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4245,7 +4423,7 @@ pub struct NMSettingGeneric {
 impl ::std::fmt::Debug for NMSettingGeneric {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingGeneric @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4258,8 +4436,7 @@ pub struct NMSettingGsm {
 
 impl ::std::fmt::Debug for NMSettingGsm {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSettingGsm @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSettingGsm @ {self:p}")).finish()
     }
 }
 
@@ -4273,7 +4450,7 @@ pub struct NMSettingHostname {
 impl ::std::fmt::Debug for NMSettingHostname {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingHostname @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4286,8 +4463,7 @@ pub struct NMSettingHsr {
 
 impl ::std::fmt::Debug for NMSettingHsr {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSettingHsr @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSettingHsr @ {self:p}")).finish()
     }
 }
 
@@ -4301,7 +4477,7 @@ pub struct NMSettingIP4Config {
 impl ::std::fmt::Debug for NMSettingIP4Config {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingIP4Config @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4315,7 +4491,7 @@ pub struct NMSettingIP6Config {
 impl ::std::fmt::Debug for NMSettingIP6Config {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingIP6Config @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4329,7 +4505,7 @@ pub struct NMSettingIPConfig {
 impl ::std::fmt::Debug for NMSettingIPConfig {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingIPConfig @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4343,7 +4519,7 @@ pub struct NMSettingIPTunnel {
 impl ::std::fmt::Debug for NMSettingIPTunnel {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingIPTunnel @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4357,7 +4533,7 @@ pub struct NMSettingInfiniband {
 impl ::std::fmt::Debug for NMSettingInfiniband {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingInfiniband @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4371,7 +4547,7 @@ pub struct NMSettingIpvlan {
 impl ::std::fmt::Debug for NMSettingIpvlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingIpvlan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4385,7 +4561,7 @@ pub struct NMSettingLink {
 impl ::std::fmt::Debug for NMSettingLink {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingLink @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4399,7 +4575,7 @@ pub struct NMSettingLoopback {
 impl ::std::fmt::Debug for NMSettingLoopback {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingLoopback @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4413,7 +4589,7 @@ pub struct NMSettingMacsec {
 impl ::std::fmt::Debug for NMSettingMacsec {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingMacsec @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4427,7 +4603,7 @@ pub struct NMSettingMacvlan {
 impl ::std::fmt::Debug for NMSettingMacvlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingMacvlan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4441,7 +4617,7 @@ pub struct NMSettingMatch {
 impl ::std::fmt::Debug for NMSettingMatch {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingMatch @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4455,7 +4631,7 @@ pub struct NMSettingOlpcMesh {
 impl ::std::fmt::Debug for NMSettingOlpcMesh {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingOlpcMesh @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4469,7 +4645,7 @@ pub struct NMSettingOvsBridge {
 impl ::std::fmt::Debug for NMSettingOvsBridge {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingOvsBridge @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4483,7 +4659,7 @@ pub struct NMSettingOvsDpdk {
 impl ::std::fmt::Debug for NMSettingOvsDpdk {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingOvsDpdk @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4497,7 +4673,7 @@ pub struct NMSettingOvsExternalIDs {
 impl ::std::fmt::Debug for NMSettingOvsExternalIDs {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingOvsExternalIDs @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4511,7 +4687,7 @@ pub struct NMSettingOvsInterface {
 impl ::std::fmt::Debug for NMSettingOvsInterface {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingOvsInterface @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4525,7 +4701,7 @@ pub struct NMSettingOvsOtherConfig {
 impl ::std::fmt::Debug for NMSettingOvsOtherConfig {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingOvsOtherConfig @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4539,7 +4715,7 @@ pub struct NMSettingOvsPatch {
 impl ::std::fmt::Debug for NMSettingOvsPatch {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingOvsPatch @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4553,7 +4729,7 @@ pub struct NMSettingOvsPort {
 impl ::std::fmt::Debug for NMSettingOvsPort {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingOvsPort @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4566,8 +4742,7 @@ pub struct NMSettingPpp {
 
 impl ::std::fmt::Debug for NMSettingPpp {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSettingPpp @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSettingPpp @ {self:p}")).finish()
     }
 }
 
@@ -4581,7 +4756,7 @@ pub struct NMSettingPppoe {
 impl ::std::fmt::Debug for NMSettingPppoe {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingPppoe @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4595,7 +4770,7 @@ pub struct NMSettingPrefixDelegation {
 impl ::std::fmt::Debug for NMSettingPrefixDelegation {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingPrefixDelegation @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4609,7 +4784,7 @@ pub struct NMSettingProxy {
 impl ::std::fmt::Debug for NMSettingProxy {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingProxy @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4623,7 +4798,7 @@ pub struct NMSettingSerial {
 impl ::std::fmt::Debug for NMSettingSerial {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingSerial @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4637,7 +4812,7 @@ pub struct NMSettingSriov {
 impl ::std::fmt::Debug for NMSettingSriov {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingSriov @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4651,7 +4826,7 @@ pub struct NMSettingTCConfig {
 impl ::std::fmt::Debug for NMSettingTCConfig {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingTCConfig @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4665,7 +4840,7 @@ pub struct NMSettingTeam {
 impl ::std::fmt::Debug for NMSettingTeam {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingTeam @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4679,7 +4854,7 @@ pub struct NMSettingTeamPort {
 impl ::std::fmt::Debug for NMSettingTeamPort {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingTeamPort @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4692,8 +4867,7 @@ pub struct NMSettingTun {
 
 impl ::std::fmt::Debug for NMSettingTun {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSettingTun @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSettingTun @ {self:p}")).finish()
     }
 }
 
@@ -4707,7 +4881,7 @@ pub struct NMSettingUser {
 impl ::std::fmt::Debug for NMSettingUser {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingUser @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4721,7 +4895,7 @@ pub struct NMSettingVeth {
 impl ::std::fmt::Debug for NMSettingVeth {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingVeth @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4735,7 +4909,7 @@ pub struct NMSettingVlan {
 impl ::std::fmt::Debug for NMSettingVlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingVlan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4748,8 +4922,7 @@ pub struct NMSettingVpn {
 
 impl ::std::fmt::Debug for NMSettingVpn {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSettingVpn @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSettingVpn @ {self:p}")).finish()
     }
 }
 
@@ -4762,8 +4935,7 @@ pub struct NMSettingVrf {
 
 impl ::std::fmt::Debug for NMSettingVrf {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMSettingVrf @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMSettingVrf @ {self:p}")).finish()
     }
 }
 
@@ -4777,7 +4949,7 @@ pub struct NMSettingVxlan {
 impl ::std::fmt::Debug for NMSettingVxlan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingVxlan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4791,7 +4963,7 @@ pub struct NMSettingWifiP2P {
 impl ::std::fmt::Debug for NMSettingWifiP2P {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingWifiP2P @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4805,7 +4977,7 @@ pub struct NMSettingWimax {
 impl ::std::fmt::Debug for NMSettingWimax {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingWimax @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4819,7 +4991,7 @@ pub struct NMSettingWireGuard {
 impl ::std::fmt::Debug for NMSettingWireGuard {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingWireGuard @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4833,7 +5005,7 @@ pub struct NMSettingWired {
 impl ::std::fmt::Debug for NMSettingWired {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingWired @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4847,7 +5019,7 @@ pub struct NMSettingWireless {
 impl ::std::fmt::Debug for NMSettingWireless {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingWireless @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4861,7 +5033,7 @@ pub struct NMSettingWirelessSecurity {
 impl ::std::fmt::Debug for NMSettingWirelessSecurity {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingWirelessSecurity @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4875,7 +5047,7 @@ pub struct NMSettingWpan {
 impl ::std::fmt::Debug for NMSettingWpan {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSettingWpan @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4889,7 +5061,7 @@ pub struct NMSimpleConnection {
 impl ::std::fmt::Debug for NMSimpleConnection {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMSimpleConnection @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4903,7 +5075,7 @@ pub struct NMVpnConnection {
 impl ::std::fmt::Debug for NMVpnConnection {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMVpnConnection @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4917,7 +5089,7 @@ pub struct NMVpnPluginInfo {
 impl ::std::fmt::Debug for NMVpnPluginInfo {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMVpnPluginInfo @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4930,8 +5102,8 @@ pub struct NMVpnPluginOld {
 impl ::std::fmt::Debug for NMVpnPluginOld {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMVpnPluginOld @ {self:p}"))
-         .field("parent", &self.parent)
-         .finish()
+            .field("parent", &self.parent)
+            .finish()
     }
 }
 
@@ -4944,8 +5116,8 @@ pub struct NMVpnServicePlugin {
 impl ::std::fmt::Debug for NMVpnServicePlugin {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMVpnServicePlugin @ {self:p}"))
-         .field("parent", &self.parent)
-         .finish()
+            .field("parent", &self.parent)
+            .finish()
     }
 }
 
@@ -4959,7 +5131,7 @@ pub struct NMWifiP2PPeer {
 impl ::std::fmt::Debug for NMWifiP2PPeer {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         f.debug_struct(&format!("NMWifiP2PPeer @ {self:p}"))
-         .finish()
+            .finish()
     }
 }
 
@@ -4972,8 +5144,7 @@ pub struct NMWimaxNsp {
 
 impl ::std::fmt::Debug for NMWimaxNsp {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        f.debug_struct(&format!("NMWimaxNsp @ {self:p}"))
-         .finish()
+        f.debug_struct(&format!("NMWimaxNsp @ {self:p}")).finish()
     }
 }
 
@@ -5016,7 +5187,6 @@ impl ::std::fmt::Debug for NMVpnEditorPlugin {
         write!(f, "NMVpnEditorPlugin @ {self:p}")
     }
 }
-
 
 extern "C" {
 
@@ -5686,7 +5856,11 @@ extern "C" {
     pub fn nm_bridge_vlan_cmp(a: *const NMBridgeVlan, b: *const NMBridgeVlan) -> c_int;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_bridge_vlan_get_vid_range(vlan: *const NMBridgeVlan, vid_start: *mut u16, vid_end: *mut u16) -> gboolean;
+    pub fn nm_bridge_vlan_get_vid_range(
+        vlan: *const NMBridgeVlan,
+        vid_start: *mut u16,
+        vid_end: *mut u16,
+    ) -> gboolean;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_bridge_vlan_is_pvid(vlan: *const NMBridgeVlan) -> gboolean;
@@ -5713,13 +5887,19 @@ extern "C" {
     pub fn nm_bridge_vlan_set_untagged(vlan: *mut NMBridgeVlan, value: gboolean);
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_bridge_vlan_to_str(vlan: *const NMBridgeVlan, error: *mut *mut glib::GError) -> *mut c_char;
+    pub fn nm_bridge_vlan_to_str(
+        vlan: *const NMBridgeVlan,
+        error: *mut *mut glib::GError,
+    ) -> *mut c_char;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_bridge_vlan_unref(vlan: *mut NMBridgeVlan);
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_bridge_vlan_from_str(str: *const c_char, error: *mut *mut glib::GError) -> *mut NMBridgeVlan;
+    pub fn nm_bridge_vlan_from_str(
+        str: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMBridgeVlan;
 
     //=========================================================================
     // NMDnsEntry
@@ -5750,25 +5930,46 @@ extern "C" {
     // NMIPAddress
     //=========================================================================
     pub fn nm_ip_address_get_type() -> GType;
-    pub fn nm_ip_address_new(family: c_int, addr: *const c_char, prefix: c_uint, error: *mut *mut glib::GError) -> *mut NMIPAddress;
-    pub fn nm_ip_address_new_binary(family: c_int, addr: gconstpointer, prefix: c_uint, error: *mut *mut glib::GError) -> *mut NMIPAddress;
+    pub fn nm_ip_address_new(
+        family: c_int,
+        addr: *const c_char,
+        prefix: c_uint,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMIPAddress;
+    pub fn nm_ip_address_new_binary(
+        family: c_int,
+        addr: gconstpointer,
+        prefix: c_uint,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMIPAddress;
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-    pub fn nm_ip_address_cmp_full(a: *const NMIPAddress, b: *const NMIPAddress, cmp_flags: NMIPAddressCmpFlags) -> c_int;
+    pub fn nm_ip_address_cmp_full(
+        a: *const NMIPAddress,
+        b: *const NMIPAddress,
+        cmp_flags: NMIPAddressCmpFlags,
+    ) -> c_int;
     #[cfg(feature = "v1_32")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_32")))]
     pub fn nm_ip_address_dup(address: *mut NMIPAddress) -> *mut NMIPAddress;
     pub fn nm_ip_address_equal(address: *mut NMIPAddress, other: *mut NMIPAddress) -> gboolean;
     pub fn nm_ip_address_get_address(address: *mut NMIPAddress) -> *const c_char;
     pub fn nm_ip_address_get_address_binary(address: *mut NMIPAddress, addr: gpointer);
-    pub fn nm_ip_address_get_attribute(address: *mut NMIPAddress, name: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_ip_address_get_attribute(
+        address: *mut NMIPAddress,
+        name: *const c_char,
+    ) -> *mut glib::GVariant;
     pub fn nm_ip_address_get_attribute_names(address: *mut NMIPAddress) -> *mut *mut c_char;
     pub fn nm_ip_address_get_family(address: *mut NMIPAddress) -> c_int;
     pub fn nm_ip_address_get_prefix(address: *mut NMIPAddress) -> c_uint;
     pub fn nm_ip_address_ref(address: *mut NMIPAddress);
     pub fn nm_ip_address_set_address(address: *mut NMIPAddress, addr: *const c_char);
     pub fn nm_ip_address_set_address_binary(address: *mut NMIPAddress, addr: gconstpointer);
-    pub fn nm_ip_address_set_attribute(address: *mut NMIPAddress, name: *const c_char, value: *mut glib::GVariant);
+    pub fn nm_ip_address_set_attribute(
+        address: *mut NMIPAddress,
+        name: *const c_char,
+        value: *mut glib::GVariant,
+    );
     pub fn nm_ip_address_set_prefix(address: *mut NMIPAddress, prefix: c_uint);
     pub fn nm_ip_address_unref(address: *mut NMIPAddress);
 
@@ -5776,16 +5977,37 @@ extern "C" {
     // NMIPRoute
     //=========================================================================
     pub fn nm_ip_route_get_type() -> GType;
-    pub fn nm_ip_route_new(family: c_int, dest: *const c_char, prefix: c_uint, next_hop: *const c_char, metric: i64, error: *mut *mut glib::GError) -> *mut NMIPRoute;
-    pub fn nm_ip_route_new_binary(family: c_int, dest: gconstpointer, prefix: c_uint, next_hop: gconstpointer, metric: i64, error: *mut *mut glib::GError) -> *mut NMIPRoute;
+    pub fn nm_ip_route_new(
+        family: c_int,
+        dest: *const c_char,
+        prefix: c_uint,
+        next_hop: *const c_char,
+        metric: i64,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMIPRoute;
+    pub fn nm_ip_route_new_binary(
+        family: c_int,
+        dest: gconstpointer,
+        prefix: c_uint,
+        next_hop: gconstpointer,
+        metric: i64,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMIPRoute;
     #[cfg(feature = "v1_32")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_32")))]
     pub fn nm_ip_route_dup(route: *mut NMIPRoute) -> *mut NMIPRoute;
     pub fn nm_ip_route_equal(route: *mut NMIPRoute, other: *mut NMIPRoute) -> gboolean;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-    pub fn nm_ip_route_equal_full(route: *mut NMIPRoute, other: *mut NMIPRoute, cmp_flags: c_uint) -> gboolean;
-    pub fn nm_ip_route_get_attribute(route: *mut NMIPRoute, name: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_ip_route_equal_full(
+        route: *mut NMIPRoute,
+        other: *mut NMIPRoute,
+        cmp_flags: c_uint,
+    ) -> gboolean;
+    pub fn nm_ip_route_get_attribute(
+        route: *mut NMIPRoute,
+        name: *const c_char,
+    ) -> *mut glib::GVariant;
     pub fn nm_ip_route_get_attribute_names(route: *mut NMIPRoute) -> *mut *mut c_char;
     pub fn nm_ip_route_get_dest(route: *mut NMIPRoute) -> *const c_char;
     pub fn nm_ip_route_get_dest_binary(route: *mut NMIPRoute, dest: gpointer);
@@ -5795,7 +6017,11 @@ extern "C" {
     pub fn nm_ip_route_get_next_hop_binary(route: *mut NMIPRoute, next_hop: gpointer) -> gboolean;
     pub fn nm_ip_route_get_prefix(route: *mut NMIPRoute) -> c_uint;
     pub fn nm_ip_route_ref(route: *mut NMIPRoute);
-    pub fn nm_ip_route_set_attribute(route: *mut NMIPRoute, name: *const c_char, value: *mut glib::GVariant);
+    pub fn nm_ip_route_set_attribute(
+        route: *mut NMIPRoute,
+        name: *const c_char,
+        value: *mut glib::GVariant,
+    );
     pub fn nm_ip_route_set_dest(route: *mut NMIPRoute, dest: *const c_char);
     pub fn nm_ip_route_set_dest_binary(route: *mut NMIPRoute, dest: gconstpointer);
     pub fn nm_ip_route_set_metric(route: *mut NMIPRoute, metric: i64);
@@ -5805,7 +6031,13 @@ extern "C" {
     pub fn nm_ip_route_unref(route: *mut NMIPRoute);
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_ip_route_attribute_validate(name: *const c_char, value: *mut glib::GVariant, family: c_int, known: *mut gboolean, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_ip_route_attribute_validate(
+        name: *const c_char,
+        value: *mut glib::GVariant,
+        family: c_int,
+        known: *mut gboolean,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     pub fn nm_ip_route_get_variant_attribute_spec() -> *const *const NMVariantAttributeSpec;
@@ -5819,7 +6051,10 @@ extern "C" {
     pub fn nm_ip_routing_rule_new(addr_family: c_int) -> *mut NMIPRoutingRule;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_ip_routing_rule_cmp(rule: *const NMIPRoutingRule, other: *const NMIPRoutingRule) -> c_int;
+    pub fn nm_ip_routing_rule_cmp(
+        rule: *const NMIPRoutingRule,
+        other: *const NMIPRoutingRule,
+    ) -> c_int;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_ip_routing_rule_get_action(self_: *const NMIPRoutingRule) -> u8;
@@ -5882,7 +6117,11 @@ extern "C" {
     pub fn nm_ip_routing_rule_get_tos(self_: *const NMIPRoutingRule) -> u8;
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
-    pub fn nm_ip_routing_rule_get_uid_range(self_: *const NMIPRoutingRule, out_range_start: *mut u32, out_range_end: *mut u32) -> gboolean;
+    pub fn nm_ip_routing_rule_get_uid_range(
+        self_: *const NMIPRoutingRule,
+        out_range_start: *mut u32,
+        out_range_end: *mut u32,
+    ) -> gboolean;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_ip_routing_rule_is_sealed(self_: *const NMIPRoutingRule) -> gboolean;
@@ -5900,7 +6139,11 @@ extern "C" {
     pub fn nm_ip_routing_rule_set_action(self_: *mut NMIPRoutingRule, action: u8);
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_ip_routing_rule_set_destination_port(self_: *mut NMIPRoutingRule, start: u16, end: u16);
+    pub fn nm_ip_routing_rule_set_destination_port(
+        self_: *mut NMIPRoutingRule,
+        start: u16,
+        end: u16,
+    );
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_ip_routing_rule_set_from(self_: *mut NMIPRoutingRule, from: *const c_char, len: u8);
@@ -5927,7 +6170,10 @@ extern "C" {
     pub fn nm_ip_routing_rule_set_source_port(self_: *mut NMIPRoutingRule, start: u16, end: u16);
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
-    pub fn nm_ip_routing_rule_set_suppress_prefixlength(self_: *mut NMIPRoutingRule, suppress_prefixlength: i32);
+    pub fn nm_ip_routing_rule_set_suppress_prefixlength(
+        self_: *mut NMIPRoutingRule,
+        suppress_prefixlength: i32,
+    );
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_ip_routing_rule_set_table(self_: *mut NMIPRoutingRule, table: u32);
@@ -5939,32 +6185,62 @@ extern "C" {
     pub fn nm_ip_routing_rule_set_tos(self_: *mut NMIPRoutingRule, tos: u8);
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
-    pub fn nm_ip_routing_rule_set_uid_range(self_: *mut NMIPRoutingRule, uid_range_start: u32, uid_range_end: u32);
+    pub fn nm_ip_routing_rule_set_uid_range(
+        self_: *mut NMIPRoutingRule,
+        uid_range_start: u32,
+        uid_range_end: u32,
+    );
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_ip_routing_rule_to_string(self_: *const NMIPRoutingRule, to_string_flags: NMIPRoutingRuleAsStringFlags, extra_args: *mut glib::GHashTable, error: *mut *mut glib::GError) -> *mut c_char;
+    pub fn nm_ip_routing_rule_to_string(
+        self_: *const NMIPRoutingRule,
+        to_string_flags: NMIPRoutingRuleAsStringFlags,
+        extra_args: *mut glib::GHashTable,
+        error: *mut *mut glib::GError,
+    ) -> *mut c_char;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_ip_routing_rule_unref(self_: *mut NMIPRoutingRule);
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_ip_routing_rule_validate(self_: *const NMIPRoutingRule, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_ip_routing_rule_validate(
+        self_: *const NMIPRoutingRule,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_ip_routing_rule_from_string(str: *const c_char, to_string_flags: NMIPRoutingRuleAsStringFlags, extra_args: *mut glib::GHashTable, error: *mut *mut glib::GError) -> *mut NMIPRoutingRule;
+    pub fn nm_ip_routing_rule_from_string(
+        str: *const c_char,
+        to_string_flags: NMIPRoutingRuleAsStringFlags,
+        extra_args: *mut glib::GHashTable,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMIPRoutingRule;
 
     //=========================================================================
     // NMKeyfileHandlerData
     //=========================================================================
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_keyfile_handler_data_fail_with_error(handler_data: *mut NMKeyfileHandlerData, src: *mut glib::GError);
+    pub fn nm_keyfile_handler_data_fail_with_error(
+        handler_data: *mut NMKeyfileHandlerData,
+        src: *mut glib::GError,
+    );
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_keyfile_handler_data_get_context(handler_data: *const NMKeyfileHandlerData, out_kf_group_name: *mut *const c_char, out_kf_key_name: *mut *const c_char, out_cur_setting: *mut *mut NMSetting, out_cur_property_name: *mut *const c_char);
+    pub fn nm_keyfile_handler_data_get_context(
+        handler_data: *const NMKeyfileHandlerData,
+        out_kf_group_name: *mut *const c_char,
+        out_kf_key_name: *mut *const c_char,
+        out_cur_setting: *mut *mut NMSetting,
+        out_cur_property_name: *mut *const c_char,
+    );
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_keyfile_handler_data_warn_get(handler_data: *const NMKeyfileHandlerData, out_message: *mut *const c_char, out_severity: *mut NMKeyfileWarnSeverity);
+    pub fn nm_keyfile_handler_data_warn_get(
+        handler_data: *const NMKeyfileHandlerData,
+        out_message: *mut *const c_char,
+        out_severity: *mut NMKeyfileWarnSeverity,
+    );
 
     //=========================================================================
     // NMLldpNeighbor
@@ -5978,16 +6254,30 @@ extern "C" {
     pub fn nm_lldp_neighbor_get_attr_names(neighbor: *mut NMLldpNeighbor) -> *mut *mut c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_lldp_neighbor_get_attr_string_value(neighbor: *mut NMLldpNeighbor, name: *const c_char, out_value: *mut *const c_char) -> gboolean;
+    pub fn nm_lldp_neighbor_get_attr_string_value(
+        neighbor: *mut NMLldpNeighbor,
+        name: *const c_char,
+        out_value: *mut *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_lldp_neighbor_get_attr_type(neighbor: *mut NMLldpNeighbor, name: *const c_char) -> *const glib::GVariantType;
+    pub fn nm_lldp_neighbor_get_attr_type(
+        neighbor: *mut NMLldpNeighbor,
+        name: *const c_char,
+    ) -> *const glib::GVariantType;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_lldp_neighbor_get_attr_uint_value(neighbor: *mut NMLldpNeighbor, name: *const c_char, out_value: *mut c_uint) -> gboolean;
+    pub fn nm_lldp_neighbor_get_attr_uint_value(
+        neighbor: *mut NMLldpNeighbor,
+        name: *const c_char,
+        out_value: *mut c_uint,
+    ) -> gboolean;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_lldp_neighbor_get_attr_value(neighbor: *mut NMLldpNeighbor, name: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_lldp_neighbor_get_attr_value(
+        neighbor: *mut NMLldpNeighbor,
+        name: *const c_char,
+    ) -> *mut glib::GVariant;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_lldp_neighbor_ref(neighbor: *mut NMLldpNeighbor);
@@ -6039,7 +6329,10 @@ extern "C" {
     pub fn nm_sriov_vf_equal(vf: *const NMSriovVF, other: *const NMSriovVF) -> gboolean;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_sriov_vf_get_attribute(vf: *const NMSriovVF, name: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_sriov_vf_get_attribute(
+        vf: *const NMSriovVF,
+        name: *const c_char,
+    ) -> *mut glib::GVariant;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn nm_sriov_vf_get_attribute_names(vf: *const NMSriovVF) -> *mut *const c_char;
@@ -6051,7 +6344,10 @@ extern "C" {
     pub fn nm_sriov_vf_get_vlan_ids(vf: *const NMSriovVF, length: *mut c_uint) -> *const c_uint;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_sriov_vf_get_vlan_protocol(vf: *const NMSriovVF, vlan_id: c_uint) -> NMSriovVFVlanProtocol;
+    pub fn nm_sriov_vf_get_vlan_protocol(
+        vf: *const NMSriovVF,
+        vlan_id: c_uint,
+    ) -> NMSriovVFVlanProtocol;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn nm_sriov_vf_get_vlan_qos(vf: *const NMSriovVF, vlan_id: c_uint) -> u32;
@@ -6063,10 +6359,18 @@ extern "C" {
     pub fn nm_sriov_vf_remove_vlan(vf: *mut NMSriovVF, vlan_id: c_uint) -> gboolean;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_sriov_vf_set_attribute(vf: *mut NMSriovVF, name: *const c_char, value: *mut glib::GVariant);
+    pub fn nm_sriov_vf_set_attribute(
+        vf: *mut NMSriovVF,
+        name: *const c_char,
+        value: *mut glib::GVariant,
+    );
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_sriov_vf_set_vlan_protocol(vf: *mut NMSriovVF, vlan_id: c_uint, protocol: NMSriovVFVlanProtocol);
+    pub fn nm_sriov_vf_set_vlan_protocol(
+        vf: *mut NMSriovVF,
+        vlan_id: c_uint,
+        protocol: NMSriovVFVlanProtocol,
+    );
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn nm_sriov_vf_set_vlan_qos(vf: *mut NMSriovVF, vlan_id: c_uint, qos: u32);
@@ -6075,7 +6379,12 @@ extern "C" {
     pub fn nm_sriov_vf_unref(vf: *mut NMSriovVF);
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_sriov_vf_attribute_validate(name: *const c_char, value: *mut glib::GVariant, known: *mut gboolean, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_sriov_vf_attribute_validate(
+        name: *const c_char,
+        value: *mut glib::GVariant,
+        known: *mut gboolean,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
 
     //=========================================================================
     // NMTCAction
@@ -6092,7 +6401,10 @@ extern "C" {
     pub fn nm_tc_action_equal(action: *mut NMTCAction, other: *mut NMTCAction) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_tc_action_get_attribute(action: *mut NMTCAction, name: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_tc_action_get_attribute(
+        action: *mut NMTCAction,
+        name: *const c_char,
+    ) -> *mut glib::GVariant;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_tc_action_get_attribute_names(action: *mut NMTCAction) -> *mut *mut c_char;
@@ -6104,7 +6416,11 @@ extern "C" {
     pub fn nm_tc_action_ref(action: *mut NMTCAction);
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_tc_action_set_attribute(action: *mut NMTCAction, name: *const c_char, value: *mut glib::GVariant);
+    pub fn nm_tc_action_set_attribute(
+        action: *mut NMTCAction,
+        name: *const c_char,
+        value: *mut glib::GVariant,
+    );
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_tc_action_unref(action: *mut NMTCAction);
@@ -6115,7 +6431,11 @@ extern "C" {
     pub fn nm_tc_qdisc_get_type() -> GType;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_tc_qdisc_new(kind: *const c_char, parent: u32, error: *mut *mut glib::GError) -> *mut NMTCQdisc;
+    pub fn nm_tc_qdisc_new(
+        kind: *const c_char,
+        parent: u32,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTCQdisc;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_tc_qdisc_dup(qdisc: *mut NMTCQdisc) -> *mut NMTCQdisc;
@@ -6124,7 +6444,10 @@ extern "C" {
     pub fn nm_tc_qdisc_equal(qdisc: *mut NMTCQdisc, other: *mut NMTCQdisc) -> gboolean;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_tc_qdisc_get_attribute(qdisc: *mut NMTCQdisc, name: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_tc_qdisc_get_attribute(
+        qdisc: *mut NMTCQdisc,
+        name: *const c_char,
+    ) -> *mut glib::GVariant;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_tc_qdisc_get_attribute_names(qdisc: *mut NMTCQdisc) -> *mut *const c_char;
@@ -6142,7 +6465,11 @@ extern "C" {
     pub fn nm_tc_qdisc_ref(qdisc: *mut NMTCQdisc);
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_tc_qdisc_set_attribute(qdisc: *mut NMTCQdisc, name: *const c_char, value: *mut glib::GVariant);
+    pub fn nm_tc_qdisc_set_attribute(
+        qdisc: *mut NMTCQdisc,
+        name: *const c_char,
+        value: *mut glib::GVariant,
+    );
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_tc_qdisc_set_handle(qdisc: *mut NMTCQdisc, handle: u32);
@@ -6156,7 +6483,11 @@ extern "C" {
     pub fn nm_tc_tfilter_get_type() -> GType;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_tc_tfilter_new(kind: *const c_char, parent: u32, error: *mut *mut glib::GError) -> *mut NMTCTfilter;
+    pub fn nm_tc_tfilter_new(
+        kind: *const c_char,
+        parent: u32,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTCTfilter;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_tc_tfilter_dup(tfilter: *mut NMTCTfilter) -> *mut NMTCTfilter;
@@ -6194,22 +6525,52 @@ extern "C" {
     pub fn nm_team_link_watcher_get_type() -> GType;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_team_link_watcher_new_arp_ping(init_wait: c_int, interval: c_int, missed_max: c_int, target_host: *const c_char, source_host: *const c_char, flags: NMTeamLinkWatcherArpPingFlags, error: *mut *mut glib::GError) -> *mut NMTeamLinkWatcher;
+    pub fn nm_team_link_watcher_new_arp_ping(
+        init_wait: c_int,
+        interval: c_int,
+        missed_max: c_int,
+        target_host: *const c_char,
+        source_host: *const c_char,
+        flags: NMTeamLinkWatcherArpPingFlags,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTeamLinkWatcher;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_team_link_watcher_new_arp_ping2(init_wait: c_int, interval: c_int, missed_max: c_int, vlanid: c_int, target_host: *const c_char, source_host: *const c_char, flags: NMTeamLinkWatcherArpPingFlags, error: *mut *mut glib::GError) -> *mut NMTeamLinkWatcher;
+    pub fn nm_team_link_watcher_new_arp_ping2(
+        init_wait: c_int,
+        interval: c_int,
+        missed_max: c_int,
+        vlanid: c_int,
+        target_host: *const c_char,
+        source_host: *const c_char,
+        flags: NMTeamLinkWatcherArpPingFlags,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTeamLinkWatcher;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_team_link_watcher_new_ethtool(delay_up: c_int, delay_down: c_int, error: *mut *mut glib::GError) -> *mut NMTeamLinkWatcher;
+    pub fn nm_team_link_watcher_new_ethtool(
+        delay_up: c_int,
+        delay_down: c_int,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTeamLinkWatcher;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_team_link_watcher_new_nsna_ping(init_wait: c_int, interval: c_int, missed_max: c_int, target_host: *const c_char, error: *mut *mut glib::GError) -> *mut NMTeamLinkWatcher;
+    pub fn nm_team_link_watcher_new_nsna_ping(
+        init_wait: c_int,
+        interval: c_int,
+        missed_max: c_int,
+        target_host: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTeamLinkWatcher;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_team_link_watcher_dup(watcher: *const NMTeamLinkWatcher) -> *mut NMTeamLinkWatcher;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_team_link_watcher_equal(watcher: *const NMTeamLinkWatcher, other: *const NMTeamLinkWatcher) -> gboolean;
+    pub fn nm_team_link_watcher_equal(
+        watcher: *const NMTeamLinkWatcher,
+        other: *const NMTeamLinkWatcher,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_team_link_watcher_get_delay_down(watcher: *const NMTeamLinkWatcher) -> c_int;
@@ -6218,7 +6579,9 @@ extern "C" {
     pub fn nm_team_link_watcher_get_delay_up(watcher: *const NMTeamLinkWatcher) -> c_int;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_team_link_watcher_get_flags(watcher: *const NMTeamLinkWatcher) -> NMTeamLinkWatcherArpPingFlags;
+    pub fn nm_team_link_watcher_get_flags(
+        watcher: *const NMTeamLinkWatcher,
+    ) -> NMTeamLinkWatcherArpPingFlags;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_team_link_watcher_get_init_wait(watcher: *const NMTeamLinkWatcher) -> c_int;
@@ -6233,10 +6596,12 @@ extern "C" {
     pub fn nm_team_link_watcher_get_name(watcher: *const NMTeamLinkWatcher) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_team_link_watcher_get_source_host(watcher: *const NMTeamLinkWatcher) -> *const c_char;
+    pub fn nm_team_link_watcher_get_source_host(watcher: *const NMTeamLinkWatcher)
+        -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_team_link_watcher_get_target_host(watcher: *const NMTeamLinkWatcher) -> *const c_char;
+    pub fn nm_team_link_watcher_get_target_host(watcher: *const NMTeamLinkWatcher)
+        -> *const c_char;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_team_link_watcher_get_vlanid(watcher: *const NMTeamLinkWatcher) -> c_int;
@@ -6258,16 +6623,28 @@ extern "C" {
     pub fn nm_wireguard_peer_new() -> *mut NMWireGuardPeer;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_append_allowed_ip(self_: *mut NMWireGuardPeer, allowed_ip: *const c_char, accept_invalid: gboolean) -> gboolean;
+    pub fn nm_wireguard_peer_append_allowed_ip(
+        self_: *mut NMWireGuardPeer,
+        allowed_ip: *const c_char,
+        accept_invalid: gboolean,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_wireguard_peer_clear_allowed_ips(self_: *mut NMWireGuardPeer);
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_cmp(a: *const NMWireGuardPeer, b: *const NMWireGuardPeer, compare_flags: NMSettingCompareFlags) -> c_int;
+    pub fn nm_wireguard_peer_cmp(
+        a: *const NMWireGuardPeer,
+        b: *const NMWireGuardPeer,
+        compare_flags: NMSettingCompareFlags,
+    ) -> c_int;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_get_allowed_ip(self_: *const NMWireGuardPeer, idx: c_uint, out_is_valid: *mut gboolean) -> *const c_char;
+    pub fn nm_wireguard_peer_get_allowed_ip(
+        self_: *const NMWireGuardPeer,
+        idx: c_uint,
+        out_is_valid: *mut gboolean,
+    ) -> *const c_char;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_wireguard_peer_get_allowed_ips_len(self_: *const NMWireGuardPeer) -> c_uint;
@@ -6282,7 +6659,9 @@ extern "C" {
     pub fn nm_wireguard_peer_get_preshared_key(self_: *const NMWireGuardPeer) -> *const c_char;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_get_preshared_key_flags(self_: *const NMWireGuardPeer) -> NMSettingSecretFlags;
+    pub fn nm_wireguard_peer_get_preshared_key_flags(
+        self_: *const NMWireGuardPeer,
+    ) -> NMSettingSecretFlags;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_wireguard_peer_get_public_key(self_: *const NMWireGuardPeer) -> *const c_char;
@@ -6291,34 +6670,63 @@ extern "C" {
     pub fn nm_wireguard_peer_is_sealed(self_: *const NMWireGuardPeer) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_is_valid(self_: *const NMWireGuardPeer, check_non_secrets: gboolean, check_secrets: gboolean, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_wireguard_peer_is_valid(
+        self_: *const NMWireGuardPeer,
+        check_non_secrets: gboolean,
+        check_secrets: gboolean,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_new_clone(self_: *const NMWireGuardPeer, with_secrets: gboolean) -> *mut NMWireGuardPeer;
+    pub fn nm_wireguard_peer_new_clone(
+        self_: *const NMWireGuardPeer,
+        with_secrets: gboolean,
+    ) -> *mut NMWireGuardPeer;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_wireguard_peer_ref(self_: *mut NMWireGuardPeer) -> *mut NMWireGuardPeer;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_remove_allowed_ip(self_: *mut NMWireGuardPeer, idx: c_uint) -> gboolean;
+    pub fn nm_wireguard_peer_remove_allowed_ip(
+        self_: *mut NMWireGuardPeer,
+        idx: c_uint,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_wireguard_peer_seal(self_: *mut NMWireGuardPeer);
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_set_endpoint(self_: *mut NMWireGuardPeer, endpoint: *const c_char, allow_invalid: gboolean) -> gboolean;
+    pub fn nm_wireguard_peer_set_endpoint(
+        self_: *mut NMWireGuardPeer,
+        endpoint: *const c_char,
+        allow_invalid: gboolean,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_set_persistent_keepalive(self_: *mut NMWireGuardPeer, persistent_keepalive: u16);
+    pub fn nm_wireguard_peer_set_persistent_keepalive(
+        self_: *mut NMWireGuardPeer,
+        persistent_keepalive: u16,
+    );
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_set_preshared_key(self_: *mut NMWireGuardPeer, preshared_key: *const c_char, accept_invalid: gboolean) -> gboolean;
+    pub fn nm_wireguard_peer_set_preshared_key(
+        self_: *mut NMWireGuardPeer,
+        preshared_key: *const c_char,
+        accept_invalid: gboolean,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_set_preshared_key_flags(self_: *mut NMWireGuardPeer, preshared_key_flags: NMSettingSecretFlags);
+    pub fn nm_wireguard_peer_set_preshared_key_flags(
+        self_: *mut NMWireGuardPeer,
+        preshared_key_flags: NMSettingSecretFlags,
+    );
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wireguard_peer_set_public_key(self_: *mut NMWireGuardPeer, public_key: *const c_char, accept_invalid: gboolean) -> gboolean;
+    pub fn nm_wireguard_peer_set_public_key(
+        self_: *mut NMWireGuardPeer,
+        public_key: *const c_char,
+        accept_invalid: gboolean,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_wireguard_peer_unref(self_: *mut NMWireGuardPeer);
@@ -6327,8 +6735,14 @@ extern "C" {
     // NMAccessPoint
     //=========================================================================
     pub fn nm_access_point_get_type() -> GType;
-    pub fn nm_access_point_connection_valid(ap: *mut NMAccessPoint, connection: *mut NMConnection) -> gboolean;
-    pub fn nm_access_point_filter_connections(ap: *mut NMAccessPoint, connections: *const glib::GPtrArray) -> *mut glib::GPtrArray;
+    pub fn nm_access_point_connection_valid(
+        ap: *mut NMAccessPoint,
+        connection: *mut NMConnection,
+    ) -> gboolean;
+    pub fn nm_access_point_filter_connections(
+        ap: *mut NMAccessPoint,
+        connections: *const glib::GPtrArray,
+    ) -> *mut glib::GPtrArray;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn nm_access_point_get_bandwidth(ap: *mut NMAccessPoint) -> u32;
@@ -6349,28 +6763,52 @@ extern "C" {
     // NMActiveConnection
     //=========================================================================
     pub fn nm_active_connection_get_type() -> GType;
-    pub fn nm_active_connection_get_connection(connection: *mut NMActiveConnection) -> *mut NMRemoteConnection;
-    pub fn nm_active_connection_get_connection_type(connection: *mut NMActiveConnection) -> *const c_char;
+    pub fn nm_active_connection_get_connection(
+        connection: *mut NMActiveConnection,
+    ) -> *mut NMRemoteConnection;
+    pub fn nm_active_connection_get_connection_type(
+        connection: *mut NMActiveConnection,
+    ) -> *const c_char;
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
-    pub fn nm_active_connection_get_controller(connection: *mut NMActiveConnection) -> *mut _NMDevice;
+    pub fn nm_active_connection_get_controller(
+        connection: *mut NMActiveConnection,
+    ) -> *mut _NMDevice;
     pub fn nm_active_connection_get_default(connection: *mut NMActiveConnection) -> gboolean;
     pub fn nm_active_connection_get_default6(connection: *mut NMActiveConnection) -> gboolean;
-    pub fn nm_active_connection_get_devices(connection: *mut NMActiveConnection) -> *const glib::GPtrArray;
-    pub fn nm_active_connection_get_dhcp4_config(connection: *mut NMActiveConnection) -> *mut NMDhcpConfig;
-    pub fn nm_active_connection_get_dhcp6_config(connection: *mut NMActiveConnection) -> *mut NMDhcpConfig;
+    pub fn nm_active_connection_get_devices(
+        connection: *mut NMActiveConnection,
+    ) -> *const glib::GPtrArray;
+    pub fn nm_active_connection_get_dhcp4_config(
+        connection: *mut NMActiveConnection,
+    ) -> *mut NMDhcpConfig;
+    pub fn nm_active_connection_get_dhcp6_config(
+        connection: *mut NMActiveConnection,
+    ) -> *mut NMDhcpConfig;
     pub fn nm_active_connection_get_id(connection: *mut NMActiveConnection) -> *const c_char;
-    pub fn nm_active_connection_get_ip4_config(connection: *mut NMActiveConnection) -> *mut NMIPConfig;
-    pub fn nm_active_connection_get_ip6_config(connection: *mut NMActiveConnection) -> *mut NMIPConfig;
-    pub fn nm_active_connection_get_master(connection: *mut NMActiveConnection) -> *mut _NMDevice;
-    pub fn nm_active_connection_get_specific_object_path(connection: *mut NMActiveConnection) -> *const c_char;
-    pub fn nm_active_connection_get_state(connection: *mut NMActiveConnection) -> NMActiveConnectionState;
+    pub fn nm_active_connection_get_ip4_config(
+        connection: *mut NMActiveConnection,
+    ) -> *mut NMIPConfig;
+    pub fn nm_active_connection_get_ip6_config(
+        connection: *mut NMActiveConnection,
+    ) -> *mut NMIPConfig;
+    pub fn nm_active_connection_get_master(connection: *mut NMActiveConnection) -> *mut NMDevice;
+    pub fn nm_active_connection_get_specific_object_path(
+        connection: *mut NMActiveConnection,
+    ) -> *const c_char;
+    pub fn nm_active_connection_get_state(
+        connection: *mut NMActiveConnection,
+    ) -> NMActiveConnectionState;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-    pub fn nm_active_connection_get_state_flags(connection: *mut NMActiveConnection) -> NMActivationStateFlags;
+    pub fn nm_active_connection_get_state_flags(
+        connection: *mut NMActiveConnection,
+    ) -> NMActivationStateFlags;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_active_connection_get_state_reason(connection: *mut NMActiveConnection) -> NMActiveConnectionStateReason;
+    pub fn nm_active_connection_get_state_reason(
+        connection: *mut NMActiveConnection,
+    ) -> NMActiveConnectionStateReason;
     pub fn nm_active_connection_get_uuid(connection: *mut NMActiveConnection) -> *const c_char;
     pub fn nm_active_connection_get_vpn(connection: *mut NMActiveConnection) -> gboolean;
 
@@ -6394,57 +6832,189 @@ extern "C" {
     // NMClient
     //=========================================================================
     pub fn nm_client_get_type() -> GType;
-    pub fn nm_client_new(cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> *mut NMClient;
-    pub fn nm_client_new_finish(result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut NMClient;
-    pub fn nm_client_new_async(cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_new(
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMClient;
+    pub fn nm_client_new_finish(
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMClient;
+    pub fn nm_client_new_async(
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_client_wait_shutdown_finish(result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_client_activate_connection_async(client: *mut NMClient, connection: *mut NMConnection, device: *mut NMDevice, specific_object: *const c_char, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_activate_connection_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut NMActiveConnection;
+    pub fn nm_client_wait_shutdown_finish(
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_client_activate_connection_async(
+        client: *mut NMClient,
+        connection: *mut NMConnection,
+        device: *mut NMDevice,
+        specific_object: *const c_char,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_activate_connection_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMActiveConnection;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_client_add_and_activate_connection2(client: *mut NMClient, partial: *mut NMConnection, device: *mut NMDevice, specific_object: *const c_char, options: *mut glib::GVariant, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_add_and_activate_connection2(
+        client: *mut NMClient,
+        partial: *mut NMConnection,
+        device: *mut NMDevice,
+        specific_object: *const c_char,
+        options: *mut glib::GVariant,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_client_add_and_activate_connection2_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, out_result: *mut *mut glib::GVariant, error: *mut *mut glib::GError) -> *mut NMActiveConnection;
-    pub fn nm_client_add_and_activate_connection_async(client: *mut NMClient, partial: *mut NMConnection, device: *mut NMDevice, specific_object: *const c_char, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_add_and_activate_connection_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut NMActiveConnection;
+    pub fn nm_client_add_and_activate_connection2_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        out_result: *mut *mut glib::GVariant,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMActiveConnection;
+    pub fn nm_client_add_and_activate_connection_async(
+        client: *mut NMClient,
+        partial: *mut NMConnection,
+        device: *mut NMDevice,
+        specific_object: *const c_char,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_add_and_activate_connection_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMActiveConnection;
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
-    pub fn nm_client_add_connection2(client: *mut NMClient, settings: *mut glib::GVariant, flags: NMSettingsAddConnection2Flags, args: *mut glib::GVariant, ignore_out_result: gboolean, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_add_connection2(
+        client: *mut NMClient,
+        settings: *mut glib::GVariant,
+        flags: NMSettingsAddConnection2Flags,
+        args: *mut glib::GVariant,
+        ignore_out_result: gboolean,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
-    pub fn nm_client_add_connection2_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, out_result: *mut *mut glib::GVariant, error: *mut *mut glib::GError) -> *mut NMRemoteConnection;
-    pub fn nm_client_add_connection_async(client: *mut NMClient, connection: *mut NMConnection, save_to_disk: gboolean, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_add_connection_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut NMRemoteConnection;
-    pub fn nm_client_check_connectivity(client: *mut NMClient, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> NMConnectivityState;
-    pub fn nm_client_check_connectivity_async(client: *mut NMClient, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_check_connectivity_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> NMConnectivityState;
+    pub fn nm_client_add_connection2_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        out_result: *mut *mut glib::GVariant,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMRemoteConnection;
+    pub fn nm_client_add_connection_async(
+        client: *mut NMClient,
+        connection: *mut NMConnection,
+        save_to_disk: gboolean,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_add_connection_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMRemoteConnection;
+    pub fn nm_client_check_connectivity(
+        client: *mut NMClient,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> NMConnectivityState;
+    pub fn nm_client_check_connectivity_async(
+        client: *mut NMClient,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_check_connectivity_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> NMConnectivityState;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_client_checkpoint_adjust_rollback_timeout(client: *mut NMClient, checkpoint_path: *const c_char, add_timeout: u32, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_checkpoint_adjust_rollback_timeout(
+        client: *mut NMClient,
+        checkpoint_path: *const c_char,
+        add_timeout: u32,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_client_checkpoint_adjust_rollback_timeout_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_client_checkpoint_adjust_rollback_timeout_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_client_checkpoint_create(client: *mut NMClient, devices: *const glib::GPtrArray, rollback_timeout: u32, flags: NMCheckpointCreateFlags, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_checkpoint_create(
+        client: *mut NMClient,
+        devices: *const glib::GPtrArray,
+        rollback_timeout: u32,
+        flags: NMCheckpointCreateFlags,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_client_checkpoint_create_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut NMCheckpoint;
+    pub fn nm_client_checkpoint_create_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMCheckpoint;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_client_checkpoint_destroy(client: *mut NMClient, checkpoint_path: *const c_char, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_checkpoint_destroy(
+        client: *mut NMClient,
+        checkpoint_path: *const c_char,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_client_checkpoint_destroy_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_client_checkpoint_destroy_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_client_checkpoint_rollback(client: *mut NMClient, checkpoint_path: *const c_char, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_checkpoint_rollback(
+        client: *mut NMClient,
+        checkpoint_path: *const c_char,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_client_checkpoint_rollback_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut glib::GHashTable;
+    pub fn nm_client_checkpoint_rollback_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut glib::GHashTable;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn nm_client_connectivity_check_get_available(client: *mut NMClient) -> gboolean;
@@ -6459,19 +7029,63 @@ extern "C" {
     pub fn nm_client_connectivity_check_set_enabled(client: *mut NMClient, enabled: gboolean);
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_client_dbus_call(client: *mut NMClient, object_path: *const c_char, interface_name: *const c_char, method_name: *const c_char, parameters: *mut glib::GVariant, reply_type: *const glib::GVariantType, timeout_msec: c_int, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_dbus_call(
+        client: *mut NMClient,
+        object_path: *const c_char,
+        interface_name: *const c_char,
+        method_name: *const c_char,
+        parameters: *mut glib::GVariant,
+        reply_type: *const glib::GVariantType,
+        timeout_msec: c_int,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_client_dbus_call_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut glib::GVariant;
+    pub fn nm_client_dbus_call_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut glib::GVariant;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_client_dbus_set_property(client: *mut NMClient, object_path: *const c_char, interface_name: *const c_char, property_name: *const c_char, value: *mut glib::GVariant, timeout_msec: c_int, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_dbus_set_property(
+        client: *mut NMClient,
+        object_path: *const c_char,
+        interface_name: *const c_char,
+        property_name: *const c_char,
+        value: *mut glib::GVariant,
+        timeout_msec: c_int,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_client_dbus_set_property_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_client_deactivate_connection(client: *mut NMClient, active: *mut NMActiveConnection, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_client_deactivate_connection_async(client: *mut NMClient, active: *mut NMActiveConnection, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_deactivate_connection_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_client_dbus_set_property_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_client_deactivate_connection(
+        client: *mut NMClient,
+        active: *mut NMActiveConnection,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_client_deactivate_connection_async(
+        client: *mut NMClient,
+        active: *mut NMActiveConnection,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_deactivate_connection_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     pub fn nm_client_get_activating_connection(client: *mut NMClient) -> *mut NMActiveConnection;
     pub fn nm_client_get_active_connections(client: *mut NMClient) -> *const glib::GPtrArray;
     #[cfg(feature = "v1_2")]
@@ -6483,9 +7097,18 @@ extern "C" {
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_client_get_checkpoints(client: *mut NMClient) -> *const glib::GPtrArray;
-    pub fn nm_client_get_connection_by_id(client: *mut NMClient, id: *const c_char) -> *mut NMRemoteConnection;
-    pub fn nm_client_get_connection_by_path(client: *mut NMClient, path: *const c_char) -> *mut NMRemoteConnection;
-    pub fn nm_client_get_connection_by_uuid(client: *mut NMClient, uuid: *const c_char) -> *mut NMRemoteConnection;
+    pub fn nm_client_get_connection_by_id(
+        client: *mut NMClient,
+        id: *const c_char,
+    ) -> *mut NMRemoteConnection;
+    pub fn nm_client_get_connection_by_path(
+        client: *mut NMClient,
+        path: *const c_char,
+    ) -> *mut NMRemoteConnection;
+    pub fn nm_client_get_connection_by_uuid(
+        client: *mut NMClient,
+        uuid: *const c_char,
+    ) -> *mut NMRemoteConnection;
     pub fn nm_client_get_connections(client: *mut NMClient) -> *const glib::GPtrArray;
     pub fn nm_client_get_connectivity(client: *mut NMClient) -> NMConnectivityState;
     #[cfg(feature = "v1_22")]
@@ -6497,8 +7120,14 @@ extern "C" {
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     pub fn nm_client_get_dbus_name_owner(client: *mut NMClient) -> *const c_char;
-    pub fn nm_client_get_device_by_iface(client: *mut NMClient, iface: *const c_char) -> *mut NMDevice;
-    pub fn nm_client_get_device_by_path(client: *mut NMClient, object_path: *const c_char) -> *mut NMDevice;
+    pub fn nm_client_get_device_by_iface(
+        client: *mut NMClient,
+        iface: *const c_char,
+    ) -> *mut NMDevice;
+    pub fn nm_client_get_device_by_path(
+        client: *mut NMClient,
+        object_path: *const c_char,
+    ) -> *mut NMDevice;
     pub fn nm_client_get_devices(client: *mut NMClient) -> *const glib::GPtrArray;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
@@ -6512,7 +7141,12 @@ extern "C" {
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn nm_client_get_instance_flags(self_: *mut NMClient) -> NMClientInstanceFlags;
-    pub fn nm_client_get_logging(client: *mut NMClient, level: *mut *mut c_char, domains: *mut *mut c_char, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_client_get_logging(
+        client: *mut NMClient,
+        level: *mut *mut c_char,
+        domains: *mut *mut c_char,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     pub fn nm_client_get_main_context(self_: *mut NMClient) -> *mut glib::GMainContext;
@@ -6522,8 +7156,14 @@ extern "C" {
     pub fn nm_client_get_nm_running(client: *mut NMClient) -> gboolean;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_client_get_object_by_path(client: *mut NMClient, dbus_path: *const c_char) -> *mut NMObject;
-    pub fn nm_client_get_permission_result(client: *mut NMClient, permission: NMClientPermission) -> NMClientPermissionResult;
+    pub fn nm_client_get_object_by_path(
+        client: *mut NMClient,
+        dbus_path: *const c_char,
+    ) -> *mut NMObject;
+    pub fn nm_client_get_permission_result(
+        client: *mut NMClient,
+        permission: NMClientPermission,
+    ) -> NMClientPermissionResult;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn nm_client_get_permissions_state(self_: *mut NMClient) -> NMTernary;
@@ -6537,27 +7177,97 @@ extern "C" {
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn nm_client_get_version_info(client: *mut NMClient, length: *mut size_t) -> *const u32;
-    pub fn nm_client_load_connections(client: *mut NMClient, filenames: *mut *mut c_char, failures: *mut *mut *mut c_char, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_client_load_connections_async(client: *mut NMClient, filenames: *mut *mut c_char, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_load_connections_finish(client: *mut NMClient, failures: *mut *mut *mut c_char, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_client_load_connections(
+        client: *mut NMClient,
+        filenames: *mut *mut c_char,
+        failures: *mut *mut *mut c_char,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_client_load_connections_async(
+        client: *mut NMClient,
+        filenames: *mut *mut c_char,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_load_connections_finish(
+        client: *mut NMClient,
+        failures: *mut *mut *mut c_char,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     pub fn nm_client_networking_get_enabled(client: *mut NMClient) -> gboolean;
-    pub fn nm_client_networking_set_enabled(client: *mut NMClient, enabled: gboolean, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_client_networking_set_enabled(
+        client: *mut NMClient,
+        enabled: gboolean,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-    pub fn nm_client_reload(client: *mut NMClient, flags: NMManagerReloadFlags, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_reload_connections(client: *mut NMClient, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_client_reload_connections_async(client: *mut NMClient, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_reload_connections_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_client_reload(
+        client: *mut NMClient,
+        flags: NMManagerReloadFlags,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_reload_connections(
+        client: *mut NMClient,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_client_reload_connections_async(
+        client: *mut NMClient,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_reload_connections_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-    pub fn nm_client_reload_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_client_save_hostname(client: *mut NMClient, hostname: *const c_char, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_client_save_hostname_async(client: *mut NMClient, hostname: *const c_char, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_client_save_hostname_finish(client: *mut NMClient, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_client_set_logging(client: *mut NMClient, level: *const c_char, domains: *const c_char, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_client_reload_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_client_save_hostname(
+        client: *mut NMClient,
+        hostname: *const c_char,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_client_save_hostname_async(
+        client: *mut NMClient,
+        hostname: *const c_char,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_client_save_hostname_finish(
+        client: *mut NMClient,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_client_set_logging(
+        client: *mut NMClient,
+        level: *const c_char,
+        domains: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_client_wait_shutdown(client: *mut NMClient, integrate_maincontext: gboolean, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_client_wait_shutdown(
+        client: *mut NMClient,
+        integrate_maincontext: gboolean,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     pub fn nm_client_wimax_get_enabled(client: *mut NMClient) -> gboolean;
     pub fn nm_client_wimax_hardware_get_enabled(client: *mut NMClient) -> gboolean;
     pub fn nm_client_wimax_set_enabled(client: *mut NMClient, enabled: gboolean);
@@ -6572,32 +7282,91 @@ extern "C" {
     // NMDevice
     //=========================================================================
     pub fn nm_device_get_type() -> GType;
-    pub fn nm_device_disambiguate_names(devices: *mut *mut NMDevice, num_devices: c_int) -> *mut *mut c_char;
-    pub fn nm_device_connection_compatible(device: *mut NMDevice, connection: *mut NMConnection, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_device_connection_valid(device: *mut NMDevice, connection: *mut NMConnection) -> gboolean;
-    pub fn nm_device_delete(device: *mut NMDevice, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_device_delete_async(device: *mut NMDevice, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_device_delete_finish(device: *mut NMDevice, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_device_disconnect(device: *mut NMDevice, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_device_disconnect_async(device: *mut NMDevice, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_device_disconnect_finish(device: *mut NMDevice, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_device_filter_connections(device: *mut NMDevice, connections: *const glib::GPtrArray) -> *mut glib::GPtrArray;
+    pub fn nm_device_disambiguate_names(
+        devices: *mut *mut NMDevice,
+        num_devices: c_int,
+    ) -> *mut *mut c_char;
+    pub fn nm_device_connection_compatible(
+        device: *mut NMDevice,
+        connection: *mut NMConnection,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_device_connection_valid(
+        device: *mut NMDevice,
+        connection: *mut NMConnection,
+    ) -> gboolean;
+    pub fn nm_device_delete(
+        device: *mut NMDevice,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_device_delete_async(
+        device: *mut NMDevice,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_device_delete_finish(
+        device: *mut NMDevice,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_device_disconnect(
+        device: *mut NMDevice,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_device_disconnect_async(
+        device: *mut NMDevice,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_device_disconnect_finish(
+        device: *mut NMDevice,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_device_filter_connections(
+        device: *mut NMDevice,
+        connections: *const glib::GPtrArray,
+    ) -> *mut glib::GPtrArray;
     pub fn nm_device_get_active_connection(device: *mut NMDevice) -> *mut NMActiveConnection;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_get_applied_connection(device: *mut NMDevice, flags: u32, version_id: *mut u64, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> *mut NMConnection;
+    pub fn nm_device_get_applied_connection(
+        device: *mut NMDevice,
+        flags: u32,
+        version_id: *mut u64,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMConnection;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_get_applied_connection_async(device: *mut NMDevice, flags: u32, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_device_get_applied_connection_async(
+        device: *mut NMDevice,
+        flags: u32,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_get_applied_connection_finish(device: *mut NMDevice, result: *mut gio::GAsyncResult, version_id: *mut u64, error: *mut *mut glib::GError) -> *mut NMConnection;
+    pub fn nm_device_get_applied_connection_finish(
+        device: *mut NMDevice,
+        result: *mut gio::GAsyncResult,
+        version_id: *mut u64,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMConnection;
     pub fn nm_device_get_autoconnect(device: *mut NMDevice) -> gboolean;
     pub fn nm_device_get_available_connections(device: *mut NMDevice) -> *const glib::GPtrArray;
     pub fn nm_device_get_capabilities(device: *mut NMDevice) -> NMDeviceCapabilities;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_device_get_connectivity(device: *mut NMDevice, addr_family: c_int) -> NMConnectivityState;
+    pub fn nm_device_get_connectivity(
+        device: *mut NMDevice,
+        addr_family: c_int,
+    ) -> NMConnectivityState;
     pub fn nm_device_get_description(device: *mut NMDevice) -> *const c_char;
     pub fn nm_device_get_device_type(device: *mut NMDevice) -> NMDeviceType;
     pub fn nm_device_get_dhcp4_config(device: *mut NMDevice) -> *mut NMDhcpConfig;
@@ -6645,13 +7414,32 @@ extern "C" {
     pub fn nm_device_is_software(device: *mut NMDevice) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_reapply(device: *mut NMDevice, connection: *mut NMConnection, version_id: u64, flags: u32, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_device_reapply(
+        device: *mut NMDevice,
+        connection: *mut NMConnection,
+        version_id: u64,
+        flags: u32,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_reapply_async(device: *mut NMDevice, connection: *mut NMConnection, version_id: u64, flags: u32, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_device_reapply_async(
+        device: *mut NMDevice,
+        connection: *mut NMConnection,
+        version_id: u64,
+        flags: u32,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_reapply_finish(device: *mut NMDevice, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_device_reapply_finish(
+        device: *mut NMDevice,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     pub fn nm_device_set_autoconnect(device: *mut NMDevice, autoconnect: gboolean);
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -6713,10 +7501,14 @@ extern "C" {
     pub fn nm_device_ethernet_get_type() -> GType;
     pub fn nm_device_ethernet_get_carrier(device: *mut NMDeviceEthernet) -> gboolean;
     pub fn nm_device_ethernet_get_hw_address(device: *mut NMDeviceEthernet) -> *const c_char;
-    pub fn nm_device_ethernet_get_permanent_hw_address(device: *mut NMDeviceEthernet) -> *const c_char;
+    pub fn nm_device_ethernet_get_permanent_hw_address(
+        device: *mut NMDeviceEthernet,
+    ) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_ethernet_get_s390_subchannels(device: *mut NMDeviceEthernet) -> *const *const c_char;
+    pub fn nm_device_ethernet_get_s390_subchannels(
+        device: *mut NMDeviceEthernet,
+    ) -> *const *const c_char;
     pub fn nm_device_ethernet_get_speed(device: *mut NMDeviceEthernet) -> u32;
 
     //=========================================================================
@@ -6904,11 +7696,15 @@ extern "C" {
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn nm_device_modem_get_apn(self_: *mut NMDeviceModem) -> *const c_char;
-    pub fn nm_device_modem_get_current_capabilities(self_: *mut NMDeviceModem) -> NMDeviceModemCapabilities;
+    pub fn nm_device_modem_get_current_capabilities(
+        self_: *mut NMDeviceModem,
+    ) -> NMDeviceModemCapabilities;
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn nm_device_modem_get_device_id(self_: *mut NMDeviceModem) -> *const c_char;
-    pub fn nm_device_modem_get_modem_capabilities(self_: *mut NMDeviceModem) -> NMDeviceModemCapabilities;
+    pub fn nm_device_modem_get_modem_capabilities(
+        self_: *mut NMDeviceModem,
+    ) -> NMDeviceModemCapabilities;
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn nm_device_modem_get_operator_code(self_: *mut NMDeviceModem) -> *const c_char;
@@ -6929,7 +7725,9 @@ extern "C" {
     pub fn nm_device_ovs_bridge_get_type() -> GType;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_device_ovs_bridge_get_slaves(device: *mut NMDeviceOvsBridge) -> *const glib::GPtrArray;
+    pub fn nm_device_ovs_bridge_get_slaves(
+        device: *mut NMDeviceOvsBridge,
+    ) -> *const glib::GPtrArray;
 
     //=========================================================================
     // NMDeviceOvsInterface
@@ -7088,7 +7886,10 @@ extern "C" {
     // NMDeviceWifi
     //=========================================================================
     pub fn nm_device_wifi_get_type() -> GType;
-    pub fn nm_device_wifi_get_access_point_by_path(device: *mut NMDeviceWifi, path: *const c_char) -> *mut NMAccessPoint;
+    pub fn nm_device_wifi_get_access_point_by_path(
+        device: *mut NMDeviceWifi,
+        path: *const c_char,
+    ) -> *mut NMAccessPoint;
     pub fn nm_device_wifi_get_access_points(device: *mut NMDeviceWifi) -> *const glib::GPtrArray;
     pub fn nm_device_wifi_get_active_access_point(device: *mut NMDeviceWifi) -> *mut NMAccessPoint;
     pub fn nm_device_wifi_get_bitrate(device: *mut NMDeviceWifi) -> u32;
@@ -7099,15 +7900,39 @@ extern "C" {
     pub fn nm_device_wifi_get_last_scan(device: *mut NMDeviceWifi) -> i64;
     pub fn nm_device_wifi_get_mode(device: *mut NMDeviceWifi) -> NM80211Mode;
     pub fn nm_device_wifi_get_permanent_hw_address(device: *mut NMDeviceWifi) -> *const c_char;
-    pub fn nm_device_wifi_request_scan(device: *mut NMDeviceWifi, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_device_wifi_request_scan_async(device: *mut NMDeviceWifi, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_device_wifi_request_scan_finish(device: *mut NMDeviceWifi, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_device_wifi_request_scan(
+        device: *mut NMDeviceWifi,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_device_wifi_request_scan_async(
+        device: *mut NMDeviceWifi,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_device_wifi_request_scan_finish(
+        device: *mut NMDeviceWifi,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_wifi_request_scan_options(device: *mut NMDeviceWifi, options: *mut glib::GVariant, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_device_wifi_request_scan_options(
+        device: *mut NMDeviceWifi,
+        options: *mut glib::GVariant,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_device_wifi_request_scan_options_async(device: *mut NMDeviceWifi, options: *mut glib::GVariant, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_device_wifi_request_scan_options_async(
+        device: *mut NMDeviceWifi,
+        options: *mut glib::GVariant,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
 
     //=========================================================================
     // NMDeviceWifiP2P
@@ -7120,22 +7945,44 @@ extern "C" {
     pub fn nm_device_wifi_p2p_get_hw_address(device: *mut NMDeviceWifiP2P) -> *const c_char;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_device_wifi_p2p_get_peer_by_path(device: *mut NMDeviceWifiP2P, path: *const c_char) -> *mut NMWifiP2PPeer;
+    pub fn nm_device_wifi_p2p_get_peer_by_path(
+        device: *mut NMDeviceWifiP2P,
+        path: *const c_char,
+    ) -> *mut NMWifiP2PPeer;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_device_wifi_p2p_get_peers(device: *mut NMDeviceWifiP2P) -> *const glib::GPtrArray;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_device_wifi_p2p_start_find(device: *mut NMDeviceWifiP2P, options: *mut glib::GVariant, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_device_wifi_p2p_start_find(
+        device: *mut NMDeviceWifiP2P,
+        options: *mut glib::GVariant,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_device_wifi_p2p_start_find_finish(device: *mut NMDeviceWifiP2P, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_device_wifi_p2p_start_find_finish(
+        device: *mut NMDeviceWifiP2P,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_device_wifi_p2p_stop_find(device: *mut NMDeviceWifiP2P, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_device_wifi_p2p_stop_find(
+        device: *mut NMDeviceWifiP2P,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_device_wifi_p2p_stop_find_finish(device: *mut NMDeviceWifiP2P, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_device_wifi_p2p_stop_find_finish(
+        device: *mut NMDeviceWifiP2P,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
 
     //=========================================================================
     // NMDeviceWimax
@@ -7146,7 +7993,10 @@ extern "C" {
     pub fn nm_device_wimax_get_center_frequency(self_: *mut NMDeviceWimax) -> c_uint;
     pub fn nm_device_wimax_get_cinr(self_: *mut NMDeviceWimax) -> c_int;
     pub fn nm_device_wimax_get_hw_address(wimax: *mut NMDeviceWimax) -> *const c_char;
-    pub fn nm_device_wimax_get_nsp_by_path(wimax: *mut NMDeviceWimax, path: *const c_char) -> *mut NMWimaxNsp;
+    pub fn nm_device_wimax_get_nsp_by_path(
+        wimax: *mut NMDeviceWimax,
+        path: *const c_char,
+    ) -> *mut NMWimaxNsp;
     pub fn nm_device_wimax_get_nsps(wimax: *mut NMDeviceWimax) -> *const glib::GPtrArray;
     pub fn nm_device_wimax_get_rssi(self_: *mut NMDeviceWimax) -> c_int;
     pub fn nm_device_wimax_get_tx_power(self_: *mut NMDeviceWimax) -> c_int;
@@ -7179,7 +8029,10 @@ extern "C" {
     //=========================================================================
     pub fn nm_dhcp_config_get_type() -> GType;
     pub fn nm_dhcp_config_get_family(config: *mut NMDhcpConfig) -> c_int;
-    pub fn nm_dhcp_config_get_one_option(config: *mut NMDhcpConfig, option: *const c_char) -> *const c_char;
+    pub fn nm_dhcp_config_get_one_option(
+        config: *mut NMDhcpConfig,
+        option: *const c_char,
+    ) -> *const c_char;
     pub fn nm_dhcp_config_get_options(config: *mut NMDhcpConfig) -> *mut glib::GHashTable;
 
     //=========================================================================
@@ -7208,41 +8061,116 @@ extern "C" {
     // NMRemoteConnection
     //=========================================================================
     pub fn nm_remote_connection_get_type() -> GType;
-    pub fn nm_remote_connection_commit_changes(connection: *mut NMRemoteConnection, save_to_disk: gboolean, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_remote_connection_commit_changes_async(connection: *mut NMRemoteConnection, save_to_disk: gboolean, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_remote_connection_commit_changes_finish(connection: *mut NMRemoteConnection, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_remote_connection_delete(connection: *mut NMRemoteConnection, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_remote_connection_delete_async(connection: *mut NMRemoteConnection, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_remote_connection_delete_finish(connection: *mut NMRemoteConnection, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_remote_connection_commit_changes(
+        connection: *mut NMRemoteConnection,
+        save_to_disk: gboolean,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_remote_connection_commit_changes_async(
+        connection: *mut NMRemoteConnection,
+        save_to_disk: gboolean,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_remote_connection_commit_changes_finish(
+        connection: *mut NMRemoteConnection,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_remote_connection_delete(
+        connection: *mut NMRemoteConnection,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_remote_connection_delete_async(
+        connection: *mut NMRemoteConnection,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_remote_connection_delete_finish(
+        connection: *mut NMRemoteConnection,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_remote_connection_get_filename(connection: *mut NMRemoteConnection) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_remote_connection_get_flags(connection: *mut NMRemoteConnection) -> NMSettingsConnectionFlags;
-    pub fn nm_remote_connection_get_secrets(connection: *mut NMRemoteConnection, setting_name: *const c_char, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> *mut glib::GVariant;
-    pub fn nm_remote_connection_get_secrets_async(connection: *mut NMRemoteConnection, setting_name: *const c_char, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_remote_connection_get_secrets_finish(connection: *mut NMRemoteConnection, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut glib::GVariant;
+    pub fn nm_remote_connection_get_flags(
+        connection: *mut NMRemoteConnection,
+    ) -> NMSettingsConnectionFlags;
+    pub fn nm_remote_connection_get_secrets(
+        connection: *mut NMRemoteConnection,
+        setting_name: *const c_char,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> *mut glib::GVariant;
+    pub fn nm_remote_connection_get_secrets_async(
+        connection: *mut NMRemoteConnection,
+        setting_name: *const c_char,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_remote_connection_get_secrets_finish(
+        connection: *mut NMRemoteConnection,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut glib::GVariant;
     pub fn nm_remote_connection_get_unsaved(connection: *mut NMRemoteConnection) -> gboolean;
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn nm_remote_connection_get_version_id(connection: *mut NMRemoteConnection) -> u64;
     pub fn nm_remote_connection_get_visible(connection: *mut NMRemoteConnection) -> gboolean;
-    pub fn nm_remote_connection_save(connection: *mut NMRemoteConnection, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_remote_connection_save_async(connection: *mut NMRemoteConnection, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_remote_connection_save_finish(connection: *mut NMRemoteConnection, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_remote_connection_save(
+        connection: *mut NMRemoteConnection,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_remote_connection_save_async(
+        connection: *mut NMRemoteConnection,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_remote_connection_save_finish(
+        connection: *mut NMRemoteConnection,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_remote_connection_update2(connection: *mut NMRemoteConnection, settings: *mut glib::GVariant, flags: NMSettingsUpdate2Flags, args: *mut glib::GVariant, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
+    pub fn nm_remote_connection_update2(
+        connection: *mut NMRemoteConnection,
+        settings: *mut glib::GVariant,
+        flags: NMSettingsUpdate2Flags,
+        args: *mut glib::GVariant,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_remote_connection_update2_finish(connection: *mut NMRemoteConnection, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> *mut glib::GVariant;
+    pub fn nm_remote_connection_update2_finish(
+        connection: *mut NMRemoteConnection,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> *mut glib::GVariant;
 
     //=========================================================================
     // NMSecretAgentOld
     //=========================================================================
     pub fn nm_secret_agent_old_get_type() -> GType;
-    pub fn nm_secret_agent_old_delete_secrets(self_: *mut NMSecretAgentOld, connection: *mut NMConnection, callback: NMSecretAgentOldDeleteSecretsFunc, user_data: gpointer);
+    pub fn nm_secret_agent_old_delete_secrets(
+        self_: *mut NMSecretAgentOld,
+        connection: *mut NMConnection,
+        callback: NMSecretAgentOldDeleteSecretsFunc,
+        user_data: gpointer,
+    );
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn nm_secret_agent_old_destroy(self_: *mut NMSecretAgentOld);
@@ -7251,25 +8179,70 @@ extern "C" {
     pub fn nm_secret_agent_old_enable(self_: *mut NMSecretAgentOld, enable: gboolean);
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_secret_agent_old_get_context_busy_watcher(self_: *mut NMSecretAgentOld) -> *mut gobject::GObject;
+    pub fn nm_secret_agent_old_get_context_busy_watcher(
+        self_: *mut NMSecretAgentOld,
+    ) -> *mut gobject::GObject;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_secret_agent_old_get_dbus_connection(self_: *mut NMSecretAgentOld) -> *mut gio::GDBusConnection;
+    pub fn nm_secret_agent_old_get_dbus_connection(
+        self_: *mut NMSecretAgentOld,
+    ) -> *mut gio::GDBusConnection;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn nm_secret_agent_old_get_dbus_name_owner(self_: *mut NMSecretAgentOld) -> *const c_char;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_secret_agent_old_get_main_context(self_: *mut NMSecretAgentOld) -> *mut glib::GMainContext;
+    pub fn nm_secret_agent_old_get_main_context(
+        self_: *mut NMSecretAgentOld,
+    ) -> *mut glib::GMainContext;
     pub fn nm_secret_agent_old_get_registered(self_: *mut NMSecretAgentOld) -> gboolean;
-    pub fn nm_secret_agent_old_get_secrets(self_: *mut NMSecretAgentOld, connection: *mut NMConnection, setting_name: *const c_char, hints: *mut *const c_char, flags: NMSecretAgentGetSecretsFlags, callback: NMSecretAgentOldGetSecretsFunc, user_data: gpointer);
-    pub fn nm_secret_agent_old_register(self_: *mut NMSecretAgentOld, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_secret_agent_old_register_async(self_: *mut NMSecretAgentOld, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_secret_agent_old_register_finish(self_: *mut NMSecretAgentOld, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_secret_agent_old_save_secrets(self_: *mut NMSecretAgentOld, connection: *mut NMConnection, callback: NMSecretAgentOldSaveSecretsFunc, user_data: gpointer);
-    pub fn nm_secret_agent_old_unregister(self_: *mut NMSecretAgentOld, cancellable: *mut gio::GCancellable, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_secret_agent_old_unregister_async(self_: *mut NMSecretAgentOld, cancellable: *mut gio::GCancellable, callback: gio::GAsyncReadyCallback, user_data: gpointer);
-    pub fn nm_secret_agent_old_unregister_finish(self_: *mut NMSecretAgentOld, result: *mut gio::GAsyncResult, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_secret_agent_old_get_secrets(
+        self_: *mut NMSecretAgentOld,
+        connection: *mut NMConnection,
+        setting_name: *const c_char,
+        hints: *mut *const c_char,
+        flags: NMSecretAgentGetSecretsFlags,
+        callback: NMSecretAgentOldGetSecretsFunc,
+        user_data: gpointer,
+    );
+    pub fn nm_secret_agent_old_register(
+        self_: *mut NMSecretAgentOld,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_secret_agent_old_register_async(
+        self_: *mut NMSecretAgentOld,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_secret_agent_old_register_finish(
+        self_: *mut NMSecretAgentOld,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_secret_agent_old_save_secrets(
+        self_: *mut NMSecretAgentOld,
+        connection: *mut NMConnection,
+        callback: NMSecretAgentOldSaveSecretsFunc,
+        user_data: gpointer,
+    );
+    pub fn nm_secret_agent_old_unregister(
+        self_: *mut NMSecretAgentOld,
+        cancellable: *mut gio::GCancellable,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_secret_agent_old_unregister_async(
+        self_: *mut NMSecretAgentOld,
+        cancellable: *mut gio::GCancellable,
+        callback: gio::GAsyncReadyCallback,
+        user_data: gpointer,
+    );
+    pub fn nm_secret_agent_old_unregister_finish(
+        self_: *mut NMSecretAgentOld,
+        result: *mut gio::GAsyncResult,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSetting
@@ -7277,45 +8250,109 @@ extern "C" {
     pub fn nm_setting_get_type() -> GType;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-    pub fn nm_setting_get_enum_property_type(setting_type: GType, property_name: *const c_char) -> GType;
+    pub fn nm_setting_get_enum_property_type(
+        setting_type: GType,
+        property_name: *const c_char,
+    ) -> GType;
     pub fn nm_setting_lookup_type(name: *const c_char) -> GType;
-    pub fn nm_setting_compare(a: *mut NMSetting, b: *mut NMSetting, flags: NMSettingCompareFlags) -> gboolean;
-    pub fn nm_setting_diff(a: *mut NMSetting, b: *mut NMSetting, flags: NMSettingCompareFlags, invert_results: gboolean, results: *mut *mut glib::GHashTable) -> gboolean;
+    pub fn nm_setting_compare(
+        a: *mut NMSetting,
+        b: *mut NMSetting,
+        flags: NMSettingCompareFlags,
+    ) -> gboolean;
+    pub fn nm_setting_diff(
+        a: *mut NMSetting,
+        b: *mut NMSetting,
+        flags: NMSettingCompareFlags,
+        invert_results: gboolean,
+        results: *mut *mut glib::GHashTable,
+    ) -> gboolean;
     pub fn nm_setting_duplicate(setting: *mut NMSetting) -> *mut NMSetting;
-    pub fn nm_setting_enumerate_values(setting: *mut NMSetting, func: NMSettingValueIterFn, user_data: gpointer);
-    pub fn nm_setting_get_dbus_property_type(setting: *mut NMSetting, property_name: *const c_char) -> *const glib::GVariantType;
+    pub fn nm_setting_enumerate_values(
+        setting: *mut NMSetting,
+        func: NMSettingValueIterFn,
+        user_data: gpointer,
+    );
+    pub fn nm_setting_get_dbus_property_type(
+        setting: *mut NMSetting,
+        property_name: *const c_char,
+    ) -> *const glib::GVariantType;
     pub fn nm_setting_get_name(setting: *mut NMSetting) -> *const c_char;
-    pub fn nm_setting_get_secret_flags(setting: *mut NMSetting, secret_name: *const c_char, out_flags: *mut NMSettingSecretFlags, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_get_secret_flags(
+        setting: *mut NMSetting,
+        secret_name: *const c_char,
+        out_flags: *mut NMSettingSecretFlags,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn nm_setting_option_clear_by_name(setting: *mut NMSetting, predicate: NMUtilsPredicateStr);
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_option_get(setting: *mut NMSetting, opt_name: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_setting_option_get(
+        setting: *mut NMSetting,
+        opt_name: *const c_char,
+    ) -> *mut glib::GVariant;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_option_get_all_names(setting: *mut NMSetting, out_len: *mut c_uint) -> *const *const c_char;
+    pub fn nm_setting_option_get_all_names(
+        setting: *mut NMSetting,
+        out_len: *mut c_uint,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_option_get_boolean(setting: *mut NMSetting, opt_name: *const c_char, out_value: *mut gboolean) -> gboolean;
+    pub fn nm_setting_option_get_boolean(
+        setting: *mut NMSetting,
+        opt_name: *const c_char,
+        out_value: *mut gboolean,
+    ) -> gboolean;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_option_get_uint32(setting: *mut NMSetting, opt_name: *const c_char, out_value: *mut u32) -> gboolean;
+    pub fn nm_setting_option_get_uint32(
+        setting: *mut NMSetting,
+        opt_name: *const c_char,
+        out_value: *mut u32,
+    ) -> gboolean;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_option_set(setting: *mut NMSetting, opt_name: *const c_char, variant: *mut glib::GVariant);
+    pub fn nm_setting_option_set(
+        setting: *mut NMSetting,
+        opt_name: *const c_char,
+        variant: *mut glib::GVariant,
+    );
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_option_set_boolean(setting: *mut NMSetting, opt_name: *const c_char, value: gboolean);
+    pub fn nm_setting_option_set_boolean(
+        setting: *mut NMSetting,
+        opt_name: *const c_char,
+        value: gboolean,
+    );
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_option_set_uint32(setting: *mut NMSetting, opt_name: *const c_char, value: u32);
-    pub fn nm_setting_set_secret_flags(setting: *mut NMSetting, secret_name: *const c_char, flags: NMSettingSecretFlags, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_option_set_uint32(
+        setting: *mut NMSetting,
+        opt_name: *const c_char,
+        value: u32,
+    );
+    pub fn nm_setting_set_secret_flags(
+        setting: *mut NMSetting,
+        secret_name: *const c_char,
+        flags: NMSettingSecretFlags,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     pub fn nm_setting_to_string(setting: *mut NMSetting) -> *mut c_char;
-    pub fn nm_setting_verify(setting: *mut NMSetting, connection: *mut NMConnection, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_verify(
+        setting: *mut NMSetting,
+        connection: *mut NMConnection,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_verify_secrets(setting: *mut NMSetting, connection: *mut NMConnection, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_verify_secrets(
+        setting: *mut NMSetting,
+        connection: *mut NMConnection,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSetting6Lowpan
@@ -7337,14 +8374,30 @@ extern "C" {
     pub fn nm_setting_802_1x_new() -> *mut NMSetting;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_802_1x_check_cert_scheme(pdata: gconstpointer, length: size_t, error: *mut *mut glib::GError) -> NMSetting8021xCKScheme;
-    pub fn nm_setting_802_1x_add_altsubject_match(setting: *mut NMSetting8021x, altsubject_match: *const c_char) -> gboolean;
-    pub fn nm_setting_802_1x_add_eap_method(setting: *mut NMSetting8021x, eap: *const c_char) -> gboolean;
-    pub fn nm_setting_802_1x_add_phase2_altsubject_match(setting: *mut NMSetting8021x, phase2_altsubject_match: *const c_char) -> gboolean;
+    pub fn nm_setting_802_1x_check_cert_scheme(
+        pdata: gconstpointer,
+        length: size_t,
+        error: *mut *mut glib::GError,
+    ) -> NMSetting8021xCKScheme;
+    pub fn nm_setting_802_1x_add_altsubject_match(
+        setting: *mut NMSetting8021x,
+        altsubject_match: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_802_1x_add_eap_method(
+        setting: *mut NMSetting8021x,
+        eap: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_802_1x_add_phase2_altsubject_match(
+        setting: *mut NMSetting8021x,
+        phase2_altsubject_match: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_802_1x_clear_altsubject_matches(setting: *mut NMSetting8021x);
     pub fn nm_setting_802_1x_clear_eap_methods(setting: *mut NMSetting8021x);
     pub fn nm_setting_802_1x_clear_phase2_altsubject_matches(setting: *mut NMSetting8021x);
-    pub fn nm_setting_802_1x_get_altsubject_match(setting: *mut NMSetting8021x, i: u32) -> *const c_char;
+    pub fn nm_setting_802_1x_get_altsubject_match(
+        setting: *mut NMSetting8021x,
+        i: u32,
+    ) -> *const c_char;
     pub fn nm_setting_802_1x_get_anonymous_identity(setting: *mut NMSetting8021x) -> *const c_char;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
@@ -7355,22 +8408,34 @@ extern "C" {
     pub fn nm_setting_802_1x_get_ca_cert_password(setting: *mut NMSetting8021x) -> *const c_char;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_802_1x_get_ca_cert_password_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
+    pub fn nm_setting_802_1x_get_ca_cert_password_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSettingSecretFlags;
     pub fn nm_setting_802_1x_get_ca_cert_path(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_ca_cert_scheme(setting: *mut NMSetting8021x) -> NMSetting8021xCKScheme;
+    pub fn nm_setting_802_1x_get_ca_cert_scheme(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xCKScheme;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn nm_setting_802_1x_get_ca_cert_uri(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_ca_path(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_client_cert_blob(setting: *mut NMSetting8021x) -> *mut glib::GBytes;
+    pub fn nm_setting_802_1x_get_client_cert_blob(
+        setting: *mut NMSetting8021x,
+    ) -> *mut glib::GBytes;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_802_1x_get_client_cert_password(setting: *mut NMSetting8021x) -> *const c_char;
+    pub fn nm_setting_802_1x_get_client_cert_password(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_802_1x_get_client_cert_password_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
+    pub fn nm_setting_802_1x_get_client_cert_password_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSettingSecretFlags;
     pub fn nm_setting_802_1x_get_client_cert_path(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_client_cert_scheme(setting: *mut NMSetting8021x) -> NMSetting8021xCKScheme;
+    pub fn nm_setting_802_1x_get_client_cert_scheme(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xCKScheme;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn nm_setting_802_1x_get_client_cert_uri(setting: *mut NMSetting8021x) -> *const c_char;
@@ -7379,12 +8444,14 @@ extern "C" {
     pub fn nm_setting_802_1x_get_domain_match(setting: *mut NMSetting8021x) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_802_1x_get_domain_suffix_match(setting: *mut NMSetting8021x) -> *const c_char;
+    pub fn nm_setting_802_1x_get_domain_suffix_match(setting: *mut NMSetting8021x)
+        -> *const c_char;
     pub fn nm_setting_802_1x_get_eap_method(setting: *mut NMSetting8021x, i: u32) -> *const c_char;
     pub fn nm_setting_802_1x_get_identity(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_num_altsubject_matches(setting: *mut NMSetting8021x) -> u32;
     pub fn nm_setting_802_1x_get_num_eap_methods(setting: *mut NMSetting8021x) -> u32;
-    pub fn nm_setting_802_1x_get_num_phase2_altsubject_matches(setting: *mut NMSetting8021x) -> u32;
+    pub fn nm_setting_802_1x_get_num_phase2_altsubject_matches(setting: *mut NMSetting8021x)
+        -> u32;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn nm_setting_802_1x_get_openssl_ciphers(setting: *mut NMSetting8021x) -> *const c_char;
@@ -7393,84 +8460,192 @@ extern "C" {
     pub fn nm_setting_802_1x_get_optional(setting: *mut NMSetting8021x) -> gboolean;
     pub fn nm_setting_802_1x_get_pac_file(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_password(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_password_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
+    pub fn nm_setting_802_1x_get_password_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSettingSecretFlags;
     pub fn nm_setting_802_1x_get_password_raw(setting: *mut NMSetting8021x) -> *mut glib::GBytes;
-    pub fn nm_setting_802_1x_get_password_raw_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
+    pub fn nm_setting_802_1x_get_password_raw_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSettingSecretFlags;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_802_1x_get_phase1_auth_flags(setting: *mut NMSetting8021x) -> NMSetting8021xAuthFlags;
-    pub fn nm_setting_802_1x_get_phase1_fast_provisioning(setting: *mut NMSetting8021x) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase1_auth_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xAuthFlags;
+    pub fn nm_setting_802_1x_get_phase1_fast_provisioning(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
     pub fn nm_setting_802_1x_get_phase1_peaplabel(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_phase1_peapver(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_altsubject_match(setting: *mut NMSetting8021x, i: u32) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_altsubject_match(
+        setting: *mut NMSetting8021x,
+        i: u32,
+    ) -> *const c_char;
     pub fn nm_setting_802_1x_get_phase2_auth(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_phase2_autheap(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_ca_cert_blob(setting: *mut NMSetting8021x) -> *mut glib::GBytes;
+    pub fn nm_setting_802_1x_get_phase2_ca_cert_blob(
+        setting: *mut NMSetting8021x,
+    ) -> *mut glib::GBytes;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_802_1x_get_phase2_ca_cert_password(setting: *mut NMSetting8021x) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_ca_cert_password(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_802_1x_get_phase2_ca_cert_password_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
-    pub fn nm_setting_802_1x_get_phase2_ca_cert_path(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_ca_cert_scheme(setting: *mut NMSetting8021x) -> NMSetting8021xCKScheme;
+    pub fn nm_setting_802_1x_get_phase2_ca_cert_password_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSettingSecretFlags;
+    pub fn nm_setting_802_1x_get_phase2_ca_cert_path(setting: *mut NMSetting8021x)
+        -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_ca_cert_scheme(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xCKScheme;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn nm_setting_802_1x_get_phase2_ca_cert_uri(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_phase2_ca_path(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_client_cert_blob(setting: *mut NMSetting8021x) -> *mut glib::GBytes;
+    pub fn nm_setting_802_1x_get_phase2_client_cert_blob(
+        setting: *mut NMSetting8021x,
+    ) -> *mut glib::GBytes;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_802_1x_get_phase2_client_cert_password(setting: *mut NMSetting8021x) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_client_cert_password(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_802_1x_get_phase2_client_cert_password_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
-    pub fn nm_setting_802_1x_get_phase2_client_cert_path(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_client_cert_scheme(setting: *mut NMSetting8021x) -> NMSetting8021xCKScheme;
+    pub fn nm_setting_802_1x_get_phase2_client_cert_password_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSettingSecretFlags;
+    pub fn nm_setting_802_1x_get_phase2_client_cert_path(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_client_cert_scheme(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xCKScheme;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-    pub fn nm_setting_802_1x_get_phase2_client_cert_uri(setting: *mut NMSetting8021x) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_client_cert_uri(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_setting_802_1x_get_phase2_domain_match(setting: *mut NMSetting8021x) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_domain_match(setting: *mut NMSetting8021x)
+        -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_802_1x_get_phase2_domain_suffix_match(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_private_key_blob(setting: *mut NMSetting8021x) -> *mut glib::GBytes;
-    pub fn nm_setting_802_1x_get_phase2_private_key_format(setting: *mut NMSetting8021x) -> NMSetting8021xCKFormat;
-    pub fn nm_setting_802_1x_get_phase2_private_key_password(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_private_key_password_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
-    pub fn nm_setting_802_1x_get_phase2_private_key_path(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_private_key_scheme(setting: *mut NMSetting8021x) -> NMSetting8021xCKScheme;
+    pub fn nm_setting_802_1x_get_phase2_domain_suffix_match(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_private_key_blob(
+        setting: *mut NMSetting8021x,
+    ) -> *mut glib::GBytes;
+    pub fn nm_setting_802_1x_get_phase2_private_key_format(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xCKFormat;
+    pub fn nm_setting_802_1x_get_phase2_private_key_password(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_private_key_password_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSettingSecretFlags;
+    pub fn nm_setting_802_1x_get_phase2_private_key_path(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_private_key_scheme(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xCKScheme;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-    pub fn nm_setting_802_1x_get_phase2_private_key_uri(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_phase2_subject_match(setting: *mut NMSetting8021x) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_private_key_uri(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
+    pub fn nm_setting_802_1x_get_phase2_subject_match(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
     pub fn nm_setting_802_1x_get_pin(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_pin_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
-    pub fn nm_setting_802_1x_get_private_key_blob(setting: *mut NMSetting8021x) -> *mut glib::GBytes;
-    pub fn nm_setting_802_1x_get_private_key_format(setting: *mut NMSetting8021x) -> NMSetting8021xCKFormat;
-    pub fn nm_setting_802_1x_get_private_key_password(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_private_key_password_flags(setting: *mut NMSetting8021x) -> NMSettingSecretFlags;
+    pub fn nm_setting_802_1x_get_private_key_blob(
+        setting: *mut NMSetting8021x,
+    ) -> *mut glib::GBytes;
+    pub fn nm_setting_802_1x_get_private_key_format(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xCKFormat;
+    pub fn nm_setting_802_1x_get_private_key_password(
+        setting: *mut NMSetting8021x,
+    ) -> *const c_char;
+    pub fn nm_setting_802_1x_get_private_key_password_flags(
+        setting: *mut NMSetting8021x,
+    ) -> NMSettingSecretFlags;
     pub fn nm_setting_802_1x_get_private_key_path(setting: *mut NMSetting8021x) -> *const c_char;
-    pub fn nm_setting_802_1x_get_private_key_scheme(setting: *mut NMSetting8021x) -> NMSetting8021xCKScheme;
+    pub fn nm_setting_802_1x_get_private_key_scheme(
+        setting: *mut NMSetting8021x,
+    ) -> NMSetting8021xCKScheme;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn nm_setting_802_1x_get_private_key_uri(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_subject_match(setting: *mut NMSetting8021x) -> *const c_char;
     pub fn nm_setting_802_1x_get_system_ca_certs(setting: *mut NMSetting8021x) -> gboolean;
     pub fn nm_setting_802_1x_remove_altsubject_match(setting: *mut NMSetting8021x, i: u32);
-    pub fn nm_setting_802_1x_remove_altsubject_match_by_value(setting: *mut NMSetting8021x, altsubject_match: *const c_char) -> gboolean;
+    pub fn nm_setting_802_1x_remove_altsubject_match_by_value(
+        setting: *mut NMSetting8021x,
+        altsubject_match: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_802_1x_remove_eap_method(setting: *mut NMSetting8021x, i: u32);
-    pub fn nm_setting_802_1x_remove_eap_method_by_value(setting: *mut NMSetting8021x, eap: *const c_char) -> gboolean;
+    pub fn nm_setting_802_1x_remove_eap_method_by_value(
+        setting: *mut NMSetting8021x,
+        eap: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_802_1x_remove_phase2_altsubject_match(setting: *mut NMSetting8021x, i: u32);
-    pub fn nm_setting_802_1x_remove_phase2_altsubject_match_by_value(setting: *mut NMSetting8021x, phase2_altsubject_match: *const c_char) -> gboolean;
-    pub fn nm_setting_802_1x_set_ca_cert(setting: *mut NMSetting8021x, value: *const c_char, scheme: NMSetting8021xCKScheme, out_format: *mut NMSetting8021xCKFormat, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_setting_802_1x_set_client_cert(setting: *mut NMSetting8021x, value: *const c_char, scheme: NMSetting8021xCKScheme, out_format: *mut NMSetting8021xCKFormat, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_setting_802_1x_set_phase2_ca_cert(setting: *mut NMSetting8021x, value: *const c_char, scheme: NMSetting8021xCKScheme, out_format: *mut NMSetting8021xCKFormat, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_setting_802_1x_set_phase2_client_cert(setting: *mut NMSetting8021x, value: *const c_char, scheme: NMSetting8021xCKScheme, out_format: *mut NMSetting8021xCKFormat, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_setting_802_1x_set_phase2_private_key(setting: *mut NMSetting8021x, value: *const c_char, password: *const c_char, scheme: NMSetting8021xCKScheme, out_format: *mut NMSetting8021xCKFormat, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_setting_802_1x_set_private_key(setting: *mut NMSetting8021x, value: *const c_char, password: *const c_char, scheme: NMSetting8021xCKScheme, out_format: *mut NMSetting8021xCKFormat, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_802_1x_remove_phase2_altsubject_match_by_value(
+        setting: *mut NMSetting8021x,
+        phase2_altsubject_match: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_802_1x_set_ca_cert(
+        setting: *mut NMSetting8021x,
+        value: *const c_char,
+        scheme: NMSetting8021xCKScheme,
+        out_format: *mut NMSetting8021xCKFormat,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_setting_802_1x_set_client_cert(
+        setting: *mut NMSetting8021x,
+        value: *const c_char,
+        scheme: NMSetting8021xCKScheme,
+        out_format: *mut NMSetting8021xCKFormat,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_setting_802_1x_set_phase2_ca_cert(
+        setting: *mut NMSetting8021x,
+        value: *const c_char,
+        scheme: NMSetting8021xCKScheme,
+        out_format: *mut NMSetting8021xCKFormat,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_setting_802_1x_set_phase2_client_cert(
+        setting: *mut NMSetting8021x,
+        value: *const c_char,
+        scheme: NMSetting8021xCKScheme,
+        out_format: *mut NMSetting8021xCKFormat,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_setting_802_1x_set_phase2_private_key(
+        setting: *mut NMSetting8021x,
+        value: *const c_char,
+        password: *const c_char,
+        scheme: NMSetting8021xCKScheme,
+        out_format: *mut NMSetting8021xCKFormat,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_setting_802_1x_set_private_key(
+        setting: *mut NMSetting8021x,
+        value: *const c_char,
+        password: *const c_char,
+        scheme: NMSetting8021xCKScheme,
+        out_format: *mut NMSetting8021xCKFormat,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingAdsl
@@ -7491,7 +8666,9 @@ extern "C" {
     pub fn nm_setting_bluetooth_get_type() -> GType;
     pub fn nm_setting_bluetooth_new() -> *mut NMSetting;
     pub fn nm_setting_bluetooth_get_bdaddr(setting: *mut NMSettingBluetooth) -> *const c_char;
-    pub fn nm_setting_bluetooth_get_connection_type(setting: *mut NMSettingBluetooth) -> *const c_char;
+    pub fn nm_setting_bluetooth_get_connection_type(
+        setting: *mut NMSettingBluetooth,
+    ) -> *const c_char;
 
     //=========================================================================
     // NMSettingBond
@@ -7499,16 +8676,37 @@ extern "C" {
     pub fn nm_setting_bond_get_type() -> GType;
     pub fn nm_setting_bond_new() -> *mut NMSetting;
     pub fn nm_setting_bond_validate_option(name: *const c_char, value: *const c_char) -> gboolean;
-    pub fn nm_setting_bond_add_option(setting: *mut NMSettingBond, name: *const c_char, value: *const c_char) -> gboolean;
+    pub fn nm_setting_bond_add_option(
+        setting: *mut NMSettingBond,
+        name: *const c_char,
+        value: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_bond_get_num_options(setting: *mut NMSettingBond) -> u32;
-    pub fn nm_setting_bond_get_option(setting: *mut NMSettingBond, idx: u32, out_name: *mut *const c_char, out_value: *mut *const c_char) -> gboolean;
-    pub fn nm_setting_bond_get_option_by_name(setting: *mut NMSettingBond, name: *const c_char) -> *const c_char;
-    pub fn nm_setting_bond_get_option_default(setting: *mut NMSettingBond, name: *const c_char) -> *const c_char;
+    pub fn nm_setting_bond_get_option(
+        setting: *mut NMSettingBond,
+        idx: u32,
+        out_name: *mut *const c_char,
+        out_value: *mut *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_bond_get_option_by_name(
+        setting: *mut NMSettingBond,
+        name: *const c_char,
+    ) -> *const c_char;
+    pub fn nm_setting_bond_get_option_default(
+        setting: *mut NMSettingBond,
+        name: *const c_char,
+    ) -> *const c_char;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_setting_bond_get_option_normalized(setting: *mut NMSettingBond, name: *const c_char) -> *const c_char;
+    pub fn nm_setting_bond_get_option_normalized(
+        setting: *mut NMSettingBond,
+        name: *const c_char,
+    ) -> *const c_char;
     pub fn nm_setting_bond_get_valid_options(setting: *mut NMSettingBond) -> *mut *const c_char;
-    pub fn nm_setting_bond_remove_option(setting: *mut NMSettingBond, name: *const c_char) -> gboolean;
+    pub fn nm_setting_bond_remove_option(
+        setting: *mut NMSettingBond,
+        name: *const c_char,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingBondPort
@@ -7551,40 +8749,56 @@ extern "C" {
     pub fn nm_setting_bridge_get_multicast_hash_max(setting: *const NMSettingBridge) -> u32;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_bridge_get_multicast_last_member_count(setting: *const NMSettingBridge) -> u32;
+    pub fn nm_setting_bridge_get_multicast_last_member_count(
+        setting: *const NMSettingBridge,
+    ) -> u32;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_bridge_get_multicast_last_member_interval(setting: *const NMSettingBridge) -> u64;
+    pub fn nm_setting_bridge_get_multicast_last_member_interval(
+        setting: *const NMSettingBridge,
+    ) -> u64;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_bridge_get_multicast_membership_interval(setting: *const NMSettingBridge) -> u64;
+    pub fn nm_setting_bridge_get_multicast_membership_interval(
+        setting: *const NMSettingBridge,
+    ) -> u64;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn nm_setting_bridge_get_multicast_querier(setting: *const NMSettingBridge) -> gboolean;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_bridge_get_multicast_querier_interval(setting: *const NMSettingBridge) -> u64;
+    pub fn nm_setting_bridge_get_multicast_querier_interval(setting: *const NMSettingBridge)
+        -> u64;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn nm_setting_bridge_get_multicast_query_interval(setting: *const NMSettingBridge) -> u64;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_bridge_get_multicast_query_response_interval(setting: *const NMSettingBridge) -> u64;
+    pub fn nm_setting_bridge_get_multicast_query_response_interval(
+        setting: *const NMSettingBridge,
+    ) -> u64;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_setting_bridge_get_multicast_query_use_ifaddr(setting: *const NMSettingBridge) -> gboolean;
+    pub fn nm_setting_bridge_get_multicast_query_use_ifaddr(
+        setting: *const NMSettingBridge,
+    ) -> gboolean;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_setting_bridge_get_multicast_router(setting: *const NMSettingBridge) -> *const c_char;
+    pub fn nm_setting_bridge_get_multicast_router(setting: *const NMSettingBridge)
+        -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_bridge_get_multicast_snooping(setting: *mut NMSettingBridge) -> gboolean;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_bridge_get_multicast_startup_query_count(setting: *const NMSettingBridge) -> u32;
+    pub fn nm_setting_bridge_get_multicast_startup_query_count(
+        setting: *const NMSettingBridge,
+    ) -> u32;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_bridge_get_multicast_startup_query_interval(setting: *const NMSettingBridge) -> u64;
+    pub fn nm_setting_bridge_get_multicast_startup_query_interval(
+        setting: *const NMSettingBridge,
+    ) -> u64;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_setting_bridge_get_num_vlans(setting: *mut NMSettingBridge) -> c_uint;
@@ -7592,7 +8806,10 @@ extern "C" {
     pub fn nm_setting_bridge_get_stp(setting: *mut NMSettingBridge) -> gboolean;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_setting_bridge_get_vlan(setting: *mut NMSettingBridge, idx: c_uint) -> *mut NMBridgeVlan;
+    pub fn nm_setting_bridge_get_vlan(
+        setting: *mut NMSettingBridge,
+        idx: c_uint,
+    ) -> *mut NMBridgeVlan;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_setting_bridge_get_vlan_default_pvid(setting: *mut NMSettingBridge) -> u16;
@@ -7610,7 +8827,11 @@ extern "C" {
     pub fn nm_setting_bridge_remove_vlan(setting: *mut NMSettingBridge, idx: c_uint);
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_setting_bridge_remove_vlan_by_vid(setting: *mut NMSettingBridge, vid_start: u16, vid_end: u16) -> gboolean;
+    pub fn nm_setting_bridge_remove_vlan_by_vid(
+        setting: *mut NMSettingBridge,
+        vid_start: u16,
+        vid_end: u16,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingBridgePort
@@ -7619,7 +8840,10 @@ extern "C" {
     pub fn nm_setting_bridge_port_new() -> *mut NMSetting;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_setting_bridge_port_add_vlan(setting: *mut NMSettingBridgePort, vlan: *mut NMBridgeVlan);
+    pub fn nm_setting_bridge_port_add_vlan(
+        setting: *mut NMSettingBridgePort,
+        vlan: *mut NMBridgeVlan,
+    );
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_setting_bridge_port_clear_vlans(setting: *mut NMSettingBridgePort);
@@ -7631,13 +8855,20 @@ extern "C" {
     pub fn nm_setting_bridge_port_get_priority(setting: *mut NMSettingBridgePort) -> u16;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_setting_bridge_port_get_vlan(setting: *mut NMSettingBridgePort, idx: c_uint) -> *mut NMBridgeVlan;
+    pub fn nm_setting_bridge_port_get_vlan(
+        setting: *mut NMSettingBridgePort,
+        idx: c_uint,
+    ) -> *mut NMBridgeVlan;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_setting_bridge_port_remove_vlan(setting: *mut NMSettingBridgePort, idx: c_uint);
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_setting_bridge_port_remove_vlan_by_vid(setting: *mut NMSettingBridgePort, vid_start: u16, vid_end: u16) -> gboolean;
+    pub fn nm_setting_bridge_port_remove_vlan_by_vid(
+        setting: *mut NMSettingBridgePort,
+        vid_start: u16,
+        vid_end: u16,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingCdma
@@ -7659,9 +8890,20 @@ extern "C" {
     pub fn nm_setting_connection_new() -> *mut NMSetting;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_connection_add_ip_ping_address(setting: *mut NMSettingConnection, address: *const c_char) -> gboolean;
-    pub fn nm_setting_connection_add_permission(setting: *mut NMSettingConnection, ptype: *const c_char, pitem: *const c_char, detail: *const c_char) -> gboolean;
-    pub fn nm_setting_connection_add_secondary(setting: *mut NMSettingConnection, sec_uuid: *const c_char) -> gboolean;
+    pub fn nm_setting_connection_add_ip_ping_address(
+        setting: *mut NMSettingConnection,
+        address: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_connection_add_permission(
+        setting: *mut NMSettingConnection,
+        ptype: *const c_char,
+        pitem: *const c_char,
+        detail: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_connection_add_secondary(
+        setting: *mut NMSettingConnection,
+        sec_uuid: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn nm_setting_connection_clear_ip_ping_addresses(setting: *mut NMSettingConnection);
@@ -7671,67 +8913,109 @@ extern "C" {
     pub fn nm_setting_connection_get_autoconnect(setting: *mut NMSettingConnection) -> gboolean;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-    pub fn nm_setting_connection_get_autoconnect_ports(setting: *mut NMSettingConnection) -> NMTernary;
-    pub fn nm_setting_connection_get_autoconnect_priority(setting: *mut NMSettingConnection) -> c_int;
+    pub fn nm_setting_connection_get_autoconnect_ports(
+        setting: *mut NMSettingConnection,
+    ) -> NMTernary;
+    pub fn nm_setting_connection_get_autoconnect_priority(
+        setting: *mut NMSettingConnection,
+    ) -> c_int;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-    pub fn nm_setting_connection_get_autoconnect_retries(setting: *mut NMSettingConnection) -> c_int;
+    pub fn nm_setting_connection_get_autoconnect_retries(
+        setting: *mut NMSettingConnection,
+    ) -> c_int;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_connection_get_autoconnect_slaves(setting: *mut NMSettingConnection) -> NMSettingConnectionAutoconnectSlaves;
-    pub fn nm_setting_connection_get_connection_type(setting: *mut NMSettingConnection) -> *const c_char;
+    pub fn nm_setting_connection_get_autoconnect_slaves(
+        setting: *mut NMSettingConnection,
+    ) -> NMSettingConnectionAutoconnectSlaves;
+    pub fn nm_setting_connection_get_connection_type(
+        setting: *mut NMSettingConnection,
+    ) -> *const c_char;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-    pub fn nm_setting_connection_get_controller(setting: *mut NMSettingConnection) -> *const c_char;
+    pub fn nm_setting_connection_get_controller(setting: *mut NMSettingConnection)
+        -> *const c_char;
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
-    pub fn nm_setting_connection_get_dns_over_tls(setting: *mut NMSettingConnection) -> NMSettingConnectionDnsOverTls;
+    pub fn nm_setting_connection_get_dns_over_tls(
+        setting: *mut NMSettingConnection,
+    ) -> NMSettingConnectionDnsOverTls;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_connection_get_down_on_poweroff(setting: *mut NMSettingConnection) -> NMSettingConnectionDownOnPoweroff;
-    pub fn nm_setting_connection_get_gateway_ping_timeout(setting: *mut NMSettingConnection) -> u32;
+    pub fn nm_setting_connection_get_down_on_poweroff(
+        setting: *mut NMSettingConnection,
+    ) -> NMSettingConnectionDownOnPoweroff;
+    pub fn nm_setting_connection_get_gateway_ping_timeout(setting: *mut NMSettingConnection)
+        -> u32;
     pub fn nm_setting_connection_get_id(setting: *mut NMSettingConnection) -> *const c_char;
-    pub fn nm_setting_connection_get_interface_name(setting: *mut NMSettingConnection) -> *const c_char;
+    pub fn nm_setting_connection_get_interface_name(
+        setting: *mut NMSettingConnection,
+    ) -> *const c_char;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_connection_get_ip_ping_address(setting: *mut NMSettingConnection, idx: u32) -> *const c_char;
+    pub fn nm_setting_connection_get_ip_ping_address(
+        setting: *mut NMSettingConnection,
+        idx: u32,
+    ) -> *const c_char;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_connection_get_ip_ping_addresses_require_all(setting: *mut NMSettingConnection) -> NMTernary;
+    pub fn nm_setting_connection_get_ip_ping_addresses_require_all(
+        setting: *mut NMSettingConnection,
+    ) -> NMTernary;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn nm_setting_connection_get_ip_ping_timeout(setting: *mut NMSettingConnection) -> u32;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_connection_get_lldp(setting: *mut NMSettingConnection) -> NMSettingConnectionLldp;
+    pub fn nm_setting_connection_get_lldp(
+        setting: *mut NMSettingConnection,
+    ) -> NMSettingConnectionLldp;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_connection_get_llmnr(setting: *mut NMSettingConnection) -> NMSettingConnectionLlmnr;
+    pub fn nm_setting_connection_get_llmnr(
+        setting: *mut NMSettingConnection,
+    ) -> NMSettingConnectionLlmnr;
     pub fn nm_setting_connection_get_master(setting: *mut NMSettingConnection) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_connection_get_mdns(setting: *mut NMSettingConnection) -> NMSettingConnectionMdns;
+    pub fn nm_setting_connection_get_mdns(
+        setting: *mut NMSettingConnection,
+    ) -> NMSettingConnectionMdns;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_connection_get_metered(setting: *mut NMSettingConnection) -> NMMetered;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_connection_get_mptcp_flags(setting: *mut NMSettingConnection) -> NMMptcpFlags;
+    pub fn nm_setting_connection_get_mptcp_flags(setting: *mut NMSettingConnection)
+        -> NMMptcpFlags;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn nm_setting_connection_get_mud_url(setting: *mut NMSettingConnection) -> *const c_char;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_connection_get_multi_connect(setting: *mut NMSettingConnection) -> NMConnectionMultiConnect;
+    pub fn nm_setting_connection_get_multi_connect(
+        setting: *mut NMSettingConnection,
+    ) -> NMConnectionMultiConnect;
     pub fn nm_setting_connection_get_num_permissions(setting: *mut NMSettingConnection) -> u32;
     pub fn nm_setting_connection_get_num_secondaries(setting: *mut NMSettingConnection) -> u32;
-    pub fn nm_setting_connection_get_permission(setting: *mut NMSettingConnection, idx: u32, out_ptype: *mut *const c_char, out_pitem: *mut *const c_char, out_detail: *mut *const c_char) -> gboolean;
+    pub fn nm_setting_connection_get_permission(
+        setting: *mut NMSettingConnection,
+        idx: u32,
+        out_ptype: *mut *const c_char,
+        out_pitem: *mut *const c_char,
+        out_detail: *mut *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn nm_setting_connection_get_port_type(setting: *mut NMSettingConnection) -> *const c_char;
     pub fn nm_setting_connection_get_read_only(setting: *mut NMSettingConnection) -> gboolean;
-    pub fn nm_setting_connection_get_secondary(setting: *mut NMSettingConnection, idx: u32) -> *const c_char;
-    pub fn nm_setting_connection_get_slave_type(setting: *mut NMSettingConnection) -> *const c_char;
+    pub fn nm_setting_connection_get_secondary(
+        setting: *mut NMSettingConnection,
+        idx: u32,
+    ) -> *const c_char;
+    pub fn nm_setting_connection_get_slave_type(setting: *mut NMSettingConnection)
+        -> *const c_char;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn nm_setting_connection_get_stable_id(setting: *mut NMSettingConnection) -> *const c_char;
@@ -7739,23 +9023,45 @@ extern "C" {
     pub fn nm_setting_connection_get_uuid(setting: *mut NMSettingConnection) -> *const c_char;
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
-    pub fn nm_setting_connection_get_wait_activation_delay(setting: *mut NMSettingConnection) -> i32;
+    pub fn nm_setting_connection_get_wait_activation_delay(
+        setting: *mut NMSettingConnection,
+    ) -> i32;
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn nm_setting_connection_get_wait_device_timeout(setting: *mut NMSettingConnection) -> i32;
     pub fn nm_setting_connection_get_zone(setting: *mut NMSettingConnection) -> *const c_char;
-    pub fn nm_setting_connection_is_slave_type(setting: *mut NMSettingConnection, type_: *const c_char) -> gboolean;
-    pub fn nm_setting_connection_permissions_user_allowed(setting: *mut NMSettingConnection, uname: *const c_char) -> gboolean;
+    pub fn nm_setting_connection_is_slave_type(
+        setting: *mut NMSettingConnection,
+        type_: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_connection_permissions_user_allowed(
+        setting: *mut NMSettingConnection,
+        uname: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_connection_remove_ip_ping_address(setting: *mut NMSettingConnection, idx: u32);
+    pub fn nm_setting_connection_remove_ip_ping_address(
+        setting: *mut NMSettingConnection,
+        idx: u32,
+    );
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_connection_remove_ip_ping_address_by_value(setting: *mut NMSettingConnection, address: *const c_char) -> gboolean;
+    pub fn nm_setting_connection_remove_ip_ping_address_by_value(
+        setting: *mut NMSettingConnection,
+        address: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_connection_remove_permission(setting: *mut NMSettingConnection, idx: u32);
-    pub fn nm_setting_connection_remove_permission_by_value(setting: *mut NMSettingConnection, ptype: *const c_char, pitem: *const c_char, detail: *const c_char) -> gboolean;
+    pub fn nm_setting_connection_remove_permission_by_value(
+        setting: *mut NMSettingConnection,
+        ptype: *const c_char,
+        pitem: *const c_char,
+        detail: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_connection_remove_secondary(setting: *mut NMSettingConnection, idx: u32);
-    pub fn nm_setting_connection_remove_secondary_by_value(setting: *mut NMSettingConnection, sec_uuid: *const c_char) -> gboolean;
+    pub fn nm_setting_connection_remove_secondary_by_value(
+        setting: *mut NMSettingConnection,
+        sec_uuid: *const c_char,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingDcb
@@ -7769,20 +9075,65 @@ extern "C" {
     pub fn nm_setting_dcb_get_app_fip_priority(setting: *mut NMSettingDcb) -> c_int;
     pub fn nm_setting_dcb_get_app_iscsi_flags(setting: *mut NMSettingDcb) -> NMSettingDcbFlags;
     pub fn nm_setting_dcb_get_app_iscsi_priority(setting: *mut NMSettingDcb) -> c_int;
-    pub fn nm_setting_dcb_get_priority_bandwidth(setting: *mut NMSettingDcb, user_priority: c_uint) -> c_uint;
-    pub fn nm_setting_dcb_get_priority_flow_control(setting: *mut NMSettingDcb, user_priority: c_uint) -> gboolean;
-    pub fn nm_setting_dcb_get_priority_flow_control_flags(setting: *mut NMSettingDcb) -> NMSettingDcbFlags;
-    pub fn nm_setting_dcb_get_priority_group_bandwidth(setting: *mut NMSettingDcb, group_id: c_uint) -> c_uint;
-    pub fn nm_setting_dcb_get_priority_group_flags(setting: *mut NMSettingDcb) -> NMSettingDcbFlags;
-    pub fn nm_setting_dcb_get_priority_group_id(setting: *mut NMSettingDcb, user_priority: c_uint) -> c_uint;
-    pub fn nm_setting_dcb_get_priority_strict_bandwidth(setting: *mut NMSettingDcb, user_priority: c_uint) -> gboolean;
-    pub fn nm_setting_dcb_get_priority_traffic_class(setting: *mut NMSettingDcb, user_priority: c_uint) -> c_uint;
-    pub fn nm_setting_dcb_set_priority_bandwidth(setting: *mut NMSettingDcb, user_priority: c_uint, bandwidth_percent: c_uint);
-    pub fn nm_setting_dcb_set_priority_flow_control(setting: *mut NMSettingDcb, user_priority: c_uint, enabled: gboolean);
-    pub fn nm_setting_dcb_set_priority_group_bandwidth(setting: *mut NMSettingDcb, group_id: c_uint, bandwidth_percent: c_uint);
-    pub fn nm_setting_dcb_set_priority_group_id(setting: *mut NMSettingDcb, user_priority: c_uint, group_id: c_uint);
-    pub fn nm_setting_dcb_set_priority_strict_bandwidth(setting: *mut NMSettingDcb, user_priority: c_uint, strict: gboolean);
-    pub fn nm_setting_dcb_set_priority_traffic_class(setting: *mut NMSettingDcb, user_priority: c_uint, traffic_class: c_uint);
+    pub fn nm_setting_dcb_get_priority_bandwidth(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+    ) -> c_uint;
+    pub fn nm_setting_dcb_get_priority_flow_control(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+    ) -> gboolean;
+    pub fn nm_setting_dcb_get_priority_flow_control_flags(
+        setting: *mut NMSettingDcb,
+    ) -> NMSettingDcbFlags;
+    pub fn nm_setting_dcb_get_priority_group_bandwidth(
+        setting: *mut NMSettingDcb,
+        group_id: c_uint,
+    ) -> c_uint;
+    pub fn nm_setting_dcb_get_priority_group_flags(setting: *mut NMSettingDcb)
+        -> NMSettingDcbFlags;
+    pub fn nm_setting_dcb_get_priority_group_id(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+    ) -> c_uint;
+    pub fn nm_setting_dcb_get_priority_strict_bandwidth(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+    ) -> gboolean;
+    pub fn nm_setting_dcb_get_priority_traffic_class(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+    ) -> c_uint;
+    pub fn nm_setting_dcb_set_priority_bandwidth(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+        bandwidth_percent: c_uint,
+    );
+    pub fn nm_setting_dcb_set_priority_flow_control(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+        enabled: gboolean,
+    );
+    pub fn nm_setting_dcb_set_priority_group_bandwidth(
+        setting: *mut NMSettingDcb,
+        group_id: c_uint,
+        bandwidth_percent: c_uint,
+    );
+    pub fn nm_setting_dcb_set_priority_group_id(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+        group_id: c_uint,
+    );
+    pub fn nm_setting_dcb_set_priority_strict_bandwidth(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+        strict: gboolean,
+    );
+    pub fn nm_setting_dcb_set_priority_traffic_class(
+        setting: *mut NMSettingDcb,
+        user_priority: c_uint,
+        traffic_class: c_uint,
+    );
 
     //=========================================================================
     // NMSettingDummy
@@ -7806,13 +9157,23 @@ extern "C" {
     pub fn nm_setting_ethtool_clear_features(setting: *mut NMSettingEthtool);
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_ethtool_get_feature(setting: *mut NMSettingEthtool, optname: *const c_char) -> NMTernary;
+    pub fn nm_setting_ethtool_get_feature(
+        setting: *mut NMSettingEthtool,
+        optname: *const c_char,
+    ) -> NMTernary;
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
-    pub fn nm_setting_ethtool_get_optnames(setting: *mut NMSettingEthtool, out_length: *mut c_uint) -> *mut *const c_char;
+    pub fn nm_setting_ethtool_get_optnames(
+        setting: *mut NMSettingEthtool,
+        out_length: *mut c_uint,
+    ) -> *mut *const c_char;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_ethtool_set_feature(setting: *mut NMSettingEthtool, optname: *const c_char, value: NMTernary);
+    pub fn nm_setting_ethtool_set_feature(
+        setting: *mut NMSettingEthtool,
+        optname: *const c_char,
+        value: NMTernary,
+    );
 
     //=========================================================================
     // NMSettingGeneric
@@ -7930,19 +9291,27 @@ extern "C" {
     //=========================================================================
     pub fn nm_setting_ip4_config_get_type() -> GType;
     pub fn nm_setting_ip4_config_new() -> *mut NMSetting;
-    pub fn nm_setting_ip4_config_get_dhcp_client_id(setting: *mut NMSettingIP4Config) -> *const c_char;
+    pub fn nm_setting_ip4_config_get_dhcp_client_id(
+        setting: *mut NMSettingIP4Config,
+    ) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_ip4_config_get_dhcp_fqdn(setting: *mut NMSettingIP4Config) -> *const c_char;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_ip4_config_get_dhcp_ipv6_only_preferred(setting: *mut NMSettingIP4Config) -> NMSettingIP4DhcpIpv6OnlyPreferred;
+    pub fn nm_setting_ip4_config_get_dhcp_ipv6_only_preferred(
+        setting: *mut NMSettingIP4Config,
+    ) -> NMSettingIP4DhcpIpv6OnlyPreferred;
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
-    pub fn nm_setting_ip4_config_get_dhcp_vendor_class_identifier(setting: *mut NMSettingIP4Config) -> *const c_char;
+    pub fn nm_setting_ip4_config_get_dhcp_vendor_class_identifier(
+        setting: *mut NMSettingIP4Config,
+    ) -> *const c_char;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_ip4_config_get_link_local(setting: *mut NMSettingIP4Config) -> NMSettingIP4LinkLocal;
+    pub fn nm_setting_ip4_config_get_link_local(
+        setting: *mut NMSettingIP4Config,
+    ) -> NMSettingIP4LinkLocal;
 
     //=========================================================================
     // NMSettingIP6Config
@@ -7951,14 +9320,20 @@ extern "C" {
     pub fn nm_setting_ip6_config_new() -> *mut NMSetting;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_ip6_config_get_addr_gen_mode(setting: *mut NMSettingIP6Config) -> NMSettingIP6ConfigAddrGenMode;
+    pub fn nm_setting_ip6_config_get_addr_gen_mode(
+        setting: *mut NMSettingIP6Config,
+    ) -> NMSettingIP6ConfigAddrGenMode;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_ip6_config_get_dhcp_duid(setting: *mut NMSettingIP6Config) -> *const c_char;
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
-    pub fn nm_setting_ip6_config_get_dhcp_pd_hint(setting: *mut NMSettingIP6Config) -> *const c_char;
-    pub fn nm_setting_ip6_config_get_ip6_privacy(setting: *mut NMSettingIP6Config) -> NMSettingIP6ConfigPrivacy;
+    pub fn nm_setting_ip6_config_get_dhcp_pd_hint(
+        setting: *mut NMSettingIP6Config,
+    ) -> *const c_char;
+    pub fn nm_setting_ip6_config_get_ip6_privacy(
+        setting: *mut NMSettingIP6Config,
+    ) -> NMSettingIP6ConfigPrivacy;
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     pub fn nm_setting_ip6_config_get_mtu(setting: *mut NMSettingIP6Config) -> u32;
@@ -7967,7 +9342,9 @@ extern "C" {
     pub fn nm_setting_ip6_config_get_ra_timeout(setting: *mut NMSettingIP6Config) -> i32;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_ip6_config_get_temp_preferred_lifetime(setting: *mut NMSettingIP6Config) -> i32;
+    pub fn nm_setting_ip6_config_get_temp_preferred_lifetime(
+        setting: *mut NMSettingIP6Config,
+    ) -> i32;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn nm_setting_ip6_config_get_temp_valid_lifetime(setting: *mut NMSettingIP6Config) -> i32;
@@ -7979,19 +9356,40 @@ extern "C" {
     // NMSettingIPConfig
     //=========================================================================
     pub fn nm_setting_ip_config_get_type() -> GType;
-    pub fn nm_setting_ip_config_add_address(setting: *mut NMSettingIPConfig, address: *mut NMIPAddress) -> gboolean;
+    pub fn nm_setting_ip_config_add_address(
+        setting: *mut NMSettingIPConfig,
+        address: *mut NMIPAddress,
+    ) -> gboolean;
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
-    pub fn nm_setting_ip_config_add_dhcp_reject_server(setting: *mut NMSettingIPConfig, server: *const c_char);
-    pub fn nm_setting_ip_config_add_dns(setting: *mut NMSettingIPConfig, dns: *const c_char) -> gboolean;
+    pub fn nm_setting_ip_config_add_dhcp_reject_server(
+        setting: *mut NMSettingIPConfig,
+        server: *const c_char,
+    );
+    pub fn nm_setting_ip_config_add_dns(
+        setting: *mut NMSettingIPConfig,
+        dns: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_ip_config_add_dns_option(setting: *mut NMSettingIPConfig, dns_option: *const c_char) -> gboolean;
-    pub fn nm_setting_ip_config_add_dns_search(setting: *mut NMSettingIPConfig, dns_search: *const c_char) -> gboolean;
-    pub fn nm_setting_ip_config_add_route(setting: *mut NMSettingIPConfig, route: *mut NMIPRoute) -> gboolean;
+    pub fn nm_setting_ip_config_add_dns_option(
+        setting: *mut NMSettingIPConfig,
+        dns_option: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_ip_config_add_dns_search(
+        setting: *mut NMSettingIPConfig,
+        dns_search: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_ip_config_add_route(
+        setting: *mut NMSettingIPConfig,
+        route: *mut NMIPRoute,
+    ) -> gboolean;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_setting_ip_config_add_routing_rule(setting: *mut NMSettingIPConfig, routing_rule: *mut NMIPRoutingRule);
+    pub fn nm_setting_ip_config_add_routing_rule(
+        setting: *mut NMSettingIPConfig,
+        routing_rule: *mut NMIPRoutingRule,
+    );
     pub fn nm_setting_ip_config_clear_addresses(setting: *mut NMSettingIPConfig);
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
@@ -7999,56 +9397,85 @@ extern "C" {
     pub fn nm_setting_ip_config_clear_dns(setting: *mut NMSettingIPConfig);
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_ip_config_clear_dns_options(setting: *mut NMSettingIPConfig, is_set: gboolean);
+    pub fn nm_setting_ip_config_clear_dns_options(
+        setting: *mut NMSettingIPConfig,
+        is_set: gboolean,
+    );
     pub fn nm_setting_ip_config_clear_dns_searches(setting: *mut NMSettingIPConfig);
     pub fn nm_setting_ip_config_clear_routes(setting: *mut NMSettingIPConfig);
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_setting_ip_config_clear_routing_rules(setting: *mut NMSettingIPConfig);
-    pub fn nm_setting_ip_config_get_address(setting: *mut NMSettingIPConfig, idx: c_int) -> *mut NMIPAddress;
+    pub fn nm_setting_ip_config_get_address(
+        setting: *mut NMSettingIPConfig,
+        idx: c_int,
+    ) -> *mut NMIPAddress;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_ip_config_get_auto_route_ext_gw(setting: *mut NMSettingIPConfig) -> NMTernary;
+    pub fn nm_setting_ip_config_get_auto_route_ext_gw(setting: *mut NMSettingIPConfig)
+        -> NMTernary;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_ip_config_get_dad_timeout(setting: *mut NMSettingIPConfig) -> c_int;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn nm_setting_ip_config_get_dhcp_dscp(setting: *mut NMSettingIPConfig) -> *const c_char;
-    pub fn nm_setting_ip_config_get_dhcp_hostname(setting: *mut NMSettingIPConfig) -> *const c_char;
+    pub fn nm_setting_ip_config_get_dhcp_hostname(setting: *mut NMSettingIPConfig)
+        -> *const c_char;
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-    pub fn nm_setting_ip_config_get_dhcp_hostname_flags(setting: *mut NMSettingIPConfig) -> NMDhcpHostnameFlags;
+    pub fn nm_setting_ip_config_get_dhcp_hostname_flags(
+        setting: *mut NMSettingIPConfig,
+    ) -> NMDhcpHostnameFlags;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn nm_setting_ip_config_get_dhcp_iaid(setting: *mut NMSettingIPConfig) -> *const c_char;
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
-    pub fn nm_setting_ip_config_get_dhcp_reject_servers(setting: *mut NMSettingIPConfig, out_len: *mut c_uint) -> *const *const c_char;
-    pub fn nm_setting_ip_config_get_dhcp_send_hostname(setting: *mut NMSettingIPConfig) -> gboolean;
+    pub fn nm_setting_ip_config_get_dhcp_reject_servers(
+        setting: *mut NMSettingIPConfig,
+        out_len: *mut c_uint,
+    ) -> *const *const c_char;
+    pub fn nm_setting_ip_config_get_dhcp_send_hostname(setting: *mut NMSettingIPConfig)
+        -> gboolean;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_ip_config_get_dhcp_send_hostname_v2(setting: *mut NMSettingIPConfig) -> NMTernary;
+    pub fn nm_setting_ip_config_get_dhcp_send_hostname_v2(
+        setting: *mut NMSettingIPConfig,
+    ) -> NMTernary;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_ip_config_get_dhcp_send_release(setting: *mut NMSettingIPConfig) -> NMTernary;
+    pub fn nm_setting_ip_config_get_dhcp_send_release(setting: *mut NMSettingIPConfig)
+        -> NMTernary;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_ip_config_get_dhcp_timeout(setting: *mut NMSettingIPConfig) -> c_int;
-    pub fn nm_setting_ip_config_get_dns(setting: *mut NMSettingIPConfig, idx: c_int) -> *const c_char;
+    pub fn nm_setting_ip_config_get_dns(
+        setting: *mut NMSettingIPConfig,
+        idx: c_int,
+    ) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_ip_config_get_dns_option(setting: *mut NMSettingIPConfig, idx: c_uint) -> *const c_char;
+    pub fn nm_setting_ip_config_get_dns_option(
+        setting: *mut NMSettingIPConfig,
+        idx: c_uint,
+    ) -> *const c_char;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn nm_setting_ip_config_get_dns_priority(setting: *mut NMSettingIPConfig) -> c_int;
-    pub fn nm_setting_ip_config_get_dns_search(setting: *mut NMSettingIPConfig, idx: c_int) -> *const c_char;
+    pub fn nm_setting_ip_config_get_dns_search(
+        setting: *mut NMSettingIPConfig,
+        idx: c_int,
+    ) -> *const c_char;
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-    pub fn nm_setting_ip_config_get_forwarding(setting: *mut NMSettingIPConfig) -> NMSettingIPConfigForwarding;
+    pub fn nm_setting_ip_config_get_forwarding(
+        setting: *mut NMSettingIPConfig,
+    ) -> NMSettingIPConfigForwarding;
     pub fn nm_setting_ip_config_get_gateway(setting: *mut NMSettingIPConfig) -> *const c_char;
     pub fn nm_setting_ip_config_get_ignore_auto_dns(setting: *mut NMSettingIPConfig) -> gboolean;
-    pub fn nm_setting_ip_config_get_ignore_auto_routes(setting: *mut NMSettingIPConfig) -> gboolean;
+    pub fn nm_setting_ip_config_get_ignore_auto_routes(setting: *mut NMSettingIPConfig)
+        -> gboolean;
     pub fn nm_setting_ip_config_get_may_fail(setting: *mut NMSettingIPConfig) -> gboolean;
     pub fn nm_setting_ip_config_get_method(setting: *mut NMSettingIPConfig) -> *const c_char;
     pub fn nm_setting_ip_config_get_never_default(setting: *mut NMSettingIPConfig) -> gboolean;
@@ -8064,47 +9491,79 @@ extern "C" {
     pub fn nm_setting_ip_config_get_num_routing_rules(setting: *mut NMSettingIPConfig) -> c_uint;
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
-    pub fn nm_setting_ip_config_get_replace_local_rule(setting: *mut NMSettingIPConfig) -> NMTernary;
+    pub fn nm_setting_ip_config_get_replace_local_rule(
+        setting: *mut NMSettingIPConfig,
+    ) -> NMTernary;
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     pub fn nm_setting_ip_config_get_required_timeout(setting: *mut NMSettingIPConfig) -> c_int;
-    pub fn nm_setting_ip_config_get_route(setting: *mut NMSettingIPConfig, idx: c_int) -> *mut NMIPRoute;
+    pub fn nm_setting_ip_config_get_route(
+        setting: *mut NMSettingIPConfig,
+        idx: c_int,
+    ) -> *mut NMIPRoute;
     pub fn nm_setting_ip_config_get_route_metric(setting: *mut NMSettingIPConfig) -> i64;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn nm_setting_ip_config_get_route_table(setting: *mut NMSettingIPConfig) -> u32;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_ip_config_get_routed_dns(setting: *mut NMSettingIPConfig) -> NMSettingIPConfigRoutedDns;
+    pub fn nm_setting_ip_config_get_routed_dns(
+        setting: *mut NMSettingIPConfig,
+    ) -> NMSettingIPConfigRoutedDns;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    pub fn nm_setting_ip_config_get_routing_rule(setting: *mut NMSettingIPConfig, idx: c_uint) -> *mut NMIPRoutingRule;
+    pub fn nm_setting_ip_config_get_routing_rule(
+        setting: *mut NMSettingIPConfig,
+        idx: c_uint,
+    ) -> *mut NMIPRoutingRule;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_ip_config_get_shared_dhcp_lease_time(setting: *mut NMSettingIPConfig) -> c_int;
+    pub fn nm_setting_ip_config_get_shared_dhcp_lease_time(
+        setting: *mut NMSettingIPConfig,
+    ) -> c_int;
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-    pub fn nm_setting_ip_config_get_shared_dhcp_range(setting: *mut NMSettingIPConfig) -> *const c_char;
+    pub fn nm_setting_ip_config_get_shared_dhcp_range(
+        setting: *mut NMSettingIPConfig,
+    ) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_ip_config_has_dns_options(setting: *mut NMSettingIPConfig) -> gboolean;
     pub fn nm_setting_ip_config_remove_address(setting: *mut NMSettingIPConfig, idx: c_int);
-    pub fn nm_setting_ip_config_remove_address_by_value(setting: *mut NMSettingIPConfig, address: *mut NMIPAddress) -> gboolean;
+    pub fn nm_setting_ip_config_remove_address_by_value(
+        setting: *mut NMSettingIPConfig,
+        address: *mut NMIPAddress,
+    ) -> gboolean;
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
-    pub fn nm_setting_ip_config_remove_dhcp_reject_server(setting: *mut NMSettingIPConfig, idx: c_uint);
+    pub fn nm_setting_ip_config_remove_dhcp_reject_server(
+        setting: *mut NMSettingIPConfig,
+        idx: c_uint,
+    );
     pub fn nm_setting_ip_config_remove_dns(setting: *mut NMSettingIPConfig, idx: c_int);
-    pub fn nm_setting_ip_config_remove_dns_by_value(setting: *mut NMSettingIPConfig, dns: *const c_char) -> gboolean;
+    pub fn nm_setting_ip_config_remove_dns_by_value(
+        setting: *mut NMSettingIPConfig,
+        dns: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_ip_config_remove_dns_option(setting: *mut NMSettingIPConfig, idx: c_int);
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_ip_config_remove_dns_option_by_value(setting: *mut NMSettingIPConfig, dns_option: *const c_char) -> gboolean;
+    pub fn nm_setting_ip_config_remove_dns_option_by_value(
+        setting: *mut NMSettingIPConfig,
+        dns_option: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_ip_config_remove_dns_search(setting: *mut NMSettingIPConfig, idx: c_int);
-    pub fn nm_setting_ip_config_remove_dns_search_by_value(setting: *mut NMSettingIPConfig, dns_search: *const c_char) -> gboolean;
+    pub fn nm_setting_ip_config_remove_dns_search_by_value(
+        setting: *mut NMSettingIPConfig,
+        dns_search: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_ip_config_remove_route(setting: *mut NMSettingIPConfig, idx: c_int);
-    pub fn nm_setting_ip_config_remove_route_by_value(setting: *mut NMSettingIPConfig, route: *mut NMIPRoute) -> gboolean;
+    pub fn nm_setting_ip_config_remove_route_by_value(
+        setting: *mut NMSettingIPConfig,
+        route: *mut NMIPRoute,
+    ) -> gboolean;
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn nm_setting_ip_config_remove_routing_rule(setting: *mut NMSettingIPConfig, idx: c_uint);
@@ -8148,7 +9607,8 @@ extern "C" {
     pub fn nm_setting_ip_tunnel_get_parent(setting: *mut NMSettingIPTunnel) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_ip_tunnel_get_path_mtu_discovery(setting: *mut NMSettingIPTunnel) -> gboolean;
+    pub fn nm_setting_ip_tunnel_get_path_mtu_discovery(setting: *mut NMSettingIPTunnel)
+        -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_ip_tunnel_get_remote(setting: *mut NMSettingIPTunnel) -> *const c_char;
@@ -8164,12 +9624,18 @@ extern "C" {
     //=========================================================================
     pub fn nm_setting_infiniband_get_type() -> GType;
     pub fn nm_setting_infiniband_new() -> *mut NMSetting;
-    pub fn nm_setting_infiniband_get_mac_address(setting: *mut NMSettingInfiniband) -> *const c_char;
+    pub fn nm_setting_infiniband_get_mac_address(
+        setting: *mut NMSettingInfiniband,
+    ) -> *const c_char;
     pub fn nm_setting_infiniband_get_mtu(setting: *mut NMSettingInfiniband) -> u32;
     pub fn nm_setting_infiniband_get_p_key(setting: *mut NMSettingInfiniband) -> c_int;
     pub fn nm_setting_infiniband_get_parent(setting: *mut NMSettingInfiniband) -> *const c_char;
-    pub fn nm_setting_infiniband_get_transport_mode(setting: *mut NMSettingInfiniband) -> *const c_char;
-    pub fn nm_setting_infiniband_get_virtual_interface_name(setting: *mut NMSettingInfiniband) -> *const c_char;
+    pub fn nm_setting_infiniband_get_transport_mode(
+        setting: *mut NMSettingInfiniband,
+    ) -> *const c_char;
+    pub fn nm_setting_infiniband_get_virtual_interface_name(
+        setting: *mut NMSettingInfiniband,
+    ) -> *const c_char;
 
     //=========================================================================
     // NMSettingIpvlan
@@ -8241,7 +9707,9 @@ extern "C" {
     pub fn nm_setting_macsec_get_mka_cak(setting: *mut NMSettingMacsec) -> *const c_char;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-    pub fn nm_setting_macsec_get_mka_cak_flags(setting: *mut NMSettingMacsec) -> NMSettingSecretFlags;
+    pub fn nm_setting_macsec_get_mka_cak_flags(
+        setting: *mut NMSettingMacsec,
+    ) -> NMSettingSecretFlags;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn nm_setting_macsec_get_mka_ckn(setting: *mut NMSettingMacsec) -> *const c_char;
@@ -8262,7 +9730,9 @@ extern "C" {
     pub fn nm_setting_macsec_get_send_sci(setting: *mut NMSettingMacsec) -> gboolean;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-    pub fn nm_setting_macsec_get_validation(setting: *mut NMSettingMacsec) -> NMSettingMacsecValidation;
+    pub fn nm_setting_macsec_get_validation(
+        setting: *mut NMSettingMacsec,
+    ) -> NMSettingMacsecValidation;
 
     //=========================================================================
     // NMSettingMacvlan
@@ -8298,10 +9768,16 @@ extern "C" {
     pub fn nm_setting_match_add_driver(setting: *mut NMSettingMatch, driver: *const c_char);
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_match_add_interface_name(setting: *mut NMSettingMatch, interface_name: *const c_char);
+    pub fn nm_setting_match_add_interface_name(
+        setting: *mut NMSettingMatch,
+        interface_name: *const c_char,
+    );
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_match_add_kernel_command_line(setting: *mut NMSettingMatch, kernel_command_line: *const c_char);
+    pub fn nm_setting_match_add_kernel_command_line(
+        setting: *mut NMSettingMatch,
+        kernel_command_line: *const c_char,
+    );
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn nm_setting_match_add_path(setting: *mut NMSettingMatch, path: *const c_char);
@@ -8322,19 +9798,34 @@ extern "C" {
     pub fn nm_setting_match_get_driver(setting: *mut NMSettingMatch, idx: c_uint) -> *const c_char;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_match_get_drivers(setting: *mut NMSettingMatch, length: *mut c_uint) -> *const *const c_char;
+    pub fn nm_setting_match_get_drivers(
+        setting: *mut NMSettingMatch,
+        length: *mut c_uint,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_match_get_interface_name(setting: *mut NMSettingMatch, idx: c_int) -> *const c_char;
+    pub fn nm_setting_match_get_interface_name(
+        setting: *mut NMSettingMatch,
+        idx: c_int,
+    ) -> *const c_char;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_match_get_interface_names(setting: *mut NMSettingMatch, length: *mut c_uint) -> *const *const c_char;
+    pub fn nm_setting_match_get_interface_names(
+        setting: *mut NMSettingMatch,
+        length: *mut c_uint,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_match_get_kernel_command_line(setting: *mut NMSettingMatch, idx: c_uint) -> *const c_char;
+    pub fn nm_setting_match_get_kernel_command_line(
+        setting: *mut NMSettingMatch,
+        idx: c_uint,
+    ) -> *const c_char;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_match_get_kernel_command_lines(setting: *mut NMSettingMatch, length: *mut c_uint) -> *const *const c_char;
+    pub fn nm_setting_match_get_kernel_command_lines(
+        setting: *mut NMSettingMatch,
+        length: *mut c_uint,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn nm_setting_match_get_num_drivers(setting: *mut NMSettingMatch) -> c_uint;
@@ -8352,31 +9843,46 @@ extern "C" {
     pub fn nm_setting_match_get_path(setting: *mut NMSettingMatch, idx: c_uint) -> *const c_char;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_match_get_paths(setting: *mut NMSettingMatch, length: *mut c_uint) -> *const *const c_char;
+    pub fn nm_setting_match_get_paths(
+        setting: *mut NMSettingMatch,
+        length: *mut c_uint,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn nm_setting_match_remove_driver(setting: *mut NMSettingMatch, idx: c_uint);
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_match_remove_driver_by_value(setting: *mut NMSettingMatch, driver: *const c_char) -> gboolean;
+    pub fn nm_setting_match_remove_driver_by_value(
+        setting: *mut NMSettingMatch,
+        driver: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn nm_setting_match_remove_interface_name(setting: *mut NMSettingMatch, idx: c_int);
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_match_remove_interface_name_by_value(setting: *mut NMSettingMatch, interface_name: *const c_char) -> gboolean;
+    pub fn nm_setting_match_remove_interface_name_by_value(
+        setting: *mut NMSettingMatch,
+        interface_name: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn nm_setting_match_remove_kernel_command_line(setting: *mut NMSettingMatch, idx: c_uint);
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_match_remove_kernel_command_line_by_value(setting: *mut NMSettingMatch, kernel_command_line: *const c_char) -> gboolean;
+    pub fn nm_setting_match_remove_kernel_command_line_by_value(
+        setting: *mut NMSettingMatch,
+        kernel_command_line: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn nm_setting_match_remove_path(setting: *mut NMSettingMatch, idx: c_uint);
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
-    pub fn nm_setting_match_remove_path_by_value(setting: *mut NMSettingMatch, path: *const c_char) -> gboolean;
+    pub fn nm_setting_match_remove_path_by_value(
+        setting: *mut NMSettingMatch,
+        path: *const c_char,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingOlpcMesh
@@ -8384,7 +9890,9 @@ extern "C" {
     pub fn nm_setting_olpc_mesh_get_type() -> GType;
     pub fn nm_setting_olpc_mesh_new() -> *mut NMSetting;
     pub fn nm_setting_olpc_mesh_get_channel(setting: *mut NMSettingOlpcMesh) -> u32;
-    pub fn nm_setting_olpc_mesh_get_dhcp_anycast_address(setting: *mut NMSettingOlpcMesh) -> *const c_char;
+    pub fn nm_setting_olpc_mesh_get_dhcp_anycast_address(
+        setting: *mut NMSettingOlpcMesh,
+    ) -> *const c_char;
     pub fn nm_setting_olpc_mesh_get_ssid(setting: *mut NMSettingOlpcMesh) -> *mut glib::GBytes;
 
     //=========================================================================
@@ -8396,13 +9904,16 @@ extern "C" {
     pub fn nm_setting_ovs_bridge_new() -> *mut NMSetting;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_ovs_bridge_get_datapath_type(self_: *mut NMSettingOvsBridge) -> *const c_char;
+    pub fn nm_setting_ovs_bridge_get_datapath_type(self_: *mut NMSettingOvsBridge)
+        -> *const c_char;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn nm_setting_ovs_bridge_get_fail_mode(self_: *mut NMSettingOvsBridge) -> *const c_char;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-    pub fn nm_setting_ovs_bridge_get_mcast_snooping_enable(self_: *mut NMSettingOvsBridge) -> gboolean;
+    pub fn nm_setting_ovs_bridge_get_mcast_snooping_enable(
+        self_: *mut NMSettingOvsBridge,
+    ) -> gboolean;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn nm_setting_ovs_bridge_get_rstp_enable(self_: *mut NMSettingOvsBridge) -> gboolean;
@@ -8422,7 +9933,9 @@ extern "C" {
     pub fn nm_setting_ovs_dpdk_get_devargs(self_: *mut NMSettingOvsDpdk) -> *const c_char;
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-    pub fn nm_setting_ovs_dpdk_get_lsc_interrupt(self_: *mut NMSettingOvsDpdk) -> NMSettingOvsDpdkLscInterrupt;
+    pub fn nm_setting_ovs_dpdk_get_lsc_interrupt(
+        self_: *mut NMSettingOvsDpdk,
+    ) -> NMSettingOvsDpdkLscInterrupt;
     #[cfg(feature = "v1_36")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_36")))]
     pub fn nm_setting_ovs_dpdk_get_n_rxq(self_: *mut NMSettingOvsDpdk) -> u32;
@@ -8442,19 +9955,35 @@ extern "C" {
     pub fn nm_setting_ovs_external_ids_new() -> *mut NMSettingOvsExternalIDs;
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_setting_ovs_external_ids_check_key(key: *const c_char, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_ovs_external_ids_check_key(
+        key: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_setting_ovs_external_ids_check_val(val: *const c_char, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_ovs_external_ids_check_val(
+        val: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_setting_ovs_external_ids_get_data(setting: *mut NMSettingOvsExternalIDs, key: *const c_char) -> *const c_char;
+    pub fn nm_setting_ovs_external_ids_get_data(
+        setting: *mut NMSettingOvsExternalIDs,
+        key: *const c_char,
+    ) -> *const c_char;
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_setting_ovs_external_ids_get_data_keys(setting: *mut NMSettingOvsExternalIDs, out_len: *mut c_uint) -> *const *const c_char;
+    pub fn nm_setting_ovs_external_ids_get_data_keys(
+        setting: *mut NMSettingOvsExternalIDs,
+        out_len: *mut c_uint,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_setting_ovs_external_ids_set_data(setting: *mut NMSettingOvsExternalIDs, key: *const c_char, val: *const c_char);
+    pub fn nm_setting_ovs_external_ids_set_data(
+        setting: *mut NMSettingOvsExternalIDs,
+        key: *const c_char,
+        val: *const c_char,
+    );
 
     //=========================================================================
     // NMSettingOvsInterface
@@ -8465,7 +9994,9 @@ extern "C" {
     pub fn nm_setting_ovs_interface_new() -> *mut NMSetting;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-    pub fn nm_setting_ovs_interface_get_interface_type(self_: *mut NMSettingOvsInterface) -> *const c_char;
+    pub fn nm_setting_ovs_interface_get_interface_type(
+        self_: *mut NMSettingOvsInterface,
+    ) -> *const c_char;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn nm_setting_ovs_interface_get_ofport_request(self_: *mut NMSettingOvsInterface) -> u32;
@@ -8481,13 +10012,23 @@ extern "C" {
     pub fn nm_setting_ovs_other_config_new() -> *mut NMSettingOvsOtherConfig;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_ovs_other_config_get_data(setting: *mut NMSettingOvsOtherConfig, key: *const c_char) -> *const c_char;
+    pub fn nm_setting_ovs_other_config_get_data(
+        setting: *mut NMSettingOvsOtherConfig,
+        key: *const c_char,
+    ) -> *const c_char;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_ovs_other_config_get_data_keys(setting: *mut NMSettingOvsOtherConfig, out_len: *mut c_uint) -> *const *const c_char;
+    pub fn nm_setting_ovs_other_config_get_data_keys(
+        setting: *mut NMSettingOvsOtherConfig,
+        out_len: *mut c_uint,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_ovs_other_config_set_data(setting: *mut NMSettingOvsOtherConfig, key: *const c_char, val: *const c_char);
+    pub fn nm_setting_ovs_other_config_set_data(
+        setting: *mut NMSettingOvsOtherConfig,
+        key: *const c_char,
+        val: *const c_char,
+    );
 
     //=========================================================================
     // NMSettingOvsPatch
@@ -8533,7 +10074,10 @@ extern "C" {
     pub fn nm_setting_ovs_port_get_tag(self_: *mut NMSettingOvsPort) -> c_uint;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_ovs_port_get_trunk(setting: *mut NMSettingOvsPort, idx: c_uint) -> *mut NMRange;
+    pub fn nm_setting_ovs_port_get_trunk(
+        setting: *mut NMSettingOvsPort,
+        idx: c_uint,
+    ) -> *mut NMRange;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn nm_setting_ovs_port_get_vlan_mode(self_: *mut NMSettingOvsPort) -> *const c_char;
@@ -8542,7 +10086,11 @@ extern "C" {
     pub fn nm_setting_ovs_port_remove_trunk(setting: *mut NMSettingOvsPort, idx: c_uint);
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_setting_ovs_port_remove_trunk_by_value(setting: *mut NMSettingOvsPort, start: c_uint, end: c_uint) -> gboolean;
+    pub fn nm_setting_ovs_port_remove_trunk_by_value(
+        setting: *mut NMSettingOvsPort,
+        start: c_uint,
+        end: c_uint,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingPpp
@@ -8577,7 +10125,9 @@ extern "C" {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn nm_setting_pppoe_get_parent(setting: *mut NMSettingPppoe) -> *const c_char;
     pub fn nm_setting_pppoe_get_password(setting: *mut NMSettingPppoe) -> *const c_char;
-    pub fn nm_setting_pppoe_get_password_flags(setting: *mut NMSettingPppoe) -> NMSettingSecretFlags;
+    pub fn nm_setting_pppoe_get_password_flags(
+        setting: *mut NMSettingPppoe,
+    ) -> NMSettingSecretFlags;
     pub fn nm_setting_pppoe_get_service(setting: *mut NMSettingPppoe) -> *const c_char;
     pub fn nm_setting_pppoe_get_username(setting: *mut NMSettingPppoe) -> *const c_char;
 
@@ -8592,7 +10142,9 @@ extern "C" {
     pub fn nm_setting_prefix_delegation_new() -> *mut NMSetting;
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-    pub fn nm_setting_prefix_delegation_get_subnet_id(setting: *mut NMSettingPrefixDelegation) -> i64;
+    pub fn nm_setting_prefix_delegation_get_subnet_id(
+        setting: *mut NMSettingPrefixDelegation,
+    ) -> i64;
 
     //=========================================================================
     // NMSettingProxy
@@ -8645,10 +10197,14 @@ extern "C" {
     pub fn nm_setting_sriov_get_autoprobe_drivers(setting: *mut NMSettingSriov) -> NMTernary;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-    pub fn nm_setting_sriov_get_eswitch_encap_mode(setting: *mut NMSettingSriov) -> NMSriovEswitchEncapMode;
+    pub fn nm_setting_sriov_get_eswitch_encap_mode(
+        setting: *mut NMSettingSriov,
+    ) -> NMSriovEswitchEncapMode;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-    pub fn nm_setting_sriov_get_eswitch_inline_mode(setting: *mut NMSettingSriov) -> NMSriovEswitchInlineMode;
+    pub fn nm_setting_sriov_get_eswitch_inline_mode(
+        setting: *mut NMSettingSriov,
+    ) -> NMSriovEswitchInlineMode;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn nm_setting_sriov_get_eswitch_mode(setting: *mut NMSettingSriov) -> NMSriovEswitchMode;
@@ -8657,7 +10213,9 @@ extern "C" {
     pub fn nm_setting_sriov_get_num_vfs(setting: *mut NMSettingSriov) -> c_uint;
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-    pub fn nm_setting_sriov_get_preserve_on_down(setting: *mut NMSettingSriov) -> NMSriovPreserveOnDown;
+    pub fn nm_setting_sriov_get_preserve_on_down(
+        setting: *mut NMSettingSriov,
+    ) -> NMSriovPreserveOnDown;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn nm_setting_sriov_get_total_vfs(setting: *mut NMSettingSriov) -> c_uint;
@@ -8669,7 +10227,10 @@ extern "C" {
     pub fn nm_setting_sriov_remove_vf(setting: *mut NMSettingSriov, idx: c_uint);
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_setting_sriov_remove_vf_by_index(setting: *mut NMSettingSriov, index: c_uint) -> gboolean;
+    pub fn nm_setting_sriov_remove_vf_by_index(
+        setting: *mut NMSettingSriov,
+        index: c_uint,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingTCConfig
@@ -8682,10 +10243,16 @@ extern "C" {
     pub fn nm_setting_tc_config_new() -> *mut NMSetting;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_tc_config_add_qdisc(setting: *mut NMSettingTCConfig, qdisc: *mut NMTCQdisc) -> gboolean;
+    pub fn nm_setting_tc_config_add_qdisc(
+        setting: *mut NMSettingTCConfig,
+        qdisc: *mut NMTCQdisc,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_tc_config_add_tfilter(setting: *mut NMSettingTCConfig, tfilter: *mut NMTCTfilter) -> gboolean;
+    pub fn nm_setting_tc_config_add_tfilter(
+        setting: *mut NMSettingTCConfig,
+        tfilter: *mut NMTCTfilter,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_tc_config_clear_qdiscs(setting: *mut NMSettingTCConfig);
@@ -8700,22 +10267,34 @@ extern "C" {
     pub fn nm_setting_tc_config_get_num_tfilters(setting: *mut NMSettingTCConfig) -> c_uint;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_tc_config_get_qdisc(setting: *mut NMSettingTCConfig, idx: c_uint) -> *mut NMTCQdisc;
+    pub fn nm_setting_tc_config_get_qdisc(
+        setting: *mut NMSettingTCConfig,
+        idx: c_uint,
+    ) -> *mut NMTCQdisc;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_tc_config_get_tfilter(setting: *mut NMSettingTCConfig, idx: c_uint) -> *mut NMTCTfilter;
+    pub fn nm_setting_tc_config_get_tfilter(
+        setting: *mut NMSettingTCConfig,
+        idx: c_uint,
+    ) -> *mut NMTCTfilter;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_tc_config_remove_qdisc(setting: *mut NMSettingTCConfig, idx: c_uint);
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_tc_config_remove_qdisc_by_value(setting: *mut NMSettingTCConfig, qdisc: *mut NMTCQdisc) -> gboolean;
+    pub fn nm_setting_tc_config_remove_qdisc_by_value(
+        setting: *mut NMSettingTCConfig,
+        qdisc: *mut NMTCQdisc,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_tc_config_remove_tfilter(setting: *mut NMSettingTCConfig, idx: c_uint);
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_tc_config_remove_tfilter_by_value(setting: *mut NMSettingTCConfig, tfilter: *mut NMTCTfilter) -> gboolean;
+    pub fn nm_setting_tc_config_remove_tfilter_by_value(
+        setting: *mut NMSettingTCConfig,
+        tfilter: *mut NMTCTfilter,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingTeam
@@ -8724,17 +10303,26 @@ extern "C" {
     pub fn nm_setting_team_new() -> *mut NMSetting;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_add_link_watcher(setting: *mut NMSettingTeam, link_watcher: *mut NMTeamLinkWatcher) -> gboolean;
+    pub fn nm_setting_team_add_link_watcher(
+        setting: *mut NMSettingTeam,
+        link_watcher: *mut NMTeamLinkWatcher,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_add_runner_tx_hash(setting: *mut NMSettingTeam, txhash: *const c_char) -> gboolean;
+    pub fn nm_setting_team_add_runner_tx_hash(
+        setting: *mut NMSettingTeam,
+        txhash: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_team_clear_link_watchers(setting: *mut NMSettingTeam);
     pub fn nm_setting_team_get_config(setting: *mut NMSettingTeam) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_get_link_watcher(setting: *mut NMSettingTeam, idx: c_uint) -> *mut NMTeamLinkWatcher;
+    pub fn nm_setting_team_get_link_watcher(
+        setting: *mut NMSettingTeam,
+        idx: c_uint,
+    ) -> *mut NMTeamLinkWatcher;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_team_get_mcast_rejoin_count(setting: *mut NMSettingTeam) -> c_int;
@@ -8761,7 +10349,9 @@ extern "C" {
     pub fn nm_setting_team_get_runner_active(setting: *mut NMSettingTeam) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_get_runner_agg_select_policy(setting: *mut NMSettingTeam) -> *const c_char;
+    pub fn nm_setting_team_get_runner_agg_select_policy(
+        setting: *mut NMSettingTeam,
+    ) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_team_get_runner_fast_rate(setting: *mut NMSettingTeam) -> gboolean;
@@ -8782,19 +10372,28 @@ extern "C" {
     pub fn nm_setting_team_get_runner_tx_balancer_interval(setting: *mut NMSettingTeam) -> c_int;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_get_runner_tx_hash(setting: *mut NMSettingTeam, idx: c_uint) -> *const c_char;
+    pub fn nm_setting_team_get_runner_tx_hash(
+        setting: *mut NMSettingTeam,
+        idx: c_uint,
+    ) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_team_remove_link_watcher(setting: *mut NMSettingTeam, idx: c_uint);
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_remove_link_watcher_by_value(setting: *mut NMSettingTeam, link_watcher: *mut NMTeamLinkWatcher) -> gboolean;
+    pub fn nm_setting_team_remove_link_watcher_by_value(
+        setting: *mut NMSettingTeam,
+        link_watcher: *mut NMTeamLinkWatcher,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_team_remove_runner_tx_hash(setting: *mut NMSettingTeam, idx: c_uint);
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_remove_runner_tx_hash_by_value(setting: *mut NMSettingTeam, txhash: *const c_char) -> gboolean;
+    pub fn nm_setting_team_remove_runner_tx_hash_by_value(
+        setting: *mut NMSettingTeam,
+        txhash: *const c_char,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingTeamPort
@@ -8803,7 +10402,10 @@ extern "C" {
     pub fn nm_setting_team_port_new() -> *mut NMSetting;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_port_add_link_watcher(setting: *mut NMSettingTeamPort, link_watcher: *mut NMTeamLinkWatcher) -> gboolean;
+    pub fn nm_setting_team_port_add_link_watcher(
+        setting: *mut NMSettingTeamPort,
+        link_watcher: *mut NMTeamLinkWatcher,
+    ) -> gboolean;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_team_port_clear_link_watchers(setting: *mut NMSettingTeamPort);
@@ -8816,7 +10418,10 @@ extern "C" {
     pub fn nm_setting_team_port_get_lacp_prio(setting: *mut NMSettingTeamPort) -> c_int;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_port_get_link_watcher(setting: *mut NMSettingTeamPort, idx: c_uint) -> *mut NMTeamLinkWatcher;
+    pub fn nm_setting_team_port_get_link_watcher(
+        setting: *mut NMSettingTeamPort,
+        idx: c_uint,
+    ) -> *mut NMTeamLinkWatcher;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_setting_team_port_get_num_link_watchers(setting: *mut NMSettingTeamPort) -> c_uint;
@@ -8834,7 +10439,10 @@ extern "C" {
     pub fn nm_setting_team_port_remove_link_watcher(setting: *mut NMSettingTeamPort, idx: c_uint);
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_team_port_remove_link_watcher_by_value(setting: *mut NMSettingTeamPort, link_watcher: *mut NMTeamLinkWatcher) -> gboolean;
+    pub fn nm_setting_team_port_remove_link_watcher_by_value(
+        setting: *mut NMSettingTeamPort,
+        link_watcher: *mut NMTeamLinkWatcher,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingTun
@@ -8873,19 +10481,32 @@ extern "C" {
     pub fn nm_setting_user_new() -> *mut NMSetting;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_user_check_key(key: *const c_char, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_user_check_key(key: *const c_char, error: *mut *mut glib::GError)
+        -> gboolean;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_user_check_val(val: *const c_char, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_user_check_val(val: *const c_char, error: *mut *mut glib::GError)
+        -> gboolean;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_user_get_data(setting: *mut NMSettingUser, key: *const c_char) -> *const c_char;
+    pub fn nm_setting_user_get_data(
+        setting: *mut NMSettingUser,
+        key: *const c_char,
+    ) -> *const c_char;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_user_get_keys(setting: *mut NMSettingUser, out_len: *mut c_uint) -> *const *const c_char;
+    pub fn nm_setting_user_get_keys(
+        setting: *mut NMSettingUser,
+        out_len: *mut c_uint,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_setting_user_set_data(setting: *mut NMSettingUser, key: *const c_char, val: *const c_char, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_setting_user_set_data(
+        setting: *mut NMSettingUser,
+        key: *const c_char,
+        val: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingVeth
@@ -8903,50 +10524,113 @@ extern "C" {
     //=========================================================================
     pub fn nm_setting_vlan_get_type() -> GType;
     pub fn nm_setting_vlan_new() -> *mut NMSetting;
-    pub fn nm_setting_vlan_add_priority(setting: *mut NMSettingVlan, map: NMVlanPriorityMap, from: u32, to: u32) -> gboolean;
-    pub fn nm_setting_vlan_add_priority_str(setting: *mut NMSettingVlan, map: NMVlanPriorityMap, str: *const c_char) -> gboolean;
+    pub fn nm_setting_vlan_add_priority(
+        setting: *mut NMSettingVlan,
+        map: NMVlanPriorityMap,
+        from: u32,
+        to: u32,
+    ) -> gboolean;
+    pub fn nm_setting_vlan_add_priority_str(
+        setting: *mut NMSettingVlan,
+        map: NMVlanPriorityMap,
+        str: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_vlan_clear_priorities(setting: *mut NMSettingVlan, map: NMVlanPriorityMap);
     pub fn nm_setting_vlan_get_flags(setting: *mut NMSettingVlan) -> u32;
     pub fn nm_setting_vlan_get_id(setting: *mut NMSettingVlan) -> u32;
-    pub fn nm_setting_vlan_get_num_priorities(setting: *mut NMSettingVlan, map: NMVlanPriorityMap) -> i32;
+    pub fn nm_setting_vlan_get_num_priorities(
+        setting: *mut NMSettingVlan,
+        map: NMVlanPriorityMap,
+    ) -> i32;
     pub fn nm_setting_vlan_get_parent(setting: *mut NMSettingVlan) -> *const c_char;
-    pub fn nm_setting_vlan_get_priority(setting: *mut NMSettingVlan, map: NMVlanPriorityMap, idx: u32, out_from: *mut u32, out_to: *mut u32) -> gboolean;
+    pub fn nm_setting_vlan_get_priority(
+        setting: *mut NMSettingVlan,
+        map: NMVlanPriorityMap,
+        idx: u32,
+        out_from: *mut u32,
+        out_to: *mut u32,
+    ) -> gboolean;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn nm_setting_vlan_get_protocol(setting: *mut NMSettingVlan) -> *const c_char;
-    pub fn nm_setting_vlan_remove_priority(setting: *mut NMSettingVlan, map: NMVlanPriorityMap, idx: u32);
-    pub fn nm_setting_vlan_remove_priority_by_value(setting: *mut NMSettingVlan, map: NMVlanPriorityMap, from: u32, to: u32) -> gboolean;
-    pub fn nm_setting_vlan_remove_priority_str_by_value(setting: *mut NMSettingVlan, map: NMVlanPriorityMap, str: *const c_char) -> gboolean;
+    pub fn nm_setting_vlan_remove_priority(
+        setting: *mut NMSettingVlan,
+        map: NMVlanPriorityMap,
+        idx: u32,
+    );
+    pub fn nm_setting_vlan_remove_priority_by_value(
+        setting: *mut NMSettingVlan,
+        map: NMVlanPriorityMap,
+        from: u32,
+        to: u32,
+    ) -> gboolean;
+    pub fn nm_setting_vlan_remove_priority_str_by_value(
+        setting: *mut NMSettingVlan,
+        map: NMVlanPriorityMap,
+        str: *const c_char,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingVpn
     //=========================================================================
     pub fn nm_setting_vpn_get_type() -> GType;
     pub fn nm_setting_vpn_new() -> *mut NMSetting;
-    pub fn nm_setting_vpn_add_data_item(setting: *mut NMSettingVpn, key: *const c_char, item: *const c_char);
-    pub fn nm_setting_vpn_add_secret(setting: *mut NMSettingVpn, key: *const c_char, secret: *const c_char);
-    pub fn nm_setting_vpn_foreach_data_item(setting: *mut NMSettingVpn, func: NMVpnIterFunc, user_data: gpointer);
-    pub fn nm_setting_vpn_foreach_secret(setting: *mut NMSettingVpn, func: NMVpnIterFunc, user_data: gpointer);
-    pub fn nm_setting_vpn_get_data_item(setting: *mut NMSettingVpn, key: *const c_char) -> *const c_char;
+    pub fn nm_setting_vpn_add_data_item(
+        setting: *mut NMSettingVpn,
+        key: *const c_char,
+        item: *const c_char,
+    );
+    pub fn nm_setting_vpn_add_secret(
+        setting: *mut NMSettingVpn,
+        key: *const c_char,
+        secret: *const c_char,
+    );
+    pub fn nm_setting_vpn_foreach_data_item(
+        setting: *mut NMSettingVpn,
+        func: NMVpnIterFunc,
+        user_data: gpointer,
+    );
+    pub fn nm_setting_vpn_foreach_secret(
+        setting: *mut NMSettingVpn,
+        func: NMVpnIterFunc,
+        user_data: gpointer,
+    );
+    pub fn nm_setting_vpn_get_data_item(
+        setting: *mut NMSettingVpn,
+        key: *const c_char,
+    ) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_vpn_get_data_keys(setting: *mut NMSettingVpn, out_length: *mut c_uint) -> *mut *const c_char;
+    pub fn nm_setting_vpn_get_data_keys(
+        setting: *mut NMSettingVpn,
+        out_length: *mut c_uint,
+    ) -> *mut *const c_char;
     pub fn nm_setting_vpn_get_num_data_items(setting: *mut NMSettingVpn) -> u32;
     pub fn nm_setting_vpn_get_num_secrets(setting: *mut NMSettingVpn) -> u32;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn nm_setting_vpn_get_persistent(setting: *mut NMSettingVpn) -> gboolean;
-    pub fn nm_setting_vpn_get_secret(setting: *mut NMSettingVpn, key: *const c_char) -> *const c_char;
+    pub fn nm_setting_vpn_get_secret(
+        setting: *mut NMSettingVpn,
+        key: *const c_char,
+    ) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_vpn_get_secret_keys(setting: *mut NMSettingVpn, out_length: *mut c_uint) -> *mut *const c_char;
+    pub fn nm_setting_vpn_get_secret_keys(
+        setting: *mut NMSettingVpn,
+        out_length: *mut c_uint,
+    ) -> *mut *const c_char;
     pub fn nm_setting_vpn_get_service_type(setting: *mut NMSettingVpn) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_vpn_get_timeout(setting: *mut NMSettingVpn) -> u32;
     pub fn nm_setting_vpn_get_user_name(setting: *mut NMSettingVpn) -> *const c_char;
-    pub fn nm_setting_vpn_remove_data_item(setting: *mut NMSettingVpn, key: *const c_char) -> gboolean;
-    pub fn nm_setting_vpn_remove_secret(setting: *mut NMSettingVpn, key: *const c_char) -> gboolean;
+    pub fn nm_setting_vpn_remove_data_item(
+        setting: *mut NMSettingVpn,
+        key: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_vpn_remove_secret(setting: *mut NMSettingVpn, key: *const c_char)
+        -> gboolean;
 
     //=========================================================================
     // NMSettingVrf
@@ -9034,7 +10718,9 @@ extern "C" {
     pub fn nm_setting_wifi_p2p_get_wfd_ies(setting: *mut NMSettingWifiP2P) -> *mut glib::GBytes;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_setting_wifi_p2p_get_wps_method(setting: *mut NMSettingWifiP2P) -> NMSettingWirelessSecurityWpsMethod;
+    pub fn nm_setting_wifi_p2p_get_wps_method(
+        setting: *mut NMSettingWifiP2P,
+    ) -> NMSettingWirelessSecurityWpsMethod;
 
     //=========================================================================
     // NMSettingWimax
@@ -9055,7 +10741,10 @@ extern "C" {
     pub fn nm_setting_wireguard_new() -> *mut NMSetting;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_setting_wireguard_append_peer(self_: *mut NMSettingWireGuard, peer: *mut NMWireGuardPeer);
+    pub fn nm_setting_wireguard_append_peer(
+        self_: *mut NMSettingWireGuard,
+        peer: *mut NMWireGuardPeer,
+    );
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_setting_wireguard_clear_peers(self_: *mut NMSettingWireGuard) -> c_uint;
@@ -9064,10 +10753,14 @@ extern "C" {
     pub fn nm_setting_wireguard_get_fwmark(self_: *mut NMSettingWireGuard) -> u32;
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
-    pub fn nm_setting_wireguard_get_ip4_auto_default_route(self_: *mut NMSettingWireGuard) -> NMTernary;
+    pub fn nm_setting_wireguard_get_ip4_auto_default_route(
+        self_: *mut NMSettingWireGuard,
+    ) -> NMTernary;
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
-    pub fn nm_setting_wireguard_get_ip6_auto_default_route(self_: *mut NMSettingWireGuard) -> NMTernary;
+    pub fn nm_setting_wireguard_get_ip6_auto_default_route(
+        self_: *mut NMSettingWireGuard,
+    ) -> NMTernary;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_setting_wireguard_get_listen_port(self_: *mut NMSettingWireGuard) -> u16;
@@ -9076,10 +10769,17 @@ extern "C" {
     pub fn nm_setting_wireguard_get_mtu(self_: *mut NMSettingWireGuard) -> u32;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_setting_wireguard_get_peer(self_: *mut NMSettingWireGuard, idx: c_uint) -> *mut NMWireGuardPeer;
+    pub fn nm_setting_wireguard_get_peer(
+        self_: *mut NMSettingWireGuard,
+        idx: c_uint,
+    ) -> *mut NMWireGuardPeer;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_setting_wireguard_get_peer_by_public_key(self_: *mut NMSettingWireGuard, public_key: *const c_char, out_idx: *mut c_uint) -> *mut NMWireGuardPeer;
+    pub fn nm_setting_wireguard_get_peer_by_public_key(
+        self_: *mut NMSettingWireGuard,
+        public_key: *const c_char,
+        out_idx: *mut c_uint,
+    ) -> *mut NMWireGuardPeer;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_setting_wireguard_get_peer_routes(self_: *mut NMSettingWireGuard) -> gboolean;
@@ -9091,46 +10791,78 @@ extern "C" {
     pub fn nm_setting_wireguard_get_private_key(self_: *mut NMSettingWireGuard) -> *const c_char;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_setting_wireguard_get_private_key_flags(self_: *mut NMSettingWireGuard) -> NMSettingSecretFlags;
+    pub fn nm_setting_wireguard_get_private_key_flags(
+        self_: *mut NMSettingWireGuard,
+    ) -> NMSettingSecretFlags;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_setting_wireguard_remove_peer(self_: *mut NMSettingWireGuard, idx: c_uint) -> gboolean;
+    pub fn nm_setting_wireguard_remove_peer(
+        self_: *mut NMSettingWireGuard,
+        idx: c_uint,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_setting_wireguard_set_peer(self_: *mut NMSettingWireGuard, peer: *mut NMWireGuardPeer, idx: c_uint);
+    pub fn nm_setting_wireguard_set_peer(
+        self_: *mut NMSettingWireGuard,
+        peer: *mut NMWireGuardPeer,
+        idx: c_uint,
+    );
 
     //=========================================================================
     // NMSettingWired
     //=========================================================================
     pub fn nm_setting_wired_get_type() -> GType;
     pub fn nm_setting_wired_new() -> *mut NMSetting;
-    pub fn nm_setting_wired_add_mac_blacklist_item(setting: *mut NMSettingWired, mac: *const c_char) -> gboolean;
+    pub fn nm_setting_wired_add_mac_blacklist_item(
+        setting: *mut NMSettingWired,
+        mac: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_wired_add_mac_denylist_item(setting: *mut NMSettingWired, mac: *const c_char) -> gboolean;
-    pub fn nm_setting_wired_add_s390_option(setting: *mut NMSettingWired, key: *const c_char, value: *const c_char) -> gboolean;
+    pub fn nm_setting_wired_add_mac_denylist_item(
+        setting: *mut NMSettingWired,
+        mac: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wired_add_s390_option(
+        setting: *mut NMSettingWired,
+        key: *const c_char,
+        value: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_wired_clear_mac_blacklist_items(setting: *mut NMSettingWired);
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn nm_setting_wired_clear_mac_denylist_items(setting: *mut NMSettingWired);
     #[cfg(feature = "v1_32")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_32")))]
-    pub fn nm_setting_wired_get_accept_all_mac_addresses(setting: *mut NMSettingWired) -> NMTernary;
+    pub fn nm_setting_wired_get_accept_all_mac_addresses(setting: *mut NMSettingWired)
+        -> NMTernary;
     pub fn nm_setting_wired_get_auto_negotiate(setting: *mut NMSettingWired) -> gboolean;
     pub fn nm_setting_wired_get_cloned_mac_address(setting: *mut NMSettingWired) -> *const c_char;
     pub fn nm_setting_wired_get_duplex(setting: *mut NMSettingWired) -> *const c_char;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_setting_wired_get_generate_mac_address_mask(setting: *mut NMSettingWired) -> *const c_char;
+    pub fn nm_setting_wired_get_generate_mac_address_mask(
+        setting: *mut NMSettingWired,
+    ) -> *const c_char;
     pub fn nm_setting_wired_get_mac_address(setting: *mut NMSettingWired) -> *const c_char;
-    pub fn nm_setting_wired_get_mac_address_blacklist(setting: *mut NMSettingWired) -> *const *const c_char;
+    pub fn nm_setting_wired_get_mac_address_blacklist(
+        setting: *mut NMSettingWired,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_wired_get_mac_address_denylist(setting: *mut NMSettingWired) -> *const *const c_char;
-    pub fn nm_setting_wired_get_mac_blacklist_item(setting: *mut NMSettingWired, idx: u32) -> *const c_char;
+    pub fn nm_setting_wired_get_mac_address_denylist(
+        setting: *mut NMSettingWired,
+    ) -> *const *const c_char;
+    pub fn nm_setting_wired_get_mac_blacklist_item(
+        setting: *mut NMSettingWired,
+        idx: u32,
+    ) -> *const c_char;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_wired_get_mac_denylist_item(setting: *mut NMSettingWired, idx: u32) -> *const c_char;
+    pub fn nm_setting_wired_get_mac_denylist_item(
+        setting: *mut NMSettingWired,
+        idx: u32,
+    ) -> *const c_char;
     pub fn nm_setting_wired_get_mtu(setting: *mut NMSettingWired) -> u32;
     pub fn nm_setting_wired_get_num_mac_blacklist_items(setting: *mut NMSettingWired) -> u32;
     #[cfg(feature = "v1_48")]
@@ -9139,38 +10871,78 @@ extern "C" {
     pub fn nm_setting_wired_get_num_s390_options(setting: *mut NMSettingWired) -> u32;
     pub fn nm_setting_wired_get_port(setting: *mut NMSettingWired) -> *const c_char;
     pub fn nm_setting_wired_get_s390_nettype(setting: *mut NMSettingWired) -> *const c_char;
-    pub fn nm_setting_wired_get_s390_option(setting: *mut NMSettingWired, idx: u32, out_key: *mut *const c_char, out_value: *mut *const c_char) -> gboolean;
-    pub fn nm_setting_wired_get_s390_option_by_key(setting: *mut NMSettingWired, key: *const c_char) -> *const c_char;
-    pub fn nm_setting_wired_get_s390_subchannels(setting: *mut NMSettingWired) -> *const *const c_char;
+    pub fn nm_setting_wired_get_s390_option(
+        setting: *mut NMSettingWired,
+        idx: u32,
+        out_key: *mut *const c_char,
+        out_value: *mut *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wired_get_s390_option_by_key(
+        setting: *mut NMSettingWired,
+        key: *const c_char,
+    ) -> *const c_char;
+    pub fn nm_setting_wired_get_s390_subchannels(
+        setting: *mut NMSettingWired,
+    ) -> *const *const c_char;
     pub fn nm_setting_wired_get_speed(setting: *mut NMSettingWired) -> u32;
-    pub fn nm_setting_wired_get_valid_s390_options(setting: *mut NMSettingWired) -> *mut *const c_char;
+    pub fn nm_setting_wired_get_valid_s390_options(
+        setting: *mut NMSettingWired,
+    ) -> *mut *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_wired_get_wake_on_lan(setting: *mut NMSettingWired) -> NMSettingWiredWakeOnLan;
+    pub fn nm_setting_wired_get_wake_on_lan(
+        setting: *mut NMSettingWired,
+    ) -> NMSettingWiredWakeOnLan;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_wired_get_wake_on_lan_password(setting: *mut NMSettingWired) -> *const c_char;
+    pub fn nm_setting_wired_get_wake_on_lan_password(setting: *mut NMSettingWired)
+        -> *const c_char;
     pub fn nm_setting_wired_remove_mac_blacklist_item(setting: *mut NMSettingWired, idx: u32);
-    pub fn nm_setting_wired_remove_mac_blacklist_item_by_value(setting: *mut NMSettingWired, mac: *const c_char) -> gboolean;
+    pub fn nm_setting_wired_remove_mac_blacklist_item_by_value(
+        setting: *mut NMSettingWired,
+        mac: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn nm_setting_wired_remove_mac_denylist_item(setting: *mut NMSettingWired, idx: u32);
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_wired_remove_mac_denylist_item_by_value(setting: *mut NMSettingWired, mac: *const c_char) -> gboolean;
-    pub fn nm_setting_wired_remove_s390_option(setting: *mut NMSettingWired, key: *const c_char) -> gboolean;
+    pub fn nm_setting_wired_remove_mac_denylist_item_by_value(
+        setting: *mut NMSettingWired,
+        mac: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wired_remove_s390_option(
+        setting: *mut NMSettingWired,
+        key: *const c_char,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingWireless
     //=========================================================================
     pub fn nm_setting_wireless_get_type() -> GType;
     pub fn nm_setting_wireless_new() -> *mut NMSetting;
-    pub fn nm_setting_wireless_add_mac_blacklist_item(setting: *mut NMSettingWireless, mac: *const c_char) -> gboolean;
+    pub fn nm_setting_wireless_add_mac_blacklist_item(
+        setting: *mut NMSettingWireless,
+        mac: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_wireless_add_mac_denylist_item(setting: *mut NMSettingWireless, mac: *const c_char) -> gboolean;
-    pub fn nm_setting_wireless_add_seen_bssid(setting: *mut NMSettingWireless, bssid: *const c_char) -> gboolean;
-    pub fn nm_setting_wireless_ap_security_compatible(s_wireless: *mut NMSettingWireless, s_wireless_sec: *mut NMSettingWirelessSecurity, ap_flags: NM80211ApFlags, ap_wpa: NM80211ApSecurityFlags, ap_rsn: NM80211ApSecurityFlags, ap_mode: NM80211Mode) -> gboolean;
+    pub fn nm_setting_wireless_add_mac_denylist_item(
+        setting: *mut NMSettingWireless,
+        mac: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wireless_add_seen_bssid(
+        setting: *mut NMSettingWireless,
+        bssid: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wireless_ap_security_compatible(
+        s_wireless: *mut NMSettingWireless,
+        s_wireless_sec: *mut NMSettingWirelessSecurity,
+        ap_flags: NM80211ApFlags,
+        ap_wpa: NM80211ApSecurityFlags,
+        ap_rsn: NM80211ApSecurityFlags,
+        ap_mode: NM80211Mode,
+    ) -> gboolean;
     pub fn nm_setting_wireless_clear_mac_blacklist_items(setting: *mut NMSettingWireless);
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
@@ -9183,24 +10955,42 @@ extern "C" {
     pub fn nm_setting_wireless_get_channel(setting: *mut NMSettingWireless) -> u32;
     #[cfg(feature = "v1_50")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
-    pub fn nm_setting_wireless_get_channel_width(setting: *mut NMSettingWireless) -> NMSettingWirelessChannelWidth;
-    pub fn nm_setting_wireless_get_cloned_mac_address(setting: *mut NMSettingWireless) -> *const c_char;
+    pub fn nm_setting_wireless_get_channel_width(
+        setting: *mut NMSettingWireless,
+    ) -> NMSettingWirelessChannelWidth;
+    pub fn nm_setting_wireless_get_cloned_mac_address(
+        setting: *mut NMSettingWireless,
+    ) -> *const c_char;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_setting_wireless_get_generate_mac_address_mask(setting: *mut NMSettingWireless) -> *const c_char;
+    pub fn nm_setting_wireless_get_generate_mac_address_mask(
+        setting: *mut NMSettingWireless,
+    ) -> *const c_char;
     pub fn nm_setting_wireless_get_hidden(setting: *mut NMSettingWireless) -> gboolean;
     pub fn nm_setting_wireless_get_mac_address(setting: *mut NMSettingWireless) -> *const c_char;
-    pub fn nm_setting_wireless_get_mac_address_blacklist(setting: *mut NMSettingWireless) -> *const *const c_char;
+    pub fn nm_setting_wireless_get_mac_address_blacklist(
+        setting: *mut NMSettingWireless,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_wireless_get_mac_address_denylist(setting: *mut NMSettingWireless) -> *const *const c_char;
+    pub fn nm_setting_wireless_get_mac_address_denylist(
+        setting: *mut NMSettingWireless,
+    ) -> *const *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_setting_wireless_get_mac_address_randomization(setting: *mut NMSettingWireless) -> NMSettingMacRandomization;
-    pub fn nm_setting_wireless_get_mac_blacklist_item(setting: *mut NMSettingWireless, idx: u32) -> *const c_char;
+    pub fn nm_setting_wireless_get_mac_address_randomization(
+        setting: *mut NMSettingWireless,
+    ) -> NMSettingMacRandomization;
+    pub fn nm_setting_wireless_get_mac_blacklist_item(
+        setting: *mut NMSettingWireless,
+        idx: u32,
+    ) -> *const c_char;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_wireless_get_mac_denylist_item(setting: *mut NMSettingWireless, idx: u32) -> *const c_char;
+    pub fn nm_setting_wireless_get_mac_denylist_item(
+        setting: *mut NMSettingWireless,
+        idx: u32,
+    ) -> *const c_char;
     pub fn nm_setting_wireless_get_mode(setting: *mut NMSettingWireless) -> *const c_char;
     pub fn nm_setting_wireless_get_mtu(setting: *mut NMSettingWireless) -> u32;
     pub fn nm_setting_wireless_get_num_mac_blacklist_items(setting: *mut NMSettingWireless) -> u32;
@@ -9212,65 +11002,151 @@ extern "C" {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_setting_wireless_get_powersave(setting: *mut NMSettingWireless) -> u32;
     pub fn nm_setting_wireless_get_rate(setting: *mut NMSettingWireless) -> u32;
-    pub fn nm_setting_wireless_get_seen_bssid(setting: *mut NMSettingWireless, i: u32) -> *const c_char;
+    pub fn nm_setting_wireless_get_seen_bssid(
+        setting: *mut NMSettingWireless,
+        i: u32,
+    ) -> *const c_char;
     pub fn nm_setting_wireless_get_ssid(setting: *mut NMSettingWireless) -> *mut glib::GBytes;
     pub fn nm_setting_wireless_get_tx_power(setting: *mut NMSettingWireless) -> u32;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_wireless_get_wake_on_wlan(setting: *mut NMSettingWireless) -> NMSettingWirelessWakeOnWLan;
+    pub fn nm_setting_wireless_get_wake_on_wlan(
+        setting: *mut NMSettingWireless,
+    ) -> NMSettingWirelessWakeOnWLan;
     pub fn nm_setting_wireless_remove_mac_blacklist_item(setting: *mut NMSettingWireless, idx: u32);
-    pub fn nm_setting_wireless_remove_mac_blacklist_item_by_value(setting: *mut NMSettingWireless, mac: *const c_char) -> gboolean;
+    pub fn nm_setting_wireless_remove_mac_blacklist_item_by_value(
+        setting: *mut NMSettingWireless,
+        mac: *const c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn nm_setting_wireless_remove_mac_denylist_item(setting: *mut NMSettingWireless, idx: u32);
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-    pub fn nm_setting_wireless_remove_mac_denylist_item_by_value(setting: *mut NMSettingWireless, mac: *const c_char) -> gboolean;
+    pub fn nm_setting_wireless_remove_mac_denylist_item_by_value(
+        setting: *mut NMSettingWireless,
+        mac: *const c_char,
+    ) -> gboolean;
 
     //=========================================================================
     // NMSettingWirelessSecurity
     //=========================================================================
     pub fn nm_setting_wireless_security_get_type() -> GType;
     pub fn nm_setting_wireless_security_new() -> *mut NMSetting;
-    pub fn nm_setting_wireless_security_add_group(setting: *mut NMSettingWirelessSecurity, group: *const c_char) -> gboolean;
-    pub fn nm_setting_wireless_security_add_pairwise(setting: *mut NMSettingWirelessSecurity, pairwise: *const c_char) -> gboolean;
-    pub fn nm_setting_wireless_security_add_proto(setting: *mut NMSettingWirelessSecurity, proto: *const c_char) -> gboolean;
+    pub fn nm_setting_wireless_security_add_group(
+        setting: *mut NMSettingWirelessSecurity,
+        group: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wireless_security_add_pairwise(
+        setting: *mut NMSettingWirelessSecurity,
+        pairwise: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wireless_security_add_proto(
+        setting: *mut NMSettingWirelessSecurity,
+        proto: *const c_char,
+    ) -> gboolean;
     pub fn nm_setting_wireless_security_clear_groups(setting: *mut NMSettingWirelessSecurity);
     pub fn nm_setting_wireless_security_clear_pairwise(setting: *mut NMSettingWirelessSecurity);
     pub fn nm_setting_wireless_security_clear_protos(setting: *mut NMSettingWirelessSecurity);
-    pub fn nm_setting_wireless_security_get_auth_alg(setting: *mut NMSettingWirelessSecurity) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_auth_alg(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> *const c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_setting_wireless_security_get_fils(setting: *mut NMSettingWirelessSecurity) -> NMSettingWirelessSecurityFils;
-    pub fn nm_setting_wireless_security_get_group(setting: *mut NMSettingWirelessSecurity, i: u32) -> *const c_char;
-    pub fn nm_setting_wireless_security_get_key_mgmt(setting: *mut NMSettingWirelessSecurity) -> *const c_char;
-    pub fn nm_setting_wireless_security_get_leap_password(setting: *mut NMSettingWirelessSecurity) -> *const c_char;
-    pub fn nm_setting_wireless_security_get_leap_password_flags(setting: *mut NMSettingWirelessSecurity) -> NMSettingSecretFlags;
-    pub fn nm_setting_wireless_security_get_leap_username(setting: *mut NMSettingWirelessSecurity) -> *const c_char;
-    pub fn nm_setting_wireless_security_get_num_groups(setting: *mut NMSettingWirelessSecurity) -> u32;
-    pub fn nm_setting_wireless_security_get_num_pairwise(setting: *mut NMSettingWirelessSecurity) -> u32;
-    pub fn nm_setting_wireless_security_get_num_protos(setting: *mut NMSettingWirelessSecurity) -> u32;
-    pub fn nm_setting_wireless_security_get_pairwise(setting: *mut NMSettingWirelessSecurity, i: u32) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_fils(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> NMSettingWirelessSecurityFils;
+    pub fn nm_setting_wireless_security_get_group(
+        setting: *mut NMSettingWirelessSecurity,
+        i: u32,
+    ) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_key_mgmt(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_leap_password(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_leap_password_flags(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> NMSettingSecretFlags;
+    pub fn nm_setting_wireless_security_get_leap_username(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_num_groups(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> u32;
+    pub fn nm_setting_wireless_security_get_num_pairwise(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> u32;
+    pub fn nm_setting_wireless_security_get_num_protos(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> u32;
+    pub fn nm_setting_wireless_security_get_pairwise(
+        setting: *mut NMSettingWirelessSecurity,
+        i: u32,
+    ) -> *const c_char;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-    pub fn nm_setting_wireless_security_get_pmf(setting: *mut NMSettingWirelessSecurity) -> NMSettingWirelessSecurityPmf;
-    pub fn nm_setting_wireless_security_get_proto(setting: *mut NMSettingWirelessSecurity, i: u32) -> *const c_char;
-    pub fn nm_setting_wireless_security_get_psk(setting: *mut NMSettingWirelessSecurity) -> *const c_char;
-    pub fn nm_setting_wireless_security_get_psk_flags(setting: *mut NMSettingWirelessSecurity) -> NMSettingSecretFlags;
-    pub fn nm_setting_wireless_security_get_wep_key(setting: *mut NMSettingWirelessSecurity, idx: u32) -> *const c_char;
-    pub fn nm_setting_wireless_security_get_wep_key_flags(setting: *mut NMSettingWirelessSecurity) -> NMSettingSecretFlags;
-    pub fn nm_setting_wireless_security_get_wep_key_type(setting: *mut NMSettingWirelessSecurity) -> NMWepKeyType;
-    pub fn nm_setting_wireless_security_get_wep_tx_keyidx(setting: *mut NMSettingWirelessSecurity) -> u32;
+    pub fn nm_setting_wireless_security_get_pmf(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> NMSettingWirelessSecurityPmf;
+    pub fn nm_setting_wireless_security_get_proto(
+        setting: *mut NMSettingWirelessSecurity,
+        i: u32,
+    ) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_psk(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_psk_flags(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> NMSettingSecretFlags;
+    pub fn nm_setting_wireless_security_get_wep_key(
+        setting: *mut NMSettingWirelessSecurity,
+        idx: u32,
+    ) -> *const c_char;
+    pub fn nm_setting_wireless_security_get_wep_key_flags(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> NMSettingSecretFlags;
+    pub fn nm_setting_wireless_security_get_wep_key_type(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> NMWepKeyType;
+    pub fn nm_setting_wireless_security_get_wep_tx_keyidx(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> u32;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-    pub fn nm_setting_wireless_security_get_wps_method(setting: *mut NMSettingWirelessSecurity) -> NMSettingWirelessSecurityWpsMethod;
-    pub fn nm_setting_wireless_security_remove_group(setting: *mut NMSettingWirelessSecurity, i: u32);
-    pub fn nm_setting_wireless_security_remove_group_by_value(setting: *mut NMSettingWirelessSecurity, group: *const c_char) -> gboolean;
-    pub fn nm_setting_wireless_security_remove_pairwise(setting: *mut NMSettingWirelessSecurity, i: u32);
-    pub fn nm_setting_wireless_security_remove_pairwise_by_value(setting: *mut NMSettingWirelessSecurity, pairwise: *const c_char) -> gboolean;
-    pub fn nm_setting_wireless_security_remove_proto(setting: *mut NMSettingWirelessSecurity, i: u32);
-    pub fn nm_setting_wireless_security_remove_proto_by_value(setting: *mut NMSettingWirelessSecurity, proto: *const c_char) -> gboolean;
-    pub fn nm_setting_wireless_security_set_wep_key(setting: *mut NMSettingWirelessSecurity, idx: u32, key: *const c_char);
+    pub fn nm_setting_wireless_security_get_wps_method(
+        setting: *mut NMSettingWirelessSecurity,
+    ) -> NMSettingWirelessSecurityWpsMethod;
+    pub fn nm_setting_wireless_security_remove_group(
+        setting: *mut NMSettingWirelessSecurity,
+        i: u32,
+    );
+    pub fn nm_setting_wireless_security_remove_group_by_value(
+        setting: *mut NMSettingWirelessSecurity,
+        group: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wireless_security_remove_pairwise(
+        setting: *mut NMSettingWirelessSecurity,
+        i: u32,
+    );
+    pub fn nm_setting_wireless_security_remove_pairwise_by_value(
+        setting: *mut NMSettingWirelessSecurity,
+        pairwise: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wireless_security_remove_proto(
+        setting: *mut NMSettingWirelessSecurity,
+        i: u32,
+    );
+    pub fn nm_setting_wireless_security_remove_proto_by_value(
+        setting: *mut NMSettingWirelessSecurity,
+        proto: *const c_char,
+    ) -> gboolean;
+    pub fn nm_setting_wireless_security_set_wep_key(
+        setting: *mut NMSettingWirelessSecurity,
+        idx: u32,
+        key: *const c_char,
+    );
 
     //=========================================================================
     // NMSettingWpan
@@ -9303,7 +11179,10 @@ extern "C" {
     pub fn nm_simple_connection_get_type() -> GType;
     pub fn nm_simple_connection_new() -> *mut NMConnection;
     pub fn nm_simple_connection_new_clone(connection: *mut NMConnection) -> *mut NMConnection;
-    pub fn nm_simple_connection_new_from_dbus(dict: *mut glib::GVariant, error: *mut *mut glib::GError) -> *mut NMConnection;
+    pub fn nm_simple_connection_new_from_dbus(
+        dict: *mut glib::GVariant,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMConnection;
 
     //=========================================================================
     // NMVpnConnection
@@ -9318,37 +11197,70 @@ extern "C" {
     pub fn nm_vpn_plugin_info_get_type() -> GType;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_new_from_file(filename: *const c_char, error: *mut *mut glib::GError) -> *mut NMVpnPluginInfo;
+    pub fn nm_vpn_plugin_info_new_from_file(
+        filename: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMVpnPluginInfo;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_vpn_plugin_info_new_search_file(name: *const c_char, service: *const c_char) -> *mut NMVpnPluginInfo;
+    pub fn nm_vpn_plugin_info_new_search_file(
+        name: *const c_char,
+        service: *const c_char,
+    ) -> *mut NMVpnPluginInfo;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_new_with_data(filename: *const c_char, keyfile: *mut glib::GKeyFile, error: *mut *mut glib::GError) -> *mut NMVpnPluginInfo;
+    pub fn nm_vpn_plugin_info_new_with_data(
+        filename: *const c_char,
+        keyfile: *mut glib::GKeyFile,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMVpnPluginInfo;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_list_add(list: *mut *mut glib::GSList, plugin_info: *mut NMVpnPluginInfo, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_vpn_plugin_info_list_add(
+        list: *mut *mut glib::GSList,
+        plugin_info: *mut NMVpnPluginInfo,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_list_find_by_filename(list: *mut glib::GSList, filename: *const c_char) -> *mut NMVpnPluginInfo;
+    pub fn nm_vpn_plugin_info_list_find_by_filename(
+        list: *mut glib::GSList,
+        filename: *const c_char,
+    ) -> *mut NMVpnPluginInfo;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_list_find_by_name(list: *mut glib::GSList, name: *const c_char) -> *mut NMVpnPluginInfo;
+    pub fn nm_vpn_plugin_info_list_find_by_name(
+        list: *mut glib::GSList,
+        name: *const c_char,
+    ) -> *mut NMVpnPluginInfo;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_list_find_by_service(list: *mut glib::GSList, service: *const c_char) -> *mut NMVpnPluginInfo;
+    pub fn nm_vpn_plugin_info_list_find_by_service(
+        list: *mut glib::GSList,
+        service: *const c_char,
+    ) -> *mut NMVpnPluginInfo;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_vpn_plugin_info_list_find_service_type(list: *mut glib::GSList, name: *const c_char) -> *mut c_char;
+    pub fn nm_vpn_plugin_info_list_find_service_type(
+        list: *mut glib::GSList,
+        name: *const c_char,
+    ) -> *mut c_char;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_vpn_plugin_info_list_get_service_types(list: *mut glib::GSList, only_existing: gboolean, with_abbreviations: gboolean) -> *mut *mut c_char;
+    pub fn nm_vpn_plugin_info_list_get_service_types(
+        list: *mut glib::GSList,
+        only_existing: gboolean,
+        with_abbreviations: gboolean,
+    ) -> *mut *mut c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_vpn_plugin_info_list_load() -> *mut glib::GSList;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_list_remove(list: *mut *mut glib::GSList, plugin_info: *mut NMVpnPluginInfo) -> gboolean;
+    pub fn nm_vpn_plugin_info_list_remove(
+        list: *mut *mut glib::GSList,
+        plugin_info: *mut NMVpnPluginInfo,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_vpn_plugin_info_validate_filename(filename: *const c_char) -> gboolean;
@@ -9360,7 +11272,9 @@ extern "C" {
     pub fn nm_vpn_plugin_info_get_auth_dialog(self_: *mut NMVpnPluginInfo) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_get_editor_plugin(self_: *mut NMVpnPluginInfo) -> *mut NMVpnEditorPlugin;
+    pub fn nm_vpn_plugin_info_get_editor_plugin(
+        self_: *mut NMVpnPluginInfo,
+    ) -> *mut NMVpnEditorPlugin;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_vpn_plugin_info_get_filename(self_: *mut NMVpnPluginInfo) -> *const c_char;
@@ -9378,13 +11292,23 @@ extern "C" {
     pub fn nm_vpn_plugin_info_get_service(self_: *mut NMVpnPluginInfo) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_load_editor_plugin(self_: *mut NMVpnPluginInfo, error: *mut *mut glib::GError) -> *mut NMVpnEditorPlugin;
+    pub fn nm_vpn_plugin_info_load_editor_plugin(
+        self_: *mut NMVpnPluginInfo,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMVpnEditorPlugin;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_lookup_property(self_: *mut NMVpnPluginInfo, group: *const c_char, key: *const c_char) -> *const c_char;
+    pub fn nm_vpn_plugin_info_lookup_property(
+        self_: *mut NMVpnPluginInfo,
+        group: *const c_char,
+        key: *const c_char,
+    ) -> *const c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_plugin_info_set_editor_plugin(self_: *mut NMVpnPluginInfo, plugin: *mut NMVpnEditorPlugin);
+    pub fn nm_vpn_plugin_info_set_editor_plugin(
+        self_: *mut NMVpnPluginInfo,
+        plugin: *mut NMVpnEditorPlugin,
+    );
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn nm_vpn_plugin_info_supports_hints(self_: *mut NMVpnPluginInfo) -> gboolean;
@@ -9396,14 +11320,34 @@ extern "C" {
     // NMVpnPluginOld
     //=========================================================================
     pub fn nm_vpn_plugin_old_get_type() -> GType;
-    pub fn nm_vpn_plugin_old_get_secret_flags(data: *mut glib::GHashTable, secret_name: *const c_char, out_flags: *mut NMSettingSecretFlags) -> gboolean;
-    pub fn nm_vpn_plugin_old_read_vpn_details(fd: c_int, out_data: *mut *mut glib::GHashTable, out_secrets: *mut *mut glib::GHashTable) -> gboolean;
-    pub fn nm_vpn_plugin_old_disconnect(plugin: *mut NMVpnPluginOld, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_vpn_plugin_old_get_secret_flags(
+        data: *mut glib::GHashTable,
+        secret_name: *const c_char,
+        out_flags: *mut NMSettingSecretFlags,
+    ) -> gboolean;
+    pub fn nm_vpn_plugin_old_read_vpn_details(
+        fd: c_int,
+        out_data: *mut *mut glib::GHashTable,
+        out_secrets: *mut *mut glib::GHashTable,
+    ) -> gboolean;
+    pub fn nm_vpn_plugin_old_disconnect(
+        plugin: *mut NMVpnPluginOld,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     pub fn nm_vpn_plugin_old_failure(plugin: *mut NMVpnPluginOld, reason: NMVpnPluginFailure);
-    pub fn nm_vpn_plugin_old_get_connection(plugin: *mut NMVpnPluginOld) -> *mut gio::GDBusConnection;
+    pub fn nm_vpn_plugin_old_get_connection(
+        plugin: *mut NMVpnPluginOld,
+    ) -> *mut gio::GDBusConnection;
     pub fn nm_vpn_plugin_old_get_state(plugin: *mut NMVpnPluginOld) -> NMVpnServiceState;
-    pub fn nm_vpn_plugin_old_secrets_required(plugin: *mut NMVpnPluginOld, message: *const c_char, hints: *mut *const c_char);
-    pub fn nm_vpn_plugin_old_set_ip4_config(plugin: *mut NMVpnPluginOld, ip4_config: *mut glib::GVariant);
+    pub fn nm_vpn_plugin_old_secrets_required(
+        plugin: *mut NMVpnPluginOld,
+        message: *const c_char,
+        hints: *mut *const c_char,
+    );
+    pub fn nm_vpn_plugin_old_set_ip4_config(
+        plugin: *mut NMVpnPluginOld,
+        ip4_config: *mut glib::GVariant,
+    );
     pub fn nm_vpn_plugin_old_set_login_banner(plugin: *mut NMVpnPluginOld, banner: *const c_char);
     pub fn nm_vpn_plugin_old_set_state(plugin: *mut NMVpnPluginOld, state: NMVpnServiceState);
 
@@ -9415,34 +11359,66 @@ extern "C" {
     pub fn nm_vpn_service_plugin_get_type() -> GType;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_get_secret_flags(data: *mut glib::GHashTable, secret_name: *const c_char, out_flags: *mut NMSettingSecretFlags) -> gboolean;
+    pub fn nm_vpn_service_plugin_get_secret_flags(
+        data: *mut glib::GHashTable,
+        secret_name: *const c_char,
+        out_flags: *mut NMSettingSecretFlags,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_read_vpn_details(fd: c_int, out_data: *mut *mut glib::GHashTable, out_secrets: *mut *mut glib::GHashTable) -> gboolean;
+    pub fn nm_vpn_service_plugin_read_vpn_details(
+        fd: c_int,
+        out_data: *mut *mut glib::GHashTable,
+        out_secrets: *mut *mut glib::GHashTable,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_disconnect(plugin: *mut NMVpnServicePlugin, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_vpn_service_plugin_disconnect(
+        plugin: *mut NMVpnServicePlugin,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_failure(plugin: *mut NMVpnServicePlugin, reason: NMVpnPluginFailure);
+    pub fn nm_vpn_service_plugin_failure(
+        plugin: *mut NMVpnServicePlugin,
+        reason: NMVpnPluginFailure,
+    );
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_get_connection(plugin: *mut NMVpnServicePlugin) -> *mut gio::GDBusConnection;
+    pub fn nm_vpn_service_plugin_get_connection(
+        plugin: *mut NMVpnServicePlugin,
+    ) -> *mut gio::GDBusConnection;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_secrets_required(plugin: *mut NMVpnServicePlugin, message: *const c_char, hints: *mut *const c_char);
+    pub fn nm_vpn_service_plugin_secrets_required(
+        plugin: *mut NMVpnServicePlugin,
+        message: *const c_char,
+        hints: *mut *const c_char,
+    );
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_set_config(plugin: *mut NMVpnServicePlugin, config: *mut glib::GVariant);
+    pub fn nm_vpn_service_plugin_set_config(
+        plugin: *mut NMVpnServicePlugin,
+        config: *mut glib::GVariant,
+    );
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_set_ip4_config(plugin: *mut NMVpnServicePlugin, ip4_config: *mut glib::GVariant);
+    pub fn nm_vpn_service_plugin_set_ip4_config(
+        plugin: *mut NMVpnServicePlugin,
+        ip4_config: *mut glib::GVariant,
+    );
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_set_ip6_config(plugin: *mut NMVpnServicePlugin, ip6_config: *mut glib::GVariant);
+    pub fn nm_vpn_service_plugin_set_ip6_config(
+        plugin: *mut NMVpnServicePlugin,
+        ip6_config: *mut glib::GVariant,
+    );
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_service_plugin_set_login_banner(plugin: *mut NMVpnServicePlugin, banner: *const c_char);
+    pub fn nm_vpn_service_plugin_set_login_banner(
+        plugin: *mut NMVpnServicePlugin,
+        banner: *const c_char,
+    );
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_vpn_service_plugin_shutdown(plugin: *mut NMVpnServicePlugin);
@@ -9455,10 +11431,16 @@ extern "C" {
     pub fn nm_wifi_p2p_peer_get_type() -> GType;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wifi_p2p_peer_connection_valid(peer: *mut NMWifiP2PPeer, connection: *mut NMConnection) -> gboolean;
+    pub fn nm_wifi_p2p_peer_connection_valid(
+        peer: *mut NMWifiP2PPeer,
+        connection: *mut NMConnection,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_wifi_p2p_peer_filter_connections(peer: *mut NMWifiP2PPeer, connections: *const glib::GPtrArray) -> *mut glib::GPtrArray;
+    pub fn nm_wifi_p2p_peer_filter_connections(
+        peer: *mut NMWifiP2PPeer,
+        connections: *const glib::GPtrArray,
+    ) -> *mut glib::GPtrArray;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn nm_wifi_p2p_peer_get_flags(peer: *mut NMWifiP2PPeer) -> NM80211ApFlags;
@@ -9494,8 +11476,14 @@ extern "C" {
     // NMWimaxNsp
     //=========================================================================
     pub fn nm_wimax_nsp_get_type() -> GType;
-    pub fn nm_wimax_nsp_connection_valid(nsp: *mut NMWimaxNsp, connection: *mut NMConnection) -> gboolean;
-    pub fn nm_wimax_nsp_filter_connections(nsp: *mut NMWimaxNsp, connections: *const glib::GPtrArray) -> *mut glib::GPtrArray;
+    pub fn nm_wimax_nsp_connection_valid(
+        nsp: *mut NMWimaxNsp,
+        connection: *mut NMConnection,
+    ) -> gboolean;
+    pub fn nm_wimax_nsp_filter_connections(
+        nsp: *mut NMWimaxNsp,
+        connections: *const glib::GPtrArray,
+    ) -> *mut glib::GPtrArray;
     pub fn nm_wimax_nsp_get_name(nsp: *mut NMWimaxNsp) -> *const c_char;
     pub fn nm_wimax_nsp_get_network_type(nsp: *mut NMWimaxNsp) -> NMWimaxNspNetworkType;
     pub fn nm_wimax_nsp_get_signal_quality(nsp: *mut NMWimaxNsp) -> u32;
@@ -9506,57 +11494,108 @@ extern "C" {
     pub fn nm_connection_get_type() -> GType;
     pub fn nm_connection_add_setting(connection: *mut NMConnection, setting: *mut NMSetting);
     pub fn nm_connection_clear_secrets(connection: *mut NMConnection);
-    pub fn nm_connection_clear_secrets_with_flags(connection: *mut NMConnection, func: NMSettingClearSecretsWithFlagsFn, user_data: gpointer);
+    pub fn nm_connection_clear_secrets_with_flags(
+        connection: *mut NMConnection,
+        func: NMSettingClearSecretsWithFlagsFn,
+        user_data: gpointer,
+    );
     pub fn nm_connection_clear_settings(connection: *mut NMConnection);
-    pub fn nm_connection_compare(a: *mut NMConnection, b: *mut NMConnection, flags: NMSettingCompareFlags) -> gboolean;
-    pub fn nm_connection_diff(a: *mut NMConnection, b: *mut NMConnection, flags: NMSettingCompareFlags, out_settings: *mut *mut glib::GHashTable) -> gboolean;
+    pub fn nm_connection_compare(
+        a: *mut NMConnection,
+        b: *mut NMConnection,
+        flags: NMSettingCompareFlags,
+    ) -> gboolean;
+    pub fn nm_connection_diff(
+        a: *mut NMConnection,
+        b: *mut NMConnection,
+        flags: NMSettingCompareFlags,
+        out_settings: *mut *mut glib::GHashTable,
+    ) -> gboolean;
     pub fn nm_connection_dump(connection: *mut NMConnection);
-    pub fn nm_connection_for_each_setting_value(connection: *mut NMConnection, func: NMSettingValueIterFn, user_data: gpointer);
+    pub fn nm_connection_for_each_setting_value(
+        connection: *mut NMConnection,
+        func: NMSettingValueIterFn,
+        user_data: gpointer,
+    );
     pub fn nm_connection_get_connection_type(connection: *mut NMConnection) -> *const c_char;
     pub fn nm_connection_get_id(connection: *mut NMConnection) -> *const c_char;
     pub fn nm_connection_get_interface_name(connection: *mut NMConnection) -> *const c_char;
     pub fn nm_connection_get_path(connection: *mut NMConnection) -> *const c_char;
-    pub fn nm_connection_get_setting(connection: *mut NMConnection, setting_type: GType) -> *mut NMSetting;
+    pub fn nm_connection_get_setting(
+        connection: *mut NMConnection,
+        setting_type: GType,
+    ) -> *mut NMSetting;
     pub fn nm_connection_get_setting_802_1x(connection: *mut NMConnection) -> *mut NMSetting8021x;
     pub fn nm_connection_get_setting_adsl(connection: *mut NMConnection) -> *mut NMSettingAdsl;
-    pub fn nm_connection_get_setting_bluetooth(connection: *mut NMConnection) -> *mut NMSettingBluetooth;
+    pub fn nm_connection_get_setting_bluetooth(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingBluetooth;
     pub fn nm_connection_get_setting_bond(connection: *mut NMConnection) -> *mut NMSettingBond;
     pub fn nm_connection_get_setting_bridge(connection: *mut NMConnection) -> *mut NMSettingBridge;
-    pub fn nm_connection_get_setting_bridge_port(connection: *mut NMConnection) -> *mut NMSettingBridgePort;
-    pub fn nm_connection_get_setting_by_name(connection: *mut NMConnection, name: *const c_char) -> *mut NMSetting;
+    pub fn nm_connection_get_setting_bridge_port(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingBridgePort;
+    pub fn nm_connection_get_setting_by_name(
+        connection: *mut NMConnection,
+        name: *const c_char,
+    ) -> *mut NMSetting;
     pub fn nm_connection_get_setting_cdma(connection: *mut NMConnection) -> *mut NMSettingCdma;
-    pub fn nm_connection_get_setting_connection(connection: *mut NMConnection) -> *mut NMSettingConnection;
+    pub fn nm_connection_get_setting_connection(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingConnection;
     pub fn nm_connection_get_setting_dcb(connection: *mut NMConnection) -> *mut NMSettingDcb;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     pub fn nm_connection_get_setting_dummy(connection: *mut NMConnection) -> *mut NMSettingDummy;
-    pub fn nm_connection_get_setting_generic(connection: *mut NMConnection) -> *mut NMSettingGeneric;
+    pub fn nm_connection_get_setting_generic(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingGeneric;
     pub fn nm_connection_get_setting_gsm(connection: *mut NMConnection) -> *mut NMSettingGsm;
-    pub fn nm_connection_get_setting_infiniband(connection: *mut NMConnection) -> *mut NMSettingInfiniband;
-    pub fn nm_connection_get_setting_ip4_config(connection: *mut NMConnection) -> *mut NMSettingIP4Config;
-    pub fn nm_connection_get_setting_ip6_config(connection: *mut NMConnection) -> *mut NMSettingIP6Config;
+    pub fn nm_connection_get_setting_infiniband(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingInfiniband;
+    pub fn nm_connection_get_setting_ip4_config(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingIP4Config;
+    pub fn nm_connection_get_setting_ip6_config(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingIP6Config;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_connection_get_setting_ip_tunnel(connection: *mut NMConnection) -> *mut NMSettingIPTunnel;
+    pub fn nm_connection_get_setting_ip_tunnel(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingIPTunnel;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn nm_connection_get_setting_macsec(connection: *mut NMConnection) -> *mut NMSettingMacsec;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_connection_get_setting_macvlan(connection: *mut NMConnection) -> *mut NMSettingMacvlan;
-    pub fn nm_connection_get_setting_olpc_mesh(connection: *mut NMConnection) -> *mut NMSettingOlpcMesh;
+    pub fn nm_connection_get_setting_macvlan(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingMacvlan;
+    pub fn nm_connection_get_setting_olpc_mesh(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingOlpcMesh;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_connection_get_setting_ovs_bridge(connection: *mut NMConnection) -> *mut NMSettingOvsBridge;
+    pub fn nm_connection_get_setting_ovs_bridge(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingOvsBridge;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_connection_get_setting_ovs_interface(connection: *mut NMConnection) -> *mut NMSettingOvsInterface;
+    pub fn nm_connection_get_setting_ovs_interface(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingOvsInterface;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_connection_get_setting_ovs_patch(connection: *mut NMConnection) -> *mut NMSettingOvsPatch;
+    pub fn nm_connection_get_setting_ovs_patch(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingOvsPatch;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_connection_get_setting_ovs_port(connection: *mut NMConnection) -> *mut NMSettingOvsPort;
+    pub fn nm_connection_get_setting_ovs_port(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingOvsPort;
     pub fn nm_connection_get_setting_ppp(connection: *mut NMConnection) -> *mut NMSettingPpp;
     pub fn nm_connection_get_setting_pppoe(connection: *mut NMConnection) -> *mut NMSettingPppoe;
     #[cfg(feature = "v1_6")]
@@ -9565,9 +11604,13 @@ extern "C" {
     pub fn nm_connection_get_setting_serial(connection: *mut NMConnection) -> *mut NMSettingSerial;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_connection_get_setting_tc_config(connection: *mut NMConnection) -> *mut NMSettingTCConfig;
+    pub fn nm_connection_get_setting_tc_config(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingTCConfig;
     pub fn nm_connection_get_setting_team(connection: *mut NMConnection) -> *mut NMSettingTeam;
-    pub fn nm_connection_get_setting_team_port(connection: *mut NMConnection) -> *mut NMSettingTeamPort;
+    pub fn nm_connection_get_setting_team_port(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingTeamPort;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn nm_connection_get_setting_tun(connection: *mut NMConnection) -> *mut NMSettingTun;
@@ -9578,34 +11621,76 @@ extern "C" {
     pub fn nm_connection_get_setting_vxlan(connection: *mut NMConnection) -> *mut NMSettingVxlan;
     pub fn nm_connection_get_setting_wimax(connection: *mut NMConnection) -> *mut NMSettingWimax;
     pub fn nm_connection_get_setting_wired(connection: *mut NMConnection) -> *mut NMSettingWired;
-    pub fn nm_connection_get_setting_wireless(connection: *mut NMConnection) -> *mut NMSettingWireless;
-    pub fn nm_connection_get_setting_wireless_security(connection: *mut NMConnection) -> *mut NMSettingWirelessSecurity;
+    pub fn nm_connection_get_setting_wireless(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingWireless;
+    pub fn nm_connection_get_setting_wireless_security(
+        connection: *mut NMConnection,
+    ) -> *mut NMSettingWirelessSecurity;
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-    pub fn nm_connection_get_settings(connection: *mut NMConnection, out_length: *mut c_uint) -> *mut *mut NMSetting;
+    pub fn nm_connection_get_settings(
+        connection: *mut NMConnection,
+        out_length: *mut c_uint,
+    ) -> *mut *mut NMSetting;
     pub fn nm_connection_get_uuid(connection: *mut NMConnection) -> *const c_char;
-    pub fn nm_connection_get_virtual_device_description(connection: *mut NMConnection) -> *mut c_char;
+    pub fn nm_connection_get_virtual_device_description(
+        connection: *mut NMConnection,
+    ) -> *mut c_char;
     pub fn nm_connection_is_type(connection: *mut NMConnection, type_: *const c_char) -> gboolean;
     pub fn nm_connection_is_virtual(connection: *mut NMConnection) -> gboolean;
-    pub fn nm_connection_need_secrets(connection: *mut NMConnection, hints: *mut *mut glib::GPtrArray) -> *const c_char;
-    pub fn nm_connection_normalize(connection: *mut NMConnection, parameters: *mut glib::GHashTable, modified: *mut gboolean, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_connection_need_secrets(
+        connection: *mut NMConnection,
+        hints: *mut *mut glib::GPtrArray,
+    ) -> *const c_char;
+    pub fn nm_connection_normalize(
+        connection: *mut NMConnection,
+        parameters: *mut glib::GHashTable,
+        modified: *mut gboolean,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     pub fn nm_connection_remove_setting(connection: *mut NMConnection, setting_type: GType);
-    pub fn nm_connection_replace_settings(connection: *mut NMConnection, new_settings: *mut glib::GVariant, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_connection_replace_settings_from_connection(connection: *mut NMConnection, new_connection: *mut NMConnection);
+    pub fn nm_connection_replace_settings(
+        connection: *mut NMConnection,
+        new_settings: *mut glib::GVariant,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_connection_replace_settings_from_connection(
+        connection: *mut NMConnection,
+        new_connection: *mut NMConnection,
+    );
     pub fn nm_connection_set_path(connection: *mut NMConnection, path: *const c_char);
-    pub fn nm_connection_to_dbus(connection: *mut NMConnection, flags: NMConnectionSerializationFlags) -> *mut glib::GVariant;
-    pub fn nm_connection_update_secrets(connection: *mut NMConnection, setting_name: *const c_char, secrets: *mut glib::GVariant, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_connection_verify(connection: *mut NMConnection, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_connection_to_dbus(
+        connection: *mut NMConnection,
+        flags: NMConnectionSerializationFlags,
+    ) -> *mut glib::GVariant;
+    pub fn nm_connection_update_secrets(
+        connection: *mut NMConnection,
+        setting_name: *const c_char,
+        secrets: *mut glib::GVariant,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_connection_verify(
+        connection: *mut NMConnection,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_connection_verify_secrets(connection: *mut NMConnection, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_connection_verify_secrets(
+        connection: *mut NMConnection,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
 
     //=========================================================================
     // NMVpnEditor
     //=========================================================================
     pub fn nm_vpn_editor_get_type() -> GType;
     pub fn nm_vpn_editor_get_widget(editor: *mut NMVpnEditor) -> *mut gobject::GObject;
-    pub fn nm_vpn_editor_update_connection(editor: *mut NMVpnEditor, connection: *mut NMConnection, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_vpn_editor_update_connection(
+        editor: *mut NMVpnEditor,
+        connection: *mut NMConnection,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
 
     //=========================================================================
     // NMVpnEditorPlugin
@@ -9613,31 +11698,72 @@ extern "C" {
     pub fn nm_vpn_editor_plugin_get_type() -> GType;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_vpn_editor_plugin_load(plugin_name: *const c_char, check_service: *const c_char, error: *mut *mut glib::GError) -> *mut NMVpnEditorPlugin;
+    pub fn nm_vpn_editor_plugin_load(
+        plugin_name: *const c_char,
+        check_service: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMVpnEditorPlugin;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_vpn_editor_plugin_load_from_file(plugin_name: *const c_char, check_service: *const c_char, check_owner: c_int, check_file: NMUtilsCheckFilePredicate, user_data: gpointer, error: *mut *mut glib::GError) -> *mut NMVpnEditorPlugin;
-    pub fn nm_vpn_editor_plugin_export(plugin: *mut NMVpnEditorPlugin, path: *const c_char, connection: *mut NMConnection, error: *mut *mut glib::GError) -> gboolean;
-    pub fn nm_vpn_editor_plugin_get_capabilities(plugin: *mut NMVpnEditorPlugin) -> NMVpnEditorPluginCapability;
-    pub fn nm_vpn_editor_plugin_get_editor(plugin: *mut NMVpnEditorPlugin, connection: *mut NMConnection, error: *mut *mut glib::GError) -> *mut NMVpnEditor;
+    pub fn nm_vpn_editor_plugin_load_from_file(
+        plugin_name: *const c_char,
+        check_service: *const c_char,
+        check_owner: c_int,
+        check_file: NMUtilsCheckFilePredicate,
+        user_data: gpointer,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMVpnEditorPlugin;
+    pub fn nm_vpn_editor_plugin_export(
+        plugin: *mut NMVpnEditorPlugin,
+        path: *const c_char,
+        connection: *mut NMConnection,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
+    pub fn nm_vpn_editor_plugin_get_capabilities(
+        plugin: *mut NMVpnEditorPlugin,
+    ) -> NMVpnEditorPluginCapability;
+    pub fn nm_vpn_editor_plugin_get_editor(
+        plugin: *mut NMVpnEditorPlugin,
+        connection: *mut NMConnection,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMVpnEditor;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_vpn_editor_plugin_get_plugin_info(plugin: *mut NMVpnEditorPlugin) -> *mut NMVpnPluginInfo;
-    pub fn nm_vpn_editor_plugin_get_suggested_filename(plugin: *mut NMVpnEditorPlugin, connection: *mut NMConnection) -> *mut c_char;
+    pub fn nm_vpn_editor_plugin_get_plugin_info(
+        plugin: *mut NMVpnEditorPlugin,
+    ) -> *mut NMVpnPluginInfo;
+    pub fn nm_vpn_editor_plugin_get_suggested_filename(
+        plugin: *mut NMVpnEditorPlugin,
+        connection: *mut NMConnection,
+    ) -> *mut c_char;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_vpn_editor_plugin_get_vt(plugin: *mut NMVpnEditorPlugin, vt: *mut NMVpnEditorPluginVT, vt_size: size_t) -> size_t;
-    pub fn nm_vpn_editor_plugin_import(plugin: *mut NMVpnEditorPlugin, path: *const c_char, error: *mut *mut glib::GError) -> *mut NMConnection;
+    pub fn nm_vpn_editor_plugin_get_vt(
+        plugin: *mut NMVpnEditorPlugin,
+        vt: *mut NMVpnEditorPluginVT,
+        vt_size: size_t,
+    ) -> size_t;
+    pub fn nm_vpn_editor_plugin_import(
+        plugin: *mut NMVpnEditorPlugin,
+        path: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMConnection;
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    pub fn nm_vpn_editor_plugin_set_plugin_info(plugin: *mut NMVpnEditorPlugin, plugin_info: *mut NMVpnPluginInfo);
+    pub fn nm_vpn_editor_plugin_set_plugin_info(
+        plugin: *mut NMVpnEditorPlugin,
+        plugin_info: *mut NMVpnPluginInfo,
+    );
 
     //=========================================================================
     // Other functions
     //=========================================================================
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
-    pub fn nm_conn_wireguard_import(filename: *const c_char, error: *mut *mut glib::GError) -> *mut NMConnection;
+    pub fn nm_conn_wireguard_import(
+        filename: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMConnection;
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn nm_ethtool_optname_is_channels(optname: *const c_char) -> gboolean;
@@ -9661,14 +11787,34 @@ extern "C" {
     pub fn nm_ethtool_optname_is_ring(optname: *const c_char) -> gboolean;
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_keyfile_read(keyfile: *mut glib::GKeyFile, base_dir: *const c_char, handler_flags: NMKeyfileHandlerFlags, handler: NMKeyfileReadHandler, user_data: *mut c_void, error: *mut *mut glib::GError) -> *mut NMConnection;
+    pub fn nm_keyfile_read(
+        keyfile: *mut glib::GKeyFile,
+        base_dir: *const c_char,
+        handler_flags: NMKeyfileHandlerFlags,
+        handler: NMKeyfileReadHandler,
+        user_data: *mut c_void,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMConnection;
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    pub fn nm_keyfile_write(connection: *mut NMConnection, handler_flags: NMKeyfileHandlerFlags, handler: NMKeyfileWriteHandler, user_data: *mut c_void, error: *mut *mut glib::GError) -> *mut glib::GKeyFile;
-    pub fn nm_utils_ap_mode_security_valid(type_: NMUtilsSecurityType, wifi_caps: NMDeviceWifiCapabilities) -> gboolean;
+    pub fn nm_keyfile_write(
+        connection: *mut NMConnection,
+        handler_flags: NMKeyfileHandlerFlags,
+        handler: NMKeyfileWriteHandler,
+        user_data: *mut c_void,
+        error: *mut *mut glib::GError,
+    ) -> *mut glib::GKeyFile;
+    pub fn nm_utils_ap_mode_security_valid(
+        type_: NMUtilsSecurityType,
+        wifi_caps: NMDeviceWifiCapabilities,
+    ) -> gboolean;
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    pub fn nm_utils_base64secret_decode(base64_key: *const c_char, required_key_len: size_t, out_key: *mut u8) -> gboolean;
+    pub fn nm_utils_base64secret_decode(
+        base64_key: *const c_char,
+        required_key_len: size_t,
+        out_key: *mut u8,
+    ) -> gboolean;
     pub fn nm_utils_bin2hexstr(src: gconstpointer, len: size_t, final_len: c_int) -> *mut c_char;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -9676,13 +11822,21 @@ extern "C" {
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_utils_bond_mode_string_to_int(mode: *const c_char) -> c_int;
-    pub fn nm_utils_check_virtual_device_compatibility(virtual_type: GType, other_type: GType) -> gboolean;
+    pub fn nm_utils_check_virtual_device_compatibility(
+        virtual_type: GType,
+        other_type: GType,
+    ) -> gboolean;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn nm_utils_ensure_gtypes();
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    pub fn nm_utils_enum_from_str(type_: GType, str: *const c_char, out_value: *mut c_int, err_token: *mut *mut c_char) -> gboolean;
+    pub fn nm_utils_enum_from_str(
+        type_: GType,
+        str: *const c_char,
+        out_value: *mut c_int,
+        err_token: *mut *mut c_char,
+    ) -> gboolean;
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_utils_enum_get_values(type_: GType, from: c_int, to: c_int) -> *mut *const c_char;
@@ -9692,11 +11846,26 @@ extern "C" {
     pub fn nm_utils_escape_ssid(ssid: *const u8, len: size_t) -> *const c_char;
     pub fn nm_utils_file_is_certificate(filename: *const c_char) -> gboolean;
     pub fn nm_utils_file_is_pkcs12(filename: *const c_char) -> gboolean;
-    pub fn nm_utils_file_is_private_key(filename: *const c_char, out_encrypted: *mut gboolean) -> gboolean;
-    pub fn nm_utils_file_search_in_paths(progname: *const c_char, try_first: *const c_char, paths: *const *const c_char, file_test_flags: glib::GFileTest, predicate: NMUtilsFileSearchInPathsPredicate, user_data: gpointer, error: *mut *mut glib::GError) -> *const c_char;
+    pub fn nm_utils_file_is_private_key(
+        filename: *const c_char,
+        out_encrypted: *mut gboolean,
+    ) -> gboolean;
+    pub fn nm_utils_file_search_in_paths(
+        progname: *const c_char,
+        try_first: *const c_char,
+        paths: *const *const c_char,
+        file_test_flags: glib::GFileTest,
+        predicate: NMUtilsFileSearchInPathsPredicate,
+        user_data: gpointer,
+        error: *mut *mut glib::GError,
+    ) -> *const c_char;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_utils_format_variant_attributes(attributes: *mut glib::GHashTable, attr_separator: c_char, key_value_separator: c_char) -> *mut c_char;
+    pub fn nm_utils_format_variant_attributes(
+        attributes: *mut glib::GHashTable,
+        attr_separator: c_char,
+        key_value_separator: c_char,
+    ) -> *mut c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn nm_utils_get_timestamp_msec() -> i64;
@@ -9705,14 +11874,25 @@ extern "C" {
     pub fn nm_utils_hwaddr_aton(asc: *const c_char, buffer: gpointer, length: size_t) -> *mut u8;
     pub fn nm_utils_hwaddr_canonical(asc: *const c_char, length: ssize_t) -> *mut c_char;
     pub fn nm_utils_hwaddr_len(type_: c_int) -> size_t;
-    pub fn nm_utils_hwaddr_matches(hwaddr1: gconstpointer, hwaddr1_len: ssize_t, hwaddr2: gconstpointer, hwaddr2_len: ssize_t) -> gboolean;
+    pub fn nm_utils_hwaddr_matches(
+        hwaddr1: gconstpointer,
+        hwaddr1_len: ssize_t,
+        hwaddr2: gconstpointer,
+        hwaddr2_len: ssize_t,
+    ) -> gboolean;
     pub fn nm_utils_hwaddr_ntoa(addr: gconstpointer, length: size_t) -> *mut c_char;
     pub fn nm_utils_hwaddr_valid(asc: *const c_char, length: ssize_t) -> gboolean;
     pub fn nm_utils_iface_valid_name(name: *const c_char) -> gboolean;
     pub fn nm_utils_inet4_ntop(inaddr: u32, dst: *mut c_char) -> *const c_char;
     pub fn nm_utils_inet6_ntop(in6addr: *const in6_addr, dst: *mut c_char) -> *const c_char;
-    pub fn nm_utils_ip4_addresses_from_variant(value: *mut glib::GVariant, out_gateway: *mut *mut c_char) -> *mut glib::GPtrArray;
-    pub fn nm_utils_ip4_addresses_to_variant(addresses: *mut glib::GPtrArray, gateway: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_utils_ip4_addresses_from_variant(
+        value: *mut glib::GVariant,
+        out_gateway: *mut *mut c_char,
+    ) -> *mut glib::GPtrArray;
+    pub fn nm_utils_ip4_addresses_to_variant(
+        addresses: *mut glib::GPtrArray,
+        gateway: *const c_char,
+    ) -> *mut glib::GVariant;
     pub fn nm_utils_ip4_dns_from_variant(value: *mut glib::GVariant) -> *mut *mut c_char;
     pub fn nm_utils_ip4_dns_to_variant(dns: *mut *mut c_char) -> *mut glib::GVariant;
     pub fn nm_utils_ip4_get_default_prefix(ip: u32) -> u32;
@@ -9720,21 +11900,34 @@ extern "C" {
     pub fn nm_utils_ip4_prefix_to_netmask(prefix: u32) -> u32;
     pub fn nm_utils_ip4_routes_from_variant(value: *mut glib::GVariant) -> *mut glib::GPtrArray;
     pub fn nm_utils_ip4_routes_to_variant(routes: *mut glib::GPtrArray) -> *mut glib::GVariant;
-    pub fn nm_utils_ip6_addresses_from_variant(value: *mut glib::GVariant, out_gateway: *mut *mut c_char) -> *mut glib::GPtrArray;
-    pub fn nm_utils_ip6_addresses_to_variant(addresses: *mut glib::GPtrArray, gateway: *const c_char) -> *mut glib::GVariant;
+    pub fn nm_utils_ip6_addresses_from_variant(
+        value: *mut glib::GVariant,
+        out_gateway: *mut *mut c_char,
+    ) -> *mut glib::GPtrArray;
+    pub fn nm_utils_ip6_addresses_to_variant(
+        addresses: *mut glib::GPtrArray,
+        gateway: *const c_char,
+    ) -> *mut glib::GVariant;
     pub fn nm_utils_ip6_dns_from_variant(value: *mut glib::GVariant) -> *mut *mut c_char;
     pub fn nm_utils_ip6_dns_to_variant(dns: *mut *mut c_char) -> *mut glib::GVariant;
     pub fn nm_utils_ip6_routes_from_variant(value: *mut glib::GVariant) -> *mut glib::GPtrArray;
     pub fn nm_utils_ip6_routes_to_variant(routes: *mut glib::GPtrArray) -> *mut glib::GVariant;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_utils_ip_addresses_from_variant(value: *mut glib::GVariant, family: c_int) -> *mut glib::GPtrArray;
+    pub fn nm_utils_ip_addresses_from_variant(
+        value: *mut glib::GVariant,
+        family: c_int,
+    ) -> *mut glib::GPtrArray;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_utils_ip_addresses_to_variant(addresses: *mut glib::GPtrArray) -> *mut glib::GVariant;
+    pub fn nm_utils_ip_addresses_to_variant(addresses: *mut glib::GPtrArray)
+        -> *mut glib::GVariant;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn nm_utils_ip_routes_from_variant(value: *mut glib::GVariant, family: c_int) -> *mut glib::GPtrArray;
+    pub fn nm_utils_ip_routes_from_variant(
+        value: *mut glib::GVariant,
+        family: c_int,
+    ) -> *mut glib::GPtrArray;
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn nm_utils_ip_routes_to_variant(routes: *mut glib::GPtrArray) -> *mut glib::GVariant;
@@ -9746,40 +11939,89 @@ extern "C" {
     pub fn nm_utils_is_uuid(str: *const c_char) -> gboolean;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-    pub fn nm_utils_is_valid_iface_name(name: *const c_char, error: *mut *mut glib::GError) -> gboolean;
+    pub fn nm_utils_is_valid_iface_name(
+        name: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> gboolean;
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-    pub fn nm_utils_parse_variant_attributes(string: *const c_char, attr_separator: c_char, key_value_separator: c_char, ignore_unknown: gboolean, spec: *const *const NMVariantAttributeSpec, error: *mut *mut glib::GError) -> *mut glib::GHashTable;
+    pub fn nm_utils_parse_variant_attributes(
+        string: *const c_char,
+        attr_separator: c_char,
+        key_value_separator: c_char,
+        ignore_unknown: gboolean,
+        spec: *const *const NMVariantAttributeSpec,
+        error: *mut *mut glib::GError,
+    ) -> *mut glib::GHashTable;
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     pub fn nm_utils_print(output_mode: c_int, msg: *const c_char);
-    pub fn nm_utils_same_ssid(ssid1: *const u8, len1: size_t, ssid2: *const u8, len2: size_t, ignore_trailing_null: gboolean) -> gboolean;
-    pub fn nm_utils_security_valid(type_: NMUtilsSecurityType, wifi_caps: NMDeviceWifiCapabilities, have_ap: gboolean, adhoc: gboolean, ap_flags: NM80211ApFlags, ap_wpa: NM80211ApSecurityFlags, ap_rsn: NM80211ApSecurityFlags) -> gboolean;
+    pub fn nm_utils_same_ssid(
+        ssid1: *const u8,
+        len1: size_t,
+        ssid2: *const u8,
+        len2: size_t,
+        ignore_trailing_null: gboolean,
+    ) -> gboolean;
+    pub fn nm_utils_security_valid(
+        type_: NMUtilsSecurityType,
+        wifi_caps: NMDeviceWifiCapabilities,
+        have_ap: gboolean,
+        adhoc: gboolean,
+        ap_flags: NM80211ApFlags,
+        ap_wpa: NM80211ApSecurityFlags,
+        ap_rsn: NM80211ApSecurityFlags,
+    ) -> gboolean;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_utils_sriov_vf_from_str(str: *const c_char, error: *mut *mut glib::GError) -> *mut NMSriovVF;
+    pub fn nm_utils_sriov_vf_from_str(
+        str: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMSriovVF;
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-    pub fn nm_utils_sriov_vf_to_str(vf: *const NMSriovVF, omit_index: gboolean, error: *mut *mut glib::GError) -> *mut c_char;
+    pub fn nm_utils_sriov_vf_to_str(
+        vf: *const NMSriovVF,
+        omit_index: gboolean,
+        error: *mut *mut glib::GError,
+    ) -> *mut c_char;
     pub fn nm_utils_ssid_to_utf8(ssid: *const u8, len: size_t) -> *mut c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_utils_tc_action_from_str(str: *const c_char, error: *mut *mut glib::GError) -> *mut NMTCAction;
+    pub fn nm_utils_tc_action_from_str(
+        str: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTCAction;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_utils_tc_action_to_str(action: *mut NMTCAction, error: *mut *mut glib::GError) -> *mut c_char;
+    pub fn nm_utils_tc_action_to_str(
+        action: *mut NMTCAction,
+        error: *mut *mut glib::GError,
+    ) -> *mut c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_utils_tc_qdisc_from_str(str: *const c_char, error: *mut *mut glib::GError) -> *mut NMTCQdisc;
+    pub fn nm_utils_tc_qdisc_from_str(
+        str: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTCQdisc;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_utils_tc_qdisc_to_str(qdisc: *mut NMTCQdisc, error: *mut *mut glib::GError) -> *mut c_char;
+    pub fn nm_utils_tc_qdisc_to_str(
+        qdisc: *mut NMTCQdisc,
+        error: *mut *mut glib::GError,
+    ) -> *mut c_char;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_utils_tc_tfilter_from_str(str: *const c_char, error: *mut *mut glib::GError) -> *mut NMTCTfilter;
+    pub fn nm_utils_tc_tfilter_from_str(
+        str: *const c_char,
+        error: *mut *mut glib::GError,
+    ) -> *mut NMTCTfilter;
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn nm_utils_tc_tfilter_to_str(tfilter: *mut NMTCTfilter, error: *mut *mut glib::GError) -> *mut c_char;
+    pub fn nm_utils_tc_tfilter_to_str(
+        tfilter: *mut NMTCTfilter,
+        error: *mut *mut glib::GError,
+    ) -> *mut c_char;
     pub fn nm_utils_uuid_generate() -> *mut c_char;
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
@@ -9792,7 +12034,11 @@ extern "C" {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn nm_utils_wifi_5ghz_freqs() -> *const c_uint;
     pub fn nm_utils_wifi_channel_to_freq(channel: u32, band: *const c_char) -> u32;
-    pub fn nm_utils_wifi_find_next_channel(channel: u32, direction: c_int, band: *mut c_char) -> u32;
+    pub fn nm_utils_wifi_find_next_channel(
+        channel: u32,
+        direction: c_int,
+        band: *mut c_char,
+    ) -> u32;
     pub fn nm_utils_wifi_freq_to_channel(freq: u32) -> u32;
     pub fn nm_utils_wifi_is_channel_valid(channel: u32, band: *const c_char) -> gboolean;
     pub fn nm_utils_wifi_strength_bars(strength: u8) -> *const c_char;

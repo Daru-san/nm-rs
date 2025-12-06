@@ -239,7 +239,8 @@ name = "libnm"
 version = "0.1.0"
 dependencies = [
  "gio",
- "gio-sys",
+ "glib",
+ "nm-sys",
 ]
 
 [[package]]
@@ -259,6 +260,8 @@ name = "nm-sys"
 version = "0.0.1"
 dependencies = [
  "gio-sys",
+ "glib-sys",
+ "gobject-sys",
  "libc",
  "shell-words",
  "system-deps",
