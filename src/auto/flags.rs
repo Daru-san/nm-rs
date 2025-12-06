@@ -2358,7 +2358,6 @@ impl FromGlib<ffi::NMSetting8021xAuthFlags> for Setting8021xAuthFlags {
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
 impl StaticType for Setting8021xAuthFlags {
     #[inline]
-    #[doc(alias = "")]
     fn static_type() -> glib::Type {
         unsafe { from_glib(ffi::nm_setting_802_1x_auth_flags_get_type()) }
     }
