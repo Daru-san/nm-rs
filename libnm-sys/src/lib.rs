@@ -8054,7 +8054,7 @@ extern "C" {
     pub fn nm_object_get_type() -> GType;
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    pub fn nm_object_get_client(object: *mut NMObject) -> *mut _NMClient;
+    pub fn nm_object_get_client(object: *mut NMObject) -> *mut NMClient;
     pub fn nm_object_get_path(object: *mut NMObject) -> *const c_char;
 
     //=========================================================================
