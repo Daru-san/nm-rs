@@ -1,14 +1,22 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+#![cfg_attr(docsrs, feature(doc_cfg))]
+#![allow(unsafe_op_in_unsafe_fn)]
+#![allow(deprecated)]
+#![allow(unused_imports)]
+
+macro_rules! assert_initialized_main_thread {
+    () => {};
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+macro_rules! skip_assert_initialized {
+    () => {};
+}
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+pub use auto::*;
+use nm_sys as ffi;
+
+mod auto;
+pub mod prelude;
+
+pub mod functions {
+    pub use super::auto::functions::*;
 }
