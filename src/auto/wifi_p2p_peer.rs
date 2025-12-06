@@ -3,9 +3,13 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{80211ApFlags,ffi,Connection,Object};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::{ApFlags80211, Connection, Object, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMWifiP2PPeer")]
@@ -20,57 +24,57 @@ impl WifiP2PPeer {
     #[doc(alias = "nm_wifi_p2p_peer_connection_valid")]
     pub fn connection_valid(&self, connection: &impl IsA<Connection>) -> bool {
         unsafe {
-            from_glib(ffi::nm_wifi_p2p_peer_connection_valid(self.to_glib_none().0, connection.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_wifi_p2p_peer_connection_valid(
+                self.to_glib_none().0,
+                connection.as_ref().to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_filter_connections")]
     pub fn filter_connections(&self, connections: &[Connection]) -> Vec<Connection> {
         unsafe {
-            FromGlibPtrContainer::from_glib_container(ffi::nm_wifi_p2p_peer_filter_connections(self.to_glib_none().0, connections.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_container(ffi::nm_wifi_p2p_peer_filter_connections(
+                self.to_glib_none().0,
+                connections.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_flags")]
     #[doc(alias = "get_flags")]
-    pub fn flags(&self) -> 80211ApFlags {
-        unsafe {
-            from_glib(ffi::nm_wifi_p2p_peer_get_flags(self.to_glib_none().0))
-        }
+    pub fn flags(&self) -> ApFlags80211 {
+        unsafe { from_glib(ffi::nm_wifi_p2p_peer_get_flags(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_hw_address")]
     #[doc(alias = "get_hw_address")]
     #[doc(alias = "hw-address")]
     pub fn hw_address(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_wifi_p2p_peer_get_hw_address(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_wifi_p2p_peer_get_hw_address(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_last_seen")]
     #[doc(alias = "get_last_seen")]
     #[doc(alias = "last-seen")]
     pub fn last_seen(&self) -> i32 {
-        unsafe {
-            ffi::nm_wifi_p2p_peer_get_last_seen(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_wifi_p2p_peer_get_last_seen(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_manufacturer")]
     #[doc(alias = "get_manufacturer")]
     pub fn manufacturer(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_wifi_p2p_peer_get_manufacturer(self.to_glib_none().0))
+            from_glib_none(ffi::nm_wifi_p2p_peer_get_manufacturer(
+                self.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_model")]
     #[doc(alias = "get_model")]
     pub fn model(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_wifi_p2p_peer_get_model(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_wifi_p2p_peer_get_model(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_model_number")]
@@ -78,32 +82,28 @@ impl WifiP2PPeer {
     #[doc(alias = "model-number")]
     pub fn model_number(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_wifi_p2p_peer_get_model_number(self.to_glib_none().0))
+            from_glib_none(ffi::nm_wifi_p2p_peer_get_model_number(
+                self.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_name")]
     #[doc(alias = "get_name")]
     pub fn name(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_wifi_p2p_peer_get_name(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_wifi_p2p_peer_get_name(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_serial")]
     #[doc(alias = "get_serial")]
     pub fn serial(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_wifi_p2p_peer_get_serial(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_wifi_p2p_peer_get_serial(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_wifi_p2p_peer_get_strength")]
     #[doc(alias = "get_strength")]
     pub fn strength(&self) -> u8 {
-        unsafe {
-            ffi::nm_wifi_p2p_peer_get_strength(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_wifi_p2p_peer_get_strength(self.to_glib_none().0) }
     }
 
     //#[doc(alias = "nm_wifi_p2p_peer_get_wfd_ies")]
@@ -117,14 +117,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "flags")]
     pub fn connect_flags_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_flags_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_flags_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::flags".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_flags_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::flags".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_flags_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -132,14 +142,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "hw-address")]
     pub fn connect_hw_address_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_hw_address_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_hw_address_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::hw-address".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_hw_address_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::hw-address".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_hw_address_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -147,14 +167,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "last-seen")]
     pub fn connect_last_seen_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_last_seen_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_last_seen_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::last-seen".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_last_seen_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::last-seen".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_last_seen_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -162,14 +192,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "manufacturer")]
     pub fn connect_manufacturer_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_manufacturer_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_manufacturer_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::manufacturer".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_manufacturer_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::manufacturer".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_manufacturer_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -177,14 +217,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "model")]
     pub fn connect_model_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_model_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_model_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::model".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_model_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::model".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_model_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -192,14 +242,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "model-number")]
     pub fn connect_model_number_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_model_number_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_model_number_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::model-number".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_model_number_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::model-number".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_model_number_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -207,14 +267,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "name")]
     pub fn connect_name_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_name_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_name_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::name".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_name_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::name".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_name_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -222,14 +292,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "serial")]
     pub fn connect_serial_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_serial_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_serial_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::serial".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_serial_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::serial".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_serial_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -237,14 +317,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "strength")]
     pub fn connect_strength_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_strength_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_strength_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::strength".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_strength_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::strength".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_strength_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -252,14 +342,24 @@ impl WifiP2PPeer {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "wfd-ies")]
     pub fn connect_wfd_ies_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wfd_ies_trampoline<F: Fn(&WifiP2PPeer) + 'static>(this: *mut ffi::NMWifiP2PPeer, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_wfd_ies_trampoline<F: Fn(&WifiP2PPeer) + 'static>(
+            this: *mut ffi::NMWifiP2PPeer,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wfd-ies".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wfd_ies_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wfd-ies".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wfd_ies_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
