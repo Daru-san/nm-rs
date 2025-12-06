@@ -1,0 +1,3 @@
+[submodule "gtk-girs"]
+	path = gtk-girs
+	url = https://github.com/gtk-rs/gir-files

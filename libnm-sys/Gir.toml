@@ -1,0 +1,10 @@
+[options]
+library = "NM"
+version = "1.0"
+target_path = "."
+girs_directories = ["../gir", "../gtk-girs"]
+work_mode = "sys"
+single_version_file = "."
+min_cfg_version = "1.0"
+
+external_libraries = ["Gio"]

@@ -1,0 +1,140 @@
+[package]
+name = "nm-sys"
+version = "0.0.1"
+edition = "2021"
+build = "build.rs"
+
+[package.metadata.system-deps.libnm]
+name = "libnm"
+version = "1"
+
+[package.metadata.system-deps.libnm.v1_2]
+version = "1.2"
+
+[package.metadata.system-deps.libnm.v1_4]
+version = "1.4"
+
+[package.metadata.system-deps.libnm.v1_6]
+version = "1.6"
+
+[package.metadata.system-deps.libnm.v1_8]
+version = "1.8"
+
+[package.metadata.system-deps.libnm.v1_10]
+version = "1.10"
+
+[package.metadata.system-deps.libnm.v1_12]
+version = "1.12"
+
+[package.metadata.system-deps.libnm.v1_14]
+version = "1.14"
+
+[package.metadata.system-deps.libnm.v1_16]
+version = "1.16"
+
+[package.metadata.system-deps.libnm.v1_18]
+version = "1.18"
+
+[package.metadata.system-deps.libnm.v1_20]
+version = "1.20"
+
+[package.metadata.system-deps.libnm.v1_22]
+version = "1.22"
+
+[package.metadata.system-deps.libnm.v1_24]
+version = "1.24"
+
+[package.metadata.system-deps.libnm.v1_26]
+version = "1.26"
+
+[package.metadata.system-deps.libnm.v1_28]
+version = "1.28"
+
+[package.metadata.system-deps.libnm.v1_30]
+version = "1.30"
+
+[package.metadata.system-deps.libnm.v1_32]
+version = "1.32"
+
+[package.metadata.system-deps.libnm.v1_34]
+version = "1.34"
+
+[package.metadata.system-deps.libnm.v1_36]
+version = "1.36"
+
+[package.metadata.system-deps.libnm.v1_38]
+version = "1.38"
+
+[package.metadata.system-deps.libnm.v1_40]
+version = "1.40"
+
+[package.metadata.system-deps.libnm.v1_42]
+version = "1.42"
+
+[package.metadata.system-deps.libnm.v1_44]
+version = "1.44"
+
+[package.metadata.system-deps.libnm.v1_46]
+version = "1.46"
+
+[package.metadata.system-deps.libnm.v1_48]
+version = "1.48"
+
+[package.metadata.system-deps.libnm.v1_50]
+version = "1.50"
+
+[package.metadata.system-deps.libnm.v1_52]
+version = "1.52"
+
+[package.metadata.system-deps.libnm.v1_54]
+version = "1.54"
+
+[package.metadata.docs.rs]
+rustc-args = ["--cfg", "docsrs"]
+rustdoc-args = ["--cfg", "docsrs", "--generate-link-to-definition"]
+all-features = true
+
+[lib]
+name = "nm_sys"
+
+[dependencies]
+libc = "0.2"
+
+[dependencies.gio-sys]
+workspace = true
+
+[build-dependencies]
+system-deps = "7"
+
+[dev-dependencies]
+shell-words = "1.0.0"
+tempfile = "3"
+
+[features]
+v1_2 = []
+v1_4 = ["v1_2"]
+v1_6 = ["v1_4"]
+v1_8 = ["v1_6"]
+v1_10 = ["v1_8"]
+v1_12 = ["v1_10"]
+v1_14 = ["v1_12"]
+v1_16 = ["v1_14"]
+v1_18 = ["v1_16"]
+v1_20 = ["v1_18"]
+v1_22 = ["v1_20"]
+v1_24 = ["v1_22"]
+v1_26 = ["v1_24"]
+v1_28 = ["v1_26"]
+v1_30 = ["v1_28"]
+v1_32 = ["v1_30"]
+v1_34 = ["v1_32"]
+v1_36 = ["v1_34"]
+v1_38 = ["v1_36"]
+v1_40 = ["v1_38"]
+v1_42 = ["v1_40"]
+v1_44 = ["v1_42"]
+v1_46 = ["v1_44"]
+v1_48 = ["v1_46"]
+v1_50 = ["v1_48"]
+v1_52 = ["v1_50"]
+v1_54 = ["v1_52"]

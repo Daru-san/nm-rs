@@ -1,0 +1,17 @@
+[package]
+name = "libnm"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+gio = "0.21.5"
+gio-sys = "0.21.5"
+
+[workspace.dependencies]
+gio = "0.21.5"
+gio-sys = "0.21.5"
+
+[workspace]
+resolver = "2"
+
+members = ["libnm-sys"]
