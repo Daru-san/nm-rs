@@ -6773,7 +6773,7 @@ extern "C" {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn nm_active_connection_get_controller(
         connection: *mut NMActiveConnection,
-    ) -> *mut _NMDevice;
+    ) -> *mut NMDevice;
     pub fn nm_active_connection_get_default(connection: *mut NMActiveConnection) -> gboolean;
     pub fn nm_active_connection_get_default6(connection: *mut NMActiveConnection) -> gboolean;
     pub fn nm_active_connection_get_devices(
