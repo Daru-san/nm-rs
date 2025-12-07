@@ -256,6 +256,8 @@ manual = [
     "NM.KeyfileHandlerData",
     "NM.VariantAttributeSpec",
     "NM.VpnEditorPluginVT",
+    "GLib.Error",
+    "Gio.Cancellable",
 ]
 
 [[object]]
