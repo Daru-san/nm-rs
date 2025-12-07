@@ -23,33 +23,53 @@ glib::wrapper! {
 }
 
 impl TeamLinkWatcher {
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //#[doc(alias = "nm_team_link_watcher_new_arp_ping")]
-    //pub fn new_arp_ping(init_wait: i32, interval: i32, missed_max: i32, target_host: &str, source_host: &str, flags: TeamLinkWatcherArpPingFlags, error: /*Ignored*/Option<glib::Error>) -> TeamLinkWatcher {
-    //    unsafe { TODO: call ffi:nm_team_link_watcher_new_arp_ping() }
-    //}
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    #[doc(alias = "nm_team_link_watcher_new_arp_ping")]
+    pub fn new_arp_ping(init_wait: i32, interval: i32, missed_max: i32, target_host: &str, source_host: &str, flags: TeamLinkWatcherArpPingFlags) -> Result<TeamLinkWatcher, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_team_link_watcher_new_arp_ping(init_wait, interval, missed_max, target_host.to_glib_none().0, source_host.to_glib_none().0, flags.into_glib(), &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_16")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    //#[doc(alias = "nm_team_link_watcher_new_arp_ping2")]
-    //pub fn new_arp_ping2(init_wait: i32, interval: i32, missed_max: i32, vlanid: i32, target_host: &str, source_host: &str, flags: TeamLinkWatcherArpPingFlags, error: /*Ignored*/Option<glib::Error>) -> TeamLinkWatcher {
-    //    unsafe { TODO: call ffi:nm_team_link_watcher_new_arp_ping2() }
-    //}
+    #[cfg(feature = "v1_16")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
+    #[doc(alias = "nm_team_link_watcher_new_arp_ping2")]
+    pub fn new_arp_ping2(init_wait: i32, interval: i32, missed_max: i32, vlanid: i32, target_host: &str, source_host: &str, flags: TeamLinkWatcherArpPingFlags) -> Result<TeamLinkWatcher, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_team_link_watcher_new_arp_ping2(init_wait, interval, missed_max, vlanid, target_host.to_glib_none().0, source_host.to_glib_none().0, flags.into_glib(), &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //#[doc(alias = "nm_team_link_watcher_new_ethtool")]
-    //pub fn new_ethtool(delay_up: i32, delay_down: i32, error: /*Ignored*/Option<glib::Error>) -> TeamLinkWatcher {
-    //    unsafe { TODO: call ffi:nm_team_link_watcher_new_ethtool() }
-    //}
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    #[doc(alias = "nm_team_link_watcher_new_ethtool")]
+    pub fn new_ethtool(delay_up: i32, delay_down: i32) -> Result<TeamLinkWatcher, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_team_link_watcher_new_ethtool(delay_up, delay_down, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //#[doc(alias = "nm_team_link_watcher_new_nsna_ping")]
-    //pub fn new_nsna_ping(init_wait: i32, interval: i32, missed_max: i32, target_host: &str, error: /*Ignored*/Option<glib::Error>) -> TeamLinkWatcher {
-    //    unsafe { TODO: call ffi:nm_team_link_watcher_new_nsna_ping() }
-    //}
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    #[doc(alias = "nm_team_link_watcher_new_nsna_ping")]
+    pub fn new_nsna_ping(init_wait: i32, interval: i32, missed_max: i32, target_host: &str) -> Result<TeamLinkWatcher, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_team_link_watcher_new_nsna_ping(init_wait, interval, missed_max, target_host.to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]

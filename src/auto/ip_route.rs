@@ -21,13 +21,18 @@ glib::wrapper! {
 }
 
 impl IPRoute {
-    //#[doc(alias = "nm_ip_route_new")]
-    //pub fn new(family: i32, dest: &str, prefix: u32, next_hop: Option<&str>, metric: i64, error: /*Ignored*/Option<glib::Error>) -> IPRoute {
-    //    unsafe { TODO: call ffi:nm_ip_route_new() }
-    //}
+    #[doc(alias = "nm_ip_route_new")]
+    pub fn new(family: i32, dest: &str, prefix: u32, next_hop: Option<&str>, metric: i64) -> Result<IPRoute, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_ip_route_new(family, dest.to_glib_none().0, prefix, next_hop.to_glib_none().0, metric, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     //#[doc(alias = "nm_ip_route_new_binary")]
-    //pub fn new_binary(family: i32, dest: /*Unimplemented*/Option<Basic: Pointer>, prefix: u32, next_hop: /*Unimplemented*/Option<Basic: Pointer>, metric: i64, error: /*Ignored*/Option<glib::Error>) -> IPRoute {
+    //pub fn new_binary(family: i32, dest: /*Unimplemented*/Option<Basic: Pointer>, prefix: u32, next_hop: /*Unimplemented*/Option<Basic: Pointer>, metric: i64) -> Result<IPRoute, glib::Error> {
     //    unsafe { TODO: call ffi:nm_ip_route_new_binary() }
     //}
 
@@ -169,7 +174,7 @@ impl IPRoute {
     //#[cfg(feature = "v1_8")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     //#[doc(alias = "nm_ip_route_attribute_validate")]
-    //pub fn attribute_validate(name: &str, value: /*Ignored*/&glib::Variant, family: i32, error: /*Ignored*/Option<glib::Error>) -> Result<(bool), glib::Error> {
+    //pub fn attribute_validate(name: &str, value: /*Ignored*/&glib::Variant, family: i32) -> Result<bool, glib::Error> {
     //    unsafe { TODO: call ffi:nm_ip_route_attribute_validate() }
     //}
 

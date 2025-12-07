@@ -73,19 +73,31 @@ impl SettingOvsExternalIDs {
         }
     }
 
-    //#[cfg(feature = "v1_30")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    //#[doc(alias = "nm_setting_ovs_external_ids_check_key")]
-    //pub fn check_key(key: Option<&str>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_ovs_external_ids_check_key() }
-    //}
+    #[cfg(feature = "v1_30")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
+    #[doc(alias = "nm_setting_ovs_external_ids_check_key")]
+    pub fn check_key(key: Option<&str>) -> Result<(), glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_ovs_external_ids_check_key(key.to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_30")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-    //#[doc(alias = "nm_setting_ovs_external_ids_check_val")]
-    //pub fn check_val(val: Option<&str>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_ovs_external_ids_check_val() }
-    //}
+    #[cfg(feature = "v1_30")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
+    #[doc(alias = "nm_setting_ovs_external_ids_check_val")]
+    pub fn check_val(val: Option<&str>) -> Result<(), glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_ovs_external_ids_check_val(val.to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]

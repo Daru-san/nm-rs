@@ -3,13 +3,14 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::ffi;
-use glib::{prelude::*, translate::*};
+use crate::{ffi};
+use glib::{prelude::*,translate::*};
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NM80211Mode")]
-pub enum Mode80211 {
+pub enum 80211Mode {
     #[doc(alias = "NM_802_11_MODE_UNKNOWN")]
     Unknown,
     #[doc(alias = "NM_802_11_MODE_ADHOC")]
@@ -20,67 +21,67 @@ pub enum Mode80211 {
     Ap,
     #[doc(alias = "NM_802_11_MODE_MESH")]
     Mesh,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
 #[doc(hidden)]
-impl IntoGlib for Mode80211 {
+impl IntoGlib for 80211Mode {
     type GlibType = ffi::NM80211Mode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NM80211Mode {
-        match self {
+fn into_glib(self) -> ffi::NM80211Mode {
+match self {
             Self::Unknown => ffi::NM_802_11_MODE_UNKNOWN,
             Self::Adhoc => ffi::NM_802_11_MODE_ADHOC,
             Self::Infra => ffi::NM_802_11_MODE_INFRA,
             Self::Ap => ffi::NM_802_11_MODE_AP,
             Self::Mesh => ffi::NM_802_11_MODE_MESH,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
-impl FromGlib<ffi::NM80211Mode> for Mode80211 {
+impl FromGlib<ffi::NM80211Mode> for 80211Mode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NM80211Mode) -> Self {
+unsafe fn from_glib(value: ffi::NM80211Mode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_802_11_MODE_UNKNOWN => Self::Unknown,
             ffi::NM_802_11_MODE_ADHOC => Self::Adhoc,
             ffi::NM_802_11_MODE_INFRA => Self::Infra,
             ffi::NM_802_11_MODE_AP => Self::Ap,
             ffi::NM_802_11_MODE_MESH => Self::Mesh,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
-impl StaticType for Mode80211 {
-    #[inline]
+impl StaticType for 80211Mode {
+                #[inline]
     #[doc(alias = "nm_802_11_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_802_11_mode_get_type()) }
-    }
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_802_11_mode_get_type()) }
+                }
+            }
+
+impl glib::HasParamSpec for 80211Mode {
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
-impl glib::HasParamSpec for Mode80211 {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
-}
-
-impl glib::value::ValueType for Mode80211 {
+impl glib::value::ValueType for 80211Mode {
     type Type = Self;
 }
 
-unsafe impl<'a> glib::value::FromValue<'a> for Mode80211 {
+unsafe impl<'a> glib::value::FromValue<'a> for 80211Mode {
     type Checker = glib::value::GenericValueTypeChecker<Self>;
 
     #[inline]
@@ -90,7 +91,7 @@ unsafe impl<'a> glib::value::FromValue<'a> for Mode80211 {
     }
 }
 
-impl ToValue for Mode80211 {
+impl ToValue for 80211Mode {
     #[inline]
     fn to_value(&self) -> glib::Value {
         let mut value = glib::Value::for_value_type::<Self>();
@@ -106,15 +107,16 @@ impl ToValue for Mode80211 {
     }
 }
 
-impl From<Mode80211> for glib::Value {
+impl From<80211Mode> for glib::Value {
     #[inline]
-    fn from(v: Mode80211) -> Self {
+    fn from(v: 80211Mode) -> Self {
         skip_assert_initialized!();
         ToValue::to_value(&v)
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMActiveConnectionState")]
 pub enum ActiveConnectionState {
@@ -128,7 +130,7 @@ pub enum ActiveConnectionState {
     Deactivating,
     #[doc(alias = "NM_ACTIVE_CONNECTION_STATE_DEACTIVATED")]
     Deactivated,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -137,51 +139,51 @@ impl IntoGlib for ActiveConnectionState {
     type GlibType = ffi::NMActiveConnectionState;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMActiveConnectionState {
-        match self {
+fn into_glib(self) -> ffi::NMActiveConnectionState {
+match self {
             Self::Unknown => ffi::NM_ACTIVE_CONNECTION_STATE_UNKNOWN,
             Self::Activating => ffi::NM_ACTIVE_CONNECTION_STATE_ACTIVATING,
             Self::Activated => ffi::NM_ACTIVE_CONNECTION_STATE_ACTIVATED,
             Self::Deactivating => ffi::NM_ACTIVE_CONNECTION_STATE_DEACTIVATING,
             Self::Deactivated => ffi::NM_ACTIVE_CONNECTION_STATE_DEACTIVATED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMActiveConnectionState> for ActiveConnectionState {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMActiveConnectionState) -> Self {
+unsafe fn from_glib(value: ffi::NMActiveConnectionState) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_ACTIVE_CONNECTION_STATE_UNKNOWN => Self::Unknown,
             ffi::NM_ACTIVE_CONNECTION_STATE_ACTIVATING => Self::Activating,
             ffi::NM_ACTIVE_CONNECTION_STATE_ACTIVATED => Self::Activated,
             ffi::NM_ACTIVE_CONNECTION_STATE_DEACTIVATING => Self::Deactivating,
             ffi::NM_ACTIVE_CONNECTION_STATE_DEACTIVATED => Self::Deactivated,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for ActiveConnectionState {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_active_connection_state_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_active_connection_state_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_active_connection_state_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for ActiveConnectionState {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for ActiveConnectionState {
@@ -224,7 +226,8 @@ impl From<ActiveConnectionState> for glib::Value {
 
 #[cfg(feature = "v1_8")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMActiveConnectionStateReason")]
 pub enum ActiveConnectionStateReason {
@@ -258,7 +261,7 @@ pub enum ActiveConnectionStateReason {
     DeviceRealizeFailed,
     #[doc(alias = "NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REMOVED")]
     DeviceRemoved,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -269,7 +272,7 @@ impl IntoGlib for ActiveConnectionStateReason {
     type GlibType = ffi::NMActiveConnectionStateReason;
 
     fn into_glib(self) -> ffi::NMActiveConnectionStateReason {
-        match self {
+match self {
             Self::Unknown => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_UNKNOWN,
             Self::None => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_NONE,
             Self::UserDisconnected => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_USER_DISCONNECTED,
@@ -277,21 +280,17 @@ impl IntoGlib for ActiveConnectionStateReason {
             Self::ServiceStopped => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_STOPPED,
             Self::IpConfigInvalid => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_IP_CONFIG_INVALID,
             Self::ConnectTimeout => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_CONNECT_TIMEOUT,
-            Self::ServiceStartTimeout => {
-                ffi::NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT
-            }
+            Self::ServiceStartTimeout => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT,
             Self::ServiceStartFailed => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_FAILED,
             Self::NoSecrets => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_NO_SECRETS,
             Self::LoginFailed => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_LOGIN_FAILED,
             Self::ConnectionRemoved => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_CONNECTION_REMOVED,
             Self::DependencyFailed => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_DEPENDENCY_FAILED,
-            Self::DeviceRealizeFailed => {
-                ffi::NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REALIZE_FAILED
-            }
+            Self::DeviceRealizeFailed => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REALIZE_FAILED,
             Self::DeviceRemoved => ffi::NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REMOVED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_8")]
@@ -300,8 +299,8 @@ impl IntoGlib for ActiveConnectionStateReason {
 impl FromGlib<ffi::NMActiveConnectionStateReason> for ActiveConnectionStateReason {
     unsafe fn from_glib(value: ffi::NMActiveConnectionStateReason) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_UNKNOWN => Self::Unknown,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_NONE => Self::None,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_USER_DISCONNECTED => Self::UserDisconnected,
@@ -309,43 +308,39 @@ impl FromGlib<ffi::NMActiveConnectionStateReason> for ActiveConnectionStateReaso
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_STOPPED => Self::ServiceStopped,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_IP_CONFIG_INVALID => Self::IpConfigInvalid,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_CONNECT_TIMEOUT => Self::ConnectTimeout,
-            ffi::NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT => {
-                Self::ServiceStartTimeout
-            }
+            ffi::NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT => Self::ServiceStartTimeout,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_FAILED => Self::ServiceStartFailed,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_NO_SECRETS => Self::NoSecrets,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_LOGIN_FAILED => Self::LoginFailed,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_CONNECTION_REMOVED => Self::ConnectionRemoved,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_DEPENDENCY_FAILED => Self::DependencyFailed,
-            ffi::NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REALIZE_FAILED => {
-                Self::DeviceRealizeFailed
-            }
+            ffi::NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REALIZE_FAILED => Self::DeviceRealizeFailed,
             ffi::NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_REMOVED => Self::DeviceRemoved,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_8")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
 impl StaticType for ActiveConnectionStateReason {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_active_connection_state_reason_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_active_connection_state_reason_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_active_connection_state_reason_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_8")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
 impl glib::HasParamSpec for ActiveConnectionStateReason {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_8")]
@@ -394,7 +389,8 @@ impl From<ActiveConnectionStateReason> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMAgentManagerError")]
 pub enum AgentManagerError {
@@ -410,7 +406,7 @@ pub enum AgentManagerError {
     NoSecrets,
     #[doc(alias = "NM_AGENT_MANAGER_ERROR_USER_CANCELED")]
     UserCanceled,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -419,8 +415,8 @@ impl IntoGlib for AgentManagerError {
     type GlibType = ffi::NMAgentManagerError;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMAgentManagerError {
-        match self {
+fn into_glib(self) -> ffi::NMAgentManagerError {
+match self {
             Self::Failed => ffi::NM_AGENT_MANAGER_ERROR_FAILED,
             Self::PermissionDenied => ffi::NM_AGENT_MANAGER_ERROR_PERMISSION_DENIED,
             Self::InvalidIdentifier => ffi::NM_AGENT_MANAGER_ERROR_INVALID_IDENTIFIER,
@@ -428,17 +424,17 @@ impl IntoGlib for AgentManagerError {
             Self::NoSecrets => ffi::NM_AGENT_MANAGER_ERROR_NO_SECRETS,
             Self::UserCanceled => ffi::NM_AGENT_MANAGER_ERROR_USER_CANCELED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMAgentManagerError> for AgentManagerError {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMAgentManagerError) -> Self {
+unsafe fn from_glib(value: ffi::NMAgentManagerError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_AGENT_MANAGER_ERROR_FAILED => Self::Failed,
             ffi::NM_AGENT_MANAGER_ERROR_PERMISSION_DENIED => Self::PermissionDenied,
             ffi::NM_AGENT_MANAGER_ERROR_INVALID_IDENTIFIER => Self::InvalidIdentifier,
@@ -446,15 +442,15 @@ impl FromGlib<ffi::NMAgentManagerError> for AgentManagerError {
             ffi::NM_AGENT_MANAGER_ERROR_NO_SECRETS => Self::NoSecrets,
             ffi::NM_AGENT_MANAGER_ERROR_USER_CANCELED => Self::UserCanceled,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for AgentManagerError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_agent_manager_error_quark()) }
     }
 
@@ -470,26 +466,26 @@ impl glib::error::ErrorDomain for AgentManagerError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for AgentManagerError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_agent_manager_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_agent_manager_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_agent_manager_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for AgentManagerError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for AgentManagerError {
@@ -532,7 +528,8 @@ impl From<AgentManagerError> for glib::Value {
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMCapability")]
 pub enum Capability {
@@ -540,7 +537,7 @@ pub enum Capability {
     Team,
     #[doc(alias = "NM_CAPABILITY_OVS")]
     Ovs,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -551,13 +548,13 @@ impl IntoGlib for Capability {
     type GlibType = ffi::NMCapability;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMCapability {
-        match self {
+fn into_glib(self) -> ffi::NMCapability {
+match self {
             Self::Team => ffi::NM_CAPABILITY_TEAM,
             Self::Ovs => ffi::NM_CAPABILITY_OVS,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_6")]
@@ -565,37 +562,37 @@ impl IntoGlib for Capability {
 #[doc(hidden)]
 impl FromGlib<ffi::NMCapability> for Capability {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMCapability) -> Self {
+unsafe fn from_glib(value: ffi::NMCapability) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_CAPABILITY_TEAM => Self::Team,
             ffi::NM_CAPABILITY_OVS => Self::Ovs,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 impl StaticType for Capability {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_capability_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_capability_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_capability_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 impl glib::HasParamSpec for Capability {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_6")]
@@ -644,7 +641,8 @@ impl From<Capability> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMClientError")]
 pub enum ClientError {
@@ -654,7 +652,7 @@ pub enum ClientError {
     ManagerNotRunning,
     #[doc(alias = "NM_CLIENT_ERROR_OBJECT_CREATION_FAILED")]
     ObjectCreationFailed,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -663,36 +661,36 @@ impl IntoGlib for ClientError {
     type GlibType = ffi::NMClientError;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMClientError {
-        match self {
+fn into_glib(self) -> ffi::NMClientError {
+match self {
             Self::Failed => ffi::NM_CLIENT_ERROR_FAILED,
             Self::ManagerNotRunning => ffi::NM_CLIENT_ERROR_MANAGER_NOT_RUNNING,
             Self::ObjectCreationFailed => ffi::NM_CLIENT_ERROR_OBJECT_CREATION_FAILED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMClientError> for ClientError {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMClientError) -> Self {
+unsafe fn from_glib(value: ffi::NMClientError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_CLIENT_ERROR_FAILED => Self::Failed,
             ffi::NM_CLIENT_ERROR_MANAGER_NOT_RUNNING => Self::ManagerNotRunning,
             ffi::NM_CLIENT_ERROR_OBJECT_CREATION_FAILED => Self::ObjectCreationFailed,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for ClientError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_client_error_quark()) }
     }
 
@@ -708,26 +706,26 @@ impl glib::error::ErrorDomain for ClientError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for ClientError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_client_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_client_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_client_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for ClientError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for ClientError {
@@ -768,7 +766,8 @@ impl From<ClientError> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMClientPermission")]
 pub enum ClientPermission {
@@ -808,7 +807,7 @@ pub enum ClientPermission {
     EnableDisableConnectivityCheck,
     #[doc(alias = "NM_CLIENT_PERMISSION_WIFI_SCAN")]
     WifiScan,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -817,7 +816,7 @@ impl IntoGlib for ClientPermission {
     type GlibType = ffi::NMClientPermission;
 
     fn into_glib(self) -> ffi::NMClientPermission {
-        match self {
+match self {
             Self::None => ffi::NM_CLIENT_PERMISSION_NONE,
             Self::EnableDisableNetwork => ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK,
             Self::EnableDisableWifi => ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI,
@@ -834,21 +833,19 @@ impl IntoGlib for ClientPermission {
             Self::Reload => ffi::NM_CLIENT_PERMISSION_RELOAD,
             Self::CheckpointRollback => ffi::NM_CLIENT_PERMISSION_CHECKPOINT_ROLLBACK,
             Self::EnableDisableStatistics => ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_STATISTICS,
-            Self::EnableDisableConnectivityCheck => {
-                ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_CONNECTIVITY_CHECK
-            }
+            Self::EnableDisableConnectivityCheck => ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_CONNECTIVITY_CHECK,
             Self::WifiScan => ffi::NM_CLIENT_PERMISSION_WIFI_SCAN,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMClientPermission> for ClientPermission {
     unsafe fn from_glib(value: ffi::NMClientPermission) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_CLIENT_PERMISSION_NONE => Self::None,
             ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK => Self::EnableDisableNetwork,
             ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI => Self::EnableDisableWifi,
@@ -865,31 +862,29 @@ impl FromGlib<ffi::NMClientPermission> for ClientPermission {
             ffi::NM_CLIENT_PERMISSION_RELOAD => Self::Reload,
             ffi::NM_CLIENT_PERMISSION_CHECKPOINT_ROLLBACK => Self::CheckpointRollback,
             ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_STATISTICS => Self::EnableDisableStatistics,
-            ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_CONNECTIVITY_CHECK => {
-                Self::EnableDisableConnectivityCheck
-            }
+            ffi::NM_CLIENT_PERMISSION_ENABLE_DISABLE_CONNECTIVITY_CHECK => Self::EnableDisableConnectivityCheck,
             ffi::NM_CLIENT_PERMISSION_WIFI_SCAN => Self::WifiScan,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for ClientPermission {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_client_permission_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_client_permission_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_client_permission_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for ClientPermission {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for ClientPermission {
@@ -930,7 +925,8 @@ impl From<ClientPermission> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMClientPermissionResult")]
 pub enum ClientPermissionResult {
@@ -942,7 +938,7 @@ pub enum ClientPermissionResult {
     Auth,
     #[doc(alias = "NM_CLIENT_PERMISSION_RESULT_NO")]
     No,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -951,49 +947,49 @@ impl IntoGlib for ClientPermissionResult {
     type GlibType = ffi::NMClientPermissionResult;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMClientPermissionResult {
-        match self {
+fn into_glib(self) -> ffi::NMClientPermissionResult {
+match self {
             Self::Unknown => ffi::NM_CLIENT_PERMISSION_RESULT_UNKNOWN,
             Self::Yes => ffi::NM_CLIENT_PERMISSION_RESULT_YES,
             Self::Auth => ffi::NM_CLIENT_PERMISSION_RESULT_AUTH,
             Self::No => ffi::NM_CLIENT_PERMISSION_RESULT_NO,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMClientPermissionResult> for ClientPermissionResult {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMClientPermissionResult) -> Self {
+unsafe fn from_glib(value: ffi::NMClientPermissionResult) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_CLIENT_PERMISSION_RESULT_UNKNOWN => Self::Unknown,
             ffi::NM_CLIENT_PERMISSION_RESULT_YES => Self::Yes,
             ffi::NM_CLIENT_PERMISSION_RESULT_AUTH => Self::Auth,
             ffi::NM_CLIENT_PERMISSION_RESULT_NO => Self::No,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for ClientPermissionResult {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_client_permission_result_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_client_permission_result_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_client_permission_result_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for ClientPermissionResult {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for ClientPermissionResult {
@@ -1034,7 +1030,8 @@ impl From<ClientPermissionResult> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMConnectionError")]
 pub enum ConnectionError {
@@ -1054,7 +1051,7 @@ pub enum ConnectionError {
     MissingProperty,
     #[doc(alias = "NM_CONNECTION_ERROR_INVALID_PROPERTY")]
     InvalidProperty,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -1063,8 +1060,8 @@ impl IntoGlib for ConnectionError {
     type GlibType = ffi::NMConnectionError;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMConnectionError {
-        match self {
+fn into_glib(self) -> ffi::NMConnectionError {
+match self {
             Self::Failed => ffi::NM_CONNECTION_ERROR_FAILED,
             Self::SettingNotFound => ffi::NM_CONNECTION_ERROR_SETTING_NOT_FOUND,
             Self::PropertyNotFound => ffi::NM_CONNECTION_ERROR_PROPERTY_NOT_FOUND,
@@ -1074,17 +1071,17 @@ impl IntoGlib for ConnectionError {
             Self::MissingProperty => ffi::NM_CONNECTION_ERROR_MISSING_PROPERTY,
             Self::InvalidProperty => ffi::NM_CONNECTION_ERROR_INVALID_PROPERTY,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMConnectionError> for ConnectionError {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMConnectionError) -> Self {
+unsafe fn from_glib(value: ffi::NMConnectionError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_CONNECTION_ERROR_FAILED => Self::Failed,
             ffi::NM_CONNECTION_ERROR_SETTING_NOT_FOUND => Self::SettingNotFound,
             ffi::NM_CONNECTION_ERROR_PROPERTY_NOT_FOUND => Self::PropertyNotFound,
@@ -1094,15 +1091,15 @@ impl FromGlib<ffi::NMConnectionError> for ConnectionError {
             ffi::NM_CONNECTION_ERROR_MISSING_PROPERTY => Self::MissingProperty,
             ffi::NM_CONNECTION_ERROR_INVALID_PROPERTY => Self::InvalidProperty,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for ConnectionError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_connection_error_quark()) }
     }
 
@@ -1118,26 +1115,26 @@ impl glib::error::ErrorDomain for ConnectionError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for ConnectionError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_connection_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_connection_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_connection_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for ConnectionError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for ConnectionError {
@@ -1180,7 +1177,8 @@ impl From<ConnectionError> for glib::Value {
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMConnectionMultiConnect")]
 pub enum ConnectionMultiConnect {
@@ -1192,7 +1190,7 @@ pub enum ConnectionMultiConnect {
     ManualMultiple,
     #[doc(alias = "NM_CONNECTION_MULTI_CONNECT_MULTIPLE")]
     Multiple,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -1203,15 +1201,15 @@ impl IntoGlib for ConnectionMultiConnect {
     type GlibType = ffi::NMConnectionMultiConnect;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMConnectionMultiConnect {
-        match self {
+fn into_glib(self) -> ffi::NMConnectionMultiConnect {
+match self {
             Self::Default => ffi::NM_CONNECTION_MULTI_CONNECT_DEFAULT,
             Self::Single => ffi::NM_CONNECTION_MULTI_CONNECT_SINGLE,
             Self::ManualMultiple => ffi::NM_CONNECTION_MULTI_CONNECT_MANUAL_MULTIPLE,
             Self::Multiple => ffi::NM_CONNECTION_MULTI_CONNECT_MULTIPLE,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_14")]
@@ -1219,39 +1217,39 @@ impl IntoGlib for ConnectionMultiConnect {
 #[doc(hidden)]
 impl FromGlib<ffi::NMConnectionMultiConnect> for ConnectionMultiConnect {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMConnectionMultiConnect) -> Self {
+unsafe fn from_glib(value: ffi::NMConnectionMultiConnect) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_CONNECTION_MULTI_CONNECT_DEFAULT => Self::Default,
             ffi::NM_CONNECTION_MULTI_CONNECT_SINGLE => Self::Single,
             ffi::NM_CONNECTION_MULTI_CONNECT_MANUAL_MULTIPLE => Self::ManualMultiple,
             ffi::NM_CONNECTION_MULTI_CONNECT_MULTIPLE => Self::Multiple,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl StaticType for ConnectionMultiConnect {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_connection_multi_connect_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_connection_multi_connect_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_connection_multi_connect_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl glib::HasParamSpec for ConnectionMultiConnect {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_14")]
@@ -1300,7 +1298,8 @@ impl From<ConnectionMultiConnect> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMConnectivityState")]
 pub enum ConnectivityState {
@@ -1314,7 +1313,7 @@ pub enum ConnectivityState {
     Limited,
     #[doc(alias = "NM_CONNECTIVITY_FULL")]
     Full,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -1323,51 +1322,51 @@ impl IntoGlib for ConnectivityState {
     type GlibType = ffi::NMConnectivityState;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMConnectivityState {
-        match self {
+fn into_glib(self) -> ffi::NMConnectivityState {
+match self {
             Self::Unknown => ffi::NM_CONNECTIVITY_UNKNOWN,
             Self::None => ffi::NM_CONNECTIVITY_NONE,
             Self::Portal => ffi::NM_CONNECTIVITY_PORTAL,
             Self::Limited => ffi::NM_CONNECTIVITY_LIMITED,
             Self::Full => ffi::NM_CONNECTIVITY_FULL,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMConnectivityState> for ConnectivityState {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMConnectivityState) -> Self {
+unsafe fn from_glib(value: ffi::NMConnectivityState) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_CONNECTIVITY_UNKNOWN => Self::Unknown,
             ffi::NM_CONNECTIVITY_NONE => Self::None,
             ffi::NM_CONNECTIVITY_PORTAL => Self::Portal,
             ffi::NM_CONNECTIVITY_LIMITED => Self::Limited,
             ffi::NM_CONNECTIVITY_FULL => Self::Full,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for ConnectivityState {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_connectivity_state_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_connectivity_state_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_connectivity_state_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for ConnectivityState {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for ConnectivityState {
@@ -1408,7 +1407,8 @@ impl From<ConnectivityState> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMCryptoError")]
 pub enum CryptoError {
@@ -1424,7 +1424,7 @@ pub enum CryptoError {
     DecryptionFailed,
     #[doc(alias = "NM_CRYPTO_ERROR_ENCRYPTION_FAILED")]
     EncryptionFailed,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -1433,8 +1433,8 @@ impl IntoGlib for CryptoError {
     type GlibType = ffi::NMCryptoError;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMCryptoError {
-        match self {
+fn into_glib(self) -> ffi::NMCryptoError {
+match self {
             Self::Failed => ffi::NM_CRYPTO_ERROR_FAILED,
             Self::InvalidData => ffi::NM_CRYPTO_ERROR_INVALID_DATA,
             Self::InvalidPassword => ffi::NM_CRYPTO_ERROR_INVALID_PASSWORD,
@@ -1442,17 +1442,17 @@ impl IntoGlib for CryptoError {
             Self::DecryptionFailed => ffi::NM_CRYPTO_ERROR_DECRYPTION_FAILED,
             Self::EncryptionFailed => ffi::NM_CRYPTO_ERROR_ENCRYPTION_FAILED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMCryptoError> for CryptoError {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMCryptoError) -> Self {
+unsafe fn from_glib(value: ffi::NMCryptoError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_CRYPTO_ERROR_FAILED => Self::Failed,
             ffi::NM_CRYPTO_ERROR_INVALID_DATA => Self::InvalidData,
             ffi::NM_CRYPTO_ERROR_INVALID_PASSWORD => Self::InvalidPassword,
@@ -1460,15 +1460,15 @@ impl FromGlib<ffi::NMCryptoError> for CryptoError {
             ffi::NM_CRYPTO_ERROR_DECRYPTION_FAILED => Self::DecryptionFailed,
             ffi::NM_CRYPTO_ERROR_ENCRYPTION_FAILED => Self::EncryptionFailed,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for CryptoError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_crypto_error_quark()) }
     }
 
@@ -1484,26 +1484,26 @@ impl glib::error::ErrorDomain for CryptoError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for CryptoError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_crypto_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_crypto_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_crypto_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for CryptoError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for CryptoError {
@@ -1544,7 +1544,8 @@ impl From<CryptoError> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMDeviceError")]
 pub enum DeviceError {
@@ -1570,7 +1571,7 @@ pub enum DeviceError {
     MissingDependencies,
     #[doc(alias = "NM_DEVICE_ERROR_INVALID_ARGUMENT")]
     InvalidArgument,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -1579,8 +1580,8 @@ impl IntoGlib for DeviceError {
     type GlibType = ffi::NMDeviceError;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMDeviceError {
-        match self {
+fn into_glib(self) -> ffi::NMDeviceError {
+match self {
             Self::Failed => ffi::NM_DEVICE_ERROR_FAILED,
             Self::CreationFailed => ffi::NM_DEVICE_ERROR_CREATION_FAILED,
             Self::InvalidConnection => ffi::NM_DEVICE_ERROR_INVALID_CONNECTION,
@@ -1593,17 +1594,17 @@ impl IntoGlib for DeviceError {
             Self::MissingDependencies => ffi::NM_DEVICE_ERROR_MISSING_DEPENDENCIES,
             Self::InvalidArgument => ffi::NM_DEVICE_ERROR_INVALID_ARGUMENT,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMDeviceError> for DeviceError {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMDeviceError) -> Self {
+unsafe fn from_glib(value: ffi::NMDeviceError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_DEVICE_ERROR_FAILED => Self::Failed,
             ffi::NM_DEVICE_ERROR_CREATION_FAILED => Self::CreationFailed,
             ffi::NM_DEVICE_ERROR_INVALID_CONNECTION => Self::InvalidConnection,
@@ -1616,15 +1617,15 @@ impl FromGlib<ffi::NMDeviceError> for DeviceError {
             ffi::NM_DEVICE_ERROR_MISSING_DEPENDENCIES => Self::MissingDependencies,
             ffi::NM_DEVICE_ERROR_INVALID_ARGUMENT => Self::InvalidArgument,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for DeviceError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_device_error_quark()) }
     }
 
@@ -1640,26 +1641,26 @@ impl glib::error::ErrorDomain for DeviceError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for DeviceError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_device_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_device_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_device_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for DeviceError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for DeviceError {
@@ -1700,7 +1701,8 @@ impl From<DeviceError> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMDeviceState")]
 pub enum DeviceState {
@@ -1730,7 +1732,7 @@ pub enum DeviceState {
     Deactivating,
     #[doc(alias = "NM_DEVICE_STATE_FAILED")]
     Failed,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -1739,7 +1741,7 @@ impl IntoGlib for DeviceState {
     type GlibType = ffi::NMDeviceState;
 
     fn into_glib(self) -> ffi::NMDeviceState {
-        match self {
+match self {
             Self::Unknown => ffi::NM_DEVICE_STATE_UNKNOWN,
             Self::Unmanaged => ffi::NM_DEVICE_STATE_UNMANAGED,
             Self::Unavailable => ffi::NM_DEVICE_STATE_UNAVAILABLE,
@@ -1754,16 +1756,16 @@ impl IntoGlib for DeviceState {
             Self::Deactivating => ffi::NM_DEVICE_STATE_DEACTIVATING,
             Self::Failed => ffi::NM_DEVICE_STATE_FAILED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMDeviceState> for DeviceState {
     unsafe fn from_glib(value: ffi::NMDeviceState) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_DEVICE_STATE_UNKNOWN => Self::Unknown,
             ffi::NM_DEVICE_STATE_UNMANAGED => Self::Unmanaged,
             ffi::NM_DEVICE_STATE_UNAVAILABLE => Self::Unavailable,
@@ -1778,26 +1780,26 @@ impl FromGlib<ffi::NMDeviceState> for DeviceState {
             ffi::NM_DEVICE_STATE_DEACTIVATING => Self::Deactivating,
             ffi::NM_DEVICE_STATE_FAILED => Self::Failed,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for DeviceState {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_device_state_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_device_state_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_device_state_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for DeviceState {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for DeviceState {
@@ -1838,7 +1840,8 @@ impl From<DeviceState> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMDeviceStateReason")]
 pub enum DeviceStateReason {
@@ -1998,7 +2001,7 @@ pub enum DeviceStateReason {
     UnmanagedUserSettings,
     #[doc(alias = "NM_DEVICE_STATE_REASON_UNMANAGED_USER_UDEV")]
     UnmanagedUserUdev,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -2007,7 +2010,7 @@ impl IntoGlib for DeviceStateReason {
     type GlibType = ffi::NMDeviceStateReason;
 
     fn into_glib(self) -> ffi::NMDeviceStateReason {
-        match self {
+match self {
             Self::None => ffi::NM_DEVICE_STATE_REASON_NONE,
             Self::Unknown => ffi::NM_DEVICE_STATE_REASON_UNKNOWN,
             Self::NowManaged => ffi::NM_DEVICE_STATE_REASON_NOW_MANAGED,
@@ -2038,9 +2041,7 @@ impl IntoGlib for DeviceStateReason {
             Self::ModemDialFailed => ffi::NM_DEVICE_STATE_REASON_MODEM_DIAL_FAILED,
             Self::ModemInitFailed => ffi::NM_DEVICE_STATE_REASON_MODEM_INIT_FAILED,
             Self::GsmApnFailed => ffi::NM_DEVICE_STATE_REASON_GSM_APN_FAILED,
-            Self::GsmRegistrationNotSearching => {
-                ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_NOT_SEARCHING
-            }
+            Self::GsmRegistrationNotSearching => ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_NOT_SEARCHING,
             Self::GsmRegistrationDenied => ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_DENIED,
             Self::GsmRegistrationTimeout => ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_TIMEOUT,
             Self::GsmRegistrationFailed => ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_FAILED,
@@ -2064,9 +2065,7 @@ impl IntoGlib for DeviceStateReason {
             Self::Br2684Failed => ffi::NM_DEVICE_STATE_REASON_BR2684_FAILED,
             Self::ModemManagerUnavailable => ffi::NM_DEVICE_STATE_REASON_MODEM_MANAGER_UNAVAILABLE,
             Self::SsidNotFound => ffi::NM_DEVICE_STATE_REASON_SSID_NOT_FOUND,
-            Self::SecondaryConnectionFailed => {
-                ffi::NM_DEVICE_STATE_REASON_SECONDARY_CONNECTION_FAILED
-            }
+            Self::SecondaryConnectionFailed => ffi::NM_DEVICE_STATE_REASON_SECONDARY_CONNECTION_FAILED,
             Self::DcbFcoeFailed => ffi::NM_DEVICE_STATE_REASON_DCB_FCOE_FAILED,
             Self::TeamdControlFailed => ffi::NM_DEVICE_STATE_REASON_TEAMD_CONTROL_FAILED,
             Self::ModemFailed => ffi::NM_DEVICE_STATE_REASON_MODEM_FAILED,
@@ -2078,9 +2077,7 @@ impl IntoGlib for DeviceStateReason {
             Self::OvsdbFailed => ffi::NM_DEVICE_STATE_REASON_OVSDB_FAILED,
             Self::IpAddressDuplicate => ffi::NM_DEVICE_STATE_REASON_IP_ADDRESS_DUPLICATE,
             Self::IpMethodUnsupported => ffi::NM_DEVICE_STATE_REASON_IP_METHOD_UNSUPPORTED,
-            Self::SriovConfigurationFailed => {
-                ffi::NM_DEVICE_STATE_REASON_SRIOV_CONFIGURATION_FAILED
-            }
+            Self::SriovConfigurationFailed => ffi::NM_DEVICE_STATE_REASON_SRIOV_CONFIGURATION_FAILED,
             Self::PeerNotFound => ffi::NM_DEVICE_STATE_REASON_PEER_NOT_FOUND,
             Self::DeviceHandlerFailed => ffi::NM_DEVICE_STATE_REASON_DEVICE_HANDLER_FAILED,
             Self::UnmanagedByDefault => ffi::NM_DEVICE_STATE_REASON_UNMANAGED_BY_DEFAULT,
@@ -2093,16 +2090,16 @@ impl IntoGlib for DeviceStateReason {
             Self::UnmanagedUserSettings => ffi::NM_DEVICE_STATE_REASON_UNMANAGED_USER_SETTINGS,
             Self::UnmanagedUserUdev => ffi::NM_DEVICE_STATE_REASON_UNMANAGED_USER_UDEV,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMDeviceStateReason> for DeviceStateReason {
     unsafe fn from_glib(value: ffi::NMDeviceStateReason) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_DEVICE_STATE_REASON_NONE => Self::None,
             ffi::NM_DEVICE_STATE_REASON_UNKNOWN => Self::Unknown,
             ffi::NM_DEVICE_STATE_REASON_NOW_MANAGED => Self::NowManaged,
@@ -2133,9 +2130,7 @@ impl FromGlib<ffi::NMDeviceStateReason> for DeviceStateReason {
             ffi::NM_DEVICE_STATE_REASON_MODEM_DIAL_FAILED => Self::ModemDialFailed,
             ffi::NM_DEVICE_STATE_REASON_MODEM_INIT_FAILED => Self::ModemInitFailed,
             ffi::NM_DEVICE_STATE_REASON_GSM_APN_FAILED => Self::GsmApnFailed,
-            ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_NOT_SEARCHING => {
-                Self::GsmRegistrationNotSearching
-            }
+            ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_NOT_SEARCHING => Self::GsmRegistrationNotSearching,
             ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_DENIED => Self::GsmRegistrationDenied,
             ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_TIMEOUT => Self::GsmRegistrationTimeout,
             ffi::NM_DEVICE_STATE_REASON_GSM_REGISTRATION_FAILED => Self::GsmRegistrationFailed,
@@ -2159,9 +2154,7 @@ impl FromGlib<ffi::NMDeviceStateReason> for DeviceStateReason {
             ffi::NM_DEVICE_STATE_REASON_BR2684_FAILED => Self::Br2684Failed,
             ffi::NM_DEVICE_STATE_REASON_MODEM_MANAGER_UNAVAILABLE => Self::ModemManagerUnavailable,
             ffi::NM_DEVICE_STATE_REASON_SSID_NOT_FOUND => Self::SsidNotFound,
-            ffi::NM_DEVICE_STATE_REASON_SECONDARY_CONNECTION_FAILED => {
-                Self::SecondaryConnectionFailed
-            }
+            ffi::NM_DEVICE_STATE_REASON_SECONDARY_CONNECTION_FAILED => Self::SecondaryConnectionFailed,
             ffi::NM_DEVICE_STATE_REASON_DCB_FCOE_FAILED => Self::DcbFcoeFailed,
             ffi::NM_DEVICE_STATE_REASON_TEAMD_CONTROL_FAILED => Self::TeamdControlFailed,
             ffi::NM_DEVICE_STATE_REASON_MODEM_FAILED => Self::ModemFailed,
@@ -2173,9 +2166,7 @@ impl FromGlib<ffi::NMDeviceStateReason> for DeviceStateReason {
             ffi::NM_DEVICE_STATE_REASON_OVSDB_FAILED => Self::OvsdbFailed,
             ffi::NM_DEVICE_STATE_REASON_IP_ADDRESS_DUPLICATE => Self::IpAddressDuplicate,
             ffi::NM_DEVICE_STATE_REASON_IP_METHOD_UNSUPPORTED => Self::IpMethodUnsupported,
-            ffi::NM_DEVICE_STATE_REASON_SRIOV_CONFIGURATION_FAILED => {
-                Self::SriovConfigurationFailed
-            }
+            ffi::NM_DEVICE_STATE_REASON_SRIOV_CONFIGURATION_FAILED => Self::SriovConfigurationFailed,
             ffi::NM_DEVICE_STATE_REASON_PEER_NOT_FOUND => Self::PeerNotFound,
             ffi::NM_DEVICE_STATE_REASON_DEVICE_HANDLER_FAILED => Self::DeviceHandlerFailed,
             ffi::NM_DEVICE_STATE_REASON_UNMANAGED_BY_DEFAULT => Self::UnmanagedByDefault,
@@ -2188,26 +2179,26 @@ impl FromGlib<ffi::NMDeviceStateReason> for DeviceStateReason {
             ffi::NM_DEVICE_STATE_REASON_UNMANAGED_USER_SETTINGS => Self::UnmanagedUserSettings,
             ffi::NM_DEVICE_STATE_REASON_UNMANAGED_USER_UDEV => Self::UnmanagedUserUdev,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for DeviceStateReason {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_device_state_reason_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_device_state_reason_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_device_state_reason_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for DeviceStateReason {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for DeviceStateReason {
@@ -2248,7 +2239,8 @@ impl From<DeviceStateReason> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMDeviceType")]
 pub enum DeviceType {
@@ -2322,7 +2314,7 @@ pub enum DeviceType {
     Hsr,
     #[doc(alias = "NM_DEVICE_TYPE_IPVLAN")]
     Ipvlan,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -2331,7 +2323,7 @@ impl IntoGlib for DeviceType {
     type GlibType = ffi::NMDeviceType;
 
     fn into_glib(self) -> ffi::NMDeviceType {
-        match self {
+match self {
             Self::Unknown => ffi::NM_DEVICE_TYPE_UNKNOWN,
             Self::Ethernet => ffi::NM_DEVICE_TYPE_ETHERNET,
             Self::Wifi => ffi::NM_DEVICE_TYPE_WIFI,
@@ -2368,16 +2360,16 @@ impl IntoGlib for DeviceType {
             Self::Hsr => ffi::NM_DEVICE_TYPE_HSR,
             Self::Ipvlan => ffi::NM_DEVICE_TYPE_IPVLAN,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMDeviceType> for DeviceType {
     unsafe fn from_glib(value: ffi::NMDeviceType) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_DEVICE_TYPE_UNKNOWN => Self::Unknown,
             ffi::NM_DEVICE_TYPE_ETHERNET => Self::Ethernet,
             ffi::NM_DEVICE_TYPE_WIFI => Self::Wifi,
@@ -2414,26 +2406,26 @@ impl FromGlib<ffi::NMDeviceType> for DeviceType {
             ffi::NM_DEVICE_TYPE_HSR => Self::Hsr,
             ffi::NM_DEVICE_TYPE_IPVLAN => Self::Ipvlan,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for DeviceType {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_device_type_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_device_type_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_device_type_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for DeviceType {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for DeviceType {
@@ -2476,7 +2468,8 @@ impl From<DeviceType> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMIPTunnelMode")]
 pub enum IPTunnelMode {
@@ -2504,7 +2497,7 @@ pub enum IPTunnelMode {
     Gretap,
     #[doc(alias = "NM_IP_TUNNEL_MODE_IP6GRETAP")]
     Ip6gretap,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -2515,8 +2508,8 @@ impl IntoGlib for IPTunnelMode {
     type GlibType = ffi::NMIPTunnelMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMIPTunnelMode {
-        match self {
+fn into_glib(self) -> ffi::NMIPTunnelMode {
+match self {
             Self::Unknown => ffi::NM_IP_TUNNEL_MODE_UNKNOWN,
             Self::Ipip => ffi::NM_IP_TUNNEL_MODE_IPIP,
             Self::Gre => ffi::NM_IP_TUNNEL_MODE_GRE,
@@ -2530,8 +2523,8 @@ impl IntoGlib for IPTunnelMode {
             Self::Gretap => ffi::NM_IP_TUNNEL_MODE_GRETAP,
             Self::Ip6gretap => ffi::NM_IP_TUNNEL_MODE_IP6GRETAP,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -2539,10 +2532,10 @@ impl IntoGlib for IPTunnelMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMIPTunnelMode> for IPTunnelMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMIPTunnelMode) -> Self {
+unsafe fn from_glib(value: ffi::NMIPTunnelMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_IP_TUNNEL_MODE_UNKNOWN => Self::Unknown,
             ffi::NM_IP_TUNNEL_MODE_IPIP => Self::Ipip,
             ffi::NM_IP_TUNNEL_MODE_GRE => Self::Gre,
@@ -2556,30 +2549,30 @@ impl FromGlib<ffi::NMIPTunnelMode> for IPTunnelMode {
             ffi::NM_IP_TUNNEL_MODE_GRETAP => Self::Gretap,
             ffi::NM_IP_TUNNEL_MODE_IP6GRETAP => Self::Ip6gretap,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for IPTunnelMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_ip_tunnel_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_ip_tunnel_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_ip_tunnel_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for IPTunnelMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -2630,7 +2623,8 @@ impl From<IPTunnelMode> for glib::Value {
 
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMKeyfileHandlerType")]
 pub enum KeyfileHandlerType {
@@ -2638,7 +2632,7 @@ pub enum KeyfileHandlerType {
     Warn,
     #[doc(alias = "NM_KEYFILE_HANDLER_TYPE_WRITE_CERT")]
     WriteCert,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -2649,13 +2643,13 @@ impl IntoGlib for KeyfileHandlerType {
     type GlibType = ffi::NMKeyfileHandlerType;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMKeyfileHandlerType {
-        match self {
+fn into_glib(self) -> ffi::NMKeyfileHandlerType {
+match self {
             Self::Warn => ffi::NM_KEYFILE_HANDLER_TYPE_WARN,
             Self::WriteCert => ffi::NM_KEYFILE_HANDLER_TYPE_WRITE_CERT,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_30")]
@@ -2663,37 +2657,37 @@ impl IntoGlib for KeyfileHandlerType {
 #[doc(hidden)]
 impl FromGlib<ffi::NMKeyfileHandlerType> for KeyfileHandlerType {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMKeyfileHandlerType) -> Self {
+unsafe fn from_glib(value: ffi::NMKeyfileHandlerType) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_KEYFILE_HANDLER_TYPE_WARN => Self::Warn,
             ffi::NM_KEYFILE_HANDLER_TYPE_WRITE_CERT => Self::WriteCert,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
 impl StaticType for KeyfileHandlerType {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_keyfile_handler_type_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_keyfile_handler_type_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_keyfile_handler_type_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
 impl glib::HasParamSpec for KeyfileHandlerType {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_30")]
@@ -2744,7 +2738,8 @@ impl From<KeyfileHandlerType> for glib::Value {
 
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMKeyfileWarnSeverity")]
 pub enum KeyfileWarnSeverity {
@@ -2756,7 +2751,7 @@ pub enum KeyfileWarnSeverity {
     InfoMissingFile,
     #[doc(alias = "NM_KEYFILE_WARN_SEVERITY_WARN")]
     Warn,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -2767,15 +2762,15 @@ impl IntoGlib for KeyfileWarnSeverity {
     type GlibType = ffi::NMKeyfileWarnSeverity;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMKeyfileWarnSeverity {
-        match self {
+fn into_glib(self) -> ffi::NMKeyfileWarnSeverity {
+match self {
             Self::Debug => ffi::NM_KEYFILE_WARN_SEVERITY_DEBUG,
             Self::Info => ffi::NM_KEYFILE_WARN_SEVERITY_INFO,
             Self::InfoMissingFile => ffi::NM_KEYFILE_WARN_SEVERITY_INFO_MISSING_FILE,
             Self::Warn => ffi::NM_KEYFILE_WARN_SEVERITY_WARN,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_30")]
@@ -2783,39 +2778,39 @@ impl IntoGlib for KeyfileWarnSeverity {
 #[doc(hidden)]
 impl FromGlib<ffi::NMKeyfileWarnSeverity> for KeyfileWarnSeverity {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMKeyfileWarnSeverity) -> Self {
+unsafe fn from_glib(value: ffi::NMKeyfileWarnSeverity) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_KEYFILE_WARN_SEVERITY_DEBUG => Self::Debug,
             ffi::NM_KEYFILE_WARN_SEVERITY_INFO => Self::Info,
             ffi::NM_KEYFILE_WARN_SEVERITY_INFO_MISSING_FILE => Self::InfoMissingFile,
             ffi::NM_KEYFILE_WARN_SEVERITY_WARN => Self::Warn,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
 impl StaticType for KeyfileWarnSeverity {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_keyfile_warn_severity_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_keyfile_warn_severity_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_keyfile_warn_severity_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
 impl glib::HasParamSpec for KeyfileWarnSeverity {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_30")]
@@ -2864,7 +2859,8 @@ impl From<KeyfileWarnSeverity> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMManagerError")]
 pub enum ManagerError {
@@ -2896,7 +2892,7 @@ pub enum ManagerError {
     InvalidArguments,
     #[doc(alias = "NM_MANAGER_ERROR_MISSING_PLUGIN")]
     MissingPlugin,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -2905,7 +2901,7 @@ impl IntoGlib for ManagerError {
     type GlibType = ffi::NMManagerError;
 
     fn into_glib(self) -> ffi::NMManagerError {
-        match self {
+match self {
             Self::Failed => ffi::NM_MANAGER_ERROR_FAILED,
             Self::PermissionDenied => ffi::NM_MANAGER_ERROR_PERMISSION_DENIED,
             Self::UnknownConnection => ffi::NM_MANAGER_ERROR_UNKNOWN_CONNECTION,
@@ -2921,16 +2917,16 @@ impl IntoGlib for ManagerError {
             Self::InvalidArguments => ffi::NM_MANAGER_ERROR_INVALID_ARGUMENTS,
             Self::MissingPlugin => ffi::NM_MANAGER_ERROR_MISSING_PLUGIN,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMManagerError> for ManagerError {
     unsafe fn from_glib(value: ffi::NMManagerError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_MANAGER_ERROR_FAILED => Self::Failed,
             ffi::NM_MANAGER_ERROR_PERMISSION_DENIED => Self::PermissionDenied,
             ffi::NM_MANAGER_ERROR_UNKNOWN_CONNECTION => Self::UnknownConnection,
@@ -2946,15 +2942,15 @@ impl FromGlib<ffi::NMManagerError> for ManagerError {
             ffi::NM_MANAGER_ERROR_INVALID_ARGUMENTS => Self::InvalidArguments,
             ffi::NM_MANAGER_ERROR_MISSING_PLUGIN => Self::MissingPlugin,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for ManagerError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_manager_error_quark()) }
     }
 
@@ -2970,26 +2966,26 @@ impl glib::error::ErrorDomain for ManagerError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for ManagerError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_manager_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_manager_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_manager_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for ManagerError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for ManagerError {
@@ -3032,7 +3028,8 @@ impl From<ManagerError> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMMetered")]
 pub enum Metered {
@@ -3046,7 +3043,7 @@ pub enum Metered {
     GuessYes,
     #[doc(alias = "NM_METERED_GUESS_NO")]
     GuessNo,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3057,16 +3054,16 @@ impl IntoGlib for Metered {
     type GlibType = ffi::NMMetered;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMMetered {
-        match self {
+fn into_glib(self) -> ffi::NMMetered {
+match self {
             Self::Unknown => ffi::NM_METERED_UNKNOWN,
             Self::Yes => ffi::NM_METERED_YES,
             Self::No => ffi::NM_METERED_NO,
             Self::GuessYes => ffi::NM_METERED_GUESS_YES,
             Self::GuessNo => ffi::NM_METERED_GUESS_NO,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -3074,40 +3071,40 @@ impl IntoGlib for Metered {
 #[doc(hidden)]
 impl FromGlib<ffi::NMMetered> for Metered {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMMetered) -> Self {
+unsafe fn from_glib(value: ffi::NMMetered) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_METERED_UNKNOWN => Self::Unknown,
             ffi::NM_METERED_YES => Self::Yes,
             ffi::NM_METERED_NO => Self::No,
             ffi::NM_METERED_GUESS_YES => Self::GuessYes,
             ffi::NM_METERED_GUESS_NO => Self::GuessNo,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for Metered {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_metered_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_metered_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_metered_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for Metered {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -3158,7 +3155,8 @@ impl From<Metered> for glib::Value {
 
 #[cfg(feature = "v1_4")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMRollbackResult")]
 pub enum RollbackResult {
@@ -3170,7 +3168,7 @@ pub enum RollbackResult {
     ErrDeviceUnmanaged,
     #[doc(alias = "NM_ROLLBACK_RESULT_ERR_FAILED")]
     ErrFailed,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3181,15 +3179,15 @@ impl IntoGlib for RollbackResult {
     type GlibType = ffi::NMRollbackResult;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMRollbackResult {
-        match self {
+fn into_glib(self) -> ffi::NMRollbackResult {
+match self {
             Self::Ok => ffi::NM_ROLLBACK_RESULT_OK,
             Self::ErrNoDevice => ffi::NM_ROLLBACK_RESULT_ERR_NO_DEVICE,
             Self::ErrDeviceUnmanaged => ffi::NM_ROLLBACK_RESULT_ERR_DEVICE_UNMANAGED,
             Self::ErrFailed => ffi::NM_ROLLBACK_RESULT_ERR_FAILED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_4")]
@@ -3197,20 +3195,21 @@ impl IntoGlib for RollbackResult {
 #[doc(hidden)]
 impl FromGlib<ffi::NMRollbackResult> for RollbackResult {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMRollbackResult) -> Self {
+unsafe fn from_glib(value: ffi::NMRollbackResult) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_ROLLBACK_RESULT_OK => Self::Ok,
             ffi::NM_ROLLBACK_RESULT_ERR_NO_DEVICE => Self::ErrNoDevice,
             ffi::NM_ROLLBACK_RESULT_ERR_DEVICE_UNMANAGED => Self::ErrDeviceUnmanaged,
             ffi::NM_ROLLBACK_RESULT_ERR_FAILED => Self::ErrFailed,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSecretAgentError")]
 pub enum SecretAgentError {
@@ -3226,7 +3225,7 @@ pub enum SecretAgentError {
     AgentCanceled,
     #[doc(alias = "NM_SECRET_AGENT_ERROR_NO_SECRETS")]
     NoSecrets,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3235,8 +3234,8 @@ impl IntoGlib for SecretAgentError {
     type GlibType = ffi::NMSecretAgentError;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSecretAgentError {
-        match self {
+fn into_glib(self) -> ffi::NMSecretAgentError {
+match self {
             Self::Failed => ffi::NM_SECRET_AGENT_ERROR_FAILED,
             Self::PermissionDenied => ffi::NM_SECRET_AGENT_ERROR_PERMISSION_DENIED,
             Self::InvalidConnection => ffi::NM_SECRET_AGENT_ERROR_INVALID_CONNECTION,
@@ -3244,17 +3243,17 @@ impl IntoGlib for SecretAgentError {
             Self::AgentCanceled => ffi::NM_SECRET_AGENT_ERROR_AGENT_CANCELED,
             Self::NoSecrets => ffi::NM_SECRET_AGENT_ERROR_NO_SECRETS,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMSecretAgentError> for SecretAgentError {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSecretAgentError) -> Self {
+unsafe fn from_glib(value: ffi::NMSecretAgentError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SECRET_AGENT_ERROR_FAILED => Self::Failed,
             ffi::NM_SECRET_AGENT_ERROR_PERMISSION_DENIED => Self::PermissionDenied,
             ffi::NM_SECRET_AGENT_ERROR_INVALID_CONNECTION => Self::InvalidConnection,
@@ -3262,15 +3261,15 @@ impl FromGlib<ffi::NMSecretAgentError> for SecretAgentError {
             ffi::NM_SECRET_AGENT_ERROR_AGENT_CANCELED => Self::AgentCanceled,
             ffi::NM_SECRET_AGENT_ERROR_NO_SECRETS => Self::NoSecrets,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for SecretAgentError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_secret_agent_error_quark()) }
     }
 
@@ -3286,26 +3285,26 @@ impl glib::error::ErrorDomain for SecretAgentError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for SecretAgentError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_secret_agent_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_secret_agent_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_secret_agent_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for SecretAgentError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for SecretAgentError {
@@ -3346,7 +3345,8 @@ impl From<SecretAgentError> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSetting8021xCKFormat")]
 pub enum Setting8021xCKFormat {
@@ -3358,7 +3358,7 @@ pub enum Setting8021xCKFormat {
     RawKey,
     #[doc(alias = "NM_SETTING_802_1X_CK_FORMAT_PKCS12")]
     Pkcs12,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3367,49 +3367,49 @@ impl IntoGlib for Setting8021xCKFormat {
     type GlibType = ffi::NMSetting8021xCKFormat;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSetting8021xCKFormat {
-        match self {
+fn into_glib(self) -> ffi::NMSetting8021xCKFormat {
+match self {
             Self::Unknown => ffi::NM_SETTING_802_1X_CK_FORMAT_UNKNOWN,
             Self::X509 => ffi::NM_SETTING_802_1X_CK_FORMAT_X509,
             Self::RawKey => ffi::NM_SETTING_802_1X_CK_FORMAT_RAW_KEY,
             Self::Pkcs12 => ffi::NM_SETTING_802_1X_CK_FORMAT_PKCS12,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMSetting8021xCKFormat> for Setting8021xCKFormat {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSetting8021xCKFormat) -> Self {
+unsafe fn from_glib(value: ffi::NMSetting8021xCKFormat) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_802_1X_CK_FORMAT_UNKNOWN => Self::Unknown,
             ffi::NM_SETTING_802_1X_CK_FORMAT_X509 => Self::X509,
             ffi::NM_SETTING_802_1X_CK_FORMAT_RAW_KEY => Self::RawKey,
             ffi::NM_SETTING_802_1X_CK_FORMAT_PKCS12 => Self::Pkcs12,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for Setting8021xCKFormat {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_802_1x_ck_format_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_802_1x_ck_format_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_802_1x_ck_format_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for Setting8021xCKFormat {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for Setting8021xCKFormat {
@@ -3450,7 +3450,8 @@ impl From<Setting8021xCKFormat> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSetting8021xCKScheme")]
 pub enum Setting8021xCKScheme {
@@ -3462,7 +3463,7 @@ pub enum Setting8021xCKScheme {
     Path,
     #[doc(alias = "NM_SETTING_802_1X_CK_SCHEME_PKCS11")]
     Pkcs11,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3471,49 +3472,49 @@ impl IntoGlib for Setting8021xCKScheme {
     type GlibType = ffi::NMSetting8021xCKScheme;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSetting8021xCKScheme {
-        match self {
+fn into_glib(self) -> ffi::NMSetting8021xCKScheme {
+match self {
             Self::Unknown => ffi::NM_SETTING_802_1X_CK_SCHEME_UNKNOWN,
             Self::Blob => ffi::NM_SETTING_802_1X_CK_SCHEME_BLOB,
             Self::Path => ffi::NM_SETTING_802_1X_CK_SCHEME_PATH,
             Self::Pkcs11 => ffi::NM_SETTING_802_1X_CK_SCHEME_PKCS11,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMSetting8021xCKScheme> for Setting8021xCKScheme {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSetting8021xCKScheme) -> Self {
+unsafe fn from_glib(value: ffi::NMSetting8021xCKScheme) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_802_1X_CK_SCHEME_UNKNOWN => Self::Unknown,
             ffi::NM_SETTING_802_1X_CK_SCHEME_BLOB => Self::Blob,
             ffi::NM_SETTING_802_1X_CK_SCHEME_PATH => Self::Path,
             ffi::NM_SETTING_802_1X_CK_SCHEME_PKCS11 => Self::Pkcs11,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for Setting8021xCKScheme {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_802_1x_ck_scheme_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_802_1x_ck_scheme_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_802_1x_ck_scheme_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for Setting8021xCKScheme {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for Setting8021xCKScheme {
@@ -3554,7 +3555,8 @@ impl From<Setting8021xCKScheme> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingCompareFlags")]
 pub enum SettingCompareFlags {
@@ -3576,7 +3578,7 @@ pub enum SettingCompareFlags {
     DiffResultNoDefault,
     #[doc(alias = "NM_SETTING_COMPARE_FLAG_IGNORE_TIMESTAMP")]
     IgnoreTimestamp,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3585,63 +3587,59 @@ impl IntoGlib for SettingCompareFlags {
     type GlibType = ffi::NMSettingCompareFlags;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingCompareFlags {
-        match self {
+fn into_glib(self) -> ffi::NMSettingCompareFlags {
+match self {
             Self::Exact => ffi::NM_SETTING_COMPARE_FLAG_EXACT,
             Self::Fuzzy => ffi::NM_SETTING_COMPARE_FLAG_FUZZY,
             Self::IgnoreId => ffi::NM_SETTING_COMPARE_FLAG_IGNORE_ID,
             Self::IgnoreSecrets => ffi::NM_SETTING_COMPARE_FLAG_IGNORE_SECRETS,
-            Self::IgnoreAgentOwnedSecrets => {
-                ffi::NM_SETTING_COMPARE_FLAG_IGNORE_AGENT_OWNED_SECRETS
-            }
+            Self::IgnoreAgentOwnedSecrets => ffi::NM_SETTING_COMPARE_FLAG_IGNORE_AGENT_OWNED_SECRETS,
             Self::IgnoreNotSavedSecrets => ffi::NM_SETTING_COMPARE_FLAG_IGNORE_NOT_SAVED_SECRETS,
             Self::DiffResultWithDefault => ffi::NM_SETTING_COMPARE_FLAG_DIFF_RESULT_WITH_DEFAULT,
             Self::DiffResultNoDefault => ffi::NM_SETTING_COMPARE_FLAG_DIFF_RESULT_NO_DEFAULT,
             Self::IgnoreTimestamp => ffi::NM_SETTING_COMPARE_FLAG_IGNORE_TIMESTAMP,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingCompareFlags> for SettingCompareFlags {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingCompareFlags) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingCompareFlags) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_COMPARE_FLAG_EXACT => Self::Exact,
             ffi::NM_SETTING_COMPARE_FLAG_FUZZY => Self::Fuzzy,
             ffi::NM_SETTING_COMPARE_FLAG_IGNORE_ID => Self::IgnoreId,
             ffi::NM_SETTING_COMPARE_FLAG_IGNORE_SECRETS => Self::IgnoreSecrets,
-            ffi::NM_SETTING_COMPARE_FLAG_IGNORE_AGENT_OWNED_SECRETS => {
-                Self::IgnoreAgentOwnedSecrets
-            }
+            ffi::NM_SETTING_COMPARE_FLAG_IGNORE_AGENT_OWNED_SECRETS => Self::IgnoreAgentOwnedSecrets,
             ffi::NM_SETTING_COMPARE_FLAG_IGNORE_NOT_SAVED_SECRETS => Self::IgnoreNotSavedSecrets,
             ffi::NM_SETTING_COMPARE_FLAG_DIFF_RESULT_WITH_DEFAULT => Self::DiffResultWithDefault,
             ffi::NM_SETTING_COMPARE_FLAG_DIFF_RESULT_NO_DEFAULT => Self::DiffResultNoDefault,
             ffi::NM_SETTING_COMPARE_FLAG_IGNORE_TIMESTAMP => Self::IgnoreTimestamp,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for SettingCompareFlags {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_compare_flags_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_compare_flags_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_compare_flags_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for SettingCompareFlags {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for SettingCompareFlags {
@@ -3685,7 +3683,8 @@ impl From<SettingCompareFlags> for glib::Value {
 #[cfg_attr(feature = "v1_46", deprecated = "Since 1.46")]
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingConnectionAutoconnectSlaves")]
 pub enum SettingConnectionAutoconnectSlaves {
@@ -3695,7 +3694,7 @@ pub enum SettingConnectionAutoconnectSlaves {
     No,
     #[doc(alias = "NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_YES")]
     Yes,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3707,14 +3706,14 @@ impl IntoGlib for SettingConnectionAutoconnectSlaves {
     type GlibType = ffi::NMSettingConnectionAutoconnectSlaves;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingConnectionAutoconnectSlaves {
-        match self {
+fn into_glib(self) -> ffi::NMSettingConnectionAutoconnectSlaves {
+match self {
             Self::Default => ffi::NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_DEFAULT,
             Self::No => ffi::NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_NO,
             Self::Yes => ffi::NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_YES,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -3723,40 +3722,40 @@ impl IntoGlib for SettingConnectionAutoconnectSlaves {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingConnectionAutoconnectSlaves> for SettingConnectionAutoconnectSlaves {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingConnectionAutoconnectSlaves) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingConnectionAutoconnectSlaves) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_DEFAULT => Self::Default,
             ffi::NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_NO => Self::No,
             ffi::NM_SETTING_CONNECTION_AUTOCONNECT_SLAVES_YES => Self::Yes,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[allow(deprecated)]
 impl StaticType for SettingConnectionAutoconnectSlaves {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_connection_autoconnect_slaves_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_connection_autoconnect_slaves_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_connection_autoconnect_slaves_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[allow(deprecated)]
 impl glib::HasParamSpec for SettingConnectionAutoconnectSlaves {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -3811,7 +3810,8 @@ impl From<SettingConnectionAutoconnectSlaves> for glib::Value {
 
 #[cfg(feature = "v1_34")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingConnectionDnsOverTls")]
 pub enum SettingConnectionDnsOverTls {
@@ -3823,7 +3823,7 @@ pub enum SettingConnectionDnsOverTls {
     Opportunistic,
     #[doc(alias = "NM_SETTING_CONNECTION_DNS_OVER_TLS_YES")]
     Yes,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3834,15 +3834,15 @@ impl IntoGlib for SettingConnectionDnsOverTls {
     type GlibType = ffi::NMSettingConnectionDnsOverTls;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingConnectionDnsOverTls {
-        match self {
+fn into_glib(self) -> ffi::NMSettingConnectionDnsOverTls {
+match self {
             Self::Default => ffi::NM_SETTING_CONNECTION_DNS_OVER_TLS_DEFAULT,
             Self::No => ffi::NM_SETTING_CONNECTION_DNS_OVER_TLS_NO,
             Self::Opportunistic => ffi::NM_SETTING_CONNECTION_DNS_OVER_TLS_OPPORTUNISTIC,
             Self::Yes => ffi::NM_SETTING_CONNECTION_DNS_OVER_TLS_YES,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_34")]
@@ -3850,39 +3850,39 @@ impl IntoGlib for SettingConnectionDnsOverTls {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingConnectionDnsOverTls> for SettingConnectionDnsOverTls {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingConnectionDnsOverTls) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingConnectionDnsOverTls) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_CONNECTION_DNS_OVER_TLS_DEFAULT => Self::Default,
             ffi::NM_SETTING_CONNECTION_DNS_OVER_TLS_NO => Self::No,
             ffi::NM_SETTING_CONNECTION_DNS_OVER_TLS_OPPORTUNISTIC => Self::Opportunistic,
             ffi::NM_SETTING_CONNECTION_DNS_OVER_TLS_YES => Self::Yes,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_34")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
 impl StaticType for SettingConnectionDnsOverTls {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_connection_dns_over_tls_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_connection_dns_over_tls_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_connection_dns_over_tls_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_34")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
 impl glib::HasParamSpec for SettingConnectionDnsOverTls {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_34")]
@@ -3933,7 +3933,8 @@ impl From<SettingConnectionDnsOverTls> for glib::Value {
 
 #[cfg(feature = "v1_48")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingConnectionDownOnPoweroff")]
 pub enum SettingConnectionDownOnPoweroff {
@@ -3943,7 +3944,7 @@ pub enum SettingConnectionDownOnPoweroff {
     No,
     #[doc(alias = "NM_SETTING_CONNECTION_DOWN_ON_POWEROFF_YES")]
     Yes,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -3954,14 +3955,14 @@ impl IntoGlib for SettingConnectionDownOnPoweroff {
     type GlibType = ffi::NMSettingConnectionDownOnPoweroff;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingConnectionDownOnPoweroff {
-        match self {
+fn into_glib(self) -> ffi::NMSettingConnectionDownOnPoweroff {
+match self {
             Self::Default => ffi::NM_SETTING_CONNECTION_DOWN_ON_POWEROFF_DEFAULT,
             Self::No => ffi::NM_SETTING_CONNECTION_DOWN_ON_POWEROFF_NO,
             Self::Yes => ffi::NM_SETTING_CONNECTION_DOWN_ON_POWEROFF_YES,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_48")]
@@ -3969,38 +3970,38 @@ impl IntoGlib for SettingConnectionDownOnPoweroff {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingConnectionDownOnPoweroff> for SettingConnectionDownOnPoweroff {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingConnectionDownOnPoweroff) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingConnectionDownOnPoweroff) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_CONNECTION_DOWN_ON_POWEROFF_DEFAULT => Self::Default,
             ffi::NM_SETTING_CONNECTION_DOWN_ON_POWEROFF_NO => Self::No,
             ffi::NM_SETTING_CONNECTION_DOWN_ON_POWEROFF_YES => Self::Yes,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_48")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
 impl StaticType for SettingConnectionDownOnPoweroff {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_connection_down_on_poweroff_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_connection_down_on_poweroff_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_connection_down_on_poweroff_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_48")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
 impl glib::HasParamSpec for SettingConnectionDownOnPoweroff {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_48")]
@@ -4051,7 +4052,8 @@ impl From<SettingConnectionDownOnPoweroff> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingConnectionLldp")]
 pub enum SettingConnectionLldp {
@@ -4061,7 +4063,7 @@ pub enum SettingConnectionLldp {
     Disable,
     #[doc(alias = "NM_SETTING_CONNECTION_LLDP_ENABLE_RX")]
     EnableRx,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -4072,14 +4074,14 @@ impl IntoGlib for SettingConnectionLldp {
     type GlibType = ffi::NMSettingConnectionLldp;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingConnectionLldp {
-        match self {
+fn into_glib(self) -> ffi::NMSettingConnectionLldp {
+match self {
             Self::Default => ffi::NM_SETTING_CONNECTION_LLDP_DEFAULT,
             Self::Disable => ffi::NM_SETTING_CONNECTION_LLDP_DISABLE,
             Self::EnableRx => ffi::NM_SETTING_CONNECTION_LLDP_ENABLE_RX,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -4087,38 +4089,38 @@ impl IntoGlib for SettingConnectionLldp {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingConnectionLldp> for SettingConnectionLldp {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingConnectionLldp) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingConnectionLldp) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_CONNECTION_LLDP_DEFAULT => Self::Default,
             ffi::NM_SETTING_CONNECTION_LLDP_DISABLE => Self::Disable,
             ffi::NM_SETTING_CONNECTION_LLDP_ENABLE_RX => Self::EnableRx,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for SettingConnectionLldp {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_connection_lldp_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_connection_lldp_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_connection_lldp_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for SettingConnectionLldp {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -4169,7 +4171,8 @@ impl From<SettingConnectionLldp> for glib::Value {
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingConnectionLlmnr")]
 pub enum SettingConnectionLlmnr {
@@ -4181,7 +4184,7 @@ pub enum SettingConnectionLlmnr {
     Resolve,
     #[doc(alias = "NM_SETTING_CONNECTION_LLMNR_YES")]
     Yes,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -4192,15 +4195,15 @@ impl IntoGlib for SettingConnectionLlmnr {
     type GlibType = ffi::NMSettingConnectionLlmnr;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingConnectionLlmnr {
-        match self {
+fn into_glib(self) -> ffi::NMSettingConnectionLlmnr {
+match self {
             Self::Default => ffi::NM_SETTING_CONNECTION_LLMNR_DEFAULT,
             Self::No => ffi::NM_SETTING_CONNECTION_LLMNR_NO,
             Self::Resolve => ffi::NM_SETTING_CONNECTION_LLMNR_RESOLVE,
             Self::Yes => ffi::NM_SETTING_CONNECTION_LLMNR_YES,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_14")]
@@ -4208,39 +4211,39 @@ impl IntoGlib for SettingConnectionLlmnr {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingConnectionLlmnr> for SettingConnectionLlmnr {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingConnectionLlmnr) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingConnectionLlmnr) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_CONNECTION_LLMNR_DEFAULT => Self::Default,
             ffi::NM_SETTING_CONNECTION_LLMNR_NO => Self::No,
             ffi::NM_SETTING_CONNECTION_LLMNR_RESOLVE => Self::Resolve,
             ffi::NM_SETTING_CONNECTION_LLMNR_YES => Self::Yes,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl StaticType for SettingConnectionLlmnr {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_connection_llmnr_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_connection_llmnr_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_connection_llmnr_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl glib::HasParamSpec for SettingConnectionLlmnr {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_14")]
@@ -4291,7 +4294,8 @@ impl From<SettingConnectionLlmnr> for glib::Value {
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingConnectionMdns")]
 pub enum SettingConnectionMdns {
@@ -4303,7 +4307,7 @@ pub enum SettingConnectionMdns {
     Resolve,
     #[doc(alias = "NM_SETTING_CONNECTION_MDNS_YES")]
     Yes,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -4314,15 +4318,15 @@ impl IntoGlib for SettingConnectionMdns {
     type GlibType = ffi::NMSettingConnectionMdns;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingConnectionMdns {
-        match self {
+fn into_glib(self) -> ffi::NMSettingConnectionMdns {
+match self {
             Self::Default => ffi::NM_SETTING_CONNECTION_MDNS_DEFAULT,
             Self::No => ffi::NM_SETTING_CONNECTION_MDNS_NO,
             Self::Resolve => ffi::NM_SETTING_CONNECTION_MDNS_RESOLVE,
             Self::Yes => ffi::NM_SETTING_CONNECTION_MDNS_YES,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_12")]
@@ -4330,39 +4334,39 @@ impl IntoGlib for SettingConnectionMdns {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingConnectionMdns> for SettingConnectionMdns {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingConnectionMdns) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingConnectionMdns) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_CONNECTION_MDNS_DEFAULT => Self::Default,
             ffi::NM_SETTING_CONNECTION_MDNS_NO => Self::No,
             ffi::NM_SETTING_CONNECTION_MDNS_RESOLVE => Self::Resolve,
             ffi::NM_SETTING_CONNECTION_MDNS_YES => Self::Yes,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl StaticType for SettingConnectionMdns {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_connection_mdns_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_connection_mdns_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_connection_mdns_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl glib::HasParamSpec for SettingConnectionMdns {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_12")]
@@ -4411,7 +4415,8 @@ impl From<SettingConnectionMdns> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingDiffResult")]
 pub enum SettingDiffResult {
@@ -4425,7 +4430,7 @@ pub enum SettingDiffResult {
     InADefault,
     #[doc(alias = "NM_SETTING_DIFF_RESULT_IN_B_DEFAULT")]
     InBDefault,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -4434,51 +4439,51 @@ impl IntoGlib for SettingDiffResult {
     type GlibType = ffi::NMSettingDiffResult;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingDiffResult {
-        match self {
+fn into_glib(self) -> ffi::NMSettingDiffResult {
+match self {
             Self::Unknown => ffi::NM_SETTING_DIFF_RESULT_UNKNOWN,
             Self::InA => ffi::NM_SETTING_DIFF_RESULT_IN_A,
             Self::InB => ffi::NM_SETTING_DIFF_RESULT_IN_B,
             Self::InADefault => ffi::NM_SETTING_DIFF_RESULT_IN_A_DEFAULT,
             Self::InBDefault => ffi::NM_SETTING_DIFF_RESULT_IN_B_DEFAULT,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingDiffResult> for SettingDiffResult {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingDiffResult) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingDiffResult) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_DIFF_RESULT_UNKNOWN => Self::Unknown,
             ffi::NM_SETTING_DIFF_RESULT_IN_A => Self::InA,
             ffi::NM_SETTING_DIFF_RESULT_IN_B => Self::InB,
             ffi::NM_SETTING_DIFF_RESULT_IN_A_DEFAULT => Self::InADefault,
             ffi::NM_SETTING_DIFF_RESULT_IN_B_DEFAULT => Self::InBDefault,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for SettingDiffResult {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_diff_result_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_diff_result_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_diff_result_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for SettingDiffResult {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for SettingDiffResult {
@@ -4521,7 +4526,8 @@ impl From<SettingDiffResult> for glib::Value {
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingIP4DhcpIpv6OnlyPreferred")]
 pub enum SettingIP4DhcpIpv6OnlyPreferred {
@@ -4531,7 +4537,7 @@ pub enum SettingIP4DhcpIpv6OnlyPreferred {
     No,
     #[doc(alias = "NM_SETTING_IP4_DHCP_IPV6_ONLY_PREFERRED_YES")]
     Yes,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -4542,14 +4548,14 @@ impl IntoGlib for SettingIP4DhcpIpv6OnlyPreferred {
     type GlibType = ffi::NMSettingIP4DhcpIpv6OnlyPreferred;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingIP4DhcpIpv6OnlyPreferred {
-        match self {
+fn into_glib(self) -> ffi::NMSettingIP4DhcpIpv6OnlyPreferred {
+match self {
             Self::Default => ffi::NM_SETTING_IP4_DHCP_IPV6_ONLY_PREFERRED_DEFAULT,
             Self::No => ffi::NM_SETTING_IP4_DHCP_IPV6_ONLY_PREFERRED_NO,
             Self::Yes => ffi::NM_SETTING_IP4_DHCP_IPV6_ONLY_PREFERRED_YES,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_52")]
@@ -4557,38 +4563,38 @@ impl IntoGlib for SettingIP4DhcpIpv6OnlyPreferred {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingIP4DhcpIpv6OnlyPreferred> for SettingIP4DhcpIpv6OnlyPreferred {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingIP4DhcpIpv6OnlyPreferred) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingIP4DhcpIpv6OnlyPreferred) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_IP4_DHCP_IPV6_ONLY_PREFERRED_DEFAULT => Self::Default,
             ffi::NM_SETTING_IP4_DHCP_IPV6_ONLY_PREFERRED_NO => Self::No,
             ffi::NM_SETTING_IP4_DHCP_IPV6_ONLY_PREFERRED_YES => Self::Yes,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 impl StaticType for SettingIP4DhcpIpv6OnlyPreferred {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_ip4_dhcp_ipv6_only_preferred_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_ip4_dhcp_ipv6_only_preferred_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_ip4_dhcp_ipv6_only_preferred_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 impl glib::HasParamSpec for SettingIP4DhcpIpv6OnlyPreferred {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_52")]
@@ -4639,7 +4645,8 @@ impl From<SettingIP4DhcpIpv6OnlyPreferred> for glib::Value {
 
 #[cfg(feature = "v1_40")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingIP4LinkLocal")]
 pub enum SettingIP4LinkLocal {
@@ -4653,7 +4660,7 @@ pub enum SettingIP4LinkLocal {
     Enabled,
     #[doc(alias = "NM_SETTING_IP4_LL_FALLBACK")]
     Fallback,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -4664,16 +4671,16 @@ impl IntoGlib for SettingIP4LinkLocal {
     type GlibType = ffi::NMSettingIP4LinkLocal;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingIP4LinkLocal {
-        match self {
+fn into_glib(self) -> ffi::NMSettingIP4LinkLocal {
+match self {
             Self::Default => ffi::NM_SETTING_IP4_LL_DEFAULT,
             Self::Auto => ffi::NM_SETTING_IP4_LL_AUTO,
             Self::Disabled => ffi::NM_SETTING_IP4_LL_DISABLED,
             Self::Enabled => ffi::NM_SETTING_IP4_LL_ENABLED,
             Self::Fallback => ffi::NM_SETTING_IP4_LL_FALLBACK,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_40")]
@@ -4681,40 +4688,40 @@ impl IntoGlib for SettingIP4LinkLocal {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingIP4LinkLocal> for SettingIP4LinkLocal {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingIP4LinkLocal) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingIP4LinkLocal) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_IP4_LL_DEFAULT => Self::Default,
             ffi::NM_SETTING_IP4_LL_AUTO => Self::Auto,
             ffi::NM_SETTING_IP4_LL_DISABLED => Self::Disabled,
             ffi::NM_SETTING_IP4_LL_ENABLED => Self::Enabled,
             ffi::NM_SETTING_IP4_LL_FALLBACK => Self::Fallback,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_40")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
 impl StaticType for SettingIP4LinkLocal {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_ip4_link_local_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_ip4_link_local_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_ip4_link_local_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_40")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
 impl glib::HasParamSpec for SettingIP4LinkLocal {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_40")]
@@ -4765,7 +4772,8 @@ impl From<SettingIP4LinkLocal> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingIP6ConfigAddrGenMode")]
 pub enum SettingIP6ConfigAddrGenMode {
@@ -4777,7 +4785,7 @@ pub enum SettingIP6ConfigAddrGenMode {
     DefaultOrEui64,
     #[doc(alias = "NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_DEFAULT")]
     Default,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -4788,15 +4796,15 @@ impl IntoGlib for SettingIP6ConfigAddrGenMode {
     type GlibType = ffi::NMSettingIP6ConfigAddrGenMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingIP6ConfigAddrGenMode {
-        match self {
+fn into_glib(self) -> ffi::NMSettingIP6ConfigAddrGenMode {
+match self {
             Self::Eui64 => ffi::NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_EUI64,
             Self::StablePrivacy => ffi::NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_STABLE_PRIVACY,
             Self::DefaultOrEui64 => ffi::NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_DEFAULT_OR_EUI64,
             Self::Default => ffi::NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_DEFAULT,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -4804,39 +4812,39 @@ impl IntoGlib for SettingIP6ConfigAddrGenMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingIP6ConfigAddrGenMode> for SettingIP6ConfigAddrGenMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingIP6ConfigAddrGenMode) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingIP6ConfigAddrGenMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_EUI64 => Self::Eui64,
             ffi::NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_STABLE_PRIVACY => Self::StablePrivacy,
             ffi::NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_DEFAULT_OR_EUI64 => Self::DefaultOrEui64,
             ffi::NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_DEFAULT => Self::Default,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for SettingIP6ConfigAddrGenMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_ip6_config_addr_gen_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_ip6_config_addr_gen_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_ip6_config_addr_gen_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for SettingIP6ConfigAddrGenMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -4885,7 +4893,8 @@ impl From<SettingIP6ConfigAddrGenMode> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingIP6ConfigPrivacy")]
 pub enum SettingIP6ConfigPrivacy {
@@ -4897,7 +4906,7 @@ pub enum SettingIP6ConfigPrivacy {
     PreferPublicAddr,
     #[doc(alias = "NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_TEMP_ADDR")]
     PreferTempAddr,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -4906,49 +4915,49 @@ impl IntoGlib for SettingIP6ConfigPrivacy {
     type GlibType = ffi::NMSettingIP6ConfigPrivacy;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingIP6ConfigPrivacy {
-        match self {
+fn into_glib(self) -> ffi::NMSettingIP6ConfigPrivacy {
+match self {
             Self::Unknown => ffi::NM_SETTING_IP6_CONFIG_PRIVACY_UNKNOWN,
             Self::Disabled => ffi::NM_SETTING_IP6_CONFIG_PRIVACY_DISABLED,
             Self::PreferPublicAddr => ffi::NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_PUBLIC_ADDR,
             Self::PreferTempAddr => ffi::NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_TEMP_ADDR,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingIP6ConfigPrivacy> for SettingIP6ConfigPrivacy {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingIP6ConfigPrivacy) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingIP6ConfigPrivacy) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_IP6_CONFIG_PRIVACY_UNKNOWN => Self::Unknown,
             ffi::NM_SETTING_IP6_CONFIG_PRIVACY_DISABLED => Self::Disabled,
             ffi::NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_PUBLIC_ADDR => Self::PreferPublicAddr,
             ffi::NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_TEMP_ADDR => Self::PreferTempAddr,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for SettingIP6ConfigPrivacy {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_ip6_config_privacy_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_ip6_config_privacy_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_ip6_config_privacy_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for SettingIP6ConfigPrivacy {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for SettingIP6ConfigPrivacy {
@@ -4991,7 +5000,8 @@ impl From<SettingIP6ConfigPrivacy> for glib::Value {
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingIPConfigForwarding")]
 pub enum SettingIPConfigForwarding {
@@ -5003,7 +5013,7 @@ pub enum SettingIPConfigForwarding {
     Yes,
     #[doc(alias = "NM_SETTING_IP_CONFIG_FORWARDING_AUTO")]
     Auto,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5014,15 +5024,15 @@ impl IntoGlib for SettingIPConfigForwarding {
     type GlibType = ffi::NMSettingIPConfigForwarding;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingIPConfigForwarding {
-        match self {
+fn into_glib(self) -> ffi::NMSettingIPConfigForwarding {
+match self {
             Self::Default => ffi::NM_SETTING_IP_CONFIG_FORWARDING_DEFAULT,
             Self::No => ffi::NM_SETTING_IP_CONFIG_FORWARDING_NO,
             Self::Yes => ffi::NM_SETTING_IP_CONFIG_FORWARDING_YES,
             Self::Auto => ffi::NM_SETTING_IP_CONFIG_FORWARDING_AUTO,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_54")]
@@ -5030,39 +5040,39 @@ impl IntoGlib for SettingIPConfigForwarding {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingIPConfigForwarding> for SettingIPConfigForwarding {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingIPConfigForwarding) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingIPConfigForwarding) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_IP_CONFIG_FORWARDING_DEFAULT => Self::Default,
             ffi::NM_SETTING_IP_CONFIG_FORWARDING_NO => Self::No,
             ffi::NM_SETTING_IP_CONFIG_FORWARDING_YES => Self::Yes,
             ffi::NM_SETTING_IP_CONFIG_FORWARDING_AUTO => Self::Auto,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
 impl StaticType for SettingIPConfigForwarding {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_ip_config_forwarding_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_ip_config_forwarding_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_ip_config_forwarding_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
 impl glib::HasParamSpec for SettingIPConfigForwarding {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_54")]
@@ -5113,7 +5123,8 @@ impl From<SettingIPConfigForwarding> for glib::Value {
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingIPConfigRoutedDns")]
 pub enum SettingIPConfigRoutedDns {
@@ -5123,7 +5134,7 @@ pub enum SettingIPConfigRoutedDns {
     No,
     #[doc(alias = "NM_SETTING_IP_CONFIG_ROUTED_DNS_YES")]
     Yes,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5134,14 +5145,14 @@ impl IntoGlib for SettingIPConfigRoutedDns {
     type GlibType = ffi::NMSettingIPConfigRoutedDns;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingIPConfigRoutedDns {
-        match self {
+fn into_glib(self) -> ffi::NMSettingIPConfigRoutedDns {
+match self {
             Self::Default => ffi::NM_SETTING_IP_CONFIG_ROUTED_DNS_DEFAULT,
             Self::No => ffi::NM_SETTING_IP_CONFIG_ROUTED_DNS_NO,
             Self::Yes => ffi::NM_SETTING_IP_CONFIG_ROUTED_DNS_YES,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_52")]
@@ -5149,38 +5160,38 @@ impl IntoGlib for SettingIPConfigRoutedDns {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingIPConfigRoutedDns> for SettingIPConfigRoutedDns {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingIPConfigRoutedDns) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingIPConfigRoutedDns) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_IP_CONFIG_ROUTED_DNS_DEFAULT => Self::Default,
             ffi::NM_SETTING_IP_CONFIG_ROUTED_DNS_NO => Self::No,
             ffi::NM_SETTING_IP_CONFIG_ROUTED_DNS_YES => Self::Yes,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 impl StaticType for SettingIPConfigRoutedDns {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_ip_config_routed_dns_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_ip_config_routed_dns_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_ip_config_routed_dns_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 impl glib::HasParamSpec for SettingIPConfigRoutedDns {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_52")]
@@ -5231,7 +5242,8 @@ impl From<SettingIPConfigRoutedDns> for glib::Value {
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingIpvlanMode")]
 pub enum SettingIpvlanMode {
@@ -5243,7 +5255,7 @@ pub enum SettingIpvlanMode {
     L3,
     #[doc(alias = "NM_SETTING_IPVLAN_MODE_L3S")]
     L3s,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5254,15 +5266,15 @@ impl IntoGlib for SettingIpvlanMode {
     type GlibType = ffi::NMSettingIpvlanMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingIpvlanMode {
-        match self {
+fn into_glib(self) -> ffi::NMSettingIpvlanMode {
+match self {
             Self::Unknown => ffi::NM_SETTING_IPVLAN_MODE_UNKNOWN,
             Self::L2 => ffi::NM_SETTING_IPVLAN_MODE_L2,
             Self::L3 => ffi::NM_SETTING_IPVLAN_MODE_L3,
             Self::L3s => ffi::NM_SETTING_IPVLAN_MODE_L3S,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_52")]
@@ -5270,39 +5282,39 @@ impl IntoGlib for SettingIpvlanMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingIpvlanMode> for SettingIpvlanMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingIpvlanMode) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingIpvlanMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_IPVLAN_MODE_UNKNOWN => Self::Unknown,
             ffi::NM_SETTING_IPVLAN_MODE_L2 => Self::L2,
             ffi::NM_SETTING_IPVLAN_MODE_L3 => Self::L3,
             ffi::NM_SETTING_IPVLAN_MODE_L3S => Self::L3s,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 impl StaticType for SettingIpvlanMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_ipvlan_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_ipvlan_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_ipvlan_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 impl glib::HasParamSpec for SettingIpvlanMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_52")]
@@ -5353,7 +5365,8 @@ impl From<SettingIpvlanMode> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingMacRandomization")]
 pub enum SettingMacRandomization {
@@ -5363,7 +5376,7 @@ pub enum SettingMacRandomization {
     Never,
     #[doc(alias = "NM_SETTING_MAC_RANDOMIZATION_ALWAYS")]
     Always,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5374,14 +5387,14 @@ impl IntoGlib for SettingMacRandomization {
     type GlibType = ffi::NMSettingMacRandomization;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingMacRandomization {
-        match self {
+fn into_glib(self) -> ffi::NMSettingMacRandomization {
+match self {
             Self::Default => ffi::NM_SETTING_MAC_RANDOMIZATION_DEFAULT,
             Self::Never => ffi::NM_SETTING_MAC_RANDOMIZATION_NEVER,
             Self::Always => ffi::NM_SETTING_MAC_RANDOMIZATION_ALWAYS,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -5389,38 +5402,38 @@ impl IntoGlib for SettingMacRandomization {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingMacRandomization> for SettingMacRandomization {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingMacRandomization) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingMacRandomization) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_MAC_RANDOMIZATION_DEFAULT => Self::Default,
             ffi::NM_SETTING_MAC_RANDOMIZATION_NEVER => Self::Never,
             ffi::NM_SETTING_MAC_RANDOMIZATION_ALWAYS => Self::Always,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for SettingMacRandomization {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_mac_randomization_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_mac_randomization_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_mac_randomization_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for SettingMacRandomization {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -5471,7 +5484,8 @@ impl From<SettingMacRandomization> for glib::Value {
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingMacsecMode")]
 pub enum SettingMacsecMode {
@@ -5479,7 +5493,7 @@ pub enum SettingMacsecMode {
     Psk,
     #[doc(alias = "NM_SETTING_MACSEC_MODE_EAP")]
     Eap,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5490,13 +5504,13 @@ impl IntoGlib for SettingMacsecMode {
     type GlibType = ffi::NMSettingMacsecMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingMacsecMode {
-        match self {
+fn into_glib(self) -> ffi::NMSettingMacsecMode {
+match self {
             Self::Psk => ffi::NM_SETTING_MACSEC_MODE_PSK,
             Self::Eap => ffi::NM_SETTING_MACSEC_MODE_EAP,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_6")]
@@ -5504,37 +5518,37 @@ impl IntoGlib for SettingMacsecMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingMacsecMode> for SettingMacsecMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingMacsecMode) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingMacsecMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_MACSEC_MODE_PSK => Self::Psk,
             ffi::NM_SETTING_MACSEC_MODE_EAP => Self::Eap,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 impl StaticType for SettingMacsecMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_macsec_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_macsec_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_macsec_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 impl glib::HasParamSpec for SettingMacsecMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_6")]
@@ -5585,7 +5599,8 @@ impl From<SettingMacsecMode> for glib::Value {
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingMacsecOffload")]
 pub enum SettingMacsecOffload {
@@ -5597,7 +5612,7 @@ pub enum SettingMacsecOffload {
     Phy,
     #[doc(alias = "NM_SETTING_MACSEC_OFFLOAD_MAC")]
     Mac,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5608,15 +5623,15 @@ impl IntoGlib for SettingMacsecOffload {
     type GlibType = ffi::NMSettingMacsecOffload;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingMacsecOffload {
-        match self {
+fn into_glib(self) -> ffi::NMSettingMacsecOffload {
+match self {
             Self::Default => ffi::NM_SETTING_MACSEC_OFFLOAD_DEFAULT,
             Self::Off => ffi::NM_SETTING_MACSEC_OFFLOAD_OFF,
             Self::Phy => ffi::NM_SETTING_MACSEC_OFFLOAD_PHY,
             Self::Mac => ffi::NM_SETTING_MACSEC_OFFLOAD_MAC,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_46")]
@@ -5624,39 +5639,39 @@ impl IntoGlib for SettingMacsecOffload {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingMacsecOffload> for SettingMacsecOffload {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingMacsecOffload) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingMacsecOffload) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_MACSEC_OFFLOAD_DEFAULT => Self::Default,
             ffi::NM_SETTING_MACSEC_OFFLOAD_OFF => Self::Off,
             ffi::NM_SETTING_MACSEC_OFFLOAD_PHY => Self::Phy,
             ffi::NM_SETTING_MACSEC_OFFLOAD_MAC => Self::Mac,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 impl StaticType for SettingMacsecOffload {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_macsec_offload_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_macsec_offload_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_macsec_offload_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 impl glib::HasParamSpec for SettingMacsecOffload {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_46")]
@@ -5707,7 +5722,8 @@ impl From<SettingMacsecOffload> for glib::Value {
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingMacsecValidation")]
 pub enum SettingMacsecValidation {
@@ -5717,7 +5733,7 @@ pub enum SettingMacsecValidation {
     Check,
     #[doc(alias = "NM_SETTING_MACSEC_VALIDATION_STRICT")]
     Strict,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5728,14 +5744,14 @@ impl IntoGlib for SettingMacsecValidation {
     type GlibType = ffi::NMSettingMacsecValidation;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingMacsecValidation {
-        match self {
+fn into_glib(self) -> ffi::NMSettingMacsecValidation {
+match self {
             Self::Disable => ffi::NM_SETTING_MACSEC_VALIDATION_DISABLE,
             Self::Check => ffi::NM_SETTING_MACSEC_VALIDATION_CHECK,
             Self::Strict => ffi::NM_SETTING_MACSEC_VALIDATION_STRICT,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_6")]
@@ -5743,38 +5759,38 @@ impl IntoGlib for SettingMacsecValidation {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingMacsecValidation> for SettingMacsecValidation {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingMacsecValidation) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingMacsecValidation) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_MACSEC_VALIDATION_DISABLE => Self::Disable,
             ffi::NM_SETTING_MACSEC_VALIDATION_CHECK => Self::Check,
             ffi::NM_SETTING_MACSEC_VALIDATION_STRICT => Self::Strict,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 impl StaticType for SettingMacsecValidation {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_macsec_validation_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_macsec_validation_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_macsec_validation_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 impl glib::HasParamSpec for SettingMacsecValidation {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_6")]
@@ -5825,7 +5841,8 @@ impl From<SettingMacsecValidation> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingMacvlanMode")]
 pub enum SettingMacvlanMode {
@@ -5841,7 +5858,7 @@ pub enum SettingMacvlanMode {
     Passthru,
     #[doc(alias = "NM_SETTING_MACVLAN_MODE_SOURCE")]
     Source,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5852,8 +5869,8 @@ impl IntoGlib for SettingMacvlanMode {
     type GlibType = ffi::NMSettingMacvlanMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingMacvlanMode {
-        match self {
+fn into_glib(self) -> ffi::NMSettingMacvlanMode {
+match self {
             Self::Unknown => ffi::NM_SETTING_MACVLAN_MODE_UNKNOWN,
             Self::Vepa => ffi::NM_SETTING_MACVLAN_MODE_VEPA,
             Self::Bridge => ffi::NM_SETTING_MACVLAN_MODE_BRIDGE,
@@ -5861,8 +5878,8 @@ impl IntoGlib for SettingMacvlanMode {
             Self::Passthru => ffi::NM_SETTING_MACVLAN_MODE_PASSTHRU,
             Self::Source => ffi::NM_SETTING_MACVLAN_MODE_SOURCE,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -5870,10 +5887,10 @@ impl IntoGlib for SettingMacvlanMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingMacvlanMode> for SettingMacvlanMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingMacvlanMode) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingMacvlanMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_MACVLAN_MODE_UNKNOWN => Self::Unknown,
             ffi::NM_SETTING_MACVLAN_MODE_VEPA => Self::Vepa,
             ffi::NM_SETTING_MACVLAN_MODE_BRIDGE => Self::Bridge,
@@ -5881,30 +5898,30 @@ impl FromGlib<ffi::NMSettingMacvlanMode> for SettingMacvlanMode {
             ffi::NM_SETTING_MACVLAN_MODE_PASSTHRU => Self::Passthru,
             ffi::NM_SETTING_MACVLAN_MODE_SOURCE => Self::Source,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for SettingMacvlanMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_macvlan_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_macvlan_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_macvlan_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for SettingMacvlanMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -5955,7 +5972,8 @@ impl From<SettingMacvlanMode> for glib::Value {
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingOvsDpdkLscInterrupt")]
 pub enum SettingOvsDpdkLscInterrupt {
@@ -5965,7 +5983,7 @@ pub enum SettingOvsDpdkLscInterrupt {
     Disabled,
     #[doc(alias = "NM_SETTING_OVS_DPDK_LSC_INTERRUPT_ENABLED")]
     Enabled,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -5976,14 +5994,14 @@ impl IntoGlib for SettingOvsDpdkLscInterrupt {
     type GlibType = ffi::NMSettingOvsDpdkLscInterrupt;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingOvsDpdkLscInterrupt {
-        match self {
+fn into_glib(self) -> ffi::NMSettingOvsDpdkLscInterrupt {
+match self {
             Self::Ignore => ffi::NM_SETTING_OVS_DPDK_LSC_INTERRUPT_IGNORE,
             Self::Disabled => ffi::NM_SETTING_OVS_DPDK_LSC_INTERRUPT_DISABLED,
             Self::Enabled => ffi::NM_SETTING_OVS_DPDK_LSC_INTERRUPT_ENABLED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_54")]
@@ -5991,38 +6009,38 @@ impl IntoGlib for SettingOvsDpdkLscInterrupt {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingOvsDpdkLscInterrupt> for SettingOvsDpdkLscInterrupt {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingOvsDpdkLscInterrupt) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingOvsDpdkLscInterrupt) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_OVS_DPDK_LSC_INTERRUPT_IGNORE => Self::Ignore,
             ffi::NM_SETTING_OVS_DPDK_LSC_INTERRUPT_DISABLED => Self::Disabled,
             ffi::NM_SETTING_OVS_DPDK_LSC_INTERRUPT_ENABLED => Self::Enabled,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
 impl StaticType for SettingOvsDpdkLscInterrupt {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_ovs_dpdk_lsc_interrupt_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_ovs_dpdk_lsc_interrupt_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_ovs_dpdk_lsc_interrupt_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
 impl glib::HasParamSpec for SettingOvsDpdkLscInterrupt {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_54")]
@@ -6073,7 +6091,8 @@ impl From<SettingOvsDpdkLscInterrupt> for glib::Value {
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingProxyMethod")]
 pub enum SettingProxyMethod {
@@ -6081,7 +6100,7 @@ pub enum SettingProxyMethod {
     None,
     #[doc(alias = "NM_SETTING_PROXY_METHOD_AUTO")]
     Auto,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -6092,13 +6111,13 @@ impl IntoGlib for SettingProxyMethod {
     type GlibType = ffi::NMSettingProxyMethod;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingProxyMethod {
-        match self {
+fn into_glib(self) -> ffi::NMSettingProxyMethod {
+match self {
             Self::None => ffi::NM_SETTING_PROXY_METHOD_NONE,
             Self::Auto => ffi::NM_SETTING_PROXY_METHOD_AUTO,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_6")]
@@ -6106,37 +6125,37 @@ impl IntoGlib for SettingProxyMethod {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingProxyMethod> for SettingProxyMethod {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingProxyMethod) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingProxyMethod) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_PROXY_METHOD_NONE => Self::None,
             ffi::NM_SETTING_PROXY_METHOD_AUTO => Self::Auto,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 impl StaticType for SettingProxyMethod {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_proxy_method_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_proxy_method_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_proxy_method_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 impl glib::HasParamSpec for SettingProxyMethod {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_6")]
@@ -6185,7 +6204,8 @@ impl From<SettingProxyMethod> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingSerialParity")]
 pub enum SettingSerialParity {
@@ -6195,7 +6215,7 @@ pub enum SettingSerialParity {
     Even,
     #[doc(alias = "NM_SETTING_SERIAL_PARITY_ODD")]
     Odd,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -6204,47 +6224,47 @@ impl IntoGlib for SettingSerialParity {
     type GlibType = ffi::NMSettingSerialParity;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingSerialParity {
-        match self {
+fn into_glib(self) -> ffi::NMSettingSerialParity {
+match self {
             Self::None => ffi::NM_SETTING_SERIAL_PARITY_NONE,
             Self::Even => ffi::NM_SETTING_SERIAL_PARITY_EVEN,
             Self::Odd => ffi::NM_SETTING_SERIAL_PARITY_ODD,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingSerialParity> for SettingSerialParity {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingSerialParity) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingSerialParity) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_SERIAL_PARITY_NONE => Self::None,
             ffi::NM_SETTING_SERIAL_PARITY_EVEN => Self::Even,
             ffi::NM_SETTING_SERIAL_PARITY_ODD => Self::Odd,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for SettingSerialParity {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_serial_parity_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_serial_parity_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_serial_parity_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for SettingSerialParity {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for SettingSerialParity {
@@ -6287,7 +6307,8 @@ impl From<SettingSerialParity> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingTunMode")]
 pub enum SettingTunMode {
@@ -6297,7 +6318,7 @@ pub enum SettingTunMode {
     Tun,
     #[doc(alias = "NM_SETTING_TUN_MODE_TAP")]
     Tap,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -6308,14 +6329,14 @@ impl IntoGlib for SettingTunMode {
     type GlibType = ffi::NMSettingTunMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingTunMode {
-        match self {
+fn into_glib(self) -> ffi::NMSettingTunMode {
+match self {
             Self::Unknown => ffi::NM_SETTING_TUN_MODE_UNKNOWN,
             Self::Tun => ffi::NM_SETTING_TUN_MODE_TUN,
             Self::Tap => ffi::NM_SETTING_TUN_MODE_TAP,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -6323,38 +6344,38 @@ impl IntoGlib for SettingTunMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingTunMode> for SettingTunMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingTunMode) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingTunMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_TUN_MODE_UNKNOWN => Self::Unknown,
             ffi::NM_SETTING_TUN_MODE_TUN => Self::Tun,
             ffi::NM_SETTING_TUN_MODE_TAP => Self::Tap,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for SettingTunMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_tun_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_tun_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_tun_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for SettingTunMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -6405,7 +6426,8 @@ impl From<SettingTunMode> for glib::Value {
 
 #[cfg(feature = "v1_50")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingWirelessChannelWidth")]
 pub enum SettingWirelessChannelWidth {
@@ -6417,7 +6439,7 @@ pub enum SettingWirelessChannelWidth {
     _40mhz,
     #[doc(alias = "NM_SETTING_WIRELESS_CHANNEL_WIDTH_80MHZ")]
     _80mhz,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -6428,15 +6450,15 @@ impl IntoGlib for SettingWirelessChannelWidth {
     type GlibType = ffi::NMSettingWirelessChannelWidth;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingWirelessChannelWidth {
-        match self {
+fn into_glib(self) -> ffi::NMSettingWirelessChannelWidth {
+match self {
             Self::Auto => ffi::NM_SETTING_WIRELESS_CHANNEL_WIDTH_AUTO,
             Self::_20mhz => ffi::NM_SETTING_WIRELESS_CHANNEL_WIDTH_20MHZ,
             Self::_40mhz => ffi::NM_SETTING_WIRELESS_CHANNEL_WIDTH_40MHZ,
             Self::_80mhz => ffi::NM_SETTING_WIRELESS_CHANNEL_WIDTH_80MHZ,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_50")]
@@ -6444,39 +6466,39 @@ impl IntoGlib for SettingWirelessChannelWidth {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingWirelessChannelWidth> for SettingWirelessChannelWidth {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingWirelessChannelWidth) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingWirelessChannelWidth) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_WIRELESS_CHANNEL_WIDTH_AUTO => Self::Auto,
             ffi::NM_SETTING_WIRELESS_CHANNEL_WIDTH_20MHZ => Self::_20mhz,
             ffi::NM_SETTING_WIRELESS_CHANNEL_WIDTH_40MHZ => Self::_40mhz,
             ffi::NM_SETTING_WIRELESS_CHANNEL_WIDTH_80MHZ => Self::_80mhz,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_50")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
 impl StaticType for SettingWirelessChannelWidth {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_wireless_channel_width_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_wireless_channel_width_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_wireless_channel_width_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_50")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
 impl glib::HasParamSpec for SettingWirelessChannelWidth {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_50")]
@@ -6527,7 +6549,8 @@ impl From<SettingWirelessChannelWidth> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingWirelessPowersave")]
 pub enum SettingWirelessPowersave {
@@ -6539,7 +6562,7 @@ pub enum SettingWirelessPowersave {
     Disable,
     #[doc(alias = "NM_SETTING_WIRELESS_POWERSAVE_ENABLE")]
     Enable,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -6550,15 +6573,15 @@ impl IntoGlib for SettingWirelessPowersave {
     type GlibType = ffi::NMSettingWirelessPowersave;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingWirelessPowersave {
-        match self {
+fn into_glib(self) -> ffi::NMSettingWirelessPowersave {
+match self {
             Self::Default => ffi::NM_SETTING_WIRELESS_POWERSAVE_DEFAULT,
             Self::Ignore => ffi::NM_SETTING_WIRELESS_POWERSAVE_IGNORE,
             Self::Disable => ffi::NM_SETTING_WIRELESS_POWERSAVE_DISABLE,
             Self::Enable => ffi::NM_SETTING_WIRELESS_POWERSAVE_ENABLE,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
@@ -6566,39 +6589,39 @@ impl IntoGlib for SettingWirelessPowersave {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingWirelessPowersave> for SettingWirelessPowersave {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingWirelessPowersave) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingWirelessPowersave) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_WIRELESS_POWERSAVE_DEFAULT => Self::Default,
             ffi::NM_SETTING_WIRELESS_POWERSAVE_IGNORE => Self::Ignore,
             ffi::NM_SETTING_WIRELESS_POWERSAVE_DISABLE => Self::Disable,
             ffi::NM_SETTING_WIRELESS_POWERSAVE_ENABLE => Self::Enable,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for SettingWirelessPowersave {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_wireless_powersave_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_wireless_powersave_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_wireless_powersave_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for SettingWirelessPowersave {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_2")]
@@ -6649,7 +6672,8 @@ impl From<SettingWirelessPowersave> for glib::Value {
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingWirelessSecurityFils")]
 pub enum SettingWirelessSecurityFils {
@@ -6661,7 +6685,7 @@ pub enum SettingWirelessSecurityFils {
     Optional,
     #[doc(alias = "NM_SETTING_WIRELESS_SECURITY_FILS_REQUIRED")]
     Required,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -6672,15 +6696,15 @@ impl IntoGlib for SettingWirelessSecurityFils {
     type GlibType = ffi::NMSettingWirelessSecurityFils;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingWirelessSecurityFils {
-        match self {
+fn into_glib(self) -> ffi::NMSettingWirelessSecurityFils {
+match self {
             Self::Default => ffi::NM_SETTING_WIRELESS_SECURITY_FILS_DEFAULT,
             Self::Disable => ffi::NM_SETTING_WIRELESS_SECURITY_FILS_DISABLE,
             Self::Optional => ffi::NM_SETTING_WIRELESS_SECURITY_FILS_OPTIONAL,
             Self::Required => ffi::NM_SETTING_WIRELESS_SECURITY_FILS_REQUIRED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_12")]
@@ -6688,39 +6712,39 @@ impl IntoGlib for SettingWirelessSecurityFils {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingWirelessSecurityFils> for SettingWirelessSecurityFils {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingWirelessSecurityFils) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingWirelessSecurityFils) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_WIRELESS_SECURITY_FILS_DEFAULT => Self::Default,
             ffi::NM_SETTING_WIRELESS_SECURITY_FILS_DISABLE => Self::Disable,
             ffi::NM_SETTING_WIRELESS_SECURITY_FILS_OPTIONAL => Self::Optional,
             ffi::NM_SETTING_WIRELESS_SECURITY_FILS_REQUIRED => Self::Required,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl StaticType for SettingWirelessSecurityFils {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_wireless_security_fils_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_wireless_security_fils_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_wireless_security_fils_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl glib::HasParamSpec for SettingWirelessSecurityFils {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_12")]
@@ -6771,7 +6795,8 @@ impl From<SettingWirelessSecurityFils> for glib::Value {
 
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingWirelessSecurityPmf")]
 pub enum SettingWirelessSecurityPmf {
@@ -6783,7 +6808,7 @@ pub enum SettingWirelessSecurityPmf {
     Optional,
     #[doc(alias = "NM_SETTING_WIRELESS_SECURITY_PMF_REQUIRED")]
     Required,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -6794,15 +6819,15 @@ impl IntoGlib for SettingWirelessSecurityPmf {
     type GlibType = ffi::NMSettingWirelessSecurityPmf;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingWirelessSecurityPmf {
-        match self {
+fn into_glib(self) -> ffi::NMSettingWirelessSecurityPmf {
+match self {
             Self::Default => ffi::NM_SETTING_WIRELESS_SECURITY_PMF_DEFAULT,
             Self::Disable => ffi::NM_SETTING_WIRELESS_SECURITY_PMF_DISABLE,
             Self::Optional => ffi::NM_SETTING_WIRELESS_SECURITY_PMF_OPTIONAL,
             Self::Required => ffi::NM_SETTING_WIRELESS_SECURITY_PMF_REQUIRED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_10")]
@@ -6810,39 +6835,39 @@ impl IntoGlib for SettingWirelessSecurityPmf {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingWirelessSecurityPmf> for SettingWirelessSecurityPmf {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingWirelessSecurityPmf) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingWirelessSecurityPmf) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTING_WIRELESS_SECURITY_PMF_DEFAULT => Self::Default,
             ffi::NM_SETTING_WIRELESS_SECURITY_PMF_DISABLE => Self::Disable,
             ffi::NM_SETTING_WIRELESS_SECURITY_PMF_OPTIONAL => Self::Optional,
             ffi::NM_SETTING_WIRELESS_SECURITY_PMF_REQUIRED => Self::Required,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
 impl StaticType for SettingWirelessSecurityPmf {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_setting_wireless_security_pmf_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_setting_wireless_security_pmf_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_setting_wireless_security_pmf_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
 impl glib::HasParamSpec for SettingWirelessSecurityPmf {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_10")]
@@ -6891,7 +6916,8 @@ impl From<SettingWirelessSecurityPmf> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSettingsError")]
 pub enum SettingsError {
@@ -6915,7 +6941,7 @@ pub enum SettingsError {
     VersionIdMismatch,
     #[doc(alias = "NM_SETTINGS_ERROR_NOT_SUPPORTED_BY_PLUGIN")]
     NotSupportedByPlugin,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -6924,8 +6950,8 @@ impl IntoGlib for SettingsError {
     type GlibType = ffi::NMSettingsError;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSettingsError {
-        match self {
+fn into_glib(self) -> ffi::NMSettingsError {
+match self {
             Self::Failed => ffi::NM_SETTINGS_ERROR_FAILED,
             Self::PermissionDenied => ffi::NM_SETTINGS_ERROR_PERMISSION_DENIED,
             Self::NotSupported => ffi::NM_SETTINGS_ERROR_NOT_SUPPORTED,
@@ -6937,17 +6963,17 @@ impl IntoGlib for SettingsError {
             Self::VersionIdMismatch => ffi::NM_SETTINGS_ERROR_VERSION_ID_MISMATCH,
             Self::NotSupportedByPlugin => ffi::NM_SETTINGS_ERROR_NOT_SUPPORTED_BY_PLUGIN,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMSettingsError> for SettingsError {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSettingsError) -> Self {
+unsafe fn from_glib(value: ffi::NMSettingsError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SETTINGS_ERROR_FAILED => Self::Failed,
             ffi::NM_SETTINGS_ERROR_PERMISSION_DENIED => Self::PermissionDenied,
             ffi::NM_SETTINGS_ERROR_NOT_SUPPORTED => Self::NotSupported,
@@ -6959,15 +6985,15 @@ impl FromGlib<ffi::NMSettingsError> for SettingsError {
             ffi::NM_SETTINGS_ERROR_VERSION_ID_MISMATCH => Self::VersionIdMismatch,
             ffi::NM_SETTINGS_ERROR_NOT_SUPPORTED_BY_PLUGIN => Self::NotSupportedByPlugin,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for SettingsError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_settings_error_quark()) }
     }
 
@@ -6983,26 +7009,26 @@ impl glib::error::ErrorDomain for SettingsError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for SettingsError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_settings_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_settings_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_settings_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for SettingsError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for SettingsError {
@@ -7045,7 +7071,8 @@ impl From<SettingsError> for glib::Value {
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSriovEswitchEncapMode")]
 pub enum SriovEswitchEncapMode {
@@ -7055,7 +7082,7 @@ pub enum SriovEswitchEncapMode {
     None,
     #[doc(alias = "NM_SRIOV_ESWITCH_ENCAP_MODE_BASIC")]
     Basic,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -7066,14 +7093,14 @@ impl IntoGlib for SriovEswitchEncapMode {
     type GlibType = ffi::NMSriovEswitchEncapMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSriovEswitchEncapMode {
-        match self {
+fn into_glib(self) -> ffi::NMSriovEswitchEncapMode {
+match self {
             Self::Preserve => ffi::NM_SRIOV_ESWITCH_ENCAP_MODE_PRESERVE,
             Self::None => ffi::NM_SRIOV_ESWITCH_ENCAP_MODE_NONE,
             Self::Basic => ffi::NM_SRIOV_ESWITCH_ENCAP_MODE_BASIC,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_46")]
@@ -7081,38 +7108,38 @@ impl IntoGlib for SriovEswitchEncapMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSriovEswitchEncapMode> for SriovEswitchEncapMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSriovEswitchEncapMode) -> Self {
+unsafe fn from_glib(value: ffi::NMSriovEswitchEncapMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SRIOV_ESWITCH_ENCAP_MODE_PRESERVE => Self::Preserve,
             ffi::NM_SRIOV_ESWITCH_ENCAP_MODE_NONE => Self::None,
             ffi::NM_SRIOV_ESWITCH_ENCAP_MODE_BASIC => Self::Basic,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 impl StaticType for SriovEswitchEncapMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_sriov_eswitch_encap_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_sriov_eswitch_encap_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_sriov_eswitch_encap_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 impl glib::HasParamSpec for SriovEswitchEncapMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_46")]
@@ -7163,7 +7190,8 @@ impl From<SriovEswitchEncapMode> for glib::Value {
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSriovEswitchInlineMode")]
 pub enum SriovEswitchInlineMode {
@@ -7177,7 +7205,7 @@ pub enum SriovEswitchInlineMode {
     Network,
     #[doc(alias = "NM_SRIOV_ESWITCH_INLINE_MODE_TRANSPORT")]
     Transport,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -7188,16 +7216,16 @@ impl IntoGlib for SriovEswitchInlineMode {
     type GlibType = ffi::NMSriovEswitchInlineMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSriovEswitchInlineMode {
-        match self {
+fn into_glib(self) -> ffi::NMSriovEswitchInlineMode {
+match self {
             Self::Preserve => ffi::NM_SRIOV_ESWITCH_INLINE_MODE_PRESERVE,
             Self::None => ffi::NM_SRIOV_ESWITCH_INLINE_MODE_NONE,
             Self::Link => ffi::NM_SRIOV_ESWITCH_INLINE_MODE_LINK,
             Self::Network => ffi::NM_SRIOV_ESWITCH_INLINE_MODE_NETWORK,
             Self::Transport => ffi::NM_SRIOV_ESWITCH_INLINE_MODE_TRANSPORT,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_46")]
@@ -7205,40 +7233,40 @@ impl IntoGlib for SriovEswitchInlineMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSriovEswitchInlineMode> for SriovEswitchInlineMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSriovEswitchInlineMode) -> Self {
+unsafe fn from_glib(value: ffi::NMSriovEswitchInlineMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SRIOV_ESWITCH_INLINE_MODE_PRESERVE => Self::Preserve,
             ffi::NM_SRIOV_ESWITCH_INLINE_MODE_NONE => Self::None,
             ffi::NM_SRIOV_ESWITCH_INLINE_MODE_LINK => Self::Link,
             ffi::NM_SRIOV_ESWITCH_INLINE_MODE_NETWORK => Self::Network,
             ffi::NM_SRIOV_ESWITCH_INLINE_MODE_TRANSPORT => Self::Transport,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 impl StaticType for SriovEswitchInlineMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_sriov_eswitch_inline_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_sriov_eswitch_inline_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_sriov_eswitch_inline_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 impl glib::HasParamSpec for SriovEswitchInlineMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_46")]
@@ -7289,7 +7317,8 @@ impl From<SriovEswitchInlineMode> for glib::Value {
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSriovEswitchMode")]
 pub enum SriovEswitchMode {
@@ -7299,7 +7328,7 @@ pub enum SriovEswitchMode {
     Legacy,
     #[doc(alias = "NM_SRIOV_ESWITCH_MODE_SWITCHDEV")]
     Switchdev,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -7310,14 +7339,14 @@ impl IntoGlib for SriovEswitchMode {
     type GlibType = ffi::NMSriovEswitchMode;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSriovEswitchMode {
-        match self {
+fn into_glib(self) -> ffi::NMSriovEswitchMode {
+match self {
             Self::Preserve => ffi::NM_SRIOV_ESWITCH_MODE_PRESERVE,
             Self::Legacy => ffi::NM_SRIOV_ESWITCH_MODE_LEGACY,
             Self::Switchdev => ffi::NM_SRIOV_ESWITCH_MODE_SWITCHDEV,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_46")]
@@ -7325,38 +7354,38 @@ impl IntoGlib for SriovEswitchMode {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSriovEswitchMode> for SriovEswitchMode {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSriovEswitchMode) -> Self {
+unsafe fn from_glib(value: ffi::NMSriovEswitchMode) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SRIOV_ESWITCH_MODE_PRESERVE => Self::Preserve,
             ffi::NM_SRIOV_ESWITCH_MODE_LEGACY => Self::Legacy,
             ffi::NM_SRIOV_ESWITCH_MODE_SWITCHDEV => Self::Switchdev,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 impl StaticType for SriovEswitchMode {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_sriov_eswitch_mode_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_sriov_eswitch_mode_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_sriov_eswitch_mode_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 impl glib::HasParamSpec for SriovEswitchMode {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_46")]
@@ -7407,7 +7436,8 @@ impl From<SriovEswitchMode> for glib::Value {
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSriovPreserveOnDown")]
 pub enum SriovPreserveOnDown {
@@ -7417,7 +7447,7 @@ pub enum SriovPreserveOnDown {
     No,
     #[doc(alias = "NM_SRIOV_PRESERVE_ON_DOWN_YES")]
     Yes,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -7428,14 +7458,14 @@ impl IntoGlib for SriovPreserveOnDown {
     type GlibType = ffi::NMSriovPreserveOnDown;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSriovPreserveOnDown {
-        match self {
+fn into_glib(self) -> ffi::NMSriovPreserveOnDown {
+match self {
             Self::Default => ffi::NM_SRIOV_PRESERVE_ON_DOWN_DEFAULT,
             Self::No => ffi::NM_SRIOV_PRESERVE_ON_DOWN_NO,
             Self::Yes => ffi::NM_SRIOV_PRESERVE_ON_DOWN_YES,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_54")]
@@ -7443,38 +7473,38 @@ impl IntoGlib for SriovPreserveOnDown {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSriovPreserveOnDown> for SriovPreserveOnDown {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSriovPreserveOnDown) -> Self {
+unsafe fn from_glib(value: ffi::NMSriovPreserveOnDown) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SRIOV_PRESERVE_ON_DOWN_DEFAULT => Self::Default,
             ffi::NM_SRIOV_PRESERVE_ON_DOWN_NO => Self::No,
             ffi::NM_SRIOV_PRESERVE_ON_DOWN_YES => Self::Yes,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
 impl StaticType for SriovPreserveOnDown {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_sriov_preserve_on_down_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_sriov_preserve_on_down_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_sriov_preserve_on_down_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
 impl glib::HasParamSpec for SriovPreserveOnDown {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_54")]
@@ -7525,7 +7555,8 @@ impl From<SriovPreserveOnDown> for glib::Value {
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMSriovVFVlanProtocol")]
 pub enum SriovVFVlanProtocol {
@@ -7533,7 +7564,7 @@ pub enum SriovVFVlanProtocol {
     _1q,
     #[doc(alias = "NM_SRIOV_VF_VLAN_PROTOCOL_802_1AD")]
     _1ad,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -7544,13 +7575,13 @@ impl IntoGlib for SriovVFVlanProtocol {
     type GlibType = ffi::NMSriovVFVlanProtocol;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMSriovVFVlanProtocol {
-        match self {
+fn into_glib(self) -> ffi::NMSriovVFVlanProtocol {
+match self {
             Self::_1q => ffi::NM_SRIOV_VF_VLAN_PROTOCOL_802_1Q,
             Self::_1ad => ffi::NM_SRIOV_VF_VLAN_PROTOCOL_802_1AD,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_14")]
@@ -7558,37 +7589,37 @@ impl IntoGlib for SriovVFVlanProtocol {
 #[doc(hidden)]
 impl FromGlib<ffi::NMSriovVFVlanProtocol> for SriovVFVlanProtocol {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMSriovVFVlanProtocol) -> Self {
+unsafe fn from_glib(value: ffi::NMSriovVFVlanProtocol) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_SRIOV_VF_VLAN_PROTOCOL_802_1Q => Self::_1q,
             ffi::NM_SRIOV_VF_VLAN_PROTOCOL_802_1AD => Self::_1ad,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl StaticType for SriovVFVlanProtocol {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_sriov_vf_vlan_protocol_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_sriov_vf_vlan_protocol_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_sriov_vf_vlan_protocol_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl glib::HasParamSpec for SriovVFVlanProtocol {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_14")]
@@ -7637,7 +7668,8 @@ impl From<SriovVFVlanProtocol> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMState")]
 pub enum State {
@@ -7657,7 +7689,7 @@ pub enum State {
     ConnectedSite,
     #[doc(alias = "NM_STATE_CONNECTED_GLOBAL")]
     ConnectedGlobal,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -7666,8 +7698,8 @@ impl IntoGlib for State {
     type GlibType = ffi::NMState;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMState {
-        match self {
+fn into_glib(self) -> ffi::NMState {
+match self {
             Self::Unknown => ffi::NM_STATE_UNKNOWN,
             Self::Asleep => ffi::NM_STATE_ASLEEP,
             Self::Disconnected => ffi::NM_STATE_DISCONNECTED,
@@ -7677,17 +7709,17 @@ impl IntoGlib for State {
             Self::ConnectedSite => ffi::NM_STATE_CONNECTED_SITE,
             Self::ConnectedGlobal => ffi::NM_STATE_CONNECTED_GLOBAL,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMState> for State {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMState) -> Self {
+unsafe fn from_glib(value: ffi::NMState) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_STATE_UNKNOWN => Self::Unknown,
             ffi::NM_STATE_ASLEEP => Self::Asleep,
             ffi::NM_STATE_DISCONNECTED => Self::Disconnected,
@@ -7697,26 +7729,26 @@ impl FromGlib<ffi::NMState> for State {
             ffi::NM_STATE_CONNECTED_SITE => Self::ConnectedSite,
             ffi::NM_STATE_CONNECTED_GLOBAL => Self::ConnectedGlobal,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for State {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_state_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_state_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_state_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for State {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for State {
@@ -7759,7 +7791,8 @@ impl From<State> for glib::Value {
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMTernary")]
 pub enum Ternary {
@@ -7769,7 +7802,7 @@ pub enum Ternary {
     False,
     #[doc(alias = "NM_TERNARY_TRUE")]
     True,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -7780,14 +7813,14 @@ impl IntoGlib for Ternary {
     type GlibType = ffi::NMTernary;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMTernary {
-        match self {
+fn into_glib(self) -> ffi::NMTernary {
+match self {
             Self::Default => ffi::NM_TERNARY_DEFAULT,
             Self::False => ffi::NM_TERNARY_FALSE,
             Self::True => ffi::NM_TERNARY_TRUE,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_14")]
@@ -7795,38 +7828,38 @@ impl IntoGlib for Ternary {
 #[doc(hidden)]
 impl FromGlib<ffi::NMTernary> for Ternary {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMTernary) -> Self {
+unsafe fn from_glib(value: ffi::NMTernary) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_TERNARY_DEFAULT => Self::Default,
             ffi::NM_TERNARY_FALSE => Self::False,
             ffi::NM_TERNARY_TRUE => Self::True,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl StaticType for Ternary {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_ternary_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_ternary_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_ternary_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl glib::HasParamSpec for Ternary {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_14")]
@@ -7875,7 +7908,8 @@ impl From<Ternary> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMUtilsSecurityType")]
 pub enum UtilsSecurityType {
@@ -7903,7 +7937,7 @@ pub enum UtilsSecurityType {
     Owe,
     #[doc(alias = "NMU_SEC_WPA3_SUITE_B_192")]
     Wpa3SuiteB192,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -7912,8 +7946,8 @@ impl IntoGlib for UtilsSecurityType {
     type GlibType = ffi::NMUtilsSecurityType;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMUtilsSecurityType {
-        match self {
+fn into_glib(self) -> ffi::NMUtilsSecurityType {
+match self {
             Self::Invalid => ffi::NMU_SEC_INVALID,
             Self::None => ffi::NMU_SEC_NONE,
             Self::StaticWep => ffi::NMU_SEC_STATIC_WEP,
@@ -7927,17 +7961,17 @@ impl IntoGlib for UtilsSecurityType {
             Self::Owe => ffi::NMU_SEC_OWE,
             Self::Wpa3SuiteB192 => ffi::NMU_SEC_WPA3_SUITE_B_192,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMUtilsSecurityType> for UtilsSecurityType {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMUtilsSecurityType) -> Self {
+unsafe fn from_glib(value: ffi::NMUtilsSecurityType) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NMU_SEC_INVALID => Self::Invalid,
             ffi::NMU_SEC_NONE => Self::None,
             ffi::NMU_SEC_STATIC_WEP => Self::StaticWep,
@@ -7951,26 +7985,26 @@ impl FromGlib<ffi::NMUtilsSecurityType> for UtilsSecurityType {
             ffi::NMU_SEC_OWE => Self::Owe,
             ffi::NMU_SEC_WPA3_SUITE_B_192 => Self::Wpa3SuiteB192,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for UtilsSecurityType {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_utils_security_type_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_utils_security_type_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_utils_security_type_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for UtilsSecurityType {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for UtilsSecurityType {
@@ -8013,7 +8047,8 @@ impl From<UtilsSecurityType> for glib::Value {
 
 #[cfg(feature = "v1_42")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMVersionInfoCapability")]
 pub enum VersionInfoCapability {
@@ -8023,7 +8058,7 @@ pub enum VersionInfoCapability {
     Ip4Forwarding,
     #[doc(alias = "NM_VERSION_INFO_CAPABILITY_SRIOV_PRESERVE_ON_DOWN")]
     SriovPreserveOnDown,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8034,14 +8069,14 @@ impl IntoGlib for VersionInfoCapability {
     type GlibType = ffi::NMVersionInfoCapability;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMVersionInfoCapability {
-        match self {
+fn into_glib(self) -> ffi::NMVersionInfoCapability {
+match self {
             Self::SyncRouteWithTable => ffi::NM_VERSION_INFO_CAPABILITY_SYNC_ROUTE_WITH_TABLE,
             Self::Ip4Forwarding => ffi::NM_VERSION_INFO_CAPABILITY_IP4_FORWARDING,
             Self::SriovPreserveOnDown => ffi::NM_VERSION_INFO_CAPABILITY_SRIOV_PRESERVE_ON_DOWN,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_42")]
@@ -8049,38 +8084,38 @@ impl IntoGlib for VersionInfoCapability {
 #[doc(hidden)]
 impl FromGlib<ffi::NMVersionInfoCapability> for VersionInfoCapability {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMVersionInfoCapability) -> Self {
+unsafe fn from_glib(value: ffi::NMVersionInfoCapability) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_VERSION_INFO_CAPABILITY_SYNC_ROUTE_WITH_TABLE => Self::SyncRouteWithTable,
             ffi::NM_VERSION_INFO_CAPABILITY_IP4_FORWARDING => Self::Ip4Forwarding,
             ffi::NM_VERSION_INFO_CAPABILITY_SRIOV_PRESERVE_ON_DOWN => Self::SriovPreserveOnDown,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 #[cfg(feature = "v1_42")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
 impl StaticType for VersionInfoCapability {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_version_info_capability_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_version_info_capability_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_version_info_capability_get_type()) }
+                }
+            }
 
 #[cfg(feature = "v1_42")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
 impl glib::HasParamSpec for VersionInfoCapability {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 #[cfg(feature = "v1_42")]
@@ -8129,7 +8164,8 @@ impl From<VersionInfoCapability> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMVlanPriorityMap")]
 pub enum VlanPriorityMap {
@@ -8137,7 +8173,7 @@ pub enum VlanPriorityMap {
     IngressMap,
     #[doc(alias = "NM_VLAN_EGRESS_MAP")]
     EgressMap,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8146,45 +8182,45 @@ impl IntoGlib for VlanPriorityMap {
     type GlibType = ffi::NMVlanPriorityMap;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMVlanPriorityMap {
-        match self {
+fn into_glib(self) -> ffi::NMVlanPriorityMap {
+match self {
             Self::IngressMap => ffi::NM_VLAN_INGRESS_MAP,
             Self::EgressMap => ffi::NM_VLAN_EGRESS_MAP,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMVlanPriorityMap> for VlanPriorityMap {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMVlanPriorityMap) -> Self {
+unsafe fn from_glib(value: ffi::NMVlanPriorityMap) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_VLAN_INGRESS_MAP => Self::IngressMap,
             ffi::NM_VLAN_EGRESS_MAP => Self::EgressMap,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for VlanPriorityMap {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_vlan_priority_map_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_vlan_priority_map_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_vlan_priority_map_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for VlanPriorityMap {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for VlanPriorityMap {
@@ -8225,7 +8261,8 @@ impl From<VlanPriorityMap> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMVpnConnectionState")]
 pub enum VpnConnectionState {
@@ -8245,7 +8282,7 @@ pub enum VpnConnectionState {
     Failed,
     #[doc(alias = "NM_VPN_CONNECTION_STATE_DISCONNECTED")]
     Disconnected,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8254,8 +8291,8 @@ impl IntoGlib for VpnConnectionState {
     type GlibType = ffi::NMVpnConnectionState;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMVpnConnectionState {
-        match self {
+fn into_glib(self) -> ffi::NMVpnConnectionState {
+match self {
             Self::Unknown => ffi::NM_VPN_CONNECTION_STATE_UNKNOWN,
             Self::Prepare => ffi::NM_VPN_CONNECTION_STATE_PREPARE,
             Self::NeedAuth => ffi::NM_VPN_CONNECTION_STATE_NEED_AUTH,
@@ -8265,17 +8302,17 @@ impl IntoGlib for VpnConnectionState {
             Self::Failed => ffi::NM_VPN_CONNECTION_STATE_FAILED,
             Self::Disconnected => ffi::NM_VPN_CONNECTION_STATE_DISCONNECTED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMVpnConnectionState> for VpnConnectionState {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMVpnConnectionState) -> Self {
+unsafe fn from_glib(value: ffi::NMVpnConnectionState) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_VPN_CONNECTION_STATE_UNKNOWN => Self::Unknown,
             ffi::NM_VPN_CONNECTION_STATE_PREPARE => Self::Prepare,
             ffi::NM_VPN_CONNECTION_STATE_NEED_AUTH => Self::NeedAuth,
@@ -8285,26 +8322,26 @@ impl FromGlib<ffi::NMVpnConnectionState> for VpnConnectionState {
             ffi::NM_VPN_CONNECTION_STATE_FAILED => Self::Failed,
             ffi::NM_VPN_CONNECTION_STATE_DISCONNECTED => Self::Disconnected,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for VpnConnectionState {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_vpn_connection_state_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_vpn_connection_state_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_vpn_connection_state_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for VpnConnectionState {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for VpnConnectionState {
@@ -8345,7 +8382,8 @@ impl From<VpnConnectionState> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMVpnConnectionStateReason")]
 pub enum VpnConnectionStateReason {
@@ -8373,7 +8411,7 @@ pub enum VpnConnectionStateReason {
     LoginFailed,
     #[doc(alias = "NM_VPN_CONNECTION_STATE_REASON_CONNECTION_REMOVED")]
     ConnectionRemoved,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8382,8 +8420,8 @@ impl IntoGlib for VpnConnectionStateReason {
     type GlibType = ffi::NMVpnConnectionStateReason;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMVpnConnectionStateReason {
-        match self {
+fn into_glib(self) -> ffi::NMVpnConnectionStateReason {
+match self {
             Self::Unknown => ffi::NM_VPN_CONNECTION_STATE_REASON_UNKNOWN,
             Self::None => ffi::NM_VPN_CONNECTION_STATE_REASON_NONE,
             Self::UserDisconnected => ffi::NM_VPN_CONNECTION_STATE_REASON_USER_DISCONNECTED,
@@ -8397,17 +8435,17 @@ impl IntoGlib for VpnConnectionStateReason {
             Self::LoginFailed => ffi::NM_VPN_CONNECTION_STATE_REASON_LOGIN_FAILED,
             Self::ConnectionRemoved => ffi::NM_VPN_CONNECTION_STATE_REASON_CONNECTION_REMOVED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMVpnConnectionStateReason> for VpnConnectionStateReason {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMVpnConnectionStateReason) -> Self {
+unsafe fn from_glib(value: ffi::NMVpnConnectionStateReason) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_VPN_CONNECTION_STATE_REASON_UNKNOWN => Self::Unknown,
             ffi::NM_VPN_CONNECTION_STATE_REASON_NONE => Self::None,
             ffi::NM_VPN_CONNECTION_STATE_REASON_USER_DISCONNECTED => Self::UserDisconnected,
@@ -8421,26 +8459,26 @@ impl FromGlib<ffi::NMVpnConnectionStateReason> for VpnConnectionStateReason {
             ffi::NM_VPN_CONNECTION_STATE_REASON_LOGIN_FAILED => Self::LoginFailed,
             ffi::NM_VPN_CONNECTION_STATE_REASON_CONNECTION_REMOVED => Self::ConnectionRemoved,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for VpnConnectionStateReason {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_vpn_connection_state_reason_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_vpn_connection_state_reason_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_vpn_connection_state_reason_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for VpnConnectionStateReason {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for VpnConnectionStateReason {
@@ -8481,7 +8519,8 @@ impl From<VpnConnectionStateReason> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMVpnPluginError")]
 pub enum VpnPluginError {
@@ -8505,7 +8544,7 @@ pub enum VpnPluginError {
     InvalidConnection,
     #[doc(alias = "NM_VPN_PLUGIN_ERROR_INTERACTIVE_NOT_SUPPORTED")]
     InteractiveNotSupported,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8514,8 +8553,8 @@ impl IntoGlib for VpnPluginError {
     type GlibType = ffi::NMVpnPluginError;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMVpnPluginError {
-        match self {
+fn into_glib(self) -> ffi::NMVpnPluginError {
+match self {
             Self::Failed => ffi::NM_VPN_PLUGIN_ERROR_FAILED,
             Self::StartingInProgress => ffi::NM_VPN_PLUGIN_ERROR_STARTING_IN_PROGRESS,
             Self::AlreadyStarted => ffi::NM_VPN_PLUGIN_ERROR_ALREADY_STARTED,
@@ -8527,17 +8566,17 @@ impl IntoGlib for VpnPluginError {
             Self::InvalidConnection => ffi::NM_VPN_PLUGIN_ERROR_INVALID_CONNECTION,
             Self::InteractiveNotSupported => ffi::NM_VPN_PLUGIN_ERROR_INTERACTIVE_NOT_SUPPORTED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMVpnPluginError> for VpnPluginError {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMVpnPluginError) -> Self {
+unsafe fn from_glib(value: ffi::NMVpnPluginError) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_VPN_PLUGIN_ERROR_FAILED => Self::Failed,
             ffi::NM_VPN_PLUGIN_ERROR_STARTING_IN_PROGRESS => Self::StartingInProgress,
             ffi::NM_VPN_PLUGIN_ERROR_ALREADY_STARTED => Self::AlreadyStarted,
@@ -8549,15 +8588,15 @@ impl FromGlib<ffi::NMVpnPluginError> for VpnPluginError {
             ffi::NM_VPN_PLUGIN_ERROR_INVALID_CONNECTION => Self::InvalidConnection,
             ffi::NM_VPN_PLUGIN_ERROR_INTERACTIVE_NOT_SUPPORTED => Self::InteractiveNotSupported,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl glib::error::ErrorDomain for VpnPluginError {
     #[inline]
     fn domain() -> glib::Quark {
         skip_assert_initialized!();
-
+        
         unsafe { from_glib(ffi::nm_vpn_plugin_error_quark()) }
     }
 
@@ -8573,26 +8612,26 @@ impl glib::error::ErrorDomain for VpnPluginError {
         match unsafe { from_glib(code) } {
             Self::__Unknown(_) => Some(Self::Failed),
             value => Some(value),
-        }
+}
     }
 }
 
 impl StaticType for VpnPluginError {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_vpn_plugin_error_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_vpn_plugin_error_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_vpn_plugin_error_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for VpnPluginError {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for VpnPluginError {
@@ -8633,7 +8672,8 @@ impl From<VpnPluginError> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMVpnPluginFailure")]
 pub enum VpnPluginFailure {
@@ -8643,7 +8683,7 @@ pub enum VpnPluginFailure {
     ConnectFailed,
     #[doc(alias = "NM_VPN_PLUGIN_FAILURE_BAD_IP_CONFIG")]
     BadIpConfig,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8652,47 +8692,47 @@ impl IntoGlib for VpnPluginFailure {
     type GlibType = ffi::NMVpnPluginFailure;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMVpnPluginFailure {
-        match self {
+fn into_glib(self) -> ffi::NMVpnPluginFailure {
+match self {
             Self::LoginFailed => ffi::NM_VPN_PLUGIN_FAILURE_LOGIN_FAILED,
             Self::ConnectFailed => ffi::NM_VPN_PLUGIN_FAILURE_CONNECT_FAILED,
             Self::BadIpConfig => ffi::NM_VPN_PLUGIN_FAILURE_BAD_IP_CONFIG,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMVpnPluginFailure> for VpnPluginFailure {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMVpnPluginFailure) -> Self {
+unsafe fn from_glib(value: ffi::NMVpnPluginFailure) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_VPN_PLUGIN_FAILURE_LOGIN_FAILED => Self::LoginFailed,
             ffi::NM_VPN_PLUGIN_FAILURE_CONNECT_FAILED => Self::ConnectFailed,
             ffi::NM_VPN_PLUGIN_FAILURE_BAD_IP_CONFIG => Self::BadIpConfig,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for VpnPluginFailure {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_vpn_plugin_failure_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_vpn_plugin_failure_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_vpn_plugin_failure_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for VpnPluginFailure {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for VpnPluginFailure {
@@ -8733,7 +8773,8 @@ impl From<VpnPluginFailure> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMVpnServiceState")]
 pub enum VpnServiceState {
@@ -8751,7 +8792,7 @@ pub enum VpnServiceState {
     Stopping,
     #[doc(alias = "NM_VPN_SERVICE_STATE_STOPPED")]
     Stopped,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8760,8 +8801,8 @@ impl IntoGlib for VpnServiceState {
     type GlibType = ffi::NMVpnServiceState;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMVpnServiceState {
-        match self {
+fn into_glib(self) -> ffi::NMVpnServiceState {
+match self {
             Self::Unknown => ffi::NM_VPN_SERVICE_STATE_UNKNOWN,
             Self::Init => ffi::NM_VPN_SERVICE_STATE_INIT,
             Self::Shutdown => ffi::NM_VPN_SERVICE_STATE_SHUTDOWN,
@@ -8770,17 +8811,17 @@ impl IntoGlib for VpnServiceState {
             Self::Stopping => ffi::NM_VPN_SERVICE_STATE_STOPPING,
             Self::Stopped => ffi::NM_VPN_SERVICE_STATE_STOPPED,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMVpnServiceState> for VpnServiceState {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMVpnServiceState) -> Self {
+unsafe fn from_glib(value: ffi::NMVpnServiceState) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_VPN_SERVICE_STATE_UNKNOWN => Self::Unknown,
             ffi::NM_VPN_SERVICE_STATE_INIT => Self::Init,
             ffi::NM_VPN_SERVICE_STATE_SHUTDOWN => Self::Shutdown,
@@ -8789,26 +8830,26 @@ impl FromGlib<ffi::NMVpnServiceState> for VpnServiceState {
             ffi::NM_VPN_SERVICE_STATE_STOPPING => Self::Stopping,
             ffi::NM_VPN_SERVICE_STATE_STOPPED => Self::Stopped,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for VpnServiceState {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_vpn_service_state_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_vpn_service_state_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_vpn_service_state_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for VpnServiceState {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for VpnServiceState {
@@ -8849,7 +8890,8 @@ impl From<VpnServiceState> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMWepKeyType")]
 pub enum WepKeyType {
@@ -8859,7 +8901,7 @@ pub enum WepKeyType {
     Key,
     #[doc(alias = "NM_WEP_KEY_TYPE_PASSPHRASE")]
     Passphrase,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8868,47 +8910,47 @@ impl IntoGlib for WepKeyType {
     type GlibType = ffi::NMWepKeyType;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMWepKeyType {
-        match self {
+fn into_glib(self) -> ffi::NMWepKeyType {
+match self {
             Self::Unknown => ffi::NM_WEP_KEY_TYPE_UNKNOWN,
             Self::Key => ffi::NM_WEP_KEY_TYPE_KEY,
             Self::Passphrase => ffi::NM_WEP_KEY_TYPE_PASSPHRASE,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMWepKeyType> for WepKeyType {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMWepKeyType) -> Self {
+unsafe fn from_glib(value: ffi::NMWepKeyType) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_WEP_KEY_TYPE_UNKNOWN => Self::Unknown,
             ffi::NM_WEP_KEY_TYPE_KEY => Self::Key,
             ffi::NM_WEP_KEY_TYPE_PASSPHRASE => Self::Passphrase,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for WepKeyType {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_wep_key_type_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_wep_key_type_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_wep_key_type_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for WepKeyType {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for WepKeyType {
@@ -8949,7 +8991,8 @@ impl From<WepKeyType> for glib::Value {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Clone, Copy)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy)]
 #[non_exhaustive]
 #[doc(alias = "NMWimaxNspNetworkType")]
 pub enum WimaxNspNetworkType {
@@ -8961,7 +9004,7 @@ pub enum WimaxNspNetworkType {
     Partner,
     #[doc(alias = "NM_WIMAX_NSP_NETWORK_TYPE_ROAMING_PARTNER")]
     RoamingPartner,
-    #[doc(hidden)]
+#[doc(hidden)]
     __Unknown(i32),
 }
 
@@ -8970,49 +9013,49 @@ impl IntoGlib for WimaxNspNetworkType {
     type GlibType = ffi::NMWimaxNspNetworkType;
 
     #[inline]
-    fn into_glib(self) -> ffi::NMWimaxNspNetworkType {
-        match self {
+fn into_glib(self) -> ffi::NMWimaxNspNetworkType {
+match self {
             Self::Unknown => ffi::NM_WIMAX_NSP_NETWORK_TYPE_UNKNOWN,
             Self::Home => ffi::NM_WIMAX_NSP_NETWORK_TYPE_HOME,
             Self::Partner => ffi::NM_WIMAX_NSP_NETWORK_TYPE_PARTNER,
             Self::RoamingPartner => ffi::NM_WIMAX_NSP_NETWORK_TYPE_ROAMING_PARTNER,
             Self::__Unknown(value) => value,
-        }
-    }
+}
+}
 }
 
 #[doc(hidden)]
 impl FromGlib<ffi::NMWimaxNspNetworkType> for WimaxNspNetworkType {
     #[inline]
-    unsafe fn from_glib(value: ffi::NMWimaxNspNetworkType) -> Self {
+unsafe fn from_glib(value: ffi::NMWimaxNspNetworkType) -> Self {
         skip_assert_initialized!();
-
-        match value {
+        
+match value {
             ffi::NM_WIMAX_NSP_NETWORK_TYPE_UNKNOWN => Self::Unknown,
             ffi::NM_WIMAX_NSP_NETWORK_TYPE_HOME => Self::Home,
             ffi::NM_WIMAX_NSP_NETWORK_TYPE_PARTNER => Self::Partner,
             ffi::NM_WIMAX_NSP_NETWORK_TYPE_ROAMING_PARTNER => Self::RoamingPartner,
             value => Self::__Unknown(value),
-        }
-    }
+}
+}
 }
 
 impl StaticType for WimaxNspNetworkType {
-    #[inline]
+                #[inline]
     #[doc(alias = "nm_wimax_nsp_network_type_get_type")]
-    fn static_type() -> glib::Type {
-        unsafe { from_glib(ffi::nm_wimax_nsp_network_type_get_type()) }
-    }
-}
+   fn static_type() -> glib::Type {
+                    unsafe { from_glib(ffi::nm_wimax_nsp_network_type_get_type()) }
+                }
+            }
 
 impl glib::HasParamSpec for WimaxNspNetworkType {
-    type ParamSpec = glib::ParamSpecEnum;
-    type SetValue = Self;
-    type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
-
-    fn param_spec_builder() -> Self::BuilderFn {
-        Self::ParamSpec::builder_with_default
-    }
+                type ParamSpec = glib::ParamSpecEnum;
+                type SetValue = Self;
+                type BuilderFn = fn(&str, Self) -> glib::ParamSpecEnumBuilder<Self>;
+    
+                fn param_spec_builder() -> Self::BuilderFn {
+                    Self::ParamSpec::builder_with_default
+                }
 }
 
 impl glib::value::ValueType for WimaxNspNetworkType {
@@ -9052,3 +9095,4 @@ impl From<WimaxNspNetworkType> for glib::Value {
         ToValue::to_value(&v)
     }
 }
+

@@ -3,7 +3,7 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Connection,VpnEditorPluginCapability};
+use crate::{ffi,Connection,VpnEditor,VpnEditorPluginCapability};
 #[cfg(feature = "v1_4")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
 use crate::{VpnEditorPluginVT,VpnPluginInfo};
@@ -23,26 +23,36 @@ impl VpnEditorPlugin {
         pub const NONE: Option<&'static VpnEditorPlugin> = None;
     
 
-    //#[cfg(feature = "v1_4")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-    //#[doc(alias = "nm_vpn_editor_plugin_load")]
-    //pub fn load(plugin_name: &str, check_service: &str, error: /*Ignored*/Option<glib::Error>) -> VpnEditorPlugin {
-    //    unsafe { TODO: call ffi:nm_vpn_editor_plugin_load() }
-    //}
+    #[cfg(feature = "v1_4")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
+    #[doc(alias = "nm_vpn_editor_plugin_load")]
+    pub fn load(plugin_name: &str, check_service: &str) -> Result<VpnEditorPlugin, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_vpn_editor_plugin_load(plugin_name.to_glib_none().0, check_service.to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     //#[cfg(feature = "v1_2")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     //#[doc(alias = "nm_vpn_editor_plugin_load_from_file")]
-    //pub fn load_from_file(plugin_name: &str, check_service: &str, check_owner: i32, check_file: /*Unimplemented*/FnMut(&str, /*Unimplemented*/Option<Basic: Pointer>, /*Ignored*/Option<glib::Error>) -> bool, user_data: /*Unimplemented*/Option<Basic: Pointer>, error: /*Ignored*/Option<glib::Error>) -> VpnEditorPlugin {
+    //pub fn load_from_file(plugin_name: &str, check_service: &str, check_owner: i32, check_file: /*Unimplemented*/FnMut(&str, /*Unimplemented*/Option<Basic: Pointer>, Option<&glib::Error>) -> bool, user_data: /*Unimplemented*/Option<Basic: Pointer>) -> Result<VpnEditorPlugin, glib::Error> {
     //    unsafe { TODO: call ffi:nm_vpn_editor_plugin_load_from_file() }
     //}
 }
 
 pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
-    //#[doc(alias = "nm_vpn_editor_plugin_export")]
-    //fn export(&self, path: &str, connection: &impl IsA<Connection>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_vpn_editor_plugin_export() }
-    //}
+    #[doc(alias = "nm_vpn_editor_plugin_export")]
+    fn export(&self, path: &str, connection: &impl IsA<Connection>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_vpn_editor_plugin_export(self.as_ref().to_glib_none().0, path.to_glib_none().0, connection.as_ref().to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[doc(alias = "nm_vpn_editor_plugin_get_capabilities")]
     #[doc(alias = "get_capabilities")]
@@ -52,11 +62,15 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
         }
     }
 
-    //#[doc(alias = "nm_vpn_editor_plugin_get_editor")]
-    //#[doc(alias = "get_editor")]
-    //fn editor(&self, connection: &impl IsA<Connection>, error: /*Ignored*/Option<glib::Error>) -> VpnEditor {
-    //    unsafe { TODO: call ffi:nm_vpn_editor_plugin_get_editor() }
-    //}
+    #[doc(alias = "nm_vpn_editor_plugin_get_editor")]
+    #[doc(alias = "get_editor")]
+    fn editor(&self, connection: &impl IsA<Connection>) -> Result<VpnEditor, glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_vpn_editor_plugin_get_editor(self.as_ref().to_glib_none().0, connection.as_ref().to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
@@ -88,10 +102,14 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
         }
     }
 
-    //#[doc(alias = "nm_vpn_editor_plugin_import")]
-    //fn import(&self, path: &str, error: /*Ignored*/Option<glib::Error>) -> Connection {
-    //    unsafe { TODO: call ffi:nm_vpn_editor_plugin_import() }
-    //}
+    #[doc(alias = "nm_vpn_editor_plugin_import")]
+    fn import(&self, path: &str) -> Result<Connection, glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_vpn_editor_plugin_import(self.as_ref().to_glib_none().0, path.to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]

@@ -110,10 +110,15 @@ impl WireGuardPeer {
         }
     }
 
-    //#[doc(alias = "nm_wireguard_peer_is_valid")]
-    //pub fn is_valid(&self, check_non_secrets: bool, check_secrets: bool, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_wireguard_peer_is_valid() }
-    //}
+    #[doc(alias = "nm_wireguard_peer_is_valid")]
+    pub fn is_valid(&self, check_non_secrets: bool, check_secrets: bool) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_wireguard_peer_is_valid(self.to_glib_none().0, check_non_secrets.into_glib(), check_secrets.into_glib(), &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[doc(alias = "nm_wireguard_peer_new_clone")]
 #[must_use]

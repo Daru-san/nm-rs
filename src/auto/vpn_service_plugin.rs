@@ -45,10 +45,15 @@ impl VpnServicePlugin {
 }
 
 pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
-    //#[doc(alias = "nm_vpn_service_plugin_disconnect")]
-    //fn disconnect(&self, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_vpn_service_plugin_disconnect() }
-    //}
+    #[doc(alias = "nm_vpn_service_plugin_disconnect")]
+    fn disconnect(&self) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_vpn_service_plugin_disconnect(self.as_ref().to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[doc(alias = "nm_vpn_service_plugin_failure")]
     fn failure(&self, reason: VpnPluginFailure) {

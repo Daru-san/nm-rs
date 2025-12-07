@@ -3,7 +3,7 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi};
+use crate::{ffi,Connection};
 use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
@@ -28,10 +28,15 @@ pub trait VpnEditorExt: IsA<VpnEditor> + 'static {
     //    unsafe { TODO: call ffi:nm_vpn_editor_get_widget() }
     //}
 
-    //#[doc(alias = "nm_vpn_editor_update_connection")]
-    //fn update_connection(&self, connection: &impl IsA<Connection>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_vpn_editor_update_connection() }
-    //}
+    #[doc(alias = "nm_vpn_editor_update_connection")]
+    fn update_connection(&self, connection: &impl IsA<Connection>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_vpn_editor_update_connection(self.as_ref().to_glib_none().0, connection.as_ref().to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[doc(alias = "changed")]
     fn connect_changed<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {

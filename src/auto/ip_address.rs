@@ -21,13 +21,18 @@ glib::wrapper! {
 }
 
 impl IPAddress {
-    //#[doc(alias = "nm_ip_address_new")]
-    //pub fn new(family: i32, addr: &str, prefix: u32, error: /*Ignored*/Option<glib::Error>) -> IPAddress {
-    //    unsafe { TODO: call ffi:nm_ip_address_new() }
-    //}
+    #[doc(alias = "nm_ip_address_new")]
+    pub fn new(family: i32, addr: &str, prefix: u32) -> Result<IPAddress, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_ip_address_new(family, addr.to_glib_none().0, prefix, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     //#[doc(alias = "nm_ip_address_new_binary")]
-    //pub fn new_binary(family: i32, addr: /*Unimplemented*/Option<Basic: Pointer>, prefix: u32, error: /*Ignored*/Option<glib::Error>) -> IPAddress {
+    //pub fn new_binary(family: i32, addr: /*Unimplemented*/Option<Basic: Pointer>, prefix: u32) -> Result<IPAddress, glib::Error> {
     //    unsafe { TODO: call ffi:nm_ip_address_new_binary() }
     //}
 

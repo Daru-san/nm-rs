@@ -9,7 +9,7 @@ use crate::{ffi,Connection,Object};
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 use crate::{SettingsConnectionFlags};
 use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use std::{boxed::Box as Box_,pin::Pin};
 
 glib::wrapper! {
     #[doc(alias = "NMRemoteConnection")]
@@ -21,56 +21,112 @@ glib::wrapper! {
 }
 
 impl RemoteConnection {
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_remote_connection_commit_changes")]
-    //pub fn commit_changes(&self, save_to_disk: bool, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_remote_connection_commit_changes() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_remote_connection_commit_changes")]
+    pub fn commit_changes(&self, save_to_disk: bool, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_remote_connection_commit_changes(self.to_glib_none().0, save_to_disk.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_remote_connection_commit_changes_async")]
-    //pub fn commit_changes_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, save_to_disk: bool, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_remote_connection_commit_changes_async() }
-    //}
+    #[doc(alias = "nm_remote_connection_commit_changes_async")]
+    pub fn commit_changes_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, save_to_disk: bool, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn commit_changes_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_remote_connection_commit_changes_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = commit_changes_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_remote_connection_commit_changes_async(self.to_glib_none().0, save_to_disk.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn commit_changes_future(&self, save_to_disk: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn commit_changes_future(&self, save_to_disk: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.commit_changes_async(
-        //        save_to_disk,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.commit_changes_async(
+                save_to_disk,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_remote_connection_delete")]
-    //pub fn delete(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_remote_connection_delete() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_remote_connection_delete")]
+    pub fn delete(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_remote_connection_delete(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_remote_connection_delete_async")]
-    //pub fn delete_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_remote_connection_delete_async() }
-    //}
+    #[doc(alias = "nm_remote_connection_delete_async")]
+    pub fn delete_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn delete_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_remote_connection_delete_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = delete_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_remote_connection_delete_async(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn delete_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn delete_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.delete_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.delete_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
@@ -94,18 +150,18 @@ impl RemoteConnection {
 
     //#[doc(alias = "nm_remote_connection_get_secrets")]
     //#[doc(alias = "get_secrets")]
-    //pub fn secrets(&self, setting_name: &str, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> /*Ignored*/glib::Variant {
+    //pub fn secrets(&self, setting_name: &str, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result</*Ignored*/glib::Variant, glib::Error> {
     //    unsafe { TODO: call ffi:nm_remote_connection_get_secrets() }
     //}
 
     //#[doc(alias = "nm_remote_connection_get_secrets_async")]
     //#[doc(alias = "get_secrets_async")]
-    //pub fn secrets_async<P: FnOnce(Result</*Ignored*/glib::Variant, /*Ignored*/glib::Error>) + 'static>(&self, setting_name: &str, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
+    //pub fn secrets_async<P: FnOnce(Result</*Ignored*/glib::Variant, glib::Error>) + 'static>(&self, setting_name: &str, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
     //    unsafe { TODO: call ffi:nm_remote_connection_get_secrets_async() }
     //}
 
     //
-    //pub fn secrets_future(&self, setting_name: &str) -> Pin<Box_<dyn std::future::Future<Output = Result</*Ignored*/glib::Variant, /*Ignored*/glib::Error>> + 'static>> {
+    //pub fn secrets_future(&self, setting_name: &str) -> Pin<Box_<dyn std::future::Future<Output = Result</*Ignored*/glib::Variant, glib::Error>> + 'static>> {
 
         //let setting_name = String::from(setting_name);
         //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
@@ -148,42 +204,70 @@ impl RemoteConnection {
         }
     }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_remote_connection_save")]
-    //pub fn save(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_remote_connection_save() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_remote_connection_save")]
+    pub fn save(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_remote_connection_save(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_remote_connection_save_async")]
-    //pub fn save_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_remote_connection_save_async() }
-    //}
+    #[doc(alias = "nm_remote_connection_save_async")]
+    pub fn save_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn save_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_remote_connection_save_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = save_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_remote_connection_save_async(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn save_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn save_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.save_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.save_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     //#[cfg(feature = "v1_12")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     //#[doc(alias = "nm_remote_connection_update2")]
-    //pub fn update2<P: FnOnce(Result</*Ignored*/glib::Variant, /*Ignored*/glib::Error>) + 'static>(&self, settings: /*Ignored*/Option<&glib::Variant>, flags: SettingsUpdate2Flags, args: /*Ignored*/Option<&glib::Variant>, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
+    //pub fn update2<P: FnOnce(Result</*Ignored*/glib::Variant, glib::Error>) + 'static>(&self, settings: /*Ignored*/Option<&glib::Variant>, flags: SettingsUpdate2Flags, args: /*Ignored*/Option<&glib::Variant>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
     //    unsafe { TODO: call ffi:nm_remote_connection_update2() }
     //}
 
     //
     //#[cfg(feature = "v1_12")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //pub fn update2_future(&self, settings: /*Ignored*/Option<&glib::Variant>, flags: SettingsUpdate2Flags, args: /*Ignored*/Option<&glib::Variant>) -> Pin<Box_<dyn std::future::Future<Output = Result</*Ignored*/glib::Variant, /*Ignored*/glib::Error>> + 'static>> {
+    //pub fn update2_future(&self, settings: /*Ignored*/Option<&glib::Variant>, flags: SettingsUpdate2Flags, args: /*Ignored*/Option<&glib::Variant>) -> Pin<Box_<dyn std::future::Future<Output = Result</*Ignored*/glib::Variant, glib::Error>> + 'static>> {
 
         //let settings = settings.map(ToOwned::to_owned);
         //let args = args.map(ToOwned::to_owned);

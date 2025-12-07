@@ -61,12 +61,17 @@ impl Range {
         }
     }
 
-    //#[cfg(feature = "v1_42")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    //#[doc(alias = "nm_range_from_str")]
-    //pub fn from_str(str: &str, error: /*Ignored*/Option<glib::Error>) -> Range {
-    //    unsafe { TODO: call ffi:nm_range_from_str() }
-    //}
+    #[cfg(feature = "v1_42")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
+    #[doc(alias = "nm_range_from_str")]
+    pub fn from_str(str: &str) -> Result<Range, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_range_from_str(str.to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 }
 
 #[cfg(feature = "v1_42")]

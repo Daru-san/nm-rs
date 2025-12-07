@@ -52,21 +52,38 @@ impl SettingUser {
         }
     }
 
-    //#[doc(alias = "nm_setting_user_set_data")]
-    //#[doc(alias = "data")]
-    //pub fn set_data(&self, key: &str, val: Option<&str>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_user_set_data() }
-    //}
+    #[doc(alias = "nm_setting_user_set_data")]
+    #[doc(alias = "data")]
+    pub fn set_data(&self, key: &str, val: Option<&str>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_user_set_data(self.to_glib_none().0, key.to_glib_none().0, val.to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_setting_user_check_key")]
-    //pub fn check_key(key: &str, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_user_check_key() }
-    //}
+    #[doc(alias = "nm_setting_user_check_key")]
+    pub fn check_key(key: &str) -> Result<(), glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_user_check_key(key.to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_setting_user_check_val")]
-    //pub fn check_val(val: &str, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_user_check_val() }
-    //}
+    #[doc(alias = "nm_setting_user_check_val")]
+    pub fn check_val(val: &str) -> Result<(), glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_user_check_val(val.to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]

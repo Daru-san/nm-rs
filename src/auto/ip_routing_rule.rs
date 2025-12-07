@@ -420,21 +420,26 @@ impl IPRoutingRule {
     //#[cfg(feature = "v1_18")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     //#[doc(alias = "nm_ip_routing_rule_to_string")]
-    //pub fn to_string(&self, to_string_flags: IPRoutingRuleAsStringFlags, extra_args: /*Unknown conversion*//*Unimplemented*/HashTable TypeId { ns_id: 0, id: 25 }/TypeId { ns_id: 0, id: 25 }, error: /*Ignored*/Option<glib::Error>) -> glib::GString {
+    //pub fn to_string(&self, to_string_flags: IPRoutingRuleAsStringFlags, extra_args: /*Unknown conversion*//*Unimplemented*/HashTable TypeId { ns_id: 0, id: 25 }/TypeId { ns_id: 0, id: 25 }) -> Result<glib::GString, glib::Error> {
     //    unsafe { TODO: call ffi:nm_ip_routing_rule_to_string() }
     //}
 
-    //#[cfg(feature = "v1_18")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-    //#[doc(alias = "nm_ip_routing_rule_validate")]
-    //pub fn validate(&self, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_ip_routing_rule_validate() }
-    //}
+    #[cfg(feature = "v1_18")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
+    #[doc(alias = "nm_ip_routing_rule_validate")]
+    pub fn validate(&self) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_ip_routing_rule_validate(self.to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     //#[cfg(feature = "v1_18")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     //#[doc(alias = "nm_ip_routing_rule_from_string")]
-    //pub fn from_string(str: &str, to_string_flags: IPRoutingRuleAsStringFlags, extra_args: /*Unknown conversion*//*Unimplemented*/HashTable TypeId { ns_id: 0, id: 25 }/TypeId { ns_id: 0, id: 25 }, error: /*Ignored*/Option<glib::Error>) -> IPRoutingRule {
+    //pub fn from_string(str: &str, to_string_flags: IPRoutingRuleAsStringFlags, extra_args: /*Unknown conversion*//*Unimplemented*/HashTable TypeId { ns_id: 0, id: 25 }/TypeId { ns_id: 0, id: 25 }) -> Result<IPRoutingRule, glib::Error> {
     //    unsafe { TODO: call ffi:nm_ip_routing_rule_from_string() }
     //}
 }

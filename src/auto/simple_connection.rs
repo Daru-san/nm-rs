@@ -33,7 +33,7 @@ impl SimpleConnection {
     }
 
     //#[doc(alias = "nm_simple_connection_new_from_dbus")]
-    //pub fn new_from_dbus(dict: /*Ignored*/&glib::Variant, error: /*Ignored*/Option<glib::Error>) -> Connection {
+    //pub fn new_from_dbus(dict: /*Ignored*/&glib::Variant) -> Result<Connection, glib::Error> {
     //    unsafe { TODO: call ffi:nm_simple_connection_new_from_dbus() }
     //}
 }

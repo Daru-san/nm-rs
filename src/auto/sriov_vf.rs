@@ -158,7 +158,7 @@ impl SriovVF {
     //#[cfg(feature = "v1_42")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     //#[doc(alias = "nm_sriov_vf_attribute_validate")]
-    //pub fn attribute_validate(name: &str, value: /*Ignored*/&glib::Variant, error: /*Ignored*/Option<glib::Error>) -> Result<(bool), glib::Error> {
+    //pub fn attribute_validate(name: &str, value: /*Ignored*/&glib::Variant) -> Result<bool, glib::Error> {
     //    unsafe { TODO: call ffi:nm_sriov_vf_attribute_validate() }
     //}
 }

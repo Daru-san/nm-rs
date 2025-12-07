@@ -755,41 +755,71 @@ impl Setting8021x {
         }
     }
 
-    //#[doc(alias = "nm_setting_802_1x_set_ca_cert")]
-    //#[doc(alias = "ca-cert")]
-    //pub fn set_ca_cert(&self, value: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_802_1x_set_ca_cert() }
-    //}
+    #[doc(alias = "nm_setting_802_1x_set_ca_cert")]
+    #[doc(alias = "ca-cert")]
+    pub fn set_ca_cert(&self, value: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_802_1x_set_ca_cert(self.to_glib_none().0, value.to_glib_none().0, scheme.into_glib(), out_format.into_glib(), &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_setting_802_1x_set_client_cert")]
-    //#[doc(alias = "client-cert")]
-    //pub fn set_client_cert(&self, value: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_802_1x_set_client_cert() }
-    //}
+    #[doc(alias = "nm_setting_802_1x_set_client_cert")]
+    #[doc(alias = "client-cert")]
+    pub fn set_client_cert(&self, value: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_802_1x_set_client_cert(self.to_glib_none().0, value.to_glib_none().0, scheme.into_glib(), out_format.into_glib(), &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_setting_802_1x_set_phase2_ca_cert")]
-    //#[doc(alias = "phase2-ca-cert")]
-    //pub fn set_phase2_ca_cert(&self, value: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_802_1x_set_phase2_ca_cert() }
-    //}
+    #[doc(alias = "nm_setting_802_1x_set_phase2_ca_cert")]
+    #[doc(alias = "phase2-ca-cert")]
+    pub fn set_phase2_ca_cert(&self, value: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_802_1x_set_phase2_ca_cert(self.to_glib_none().0, value.to_glib_none().0, scheme.into_glib(), out_format.into_glib(), &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_setting_802_1x_set_phase2_client_cert")]
-    //#[doc(alias = "phase2-client-cert")]
-    //pub fn set_phase2_client_cert(&self, value: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_802_1x_set_phase2_client_cert() }
-    //}
+    #[doc(alias = "nm_setting_802_1x_set_phase2_client_cert")]
+    #[doc(alias = "phase2-client-cert")]
+    pub fn set_phase2_client_cert(&self, value: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_802_1x_set_phase2_client_cert(self.to_glib_none().0, value.to_glib_none().0, scheme.into_glib(), out_format.into_glib(), &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_setting_802_1x_set_phase2_private_key")]
-    //#[doc(alias = "phase2-private-key")]
-    //pub fn set_phase2_private_key(&self, value: &str, password: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_802_1x_set_phase2_private_key() }
-    //}
+    #[doc(alias = "nm_setting_802_1x_set_phase2_private_key")]
+    #[doc(alias = "phase2-private-key")]
+    pub fn set_phase2_private_key(&self, value: &str, password: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_802_1x_set_phase2_private_key(self.to_glib_none().0, value.to_glib_none().0, password.to_glib_none().0, scheme.into_glib(), out_format.into_glib(), &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_setting_802_1x_set_private_key")]
-    //#[doc(alias = "private-key")]
-    //pub fn set_private_key(&self, value: &str, password: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_setting_802_1x_set_private_key() }
-    //}
+    #[doc(alias = "nm_setting_802_1x_set_private_key")]
+    #[doc(alias = "private-key")]
+    pub fn set_private_key(&self, value: &str, password: &str, scheme: Setting8021xCKScheme, out_format: Setting8021xCKFormat) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_setting_802_1x_set_private_key(self.to_glib_none().0, value.to_glib_none().0, password.to_glib_none().0, scheme.into_glib(), out_format.into_glib(), &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[doc(alias = "altsubject-matches")]
     pub fn altsubject_matches(&self) -> Vec<glib::GString> {
@@ -1077,7 +1107,7 @@ impl Setting8021x {
     //#[cfg(feature = "v1_2")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     //#[doc(alias = "nm_setting_802_1x_check_cert_scheme")]
-    //pub fn check_cert_scheme(pdata: /*Unimplemented*/Option<Basic: Pointer>, length: usize, error: /*Ignored*/Option<glib::Error>) -> Setting8021xCKScheme {
+    //pub fn check_cert_scheme(pdata: /*Unimplemented*/Option<Basic: Pointer>, length: usize) -> Result<Setting8021xCKScheme, glib::Error> {
     //    unsafe { TODO: call ffi:nm_setting_802_1x_check_cert_scheme() }
     //}
 

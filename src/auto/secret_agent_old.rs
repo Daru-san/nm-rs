@@ -4,9 +4,9 @@
 // DO NOT EDIT
 #![allow(deprecated)]
 
-use crate::{ffi,SecretAgentCapabilities};
+use crate::{ffi,Connection,SecretAgentCapabilities};
 use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use std::{boxed::Box as Box_,pin::Pin};
 
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
@@ -46,10 +46,22 @@ impl SecretAgentOld {
 }
 
 pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
-    //#[doc(alias = "nm_secret_agent_old_delete_secrets")]
-    //fn delete_secrets(&self, connection: &impl IsA<Connection>, callback: /*Unimplemented*/FnOnce(&SecretAgentOld, &Connection, /*Ignored*/Option<glib::Error>), user_data: /*Unimplemented*/Option<Basic: Pointer>) {
-    //    unsafe { TODO: call ffi:nm_secret_agent_old_delete_secrets() }
-    //}
+    #[doc(alias = "nm_secret_agent_old_delete_secrets")]
+    fn delete_secrets<P: FnOnce(&SecretAgentOld, &Connection, Option<&glib::Error>) + 'static>(&self, connection: &impl IsA<Connection>, callback: P) {
+        let callback_data: Box_<P> = Box_::new(callback);
+        unsafe extern "C" fn callback_func<P: FnOnce(&SecretAgentOld, &Connection, Option<&glib::Error>) + 'static>(agent: *mut ffi::NMSecretAgentOld, connection: *mut ffi::NMConnection, error: *mut glib::ffi::GError, user_data: glib::ffi::gpointer) {
+            let agent = from_glib_borrow(agent);
+            let connection = from_glib_borrow(connection);
+            let error: Borrowed<Option<glib::Error>> = from_glib_borrow(error);
+            let callback = Box_::from_raw(user_data as *mut P);
+            (*callback)(&agent, &connection, error.as_ref().as_ref())
+        }
+        let callback = Some(callback_func::<P> as _);
+        let super_callback0: Box_<P> = callback_data;
+        unsafe {
+            ffi::nm_secret_agent_old_delete_secrets(self.as_ref().to_glib_none().0, connection.as_ref().to_glib_none().0, callback, Box_::into_raw(super_callback0) as *mut _);
+        }
+    }
 
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
@@ -115,67 +127,135 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
 
     //#[doc(alias = "nm_secret_agent_old_get_secrets")]
     //#[doc(alias = "get_secrets")]
-    //fn secrets(&self, connection: &impl IsA<Connection>, setting_name: &str, hints: &[&str], flags: SecretAgentGetSecretsFlags, callback: /*Unimplemented*/FnOnce(&SecretAgentOld, &Connection, /*Ignored*/Option<glib::Variant>, /*Ignored*/Option<glib::Error>), user_data: /*Unimplemented*/Option<Basic: Pointer>) {
+    //fn secrets(&self, connection: &impl IsA<Connection>, setting_name: &str, hints: &[&str], flags: SecretAgentGetSecretsFlags, callback: /*Unimplemented*/FnOnce(&SecretAgentOld, &Connection, /*Ignored*/Option<glib::Variant>, Option<&glib::Error>), user_data: /*Unimplemented*/Option<Basic: Pointer>) {
     //    unsafe { TODO: call ffi:nm_secret_agent_old_get_secrets() }
     //}
 
-    //#[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_secret_agent_old_register")]
-    //fn register(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_secret_agent_old_register() }
-    //}
+    #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_secret_agent_old_register")]
+    fn register(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_secret_agent_old_register(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_secret_agent_old_register_async")]
-    //fn register_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_secret_agent_old_register_async() }
-    //}
+    #[doc(alias = "nm_secret_agent_old_register_async")]
+    fn register_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn register_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_secret_agent_old_register_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = register_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_secret_agent_old_register_async(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //fn register_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    fn register_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.register_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.register_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[doc(alias = "nm_secret_agent_old_save_secrets")]
-    //fn save_secrets(&self, connection: &impl IsA<Connection>, callback: /*Unimplemented*/FnOnce(&SecretAgentOld, &Connection, /*Ignored*/Option<glib::Error>), user_data: /*Unimplemented*/Option<Basic: Pointer>) {
-    //    unsafe { TODO: call ffi:nm_secret_agent_old_save_secrets() }
-    //}
+    #[doc(alias = "nm_secret_agent_old_save_secrets")]
+    fn save_secrets<P: FnOnce(&SecretAgentOld, &Connection, Option<&glib::Error>) + 'static>(&self, connection: &impl IsA<Connection>, callback: P) {
+        let callback_data: Box_<P> = Box_::new(callback);
+        unsafe extern "C" fn callback_func<P: FnOnce(&SecretAgentOld, &Connection, Option<&glib::Error>) + 'static>(agent: *mut ffi::NMSecretAgentOld, connection: *mut ffi::NMConnection, error: *mut glib::ffi::GError, user_data: glib::ffi::gpointer) {
+            let agent = from_glib_borrow(agent);
+            let connection = from_glib_borrow(connection);
+            let error: Borrowed<Option<glib::Error>> = from_glib_borrow(error);
+            let callback = Box_::from_raw(user_data as *mut P);
+            (*callback)(&agent, &connection, error.as_ref().as_ref())
+        }
+        let callback = Some(callback_func::<P> as _);
+        let super_callback0: Box_<P> = callback_data;
+        unsafe {
+            ffi::nm_secret_agent_old_save_secrets(self.as_ref().to_glib_none().0, connection.as_ref().to_glib_none().0, callback, Box_::into_raw(super_callback0) as *mut _);
+        }
+    }
 
-    //#[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_secret_agent_old_unregister")]
-    //fn unregister(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_secret_agent_old_unregister() }
-    //}
+    #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_secret_agent_old_unregister")]
+    fn unregister(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_secret_agent_old_unregister(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_secret_agent_old_unregister_async")]
-    //fn unregister_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_secret_agent_old_unregister_async() }
-    //}
+    #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_secret_agent_old_unregister_async")]
+    fn unregister_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn unregister_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_secret_agent_old_unregister_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = unregister_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_secret_agent_old_unregister_async(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //#[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
-    //
-    //fn unregister_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
+    
+    fn unregister_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.unregister_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.unregister_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[doc(alias = "auto-register")]
     fn is_auto_register(&self) -> bool {

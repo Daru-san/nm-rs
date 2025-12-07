@@ -15,7 +15,7 @@ use crate::{ConnectivityState};
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 use crate::{DeviceInterfaceFlags};
 use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use std::{boxed::Box as Box_,pin::Pin};
 
 glib::wrapper! {
     #[doc(alias = "NMDevice")]
@@ -41,10 +41,15 @@ impl Device {
 }
 
 pub trait DeviceExt: IsA<Device> + 'static {
-    //#[doc(alias = "nm_device_connection_compatible")]
-    //fn connection_compatible(&self, connection: &impl IsA<Connection>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_device_connection_compatible() }
-    //}
+    #[doc(alias = "nm_device_connection_compatible")]
+    fn connection_compatible(&self, connection: &impl IsA<Connection>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_device_connection_compatible(self.as_ref().to_glib_none().0, connection.as_ref().to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[doc(alias = "nm_device_connection_valid")]
     fn connection_valid(&self, connection: &impl IsA<Connection>) -> bool {
@@ -53,55 +58,111 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_device_delete")]
-    //fn delete(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_device_delete() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_device_delete")]
+    fn delete(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_device_delete(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_device_delete_async")]
-    //fn delete_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_device_delete_async() }
-    //}
+    #[doc(alias = "nm_device_delete_async")]
+    fn delete_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn delete_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_device_delete_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = delete_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_device_delete_async(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //fn delete_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    fn delete_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.delete_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.delete_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_device_disconnect")]
-    //fn disconnect(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_device_disconnect() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_device_disconnect")]
+    fn disconnect(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_device_disconnect(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_device_disconnect_async")]
-    //fn disconnect_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_device_disconnect_async() }
-    //}
+    #[doc(alias = "nm_device_disconnect_async")]
+    fn disconnect_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn disconnect_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_device_disconnect_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = disconnect_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_device_disconnect_async(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //fn disconnect_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    fn disconnect_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.disconnect_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.disconnect_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[doc(alias = "nm_device_filter_connections")]
     fn filter_connections(&self, connections: &[Connection]) -> Vec<Connection> {
@@ -119,39 +180,68 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_device_get_applied_connection")]
-    //#[doc(alias = "get_applied_connection")]
-    //fn applied_connection(&self, flags: u32, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> Result<Connection, u64, glib::Error> {
-    //    unsafe { TODO: call ffi:nm_device_get_applied_connection() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_device_get_applied_connection")]
+    #[doc(alias = "get_applied_connection")]
+    fn applied_connection(&self, flags: u32, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(Connection, u64), glib::Error> {
+        unsafe {
+            let mut version_id = std::mem::MaybeUninit::uninit();
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_device_get_applied_connection(self.as_ref().to_glib_none().0, flags, version_id.as_mut_ptr(), cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            if error.is_null() { Ok((from_glib_full(ret), version_id.assume_init())) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //#[doc(alias = "nm_device_get_applied_connection_async")]
-    //#[doc(alias = "get_applied_connection_async")]
-    //fn applied_connection_async<P: FnOnce(Result<(Connection, u64), /*Ignored*/glib::Error>) + 'static>(&self, flags: u32, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_device_get_applied_connection_async() }
-    //}
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[doc(alias = "nm_device_get_applied_connection_async")]
+    #[doc(alias = "get_applied_connection_async")]
+    fn applied_connection_async<P: FnOnce(Result<(Connection, u64), glib::Error>) + 'static>(&self, flags: u32, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn applied_connection_async_trampoline<P: FnOnce(Result<(Connection, u64), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            let mut version_id = std::mem::MaybeUninit::uninit();
+            let ret = ffi::nm_device_get_applied_connection_finish(_source_object as *mut _, res, version_id.as_mut_ptr(), &mut error);
+            let result = if error.is_null() { Ok((from_glib_full(ret), version_id.assume_init())) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = applied_connection_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_device_get_applied_connection_async(self.as_ref().to_glib_none().0, flags, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //fn applied_connection_future(&self, flags: u32) -> Pin<Box_<dyn std::future::Future<Output = Result<(Connection, u64), /*Ignored*/glib::Error>> + 'static>> {
+    
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    fn applied_connection_future(&self, flags: u32) -> Pin<Box_<dyn std::future::Future<Output = Result<(Connection, u64), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.applied_connection_async(
-        //        flags,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.applied_connection_async(
+                flags,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[doc(alias = "nm_device_get_autoconnect")]
     #[doc(alias = "get_autoconnect")]
@@ -465,40 +555,68 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_device_reapply")]
-    //fn reapply(&self, connection: Option<&impl IsA<Connection>>, version_id: u64, flags: u32, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_device_reapply() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_device_reapply")]
+    fn reapply(&self, connection: Option<&impl IsA<Connection>>, version_id: u64, flags: u32, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_device_reapply(self.as_ref().to_glib_none().0, connection.map(|p| p.as_ref()).to_glib_none().0, version_id, flags, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //#[doc(alias = "nm_device_reapply_async")]
-    //fn reapply_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, connection: Option<&impl IsA<Connection>>, version_id: u64, flags: u32, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_device_reapply_async() }
-    //}
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[doc(alias = "nm_device_reapply_async")]
+    fn reapply_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, connection: Option<&impl IsA<Connection>>, version_id: u64, flags: u32, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn reapply_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_device_reapply_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = reapply_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_device_reapply_async(self.as_ref().to_glib_none().0, connection.map(|p| p.as_ref()).to_glib_none().0, version_id, flags, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //fn reapply_future(&self, connection: Option<&(impl IsA<Connection> + Clone + 'static)>, version_id: u64, flags: u32) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    fn reapply_future(&self, connection: Option<&(impl IsA<Connection> + Clone + 'static)>, version_id: u64, flags: u32) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //let connection = connection.map(ToOwned::to_owned);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.reapply_async(
-        //        connection.as_ref().map(::std::borrow::Borrow::borrow),
-        //        version_id,
-        //        flags,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let connection = connection.map(ToOwned::to_owned);
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.reapply_async(
+                connection.as_ref().map(::std::borrow::Borrow::borrow),
+                version_id,
+                flags,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]

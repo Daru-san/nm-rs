@@ -23,12 +23,17 @@ glib::wrapper! {
 }
 
 impl TCTfilter {
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //#[doc(alias = "nm_tc_tfilter_new")]
-    //pub fn new(kind: &str, parent: u32, error: /*Ignored*/Option<glib::Error>) -> TCTfilter {
-    //    unsafe { TODO: call ffi:nm_tc_tfilter_new() }
-    //}
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    #[doc(alias = "nm_tc_tfilter_new")]
+    pub fn new(kind: &str, parent: u32) -> Result<TCTfilter, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_tc_tfilter_new(kind.to_glib_none().0, parent, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]

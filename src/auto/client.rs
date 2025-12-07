@@ -4,16 +4,16 @@
 // DO NOT EDIT
 #![allow(deprecated)]
 
-use crate::{ffi,ActiveConnection,ClientPermission,ClientPermissionResult,ConnectivityState,Device,RemoteConnection,State};
+use crate::{ffi,ActiveConnection,ClientPermission,ClientPermissionResult,Connection,ConnectivityState,Device,RemoteConnection,State};
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 use crate::{DnsEntry};
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-use crate::{Checkpoint};
+use crate::{Checkpoint,CheckpointCreateFlags};
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-use crate::{Metered};
+use crate::{ManagerReloadFlags,Metered};
 #[cfg(feature = "v1_24")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
 use crate::{ClientInstanceFlags,Object,Ternary};
@@ -21,7 +21,7 @@ use crate::{ClientInstanceFlags,Object,Ternary};
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_38")))]
 use crate::{RadioFlags};
 use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use std::{boxed::Box as Box_,pin::Pin};
 
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
@@ -56,10 +56,15 @@ glib::wrapper! {
 }
 
 impl Client {
-    //#[doc(alias = "nm_client_new")]
-    //pub fn new(cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> Client {
-    //    unsafe { TODO: call ffi:nm_client_new() }
-    //}
+    #[doc(alias = "nm_client_new")]
+    pub fn new(cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<Client, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_client_new(cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
             // rustdoc-stripper-ignore-next
             /// Creates a new builder-pattern struct instance to construct [`Client`] objects.
@@ -70,41 +75,64 @@ impl Client {
             }
         
 
-    //#[doc(alias = "nm_client_activate_connection_async")]
-    //pub fn activate_connection_async<P: FnOnce(Result<ActiveConnection, /*Ignored*/glib::Error>) + 'static>(&self, connection: Option<&impl IsA<Connection>>, device: Option<&impl IsA<Device>>, specific_object: Option<&str>, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_activate_connection_async() }
-    //}
+    #[doc(alias = "nm_client_activate_connection_async")]
+    pub fn activate_connection_async<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(&self, connection: Option<&impl IsA<Connection>>, device: Option<&impl IsA<Device>>, specific_object: Option<&str>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn activate_connection_async_trampoline<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_client_activate_connection_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = activate_connection_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_activate_connection_async(self.to_glib_none().0, connection.map(|p| p.as_ref()).to_glib_none().0, device.map(|p| p.as_ref()).to_glib_none().0, specific_object.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn activate_connection_future(&self, connection: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<ActiveConnection, /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn activate_connection_future(&self, connection: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<ActiveConnection, glib::Error>> + 'static>> {
 
-        //let connection = connection.map(ToOwned::to_owned);
-        //let device = device.map(ToOwned::to_owned);
-        //let specific_object = specific_object.map(ToOwned::to_owned);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.activate_connection_async(
-        //        connection.as_ref().map(::std::borrow::Borrow::borrow),
-        //        device.as_ref().map(::std::borrow::Borrow::borrow),
-        //        specific_object.as_ref().map(::std::borrow::Borrow::borrow),
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let connection = connection.map(ToOwned::to_owned);
+        let device = device.map(ToOwned::to_owned);
+        let specific_object = specific_object.map(ToOwned::to_owned);
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.activate_connection_async(
+                connection.as_ref().map(::std::borrow::Borrow::borrow),
+                device.as_ref().map(::std::borrow::Borrow::borrow),
+                specific_object.as_ref().map(::std::borrow::Borrow::borrow),
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     //#[cfg(feature = "v1_16")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     //#[doc(alias = "nm_client_add_and_activate_connection2")]
-    //pub fn add_and_activate_connection2<P: FnOnce(Result<(ActiveConnection, /*Ignored*/Option<glib::Variant>), /*Ignored*/glib::Error>) + 'static>(&self, partial: Option<&impl IsA<Connection>>, device: Option<&impl IsA<Device>>, specific_object: Option<&str>, options: /*Ignored*/&glib::Variant, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
+    //pub fn add_and_activate_connection2<P: FnOnce(Result<(ActiveConnection, /*Ignored*/Option<glib::Variant>), glib::Error>) + 'static>(&self, partial: Option<&impl IsA<Connection>>, device: Option<&impl IsA<Device>>, specific_object: Option<&str>, options: /*Ignored*/&glib::Variant, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
     //    unsafe { TODO: call ffi:nm_client_add_and_activate_connection2() }
     //}
 
     //
     //#[cfg(feature = "v1_16")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
-    //pub fn add_and_activate_connection2_future(&self, partial: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>, options: /*Ignored*/&glib::Variant) -> Pin<Box_<dyn std::future::Future<Output = Result<(ActiveConnection, /*Ignored*/Option<glib::Variant>), /*Ignored*/glib::Error>> + 'static>> {
+    //pub fn add_and_activate_connection2_future(&self, partial: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>, options: /*Ignored*/&glib::Variant) -> Pin<Box_<dyn std::future::Future<Output = Result<(ActiveConnection, /*Ignored*/Option<glib::Variant>), glib::Error>> + 'static>> {
 
         //let partial = partial.map(ToOwned::to_owned);
         //let device = device.map(ToOwned::to_owned);
@@ -124,41 +152,64 @@ impl Client {
         //}))
     //}
 
-    //#[doc(alias = "nm_client_add_and_activate_connection_async")]
-    //pub fn add_and_activate_connection_async<P: FnOnce(Result<ActiveConnection, /*Ignored*/glib::Error>) + 'static>(&self, partial: Option<&impl IsA<Connection>>, device: Option<&impl IsA<Device>>, specific_object: Option<&str>, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_add_and_activate_connection_async() }
-    //}
+    #[doc(alias = "nm_client_add_and_activate_connection_async")]
+    pub fn add_and_activate_connection_async<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(&self, partial: Option<&impl IsA<Connection>>, device: Option<&impl IsA<Device>>, specific_object: Option<&str>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn add_and_activate_connection_async_trampoline<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_client_add_and_activate_connection_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = add_and_activate_connection_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_add_and_activate_connection_async(self.to_glib_none().0, partial.map(|p| p.as_ref()).to_glib_none().0, device.map(|p| p.as_ref()).to_glib_none().0, specific_object.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn add_and_activate_connection_future(&self, partial: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<ActiveConnection, /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn add_and_activate_connection_future(&self, partial: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<ActiveConnection, glib::Error>> + 'static>> {
 
-        //let partial = partial.map(ToOwned::to_owned);
-        //let device = device.map(ToOwned::to_owned);
-        //let specific_object = specific_object.map(ToOwned::to_owned);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.add_and_activate_connection_async(
-        //        partial.as_ref().map(::std::borrow::Borrow::borrow),
-        //        device.as_ref().map(::std::borrow::Borrow::borrow),
-        //        specific_object.as_ref().map(::std::borrow::Borrow::borrow),
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let partial = partial.map(ToOwned::to_owned);
+        let device = device.map(ToOwned::to_owned);
+        let specific_object = specific_object.map(ToOwned::to_owned);
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.add_and_activate_connection_async(
+                partial.as_ref().map(::std::borrow::Borrow::borrow),
+                device.as_ref().map(::std::borrow::Borrow::borrow),
+                specific_object.as_ref().map(::std::borrow::Borrow::borrow),
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     //#[cfg(feature = "v1_20")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     //#[doc(alias = "nm_client_add_connection2")]
-    //pub fn add_connection2<P: FnOnce(Result<(RemoteConnection, /*Ignored*/Option<glib::Variant>), /*Ignored*/glib::Error>) + 'static>(&self, settings: /*Ignored*/&glib::Variant, flags: SettingsAddConnection2Flags, args: /*Ignored*/Option<&glib::Variant>, ignore_out_result: bool, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
+    //pub fn add_connection2<P: FnOnce(Result<(RemoteConnection, /*Ignored*/Option<glib::Variant>), glib::Error>) + 'static>(&self, settings: /*Ignored*/&glib::Variant, flags: SettingsAddConnection2Flags, args: /*Ignored*/Option<&glib::Variant>, ignore_out_result: bool, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
     //    unsafe { TODO: call ffi:nm_client_add_connection2() }
     //}
 
     //
     //#[cfg(feature = "v1_20")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
-    //pub fn add_connection2_future(&self, settings: /*Ignored*/&glib::Variant, flags: SettingsAddConnection2Flags, args: /*Ignored*/Option<&glib::Variant>, ignore_out_result: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<(RemoteConnection, /*Ignored*/Option<glib::Variant>), /*Ignored*/glib::Error>> + 'static>> {
+    //pub fn add_connection2_future(&self, settings: /*Ignored*/&glib::Variant, flags: SettingsAddConnection2Flags, args: /*Ignored*/Option<&glib::Variant>, ignore_out_result: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<(RemoteConnection, /*Ignored*/Option<glib::Variant>), glib::Error>> + 'static>> {
 
         //let settings = settings.clone();
         //let args = args.map(ToOwned::to_owned);
@@ -176,138 +227,257 @@ impl Client {
         //}))
     //}
 
-    //#[doc(alias = "nm_client_add_connection_async")]
-    //pub fn add_connection_async<P: FnOnce(Result<RemoteConnection, /*Ignored*/glib::Error>) + 'static>(&self, connection: &impl IsA<Connection>, save_to_disk: bool, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_add_connection_async() }
-    //}
+    #[doc(alias = "nm_client_add_connection_async")]
+    pub fn add_connection_async<P: FnOnce(Result<RemoteConnection, glib::Error>) + 'static>(&self, connection: &impl IsA<Connection>, save_to_disk: bool, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn add_connection_async_trampoline<P: FnOnce(Result<RemoteConnection, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_client_add_connection_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = add_connection_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_add_connection_async(self.to_glib_none().0, connection.as_ref().to_glib_none().0, save_to_disk.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn add_connection_future(&self, connection: &(impl IsA<Connection> + Clone + 'static), save_to_disk: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<RemoteConnection, /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn add_connection_future(&self, connection: &(impl IsA<Connection> + Clone + 'static), save_to_disk: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<RemoteConnection, glib::Error>> + 'static>> {
 
-        //let connection = connection.clone();
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.add_connection_async(
-        //        &connection,
-        //        save_to_disk,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let connection = connection.clone();
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.add_connection_async(
+                &connection,
+                save_to_disk,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_client_check_connectivity")]
-    //pub fn check_connectivity(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> ConnectivityState {
-    //    unsafe { TODO: call ffi:nm_client_check_connectivity() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_client_check_connectivity")]
+    pub fn check_connectivity(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<ConnectivityState, glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_client_check_connectivity(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_client_check_connectivity_async")]
-    //pub fn check_connectivity_async<P: FnOnce(Result<ConnectivityState, /*Ignored*/glib::Error>) + 'static>(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_check_connectivity_async() }
-    //}
+    #[doc(alias = "nm_client_check_connectivity_async")]
+    pub fn check_connectivity_async<P: FnOnce(Result<ConnectivityState, glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn check_connectivity_async_trampoline<P: FnOnce(Result<ConnectivityState, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_client_check_connectivity_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(from_glib(ret)) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = check_connectivity_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_check_connectivity_async(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn check_connectivity_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<ConnectivityState, /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn check_connectivity_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<ConnectivityState, glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.check_connectivity_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.check_connectivity_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //#[doc(alias = "nm_client_checkpoint_adjust_rollback_timeout")]
-    //pub fn checkpoint_adjust_rollback_timeout<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, checkpoint_path: &str, add_timeout: u32, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_checkpoint_adjust_rollback_timeout() }
-    //}
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    #[doc(alias = "nm_client_checkpoint_adjust_rollback_timeout")]
+    pub fn checkpoint_adjust_rollback_timeout<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, checkpoint_path: &str, add_timeout: u32, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn checkpoint_adjust_rollback_timeout_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_client_checkpoint_adjust_rollback_timeout_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = checkpoint_adjust_rollback_timeout_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_checkpoint_adjust_rollback_timeout(self.to_glib_none().0, checkpoint_path.to_glib_none().0, add_timeout, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //pub fn checkpoint_adjust_rollback_timeout_future(&self, checkpoint_path: &str, add_timeout: u32) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    pub fn checkpoint_adjust_rollback_timeout_future(&self, checkpoint_path: &str, add_timeout: u32) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //let checkpoint_path = String::from(checkpoint_path);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.checkpoint_adjust_rollback_timeout(
-        //        &checkpoint_path,
-        //        add_timeout,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let checkpoint_path = String::from(checkpoint_path);
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.checkpoint_adjust_rollback_timeout(
+                &checkpoint_path,
+                add_timeout,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //#[doc(alias = "nm_client_checkpoint_create")]
-    //pub fn checkpoint_create<P: FnOnce(Result<Checkpoint, /*Ignored*/glib::Error>) + 'static>(&self, devices: &[Device], rollback_timeout: u32, flags: CheckpointCreateFlags, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_checkpoint_create() }
-    //}
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    #[doc(alias = "nm_client_checkpoint_create")]
+    pub fn checkpoint_create<P: FnOnce(Result<Checkpoint, glib::Error>) + 'static>(&self, devices: &[Device], rollback_timeout: u32, flags: CheckpointCreateFlags, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn checkpoint_create_trampoline<P: FnOnce(Result<Checkpoint, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_client_checkpoint_create_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = checkpoint_create_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_checkpoint_create(self.to_glib_none().0, devices.to_glib_none().0, rollback_timeout, flags.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //pub fn checkpoint_create_future(&self, devices: &[Device], rollback_timeout: u32, flags: CheckpointCreateFlags) -> Pin<Box_<dyn std::future::Future<Output = Result<Checkpoint, /*Ignored*/glib::Error>> + 'static>> {
+    
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    pub fn checkpoint_create_future(&self, devices: &[Device], rollback_timeout: u32, flags: CheckpointCreateFlags) -> Pin<Box_<dyn std::future::Future<Output = Result<Checkpoint, glib::Error>> + 'static>> {
 
-        //let devices = devices.clone();
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.checkpoint_create(
-        //        &devices,
-        //        rollback_timeout,
-        //        flags,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let devices = devices.clone();
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.checkpoint_create(
+                &devices,
+                rollback_timeout,
+                flags,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //#[doc(alias = "nm_client_checkpoint_destroy")]
-    //pub fn checkpoint_destroy<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, checkpoint_path: &str, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_checkpoint_destroy() }
-    //}
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    #[doc(alias = "nm_client_checkpoint_destroy")]
+    pub fn checkpoint_destroy<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, checkpoint_path: &str, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn checkpoint_destroy_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_client_checkpoint_destroy_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = checkpoint_destroy_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_checkpoint_destroy(self.to_glib_none().0, checkpoint_path.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //#[cfg(feature = "v1_12")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //pub fn checkpoint_destroy_future(&self, checkpoint_path: &str) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    #[cfg(feature = "v1_12")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+    pub fn checkpoint_destroy_future(&self, checkpoint_path: &str) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //let checkpoint_path = String::from(checkpoint_path);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.checkpoint_destroy(
-        //        &checkpoint_path,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let checkpoint_path = String::from(checkpoint_path);
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.checkpoint_destroy(
+                &checkpoint_path,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     //#[cfg(feature = "v1_12")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     //#[doc(alias = "nm_client_checkpoint_rollback")]
-    //pub fn checkpoint_rollback<P: FnOnce(Result</*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 7 }, /*Ignored*/glib::Error>) + 'static>(&self, checkpoint_path: &str, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
+    //pub fn checkpoint_rollback<P: FnOnce(Result</*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 7 }, glib::Error>) + 'static>(&self, checkpoint_path: &str, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
     //    unsafe { TODO: call ffi:nm_client_checkpoint_rollback() }
     //}
 
     //
     //#[cfg(feature = "v1_12")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    //pub fn checkpoint_rollback_future(&self, checkpoint_path: &str) -> Pin<Box_<dyn std::future::Future<Output = Result</*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 7 }, /*Ignored*/glib::Error>> + 'static>> {
+    //pub fn checkpoint_rollback_future(&self, checkpoint_path: &str) -> Pin<Box_<dyn std::future::Future<Output = Result</*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 7 }, glib::Error>> + 'static>> {
 
         //let checkpoint_path = String::from(checkpoint_path);
         //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
@@ -362,14 +532,14 @@ impl Client {
     //#[cfg(feature = "v1_24")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     //#[doc(alias = "nm_client_dbus_call")]
-    //pub fn dbus_call<P: FnOnce(Result</*Ignored*/glib::Variant, /*Ignored*/glib::Error>) + 'static>(&self, object_path: &str, interface_name: &str, method_name: &str, parameters: /*Ignored*/Option<&glib::Variant>, reply_type: /*Ignored*/Option<&glib::VariantTy>, timeout_msec: i32, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
+    //pub fn dbus_call<P: FnOnce(Result</*Ignored*/glib::Variant, glib::Error>) + 'static>(&self, object_path: &str, interface_name: &str, method_name: &str, parameters: /*Ignored*/Option<&glib::Variant>, reply_type: /*Ignored*/Option<&glib::VariantTy>, timeout_msec: i32, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
     //    unsafe { TODO: call ffi:nm_client_dbus_call() }
     //}
 
     //
     //#[cfg(feature = "v1_24")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    //pub fn dbus_call_future(&self, object_path: &str, interface_name: &str, method_name: &str, parameters: /*Ignored*/Option<&glib::Variant>, reply_type: /*Ignored*/Option<&glib::VariantTy>, timeout_msec: i32) -> Pin<Box_<dyn std::future::Future<Output = Result</*Ignored*/glib::Variant, /*Ignored*/glib::Error>> + 'static>> {
+    //pub fn dbus_call_future(&self, object_path: &str, interface_name: &str, method_name: &str, parameters: /*Ignored*/Option<&glib::Variant>, reply_type: /*Ignored*/Option<&glib::VariantTy>, timeout_msec: i32) -> Pin<Box_<dyn std::future::Future<Output = Result</*Ignored*/glib::Variant, glib::Error>> + 'static>> {
 
         //let object_path = String::from(object_path);
         //let interface_name = String::from(interface_name);
@@ -395,14 +565,14 @@ impl Client {
     //#[cfg(feature = "v1_24")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     //#[doc(alias = "nm_client_dbus_set_property")]
-    //pub fn dbus_set_property<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, object_path: &str, interface_name: &str, property_name: &str, value: /*Ignored*/&glib::Variant, timeout_msec: i32, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
+    //pub fn dbus_set_property<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, object_path: &str, interface_name: &str, property_name: &str, value: /*Ignored*/&glib::Variant, timeout_msec: i32, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
     //    unsafe { TODO: call ffi:nm_client_dbus_set_property() }
     //}
 
     //
     //#[cfg(feature = "v1_24")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-    //pub fn dbus_set_property_future(&self, object_path: &str, interface_name: &str, property_name: &str, value: /*Ignored*/&glib::Variant, timeout_msec: i32) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    //pub fn dbus_set_property_future(&self, object_path: &str, interface_name: &str, property_name: &str, value: /*Ignored*/&glib::Variant, timeout_msec: i32) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
         //let object_path = String::from(object_path);
         //let interface_name = String::from(interface_name);
@@ -423,32 +593,60 @@ impl Client {
         //}))
     //}
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_client_deactivate_connection")]
-    //pub fn deactivate_connection(&self, active: &impl IsA<ActiveConnection>, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_client_deactivate_connection() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_client_deactivate_connection")]
+    pub fn deactivate_connection(&self, active: &impl IsA<ActiveConnection>, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_client_deactivate_connection(self.to_glib_none().0, active.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_client_deactivate_connection_async")]
-    //pub fn deactivate_connection_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, active: &impl IsA<ActiveConnection>, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_deactivate_connection_async() }
-    //}
+    #[doc(alias = "nm_client_deactivate_connection_async")]
+    pub fn deactivate_connection_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, active: &impl IsA<ActiveConnection>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn deactivate_connection_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_client_deactivate_connection_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = deactivate_connection_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_deactivate_connection_async(self.to_glib_none().0, active.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn deactivate_connection_future(&self, active: &(impl IsA<ActiveConnection> + Clone + 'static)) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn deactivate_connection_future(&self, active: &(impl IsA<ActiveConnection> + Clone + 'static)) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //let active = active.clone();
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.deactivate_connection_async(
-        //        &active,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let active = active.clone();
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.deactivate_connection_async(
+                &active,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[doc(alias = "nm_client_get_activating_connection")]
     #[doc(alias = "get_activating_connection")]
@@ -637,13 +835,20 @@ impl Client {
         }
     }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_client_get_logging")]
-    //#[doc(alias = "get_logging")]
-    //pub fn logging(&self, error: /*Ignored*/Option<glib::Error>) -> Result<Option<glib::GString>, Option<glib::GString>, glib::Error> {
-    //    unsafe { TODO: call ffi:nm_client_get_logging() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_client_get_logging")]
+    #[doc(alias = "get_logging")]
+    pub fn logging(&self) -> Result<(Option<glib::GString>, Option<glib::GString>), glib::Error> {
+        unsafe {
+            let mut level = std::ptr::null_mut();
+            let mut domains = std::ptr::null_mut();
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_client_get_logging(self.to_glib_none().0, &mut level, &mut domains, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok((from_glib_full(level), from_glib_full(domains))) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     //#[cfg(feature = "v1_22")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
@@ -759,32 +964,62 @@ impl Client {
         }
     }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_client_load_connections")]
-    //pub fn load_connections(&self, filenames: &[&str], cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> Result<(glib::GString), glib::Error> {
-    //    unsafe { TODO: call ffi:nm_client_load_connections() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_client_load_connections")]
+    pub fn load_connections(&self, filenames: &[&str], cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<glib::GString, glib::Error> {
+        unsafe {
+            let mut failures = std::ptr::null_mut();
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_client_load_connections(self.to_glib_none().0, filenames.to_glib_none().0, &mut failures, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(from_glib_full(failures)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_client_load_connections_async")]
-    //pub fn load_connections_async<P: FnOnce(Result<Vec<glib::GString>, /*Ignored*/glib::Error>) + 'static>(&self, filenames: &[&str], cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_load_connections_async() }
-    //}
+    #[doc(alias = "nm_client_load_connections_async")]
+    pub fn load_connections_async<P: FnOnce(Result<Vec<glib::GString>, glib::Error>) + 'static>(&self, filenames: &[&str], cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn load_connections_async_trampoline<P: FnOnce(Result<Vec<glib::GString>, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            let mut failures = std::ptr::null_mut();
+            ffi::nm_client_load_connections_finish(_source_object as *mut _, &mut failures, res, &mut error);
+            let result = if error.is_null() { Ok(FromGlibPtrContainer::from_glib_full(failures)) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = load_connections_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_load_connections_async(self.to_glib_none().0, filenames.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn load_connections_future(&self, filenames: &[&str]) -> Pin<Box_<dyn std::future::Future<Output = Result<Vec<glib::GString>, /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn load_connections_future(&self, filenames: &[&str]) -> Pin<Box_<dyn std::future::Future<Output = Result<Vec<glib::GString>, glib::Error>> + 'static>> {
 
-        //let filenames = filenames.to_vec();
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.load_connections_async(
-        //        &filenames,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let filenames = filenames.to_vec();
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.load_connections_async(
+                &filenames,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[doc(alias = "nm_client_networking_get_enabled")]
     pub fn networking_get_enabled(&self) -> bool {
@@ -793,117 +1028,229 @@ impl Client {
         }
     }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_client_networking_set_enabled")]
-    //pub fn networking_set_enabled(&self, enabled: bool, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_client_networking_set_enabled() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_client_networking_set_enabled")]
+    pub fn networking_set_enabled(&self, enabled: bool) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_client_networking_set_enabled(self.to_glib_none().0, enabled.into_glib(), &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_22")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-    //#[doc(alias = "nm_client_reload")]
-    //pub fn reload<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, flags: ManagerReloadFlags, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_reload() }
-    //}
+    #[cfg(feature = "v1_22")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
+    #[doc(alias = "nm_client_reload")]
+    pub fn reload<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, flags: ManagerReloadFlags, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn reload_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_client_reload_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = reload_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_reload(self.to_glib_none().0, flags.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //#[cfg(feature = "v1_22")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-    //pub fn reload_future(&self, flags: ManagerReloadFlags) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    #[cfg(feature = "v1_22")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
+    pub fn reload_future(&self, flags: ManagerReloadFlags) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.reload(
-        //        flags,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.reload(
+                flags,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_client_reload_connections")]
-    //pub fn reload_connections(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_client_reload_connections() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_client_reload_connections")]
+    pub fn reload_connections(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_client_reload_connections(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_client_reload_connections_async")]
-    //pub fn reload_connections_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_reload_connections_async() }
-    //}
+    #[doc(alias = "nm_client_reload_connections_async")]
+    pub fn reload_connections_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn reload_connections_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_client_reload_connections_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = reload_connections_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_reload_connections_async(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn reload_connections_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn reload_connections_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.reload_connections_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.reload_connections_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_client_save_hostname")]
-    //pub fn save_hostname(&self, hostname: Option<&str>, cancellable: /*Ignored*/Option<&gio::Cancellable>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_client_save_hostname() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_client_save_hostname")]
+    pub fn save_hostname(&self, hostname: Option<&str>, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_client_save_hostname(self.to_glib_none().0, hostname.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[doc(alias = "nm_client_save_hostname_async")]
-    //pub fn save_hostname_async<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, hostname: Option<&str>, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_save_hostname_async() }
-    //}
+    #[doc(alias = "nm_client_save_hostname_async")]
+    pub fn save_hostname_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, hostname: Option<&str>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn save_hostname_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_client_save_hostname_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = save_hostname_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_save_hostname_async(self.to_glib_none().0, hostname.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn save_hostname_future(&self, hostname: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn save_hostname_future(&self, hostname: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //let hostname = hostname.map(ToOwned::to_owned);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.save_hostname_async(
-        //        hostname.as_ref().map(::std::borrow::Borrow::borrow),
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        let hostname = hostname.map(ToOwned::to_owned);
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.save_hostname_async(
+                hostname.as_ref().map(::std::borrow::Borrow::borrow),
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
-    //#[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
-    //#[allow(deprecated)]
-    //#[doc(alias = "nm_client_set_logging")]
-    //pub fn set_logging(&self, level: Option<&str>, domains: Option<&str>, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_client_set_logging() }
-    //}
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[allow(deprecated)]
+    #[doc(alias = "nm_client_set_logging")]
+    pub fn set_logging(&self, level: Option<&str>, domains: Option<&str>) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_client_set_logging(self.to_glib_none().0, level.to_glib_none().0, domains.to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_42")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    //#[doc(alias = "nm_client_wait_shutdown")]
-    //pub fn wait_shutdown<P: FnOnce(Result<(), /*Ignored*/glib::Error>) + 'static>(&self, integrate_maincontext: bool, cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_wait_shutdown() }
-    //}
+    #[cfg(feature = "v1_42")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
+    #[doc(alias = "nm_client_wait_shutdown")]
+    pub fn wait_shutdown<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, integrate_maincontext: bool, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn wait_shutdown_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            ffi::nm_client_wait_shutdown_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = wait_shutdown_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_wait_shutdown(self.to_glib_none().0, integrate_maincontext.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //#[cfg(feature = "v1_42")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    //pub fn wait_shutdown_future(&self, integrate_maincontext: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<(), /*Ignored*/glib::Error>> + 'static>> {
+    
+    #[cfg(feature = "v1_42")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
+    pub fn wait_shutdown_future(&self, integrate_maincontext: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.wait_shutdown(
-        //        integrate_maincontext,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+            obj.wait_shutdown(
+                integrate_maincontext,
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
@@ -1080,24 +1427,48 @@ impl Client {
         ObjectExt::property(self, "wwan-hardware-enabled")
     }
 
-    //#[doc(alias = "nm_client_new_async")]
-    //pub fn new_async<P: FnOnce(Result<Client, /*Ignored*/glib::Error>) + 'static>(cancellable: /*Ignored*/Option<&gio::Cancellable>, callback: P) {
-    //    unsafe { TODO: call ffi:nm_client_new_async() }
-    //}
+    #[doc(alias = "nm_client_new_async")]
+    pub fn new_async<P: FnOnce(Result<Client, glib::Error>) + 'static>(cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+        assert_initialized_main_thread!();
+        
+                let main_context = glib::MainContext::ref_thread_default();
+                let is_main_context_owner = main_context.is_owner();
+                let has_acquired_main_context = (!is_main_context_owner)
+                    .then(|| main_context.acquire().ok())
+                    .flatten();
+                assert!(
+                    is_main_context_owner || has_acquired_main_context.is_some(),
+                    "Async operations only allowed if the thread is owning the MainContext"
+                );
+        
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn new_async_trampoline<P: FnOnce(Result<Client, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_client_new_finish(res, &mut error);
+            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let callback: P = callback.into_inner();
+            callback(result);
+        }
+        let callback = new_async_trampoline::<P>;
+        unsafe {
+            ffi::nm_client_new_async(cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+        }
+    }
 
-    //
-    //pub fn new_future() -> Pin<Box_<dyn std::future::Future<Output = Result<Client, /*Ignored*/glib::Error>> + 'static>> {
+    
+    pub fn new_future() -> Pin<Box_<dyn std::future::Future<Output = Result<Client, glib::Error>> + 'static>> {
 
-        //skip_assert_initialized!();
-        //Box_::pin(gio::GioFuture::new(&(), move |_obj, cancellable, send| {
-        //    Self::new_async(
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
-    //}
+        skip_assert_initialized!();
+        Box_::pin(gio::GioFuture::new(&(), move |_obj, cancellable, send| {
+            Self::new_async(
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
+        }))
+    }
 
     #[doc(alias = "active-connection-added")]
     pub fn connect_active_connection_added<F: Fn(&Self, &ActiveConnection) + 'static>(&self, f: F) -> SignalHandlerId {

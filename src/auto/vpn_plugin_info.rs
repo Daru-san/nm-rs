@@ -37,13 +37,18 @@ glib::wrapper! {
 }
 
 impl VpnPluginInfo {
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //#[doc(alias = "nm_vpn_plugin_info_new_from_file")]
-    //#[doc(alias = "new_from_file")]
-    //pub fn from_file(filename: &str, error: /*Ignored*/Option<glib::Error>) -> VpnPluginInfo {
-    //    unsafe { TODO: call ffi:nm_vpn_plugin_info_new_from_file() }
-    //}
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[doc(alias = "nm_vpn_plugin_info_new_from_file")]
+    #[doc(alias = "new_from_file")]
+    pub fn from_file(filename: &str) -> Result<VpnPluginInfo, glib::Error> {
+        assert_initialized_main_thread!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_vpn_plugin_info_new_from_file(filename.to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
@@ -59,7 +64,7 @@ impl VpnPluginInfo {
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     //#[doc(alias = "nm_vpn_plugin_info_new_with_data")]
     //#[doc(alias = "new_with_data")]
-    //pub fn with_data(filename: &str, keyfile: /*Ignored*/&glib::KeyFile, error: /*Ignored*/Option<glib::Error>) -> VpnPluginInfo {
+    //pub fn with_data(filename: &str, keyfile: /*Ignored*/&glib::KeyFile) -> Result<VpnPluginInfo, glib::Error> {
     //    unsafe { TODO: call ffi:nm_vpn_plugin_info_new_with_data() }
     //}
 
@@ -152,12 +157,16 @@ impl VpnPluginInfo {
         }
     }
 
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //#[doc(alias = "nm_vpn_plugin_info_load_editor_plugin")]
-    //pub fn load_editor_plugin(&self, error: /*Ignored*/Option<glib::Error>) -> VpnEditorPlugin {
-    //    unsafe { TODO: call ffi:nm_vpn_plugin_info_load_editor_plugin() }
-    //}
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[doc(alias = "nm_vpn_plugin_info_load_editor_plugin")]
+    pub fn load_editor_plugin(&self) -> Result<VpnEditorPlugin, glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let ret = ffi::nm_vpn_plugin_info_load_editor_plugin(self.to_glib_none().0, &mut error);
+            if error.is_null() { Ok(from_glib_none(ret)) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -195,12 +204,18 @@ impl VpnPluginInfo {
         }
     }
 
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //#[doc(alias = "nm_vpn_plugin_info_list_add")]
-    //pub fn list_add(list: &[VpnPluginInfo], plugin_info: &VpnPluginInfo, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_vpn_plugin_info_list_add() }
-    //}
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[doc(alias = "nm_vpn_plugin_info_list_add")]
+    pub fn list_add(list: &[VpnPluginInfo], plugin_info: &VpnPluginInfo) -> Result<(), glib::Error> {
+        skip_assert_initialized!();
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_vpn_plugin_info_list_add(list.to_glib_none().0, plugin_info.to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]

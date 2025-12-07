@@ -530,7 +530,7 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     }
 
     //#[doc(alias = "nm_connection_normalize")]
-    //fn normalize(&self, parameters: /*Unknown conversion*//*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 25 }, error: /*Ignored*/Option<glib::Error>) -> Result<(bool), glib::Error> {
+    //fn normalize(&self, parameters: /*Unknown conversion*//*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 25 }) -> Result<bool, glib::Error> {
     //    unsafe { TODO: call ffi:nm_connection_normalize() }
     //}
 
@@ -542,7 +542,7 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     }
 
     //#[doc(alias = "nm_connection_replace_settings")]
-    //fn replace_settings(&self, new_settings: /*Ignored*/&glib::Variant, error: /*Ignored*/Option<glib::Error>) -> bool {
+    //fn replace_settings(&self, new_settings: /*Ignored*/&glib::Variant) -> Result<(), glib::Error> {
     //    unsafe { TODO: call ffi:nm_connection_replace_settings() }
     //}
 
@@ -566,21 +566,31 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     //}
 
     //#[doc(alias = "nm_connection_update_secrets")]
-    //fn update_secrets(&self, setting_name: &str, secrets: /*Ignored*/&glib::Variant, error: /*Ignored*/Option<glib::Error>) -> bool {
+    //fn update_secrets(&self, setting_name: &str, secrets: /*Ignored*/&glib::Variant) -> Result<(), glib::Error> {
     //    unsafe { TODO: call ffi:nm_connection_update_secrets() }
     //}
 
-    //#[doc(alias = "nm_connection_verify")]
-    //fn verify(&self, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_connection_verify() }
-    //}
+    #[doc(alias = "nm_connection_verify")]
+    fn verify(&self) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_connection_verify(self.as_ref().to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
-    //#[cfg(feature = "v1_2")]
-    //#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //#[doc(alias = "nm_connection_verify_secrets")]
-    //fn verify_secrets(&self, error: /*Ignored*/Option<glib::Error>) -> bool {
-    //    unsafe { TODO: call ffi:nm_connection_verify_secrets() }
-    //}
+    #[cfg(feature = "v1_2")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+    #[doc(alias = "nm_connection_verify_secrets")]
+    fn verify_secrets(&self) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = std::ptr::null_mut();
+            let is_ok = ffi::nm_connection_verify_secrets(self.as_ref().to_glib_none().0, &mut error);
+            debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     #[doc(alias = "changed")]
     fn connect_changed<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
