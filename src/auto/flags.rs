@@ -3,13 +3,12 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi};
-use glib::{bitflags::bitflags,prelude::*,translate::*};
+use crate::ffi;
+use glib::{bitflags::bitflags, prelude::*, translate::*};
 
 bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-    #[doc(alias = "NM80211ApFlags")]
-    pub struct 80211ApFlags: u32 {
+    pub struct NM80211ApFlags: u32 {
         #[doc(alias = "NM_802_11_AP_FLAGS_NONE")]
         const NONE = ffi::NM_802_11_AP_FLAGS_NONE as _;
         #[doc(alias = "NM_802_11_AP_FLAGS_PRIVACY")]
@@ -24,7 +23,7 @@ bitflags! {
 }
 
 #[doc(hidden)]
-impl IntoGlib for 80211ApFlags {
+impl IntoGlib for NM80211ApFlags {
     type GlibType = ffi::NM80211ApFlags;
 
     #[inline]
@@ -34,7 +33,7 @@ impl IntoGlib for 80211ApFlags {
 }
 
 #[doc(hidden)]
-impl FromGlib<ffi::NM80211ApFlags> for 80211ApFlags {
+impl FromGlib<ffi::NM80211ApFlags> for NM80211ApFlags {
     #[inline]
     unsafe fn from_glib(value: ffi::NM80211ApFlags) -> Self {
         skip_assert_initialized!();
@@ -42,29 +41,29 @@ impl FromGlib<ffi::NM80211ApFlags> for 80211ApFlags {
     }
 }
 
-impl StaticType for 80211ApFlags {
-                #[inline]
+impl StaticType for NM80211ApFlags {
+    #[inline]
     #[doc(alias = "nm_802_11_ap_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_802_11_ap_flags_get_type()) }
-                }
-            }
-
-impl glib::HasParamSpec for 80211ApFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_802_11_ap_flags_get_type()) }
+    }
 }
 
-impl glib::value::ValueType for 80211ApFlags {
+impl glib::HasParamSpec for NM80211ApFlags {
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
+}
+
+impl glib::value::ValueType for NM80211ApFlags {
     type Type = Self;
 }
 
-unsafe impl<'a> glib::value::FromValue<'a> for 80211ApFlags {
+unsafe impl<'a> glib::value::FromValue<'a> for NM80211ApFlags {
     type Checker = glib::value::GenericValueTypeChecker<Self>;
 
     #[inline]
@@ -74,7 +73,7 @@ unsafe impl<'a> glib::value::FromValue<'a> for 80211ApFlags {
     }
 }
 
-impl ToValue for 80211ApFlags {
+impl ToValue for NM80211ApFlags {
     #[inline]
     fn to_value(&self) -> glib::Value {
         let mut value = glib::Value::for_value_type::<Self>();
@@ -90,9 +89,9 @@ impl ToValue for 80211ApFlags {
     }
 }
 
-impl From<80211ApFlags> for glib::Value {
+impl From<NM80211ApFlags> for glib::Value {
     #[inline]
-    fn from(v: 80211ApFlags) -> Self {
+    fn from(v: NM80211ApFlags) -> Self {
         skip_assert_initialized!();
         ToValue::to_value(&v)
     }
@@ -100,8 +99,7 @@ impl From<80211ApFlags> for glib::Value {
 
 bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-    #[doc(alias = "NM80211ApSecurityFlags")]
-    pub struct 80211ApSecurityFlags: u32 {
+    pub struct NM80211ApSecurityFlags: u32 {
         #[doc(alias = "NM_802_11_AP_SEC_NONE")]
         const NONE = ffi::NM_802_11_AP_SEC_NONE as _;
         #[doc(alias = "NM_802_11_AP_SEC_PAIR_WEP40")]
@@ -136,7 +134,7 @@ bitflags! {
 }
 
 #[doc(hidden)]
-impl IntoGlib for 80211ApSecurityFlags {
+impl IntoGlib for NM80211ApSecurityFlags {
     type GlibType = ffi::NM80211ApSecurityFlags;
 
     #[inline]
@@ -146,7 +144,7 @@ impl IntoGlib for 80211ApSecurityFlags {
 }
 
 #[doc(hidden)]
-impl FromGlib<ffi::NM80211ApSecurityFlags> for 80211ApSecurityFlags {
+impl FromGlib<ffi::NM80211ApSecurityFlags> for NM80211ApSecurityFlags {
     #[inline]
     unsafe fn from_glib(value: ffi::NM80211ApSecurityFlags) -> Self {
         skip_assert_initialized!();
@@ -154,29 +152,29 @@ impl FromGlib<ffi::NM80211ApSecurityFlags> for 80211ApSecurityFlags {
     }
 }
 
-impl StaticType for 80211ApSecurityFlags {
-                #[inline]
+impl StaticType for NM80211ApSecurityFlags {
+    #[inline]
     #[doc(alias = "nm_802_11_ap_security_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_802_11_ap_security_flags_get_type()) }
-                }
-            }
-
-impl glib::HasParamSpec for 80211ApSecurityFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_802_11_ap_security_flags_get_type()) }
+    }
 }
 
-impl glib::value::ValueType for 80211ApSecurityFlags {
+impl glib::HasParamSpec for NM80211ApSecurityFlags {
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
+}
+
+impl glib::value::ValueType for NM80211ApSecurityFlags {
     type Type = Self;
 }
 
-unsafe impl<'a> glib::value::FromValue<'a> for 80211ApSecurityFlags {
+unsafe impl<'a> glib::value::FromValue<'a> for NM80211ApSecurityFlags {
     type Checker = glib::value::GenericValueTypeChecker<Self>;
 
     #[inline]
@@ -186,7 +184,7 @@ unsafe impl<'a> glib::value::FromValue<'a> for 80211ApSecurityFlags {
     }
 }
 
-impl ToValue for 80211ApSecurityFlags {
+impl ToValue for NM80211ApSecurityFlags {
     #[inline]
     fn to_value(&self) -> glib::Value {
         let mut value = glib::Value::for_value_type::<Self>();
@@ -202,9 +200,9 @@ impl ToValue for 80211ApSecurityFlags {
     }
 }
 
-impl From<80211ApSecurityFlags> for glib::Value {
+impl From<NM80211ApSecurityFlags> for glib::Value {
     #[inline]
-    fn from(v: 80211ApSecurityFlags) -> Self {
+    fn from(v: NM80211ApSecurityFlags) -> Self {
         skip_assert_initialized!();
         ToValue::to_value(&v)
     }
@@ -263,23 +261,23 @@ impl FromGlib<ffi::NMActivationStateFlags> for ActivationStateFlags {
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
 impl StaticType for ActivationStateFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_activation_state_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_activation_state_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_activation_state_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
 impl glib::HasParamSpec for ActivationStateFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_10")]
@@ -361,21 +359,21 @@ impl FromGlib<ffi::NMBluetoothCapabilities> for BluetoothCapabilities {
 }
 
 impl StaticType for BluetoothCapabilities {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_bluetooth_capabilities_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_bluetooth_capabilities_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_bluetooth_capabilities_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for BluetoothCapabilities {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for BluetoothCapabilities {
@@ -465,23 +463,23 @@ impl FromGlib<ffi::NMCheckpointCreateFlags> for CheckpointCreateFlags {
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl StaticType for CheckpointCreateFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_checkpoint_create_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_checkpoint_create_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_checkpoint_create_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl glib::HasParamSpec for CheckpointCreateFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_12")]
@@ -573,23 +571,23 @@ impl FromGlib<ffi::NMClientInstanceFlags> for ClientInstanceFlags {
 #[cfg(feature = "v1_24")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
 impl StaticType for ClientInstanceFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_client_instance_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_client_instance_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_client_instance_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_24")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
 impl glib::HasParamSpec for ClientInstanceFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_24")]
@@ -681,21 +679,21 @@ impl FromGlib<ffi::NMConnectionSerializationFlags> for ConnectionSerializationFl
 }
 
 impl StaticType for ConnectionSerializationFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_connection_serialization_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_connection_serialization_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_connection_serialization_flags_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for ConnectionSerializationFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for ConnectionSerializationFlags {
@@ -773,21 +771,21 @@ impl FromGlib<ffi::NMDeviceCapabilities> for DeviceCapabilities {
 }
 
 impl StaticType for DeviceCapabilities {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_device_capabilities_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_device_capabilities_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_device_capabilities_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for DeviceCapabilities {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for DeviceCapabilities {
@@ -873,23 +871,23 @@ impl FromGlib<ffi::NMDeviceInterfaceFlags> for DeviceInterfaceFlags {
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 impl StaticType for DeviceInterfaceFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_device_interface_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_device_interface_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_device_interface_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 impl glib::HasParamSpec for DeviceInterfaceFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_22")]
@@ -977,21 +975,21 @@ impl FromGlib<ffi::NMDeviceModemCapabilities> for DeviceModemCapabilities {
 }
 
 impl StaticType for DeviceModemCapabilities {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_device_modem_capabilities_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_device_modem_capabilities_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_device_modem_capabilities_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for DeviceModemCapabilities {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for DeviceModemCapabilities {
@@ -1071,23 +1069,23 @@ impl FromGlib<ffi::NMDeviceReapplyFlags> for DeviceReapplyFlags {
 #[cfg(feature = "v1_42")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
 impl StaticType for DeviceReapplyFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_device_reapply_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_device_reapply_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_device_reapply_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_42")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
 impl glib::HasParamSpec for DeviceReapplyFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_42")]
@@ -1193,21 +1191,21 @@ impl FromGlib<ffi::NMDeviceWifiCapabilities> for DeviceWifiCapabilities {
 }
 
 impl StaticType for DeviceWifiCapabilities {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_device_wifi_capabilities_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_device_wifi_capabilities_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_device_wifi_capabilities_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for DeviceWifiCapabilities {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for DeviceWifiCapabilities {
@@ -1293,23 +1291,23 @@ impl FromGlib<ffi::NMDhcpHostnameFlags> for DhcpHostnameFlags {
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 impl StaticType for DhcpHostnameFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_dhcp_hostname_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_dhcp_hostname_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_dhcp_hostname_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 impl glib::HasParamSpec for DhcpHostnameFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_22")]
@@ -1397,23 +1395,23 @@ impl FromGlib<ffi::NMIPAddressCmpFlags> for IPAddressCmpFlags {
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 impl StaticType for IPAddressCmpFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_ip_address_cmp_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_ip_address_cmp_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_ip_address_cmp_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 impl glib::HasParamSpec for IPAddressCmpFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_22")]
@@ -1505,23 +1503,23 @@ impl FromGlib<ffi::NMIPRoutingRuleAsStringFlags> for IPRoutingRuleAsStringFlags 
 #[cfg(feature = "v1_18")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
 impl StaticType for IPRoutingRuleAsStringFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_ip_routing_rule_as_string_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_ip_routing_rule_as_string_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_ip_routing_rule_as_string_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_18")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
 impl glib::HasParamSpec for IPRoutingRuleAsStringFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_18")]
@@ -1619,23 +1617,23 @@ impl FromGlib<ffi::NMIPTunnelFlags> for IPTunnelFlags {
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl StaticType for IPTunnelFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_ip_tunnel_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_ip_tunnel_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_ip_tunnel_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl glib::HasParamSpec for IPTunnelFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_12")]
@@ -1721,23 +1719,23 @@ impl FromGlib<ffi::NMKeyfileHandlerFlags> for KeyfileHandlerFlags {
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
 impl StaticType for KeyfileHandlerFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_keyfile_handler_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_keyfile_handler_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_keyfile_handler_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
 impl glib::HasParamSpec for KeyfileHandlerFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_30")]
@@ -1827,23 +1825,23 @@ impl FromGlib<ffi::NMManagerReloadFlags> for ManagerReloadFlags {
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 impl StaticType for ManagerReloadFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_manager_reload_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_manager_reload_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_manager_reload_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
 impl glib::HasParamSpec for ManagerReloadFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_22")]
@@ -1945,23 +1943,23 @@ impl FromGlib<ffi::NMMptcpFlags> for MptcpFlags {
 #[cfg(feature = "v1_40")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
 impl StaticType for MptcpFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_mptcp_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_mptcp_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_mptcp_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_40")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
 impl glib::HasParamSpec for MptcpFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_40")]
@@ -2051,23 +2049,23 @@ impl FromGlib<ffi::NMRadioFlags> for RadioFlags {
 #[cfg(feature = "v1_38")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_38")))]
 impl StaticType for RadioFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_radio_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_radio_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_radio_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_38")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_38")))]
 impl glib::HasParamSpec for RadioFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_38")]
@@ -2149,21 +2147,21 @@ impl FromGlib<ffi::NMSecretAgentCapabilities> for SecretAgentCapabilities {
 }
 
 impl StaticType for SecretAgentCapabilities {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_secret_agent_capabilities_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_secret_agent_capabilities_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_secret_agent_capabilities_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for SecretAgentCapabilities {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for SecretAgentCapabilities {
@@ -2245,21 +2243,21 @@ impl FromGlib<ffi::NMSecretAgentGetSecretsFlags> for SecretAgentGetSecretsFlags 
 }
 
 impl StaticType for SecretAgentGetSecretsFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_secret_agent_get_secrets_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_secret_agent_get_secrets_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_secret_agent_get_secrets_flags_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for SecretAgentGetSecretsFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for SecretAgentGetSecretsFlags {
@@ -2357,23 +2355,23 @@ impl FromGlib<ffi::NMSetting8021xAuthFlags> for Setting8021xAuthFlags {
 #[cfg(feature = "v1_8")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
 impl StaticType for Setting8021xAuthFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_setting_802_1x_auth_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_setting_802_1x_auth_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_setting_802_1x_auth_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_8")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
 impl glib::HasParamSpec for Setting8021xAuthFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_8")]
@@ -2457,21 +2455,21 @@ impl FromGlib<ffi::NMSettingDcbFlags> for SettingDcbFlags {
 }
 
 impl StaticType for SettingDcbFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_setting_dcb_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_setting_dcb_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_setting_dcb_flags_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for SettingDcbFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for SettingDcbFlags {
@@ -2557,23 +2555,23 @@ impl FromGlib<ffi::NMSettingEthtoolFecMode> for SettingEthtoolFecMode {
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 impl StaticType for SettingEthtoolFecMode {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_setting_ethtool_fec_mode_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_setting_ethtool_fec_mode_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_setting_ethtool_fec_mode_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 impl glib::HasParamSpec for SettingEthtoolFecMode {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_52")]
@@ -2657,21 +2655,21 @@ impl FromGlib<ffi::NMSettingSecretFlags> for SettingSecretFlags {
 }
 
 impl StaticType for SettingSecretFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_setting_secret_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_setting_secret_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_setting_secret_flags_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for SettingSecretFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for SettingSecretFlags {
@@ -2763,23 +2761,23 @@ impl FromGlib<ffi::NMSettingWiredWakeOnLan> for SettingWiredWakeOnLan {
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl StaticType for SettingWiredWakeOnLan {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_setting_wired_wake_on_lan_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_setting_wired_wake_on_lan_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_setting_wired_wake_on_lan_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 impl glib::HasParamSpec for SettingWiredWakeOnLan {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_2")]
@@ -2873,23 +2871,23 @@ impl FromGlib<ffi::NMSettingWirelessSecurityWpsMethod> for SettingWirelessSecuri
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
 impl StaticType for SettingWirelessSecurityWpsMethod {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_setting_wireless_security_wps_method_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_setting_wireless_security_wps_method_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_setting_wireless_security_wps_method_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
 impl glib::HasParamSpec for SettingWirelessSecurityWpsMethod {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_10")]
@@ -2995,23 +2993,23 @@ impl FromGlib<ffi::NMSettingWirelessWakeOnWLan> for SettingWirelessWakeOnWLan {
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl StaticType for SettingWirelessWakeOnWLan {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_setting_wireless_wake_on_wlan_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_setting_wireless_wake_on_wlan_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_setting_wireless_wake_on_wlan_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl glib::HasParamSpec for SettingWirelessWakeOnWLan {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_12")]
@@ -3103,23 +3101,23 @@ impl FromGlib<ffi::NMSettingsAddConnection2Flags> for SettingsAddConnection2Flag
 #[cfg(feature = "v1_20")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
 impl StaticType for SettingsAddConnection2Flags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_settings_add_connection2_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_settings_add_connection2_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_settings_add_connection2_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_20")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
 impl glib::HasParamSpec for SettingsAddConnection2Flags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_20")]
@@ -3213,23 +3211,23 @@ impl FromGlib<ffi::NMSettingsConnectionFlags> for SettingsConnectionFlags {
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl StaticType for SettingsConnectionFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_settings_connection_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_settings_connection_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_settings_connection_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl glib::HasParamSpec for SettingsConnectionFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_12")]
@@ -3329,23 +3327,23 @@ impl FromGlib<ffi::NMSettingsUpdate2Flags> for SettingsUpdate2Flags {
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl StaticType for SettingsUpdate2Flags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_settings_update2_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_settings_update2_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_settings_update2_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl glib::HasParamSpec for SettingsUpdate2Flags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_12")]
@@ -3435,23 +3433,23 @@ impl FromGlib<ffi::NMTeamLinkWatcherArpPingFlags> for TeamLinkWatcherArpPingFlag
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl StaticType for TeamLinkWatcherArpPingFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_team_link_watcher_arp_ping_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_team_link_watcher_arp_ping_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_team_link_watcher_arp_ping_flags_get_type()) }
+    }
+}
 
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl glib::HasParamSpec for TeamLinkWatcherArpPingFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 #[cfg(feature = "v1_12")]
@@ -3535,21 +3533,21 @@ impl FromGlib<ffi::NMVlanFlags> for VlanFlags {
 }
 
 impl StaticType for VlanFlags {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_vlan_flags_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_vlan_flags_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_vlan_flags_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for VlanFlags {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for VlanFlags {
@@ -3627,21 +3625,21 @@ impl FromGlib<ffi::NMVpnEditorPluginCapability> for VpnEditorPluginCapability {
 }
 
 impl StaticType for VpnEditorPluginCapability {
-                #[inline]
+    #[inline]
     #[doc(alias = "nm_vpn_editor_plugin_capability_get_type")]
-   fn static_type() -> glib::Type {
-                    unsafe { from_glib(ffi::nm_vpn_editor_plugin_capability_get_type()) }
-                }
-            }
+    fn static_type() -> glib::Type {
+        unsafe { from_glib(ffi::nm_vpn_editor_plugin_capability_get_type()) }
+    }
+}
 
 impl glib::HasParamSpec for VpnEditorPluginCapability {
-                type ParamSpec = glib::ParamSpecFlags;
-                type SetValue = Self;
-                type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
-    
-                fn param_spec_builder() -> Self::BuilderFn {
-                    Self::ParamSpec::builder
-                }
+    type ParamSpec = glib::ParamSpecFlags;
+    type SetValue = Self;
+    type BuilderFn = fn(&str) -> glib::ParamSpecFlagsBuilder<Self>;
+
+    fn param_spec_builder() -> Self::BuilderFn {
+        Self::ParamSpec::builder
+    }
 }
 
 impl glib::value::ValueType for VpnEditorPluginCapability {
@@ -3681,4 +3679,3 @@ impl From<VpnEditorPluginCapability> for glib::Value {
         ToValue::to_value(&v)
     }
 }
-

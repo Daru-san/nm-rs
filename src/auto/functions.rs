@@ -3,18 +3,20 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{80211ApFlags,80211ApSecurityFlags,ffi,DeviceWifiCapabilities,UtilsSecurityType,WepKeyType};
-#[cfg(feature = "v1_12")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-use crate::{TCAction,TCQdisc,TCTfilter};
-#[cfg(feature = "v1_14")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-use crate::{SriovVF};
 #[cfg(feature = "v1_40")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
-use crate::{Connection};
-use glib::{translate::*};
-
+use crate::Connection;
+#[cfg(feature = "v1_14")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
+use crate::SriovVF;
+use crate::{
+    DeviceWifiCapabilities, NM80211ApFlags, NM80211ApSecurityFlags, UtilsSecurityType, WepKeyType,
+    ffi,
+};
+#[cfg(feature = "v1_12")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+use crate::{TCAction, TCQdisc, TCTfilter};
+use glib::translate::*;
 
 #[cfg(feature = "v1_40")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
@@ -24,7 +26,11 @@ pub fn conn_wireguard_import(filename: &str) -> Result<Connection, glib::Error> 
     unsafe {
         let mut error = std::ptr::null_mut();
         let ret = ffi::nm_conn_wireguard_import(filename.to_glib_none().0, &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -34,7 +40,9 @@ pub fn conn_wireguard_import(filename: &str) -> Result<Connection, glib::Error> 
 pub fn ethtool_optname_is_channels(optname: Option<&str>) -> bool {
     assert_initialized_main_thread!();
     unsafe {
-        from_glib(ffi::nm_ethtool_optname_is_channels(optname.to_glib_none().0))
+        from_glib(ffi::nm_ethtool_optname_is_channels(
+            optname.to_glib_none().0,
+        ))
     }
 }
 
@@ -44,7 +52,9 @@ pub fn ethtool_optname_is_channels(optname: Option<&str>) -> bool {
 pub fn ethtool_optname_is_coalesce(optname: Option<&str>) -> bool {
     assert_initialized_main_thread!();
     unsafe {
-        from_glib(ffi::nm_ethtool_optname_is_coalesce(optname.to_glib_none().0))
+        from_glib(ffi::nm_ethtool_optname_is_coalesce(
+            optname.to_glib_none().0,
+        ))
     }
 }
 
@@ -53,9 +63,7 @@ pub fn ethtool_optname_is_coalesce(optname: Option<&str>) -> bool {
 #[doc(alias = "nm_ethtool_optname_is_eee")]
 pub fn ethtool_optname_is_eee(optname: Option<&str>) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_ethtool_optname_is_eee(optname.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_ethtool_optname_is_eee(optname.to_glib_none().0)) }
 }
 
 #[cfg(feature = "v1_20")]
@@ -63,9 +71,7 @@ pub fn ethtool_optname_is_eee(optname: Option<&str>) -> bool {
 #[doc(alias = "nm_ethtool_optname_is_feature")]
 pub fn ethtool_optname_is_feature(optname: Option<&str>) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_ethtool_optname_is_feature(optname.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_ethtool_optname_is_feature(optname.to_glib_none().0)) }
 }
 
 #[cfg(feature = "v1_52")]
@@ -73,9 +79,7 @@ pub fn ethtool_optname_is_feature(optname: Option<&str>) -> bool {
 #[doc(alias = "nm_ethtool_optname_is_fec")]
 pub fn ethtool_optname_is_fec(optname: Option<&str>) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_ethtool_optname_is_fec(optname.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_ethtool_optname_is_fec(optname.to_glib_none().0)) }
 }
 
 #[cfg(feature = "v1_32")]
@@ -83,9 +87,7 @@ pub fn ethtool_optname_is_fec(optname: Option<&str>) -> bool {
 #[doc(alias = "nm_ethtool_optname_is_pause")]
 pub fn ethtool_optname_is_pause(optname: Option<&str>) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_ethtool_optname_is_pause(optname.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_ethtool_optname_is_pause(optname.to_glib_none().0)) }
 }
 
 #[cfg(feature = "v1_26")]
@@ -93,9 +95,7 @@ pub fn ethtool_optname_is_pause(optname: Option<&str>) -> bool {
 #[doc(alias = "nm_ethtool_optname_is_ring")]
 pub fn ethtool_optname_is_ring(optname: Option<&str>) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_ethtool_optname_is_ring(optname.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_ethtool_optname_is_ring(optname.to_glib_none().0)) }
 }
 
 //#[cfg(feature = "v1_30")]
@@ -113,10 +113,16 @@ pub fn ethtool_optname_is_ring(optname: Option<&str>) -> bool {
 //}
 
 #[doc(alias = "nm_utils_ap_mode_security_valid")]
-pub fn utils_ap_mode_security_valid(type_: UtilsSecurityType, wifi_caps: DeviceWifiCapabilities) -> bool {
+pub fn utils_ap_mode_security_valid(
+    type_: UtilsSecurityType,
+    wifi_caps: DeviceWifiCapabilities,
+) -> bool {
     assert_initialized_main_thread!();
     unsafe {
-        from_glib(ffi::nm_utils_ap_mode_security_valid(type_.into_glib(), wifi_caps.into_glib()))
+        from_glib(ffi::nm_utils_ap_mode_security_valid(
+            type_.into_glib(),
+            wifi_caps.into_glib(),
+        ))
     }
 }
 
@@ -128,8 +134,16 @@ pub fn utils_base64secret_decode(base64_key: &str) -> Option<u8> {
     let required_key_len = base64_key.len() as _;
     unsafe {
         let mut out_key = std::mem::MaybeUninit::uninit();
-        let ret = from_glib(ffi::nm_utils_base64secret_decode(base64_key.to_glib_none().0, required_key_len, out_key.as_mut_ptr()));
-        if ret { Some(out_key.assume_init()) } else { None }
+        let ret = from_glib(ffi::nm_utils_base64secret_decode(
+            base64_key.to_glib_none().0,
+            required_key_len,
+            out_key.as_mut_ptr(),
+        ));
+        if ret {
+            Some(out_key.assume_init())
+        } else {
+            None
+        }
     }
 }
 
@@ -138,7 +152,11 @@ pub fn utils_bin2hexstr(src: &[u8], final_len: i32) -> glib::GString {
     assert_initialized_main_thread!();
     let len = src.len() as _;
     unsafe {
-        from_glib_full(ffi::nm_utils_bin2hexstr(src.to_glib_none().0, len, final_len))
+        from_glib_full(ffi::nm_utils_bin2hexstr(
+            src.to_glib_none().0,
+            len,
+            final_len,
+        ))
     }
 }
 
@@ -147,9 +165,7 @@ pub fn utils_bin2hexstr(src: &[u8], final_len: i32) -> glib::GString {
 #[doc(alias = "nm_utils_bond_mode_int_to_string")]
 pub fn utils_bond_mode_int_to_string(mode: i32) -> glib::GString {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib_none(ffi::nm_utils_bond_mode_int_to_string(mode))
-    }
+    unsafe { from_glib_none(ffi::nm_utils_bond_mode_int_to_string(mode)) }
 }
 
 #[cfg(feature = "v1_2")]
@@ -157,16 +173,20 @@ pub fn utils_bond_mode_int_to_string(mode: i32) -> glib::GString {
 #[doc(alias = "nm_utils_bond_mode_string_to_int")]
 pub fn utils_bond_mode_string_to_int(mode: &str) -> i32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_bond_mode_string_to_int(mode.to_glib_none().0)
-    }
+    unsafe { ffi::nm_utils_bond_mode_string_to_int(mode.to_glib_none().0) }
 }
 
 #[doc(alias = "nm_utils_check_virtual_device_compatibility")]
-pub fn utils_check_virtual_device_compatibility(virtual_type: glib::types::Type, other_type: glib::types::Type) -> bool {
+pub fn utils_check_virtual_device_compatibility(
+    virtual_type: glib::types::Type,
+    other_type: glib::types::Type,
+) -> bool {
     assert_initialized_main_thread!();
     unsafe {
-        from_glib(ffi::nm_utils_check_virtual_device_compatibility(virtual_type.into_glib(), other_type.into_glib()))
+        from_glib(ffi::nm_utils_check_virtual_device_compatibility(
+            virtual_type.into_glib(),
+            other_type.into_glib(),
+        ))
     }
 }
 
@@ -183,13 +203,25 @@ pub fn utils_ensure_gtypes() {
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[doc(alias = "nm_utils_enum_from_str")]
-pub fn utils_enum_from_str(type_: glib::types::Type, str: &str) -> Option<(i32, Option<glib::GString>)> {
+pub fn utils_enum_from_str(
+    type_: glib::types::Type,
+    str: &str,
+) -> Option<(i32, Option<glib::GString>)> {
     assert_initialized_main_thread!();
     unsafe {
         let mut out_value = std::mem::MaybeUninit::uninit();
         let mut err_token = std::ptr::null_mut();
-        let ret = from_glib(ffi::nm_utils_enum_from_str(type_.into_glib(), str.to_glib_none().0, out_value.as_mut_ptr(), &mut err_token));
-        if ret { Some((out_value.assume_init(), from_glib_full(err_token))) } else { None }
+        let ret = from_glib(ffi::nm_utils_enum_from_str(
+            type_.into_glib(),
+            str.to_glib_none().0,
+            out_value.as_mut_ptr(),
+            &mut err_token,
+        ));
+        if ret {
+            Some((out_value.assume_init(), from_glib_full(err_token)))
+        } else {
+            None
+        }
     }
 }
 
@@ -199,7 +231,11 @@ pub fn utils_enum_from_str(type_: glib::types::Type, str: &str) -> Option<(i32, 
 pub fn utils_enum_get_values(type_: glib::types::Type, from: i32, to: i32) -> Vec<glib::GString> {
     assert_initialized_main_thread!();
     unsafe {
-        FromGlibPtrContainer::from_glib_container(ffi::nm_utils_enum_get_values(type_.into_glib(), from, to))
+        FromGlibPtrContainer::from_glib_container(ffi::nm_utils_enum_get_values(
+            type_.into_glib(),
+            from,
+            to,
+        ))
     }
 }
 
@@ -208,9 +244,7 @@ pub fn utils_enum_get_values(type_: glib::types::Type, from: i32, to: i32) -> Ve
 #[doc(alias = "nm_utils_enum_to_str")]
 pub fn utils_enum_to_str(type_: glib::types::Type, value: i32) -> glib::GString {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib_full(ffi::nm_utils_enum_to_str(type_.into_glib(), value))
-    }
+    unsafe { from_glib_full(ffi::nm_utils_enum_to_str(type_.into_glib(), value)) }
 }
 
 #[cfg_attr(feature = "v1_46", deprecated = "Since 1.46")]
@@ -219,25 +253,19 @@ pub fn utils_enum_to_str(type_: glib::types::Type, value: i32) -> glib::GString 
 pub fn utils_escape_ssid(ssid: &[u8]) -> glib::GString {
     assert_initialized_main_thread!();
     let len = ssid.len() as _;
-    unsafe {
-        from_glib_none(ffi::nm_utils_escape_ssid(ssid.to_glib_none().0, len))
-    }
+    unsafe { from_glib_none(ffi::nm_utils_escape_ssid(ssid.to_glib_none().0, len)) }
 }
 
 #[doc(alias = "nm_utils_file_is_certificate")]
 pub fn utils_file_is_certificate(filename: &str) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_utils_file_is_certificate(filename.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_utils_file_is_certificate(filename.to_glib_none().0)) }
 }
 
 #[doc(alias = "nm_utils_file_is_pkcs12")]
 pub fn utils_file_is_pkcs12(filename: &str) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_utils_file_is_pkcs12(filename.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_utils_file_is_pkcs12(filename.to_glib_none().0)) }
 }
 
 #[doc(alias = "nm_utils_file_is_private_key")]
@@ -245,8 +273,15 @@ pub fn utils_file_is_private_key(filename: &str) -> Option<bool> {
     assert_initialized_main_thread!();
     unsafe {
         let mut out_encrypted = std::mem::MaybeUninit::uninit();
-        let ret = from_glib(ffi::nm_utils_file_is_private_key(filename.to_glib_none().0, out_encrypted.as_mut_ptr()));
-        if ret { Some(from_glib(out_encrypted.assume_init())) } else { None }
+        let ret = from_glib(ffi::nm_utils_file_is_private_key(
+            filename.to_glib_none().0,
+            out_encrypted.as_mut_ptr(),
+        ));
+        if ret {
+            Some(from_glib(out_encrypted.assume_init()))
+        } else {
+            None
+        }
     }
 }
 
@@ -267,9 +302,7 @@ pub fn utils_file_is_private_key(filename: &str) -> Option<bool> {
 #[doc(alias = "nm_utils_get_timestamp_msec")]
 pub fn utils_get_timestamp_msec() -> i64 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_get_timestamp_msec()
-    }
+    unsafe { ffi::nm_utils_get_timestamp_msec() }
 }
 
 //#[doc(alias = "nm_utils_hexstr2bin")]
@@ -287,7 +320,11 @@ pub fn utils_hwaddr_aton(asc: &str, buffer: &[u8]) -> u8 {
     assert_initialized_main_thread!();
     let length = buffer.len() as _;
     unsafe {
-        ffi::nm_utils_hwaddr_aton(asc.to_glib_none().0, buffer.to_glib_none().0 as glib::ffi::gpointer, length)
+        ffi::nm_utils_hwaddr_aton(
+            asc.to_glib_none().0,
+            buffer.to_glib_none().0 as glib::ffi::gpointer,
+            length,
+        )
     }
 }
 
@@ -295,17 +332,13 @@ pub fn utils_hwaddr_aton(asc: &str, buffer: &[u8]) -> u8 {
 pub fn utils_hwaddr_canonical(asc: &str) -> glib::GString {
     assert_initialized_main_thread!();
     let length = asc.len() as _;
-    unsafe {
-        from_glib_full(ffi::nm_utils_hwaddr_canonical(asc.to_glib_none().0, length))
-    }
+    unsafe { from_glib_full(ffi::nm_utils_hwaddr_canonical(asc.to_glib_none().0, length)) }
 }
 
 #[doc(alias = "nm_utils_hwaddr_len")]
 pub fn utils_hwaddr_len(type_: i32) -> usize {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_hwaddr_len(type_)
-    }
+    unsafe { ffi::nm_utils_hwaddr_len(type_) }
 }
 
 //#[doc(alias = "nm_utils_hwaddr_matches")]
@@ -317,18 +350,14 @@ pub fn utils_hwaddr_len(type_: i32) -> usize {
 pub fn utils_hwaddr_ntoa(addr: &[u8]) -> glib::GString {
     assert_initialized_main_thread!();
     let length = addr.len() as _;
-    unsafe {
-        from_glib_full(ffi::nm_utils_hwaddr_ntoa(addr.to_glib_none().0, length))
-    }
+    unsafe { from_glib_full(ffi::nm_utils_hwaddr_ntoa(addr.to_glib_none().0, length)) }
 }
 
 #[doc(alias = "nm_utils_hwaddr_valid")]
 pub fn utils_hwaddr_valid(asc: &str) -> bool {
     assert_initialized_main_thread!();
     let length = asc.len() as _;
-    unsafe {
-        from_glib(ffi::nm_utils_hwaddr_valid(asc.to_glib_none().0, length))
-    }
+    unsafe { from_glib(ffi::nm_utils_hwaddr_valid(asc.to_glib_none().0, length)) }
 }
 
 #[cfg_attr(feature = "v1_6", deprecated = "Since 1.6")]
@@ -336,17 +365,13 @@ pub fn utils_hwaddr_valid(asc: &str) -> bool {
 #[doc(alias = "nm_utils_iface_valid_name")]
 pub fn utils_iface_valid_name(name: Option<&str>) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_utils_iface_valid_name(name.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_utils_iface_valid_name(name.to_glib_none().0)) }
 }
 
 #[doc(alias = "nm_utils_inet4_ntop")]
 pub fn utils_inet4_ntop(inaddr: u32, dst: &str) -> glib::GString {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib_none(ffi::nm_utils_inet4_ntop(inaddr, dst.to_glib_none().0))
-    }
+    unsafe { from_glib_none(ffi::nm_utils_inet4_ntop(inaddr, dst.to_glib_none().0)) }
 }
 
 //#[doc(alias = "nm_utils_inet6_ntop")]
@@ -377,25 +402,19 @@ pub fn utils_inet4_ntop(inaddr: u32, dst: &str) -> glib::GString {
 #[doc(alias = "nm_utils_ip4_get_default_prefix")]
 pub fn utils_ip4_get_default_prefix(ip: u32) -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_ip4_get_default_prefix(ip)
-    }
+    unsafe { ffi::nm_utils_ip4_get_default_prefix(ip) }
 }
 
 #[doc(alias = "nm_utils_ip4_netmask_to_prefix")]
 pub fn utils_ip4_netmask_to_prefix(netmask: u32) -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_ip4_netmask_to_prefix(netmask)
-    }
+    unsafe { ffi::nm_utils_ip4_netmask_to_prefix(netmask) }
 }
 
 #[doc(alias = "nm_utils_ip4_prefix_to_netmask")]
 pub fn utils_ip4_prefix_to_netmask(prefix: u32) -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_ip4_prefix_to_netmask(prefix)
-    }
+    unsafe { ffi::nm_utils_ip4_prefix_to_netmask(prefix) }
 }
 
 //#[doc(alias = "nm_utils_ip4_routes_from_variant")]
@@ -469,18 +488,14 @@ pub fn utils_ip4_prefix_to_netmask(prefix: u32) -> u32 {
 #[doc(alias = "nm_utils_ipaddr_valid")]
 pub fn utils_ipaddr_valid(family: i32, ip: &str) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_utils_ipaddr_valid(family, ip.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_utils_ipaddr_valid(family, ip.to_glib_none().0)) }
 }
 
 #[doc(alias = "nm_utils_is_empty_ssid")]
 pub fn utils_is_empty_ssid(ssid: &[u8]) -> bool {
     assert_initialized_main_thread!();
     let len = ssid.len() as _;
-    unsafe {
-        from_glib(ffi::nm_utils_is_empty_ssid(ssid.to_glib_none().0, len))
-    }
+    unsafe { from_glib(ffi::nm_utils_is_empty_ssid(ssid.to_glib_none().0, len)) }
 }
 
 #[cfg(feature = "v1_6")]
@@ -492,7 +507,11 @@ pub fn utils_is_json_object(str: &str) -> Result<(), glib::Error> {
         let mut error = std::ptr::null_mut();
         let is_ok = ffi::nm_utils_is_json_object(str.to_glib_none().0, &mut error);
         debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-        if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(())
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -501,9 +520,7 @@ pub fn utils_is_json_object(str: &str) -> Result<(), glib::Error> {
 #[doc(alias = "nm_utils_is_uuid")]
 pub fn utils_is_uuid(str: Option<&str>) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_utils_is_uuid(str.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_utils_is_uuid(str.to_glib_none().0)) }
 }
 
 #[cfg(feature = "v1_6")]
@@ -515,7 +532,11 @@ pub fn utils_is_valid_iface_name(name: Option<&str>) -> Result<(), glib::Error> 
         let mut error = std::ptr::null_mut();
         let is_ok = ffi::nm_utils_is_valid_iface_name(name.to_glib_none().0, &mut error);
         debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-        if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(())
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -542,15 +563,37 @@ pub fn utils_same_ssid(ssid1: &[u8], ssid2: &[u8], ignore_trailing_null: bool) -
     let len1 = ssid1.len() as _;
     let len2 = ssid2.len() as _;
     unsafe {
-        from_glib(ffi::nm_utils_same_ssid(ssid1.to_glib_none().0, len1, ssid2.to_glib_none().0, len2, ignore_trailing_null.into_glib()))
+        from_glib(ffi::nm_utils_same_ssid(
+            ssid1.to_glib_none().0,
+            len1,
+            ssid2.to_glib_none().0,
+            len2,
+            ignore_trailing_null.into_glib(),
+        ))
     }
 }
 
 #[doc(alias = "nm_utils_security_valid")]
-pub fn utils_security_valid(type_: UtilsSecurityType, wifi_caps: DeviceWifiCapabilities, have_ap: bool, adhoc: bool, ap_flags: 80211ApFlags, ap_wpa: 80211ApSecurityFlags, ap_rsn: 80211ApSecurityFlags) -> bool {
+pub fn utils_security_valid(
+    type_: UtilsSecurityType,
+    wifi_caps: DeviceWifiCapabilities,
+    have_ap: bool,
+    adhoc: bool,
+    ap_flags: NM80211ApFlags,
+    ap_wpa: NM80211ApSecurityFlags,
+    ap_rsn: NM80211ApSecurityFlags,
+) -> bool {
     assert_initialized_main_thread!();
     unsafe {
-        from_glib(ffi::nm_utils_security_valid(type_.into_glib(), wifi_caps.into_glib(), have_ap.into_glib(), adhoc.into_glib(), ap_flags.into_glib(), ap_wpa.into_glib(), ap_rsn.into_glib()))
+        from_glib(ffi::nm_utils_security_valid(
+            type_.into_glib(),
+            wifi_caps.into_glib(),
+            have_ap.into_glib(),
+            adhoc.into_glib(),
+            ap_flags.into_glib(),
+            ap_wpa.into_glib(),
+            ap_rsn.into_glib(),
+        ))
     }
 }
 
@@ -562,7 +605,11 @@ pub fn utils_sriov_vf_from_str(str: &str) -> Result<SriovVF, glib::Error> {
     unsafe {
         let mut error = std::ptr::null_mut();
         let ret = ffi::nm_utils_sriov_vf_from_str(str.to_glib_none().0, &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -573,8 +620,13 @@ pub fn utils_sriov_vf_to_str(vf: &SriovVF, omit_index: bool) -> Result<glib::GSt
     assert_initialized_main_thread!();
     unsafe {
         let mut error = std::ptr::null_mut();
-        let ret = ffi::nm_utils_sriov_vf_to_str(vf.to_glib_none().0, omit_index.into_glib(), &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        let ret =
+            ffi::nm_utils_sriov_vf_to_str(vf.to_glib_none().0, omit_index.into_glib(), &mut error);
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -582,9 +634,7 @@ pub fn utils_sriov_vf_to_str(vf: &SriovVF, omit_index: bool) -> Result<glib::GSt
 pub fn utils_ssid_to_utf8(ssid: &[u8]) -> glib::GString {
     assert_initialized_main_thread!();
     let len = ssid.len() as _;
-    unsafe {
-        from_glib_full(ffi::nm_utils_ssid_to_utf8(ssid.to_glib_none().0, len))
-    }
+    unsafe { from_glib_full(ffi::nm_utils_ssid_to_utf8(ssid.to_glib_none().0, len)) }
 }
 
 #[cfg(feature = "v1_12")]
@@ -595,7 +645,11 @@ pub fn utils_tc_action_from_str(str: &str) -> Result<TCAction, glib::Error> {
     unsafe {
         let mut error = std::ptr::null_mut();
         let ret = ffi::nm_utils_tc_action_from_str(str.to_glib_none().0, &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -607,7 +661,11 @@ pub fn utils_tc_action_to_str(action: &TCAction) -> Result<glib::GString, glib::
     unsafe {
         let mut error = std::ptr::null_mut();
         let ret = ffi::nm_utils_tc_action_to_str(action.to_glib_none().0, &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -619,7 +677,11 @@ pub fn utils_tc_qdisc_from_str(str: &str) -> Result<TCQdisc, glib::Error> {
     unsafe {
         let mut error = std::ptr::null_mut();
         let ret = ffi::nm_utils_tc_qdisc_from_str(str.to_glib_none().0, &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -631,7 +693,11 @@ pub fn utils_tc_qdisc_to_str(qdisc: &TCQdisc) -> Result<glib::GString, glib::Err
     unsafe {
         let mut error = std::ptr::null_mut();
         let ret = ffi::nm_utils_tc_qdisc_to_str(qdisc.to_glib_none().0, &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -643,7 +709,11 @@ pub fn utils_tc_tfilter_from_str(str: &str) -> Result<TCTfilter, glib::Error> {
     unsafe {
         let mut error = std::ptr::null_mut();
         let ret = ffi::nm_utils_tc_tfilter_from_str(str.to_glib_none().0, &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
@@ -655,16 +725,18 @@ pub fn utils_tc_tfilter_to_str(tfilter: &TCTfilter) -> Result<glib::GString, gli
     unsafe {
         let mut error = std::ptr::null_mut();
         let ret = ffi::nm_utils_tc_tfilter_to_str(tfilter.to_glib_none().0, &mut error);
-        if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+        if error.is_null() {
+            Ok(from_glib_full(ret))
+        } else {
+            Err(from_glib_full(error))
+        }
     }
 }
 
 #[doc(alias = "nm_utils_uuid_generate")]
 pub fn utils_uuid_generate() -> glib::GString {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib_full(ffi::nm_utils_uuid_generate())
-    }
+    unsafe { from_glib_full(ffi::nm_utils_uuid_generate()) }
 }
 
 #[cfg(feature = "v1_6")]
@@ -672,16 +744,17 @@ pub fn utils_uuid_generate() -> glib::GString {
 #[doc(alias = "nm_utils_version")]
 pub fn utils_version() -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_version()
-    }
+    unsafe { ffi::nm_utils_version() }
 }
 
 #[doc(alias = "nm_utils_wep_key_valid")]
 pub fn utils_wep_key_valid(key: &str, wep_type: WepKeyType) -> bool {
     assert_initialized_main_thread!();
     unsafe {
-        from_glib(ffi::nm_utils_wep_key_valid(key.to_glib_none().0, wep_type.into_glib()))
+        from_glib(ffi::nm_utils_wep_key_valid(
+            key.to_glib_none().0,
+            wep_type.into_glib(),
+        ))
     }
 }
 
@@ -690,9 +763,7 @@ pub fn utils_wep_key_valid(key: &str, wep_type: WepKeyType) -> bool {
 #[doc(alias = "nm_utils_wifi_2ghz_freqs")]
 pub fn utils_wifi_2ghz_freqs() -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_wifi_2ghz_freqs()
-    }
+    unsafe { ffi::nm_utils_wifi_2ghz_freqs() }
 }
 
 #[cfg(feature = "v1_2")]
@@ -700,55 +771,46 @@ pub fn utils_wifi_2ghz_freqs() -> u32 {
 #[doc(alias = "nm_utils_wifi_5ghz_freqs")]
 pub fn utils_wifi_5ghz_freqs() -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_wifi_5ghz_freqs()
-    }
+    unsafe { ffi::nm_utils_wifi_5ghz_freqs() }
 }
 
 #[doc(alias = "nm_utils_wifi_channel_to_freq")]
 pub fn utils_wifi_channel_to_freq(channel: u32, band: &str) -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_wifi_channel_to_freq(channel, band.to_glib_none().0)
-    }
+    unsafe { ffi::nm_utils_wifi_channel_to_freq(channel, band.to_glib_none().0) }
 }
 
 #[doc(alias = "nm_utils_wifi_find_next_channel")]
 pub fn utils_wifi_find_next_channel(channel: u32, direction: i32, band: &str) -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_wifi_find_next_channel(channel, direction, band.to_glib_none().0)
-    }
+    unsafe { ffi::nm_utils_wifi_find_next_channel(channel, direction, band.to_glib_none().0) }
 }
 
 #[doc(alias = "nm_utils_wifi_freq_to_channel")]
 pub fn utils_wifi_freq_to_channel(freq: u32) -> u32 {
     assert_initialized_main_thread!();
-    unsafe {
-        ffi::nm_utils_wifi_freq_to_channel(freq)
-    }
+    unsafe { ffi::nm_utils_wifi_freq_to_channel(freq) }
 }
 
 #[doc(alias = "nm_utils_wifi_is_channel_valid")]
 pub fn utils_wifi_is_channel_valid(channel: u32, band: &str) -> bool {
     assert_initialized_main_thread!();
     unsafe {
-        from_glib(ffi::nm_utils_wifi_is_channel_valid(channel, band.to_glib_none().0))
+        from_glib(ffi::nm_utils_wifi_is_channel_valid(
+            channel,
+            band.to_glib_none().0,
+        ))
     }
 }
 
 #[doc(alias = "nm_utils_wifi_strength_bars")]
 pub fn utils_wifi_strength_bars(strength: u8) -> glib::GString {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib_none(ffi::nm_utils_wifi_strength_bars(strength))
-    }
+    unsafe { from_glib_none(ffi::nm_utils_wifi_strength_bars(strength)) }
 }
 
 #[doc(alias = "nm_utils_wpa_psk_valid")]
 pub fn utils_wpa_psk_valid(psk: &str) -> bool {
     assert_initialized_main_thread!();
-    unsafe {
-        from_glib(ffi::nm_utils_wpa_psk_valid(psk.to_glib_none().0))
-    }
+    unsafe { from_glib(ffi::nm_utils_wpa_psk_valid(psk.to_glib_none().0)) }
 }
