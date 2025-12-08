@@ -258,6 +258,8 @@ manual = [
     "NM.VpnEditorPluginVT",
     "GLib.Error",
     "Gio.Cancellable",
+    "Gio.AsyncReadyCallback",
+    "Gio.AsyncResult",
 ]
 
 [[object]]
