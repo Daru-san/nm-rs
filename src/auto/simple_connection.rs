@@ -3,8 +3,8 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Connection};
-use glib::{prelude::*,translate::*};
+use crate::{Connection, ffi};
+use glib::{prelude::*, translate::*};
 
 glib::wrapper! {
     #[doc(alias = "NMSimpleConnection")]
@@ -19,16 +19,16 @@ impl SimpleConnection {
     #[doc(alias = "nm_simple_connection_new")]
     pub fn new() -> Connection {
         assert_initialized_main_thread!();
-        unsafe {
-            from_glib_full(ffi::nm_simple_connection_new())
-        }
+        unsafe { from_glib_full(ffi::nm_simple_connection_new()) }
     }
 
     #[doc(alias = "nm_simple_connection_new_clone")]
     pub fn new_clone(connection: &impl IsA<Connection>) -> Connection {
         skip_assert_initialized!();
         unsafe {
-            from_glib_full(ffi::nm_simple_connection_new_clone(connection.as_ref().to_glib_none().0))
+            from_glib_full(ffi::nm_simple_connection_new_clone(
+                connection.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -39,7 +39,9 @@ impl SimpleConnection {
 }
 
 impl Default for SimpleConnection {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+            .downcast()
+            .expect("Casting from SimpleConnection should not panic.")
+    }
+}
