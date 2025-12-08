@@ -16,6 +16,61 @@ use std::boxed::Box as Box_;
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `service-name`
+    ///  The D-Bus service name of this plugin.
+    ///
+    /// Readable | Writeable | Construct Only
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the plugin.
+    ///
+    /// Readable | Writeable
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `config`
+    ///
+    ///
+    ///
+    /// #### `failure`
+    ///
+    ///
+    ///
+    /// #### `ip4-config`
+    ///
+    ///
+    ///
+    /// #### `ip6-config`
+    ///
+    ///
+    ///
+    /// #### `login-banner`
+    ///
+    ///
+    ///
+    /// #### `quit`
+    ///
+    ///
+    ///
+    /// #### `secrets-required`
+    ///
+    ///
+    ///
+    /// #### `state-changed`
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`VpnPluginOldExt`][trait@crate::prelude::VpnPluginOldExt], [`trait@gio::prelude::InitableExt`]
     #[doc(alias = "NMVpnPluginOld")]
     pub struct VpnPluginOld(Object<ffi::NMVpnPluginOld, ffi::NMVpnPluginOldClass>) @implements gio::Initable;
 
@@ -53,7 +108,16 @@ impl VpnPluginOld {
     //}
 }
 
+/// Trait containing all [`struct@VpnPluginOld`] methods.
+///
+/// # Implementors
+///
+/// [`VpnPluginOld`][struct@crate::VpnPluginOld]
 pub trait VpnPluginOldExt: IsA<VpnPluginOld> + 'static {
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// Replaced by NMVpnServicePlugin.
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_vpn_plugin_old_disconnect")]
@@ -71,6 +135,10 @@ pub trait VpnPluginOldExt: IsA<VpnPluginOld> + 'static {
         }
     }
 
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// Replaced by NMVpnServicePlugin.
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_vpn_plugin_old_failure")]
@@ -88,6 +156,10 @@ pub trait VpnPluginOldExt: IsA<VpnPluginOld> + 'static {
     //    unsafe { TODO: call ffi:nm_vpn_plugin_old_get_connection() }
     //}
 
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// Replaced by NMVpnServicePlugin.
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_vpn_plugin_old_get_state")]
@@ -100,6 +172,19 @@ pub trait VpnPluginOldExt: IsA<VpnPluginOld> + 'static {
         }
     }
 
+    /// Called by VPN plugin implementations to signal to NetworkManager that secrets
+    /// are required during the connection process.  This signal may be used to
+    /// request new secrets when the secrets originally provided by NetworkManager
+    /// are insufficient, or the VPN process indicates that it needs additional
+    /// information to complete the request.
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// Replaced by NMVpnServicePlugin.
+    /// ## `message`
+    /// an information message about why secrets are required, if any
+    /// ## `hints`
+    /// VPN specific secret names for required new secrets
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_vpn_plugin_old_secrets_required")]
@@ -120,6 +205,10 @@ pub trait VpnPluginOldExt: IsA<VpnPluginOld> + 'static {
     //    unsafe { TODO: call ffi:nm_vpn_plugin_old_set_ip4_config() }
     //}
 
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// Replaced by NMVpnServicePlugin.
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_vpn_plugin_old_set_login_banner")]
@@ -132,6 +221,10 @@ pub trait VpnPluginOldExt: IsA<VpnPluginOld> + 'static {
         }
     }
 
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// Replaced by NMVpnServicePlugin.
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_vpn_plugin_old_set_state")]
@@ -142,6 +235,11 @@ pub trait VpnPluginOldExt: IsA<VpnPluginOld> + 'static {
         }
     }
 
+    /// The D-Bus service name of this plugin.
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// Replaced by NMVpnServicePlugin.
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[doc(alias = "service-name")]
     fn service_name(&self) -> Option<glib::GString> {

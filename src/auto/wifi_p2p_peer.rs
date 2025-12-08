@@ -12,6 +12,97 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `flags`
+    ///  The flags of the P2P peer.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `hw-address`
+    ///  The hardware address of the P2P peer.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `last-seen`
+    ///  The timestamp (in CLOCK_BOOTTIME seconds) for the last time the
+    /// P2P peer was found.  A value of -1 means the peer has never been seen.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `manufacturer`
+    ///  The manufacturer of the P2P peer.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `model`
+    ///  The model of the P2P peer.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `model-number`
+    ///  The hardware address of the P2P peer.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `name`
+    ///  The name of the P2P peer.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `serial`
+    ///  The serial number of the P2P peer.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `strength`
+    ///  The current signal strength of the P2P peer.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `wfd-ies`
+    ///  The WFD information elements of the P2P peer.
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMWifiP2PPeer")]
     pub struct WifiP2PPeer(Object<ffi::NMWifiP2PPeer, ffi::NMWifiP2PPeerClass>) @extends Object;
 
@@ -21,6 +112,16 @@ glib::wrapper! {
 }
 
 impl WifiP2PPeer {
+    /// Validates a given connection against a given Wi-Fi P2P peer to ensure that
+    /// the connection may be activated with that peer. The connection must match the
+    /// @self's address and in the future possibly other attributes.
+    /// ## `connection`
+    /// an #NMConnection to validate against @self
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the connection may be activated with this Wi-Fi P2P Peer,
+    /// [`false`] if it cannot be.
     #[doc(alias = "nm_wifi_p2p_peer_connection_valid")]
     pub fn connection_valid(&self, connection: &impl IsA<Connection>) -> bool {
         unsafe {
@@ -31,6 +132,24 @@ impl WifiP2PPeer {
         }
     }
 
+    /// Filters a given array of connections for a given #NMWifiP2PPeer object and
+    /// returns connections which may be activated with the P2P peer.  Any
+    /// returned connections will match the @peers's HW address and in the future
+    /// possibly other attributes.
+    ///
+    /// To obtain the list of connections that are compatible with this P2P peer,
+    /// use nm_client_get_connections() and then filter the returned list for a given
+    /// #NMDevice using nm_device_filter_connections() and finally filter that list
+    /// with this function.
+    /// ## `connections`
+    /// an array of #NMConnections to
+    /// filter
+    ///
+    /// # Returns
+    ///
+    /// an array of
+    /// #NMConnections that could be activated with the given @self. The array should
+    /// be freed with g_ptr_array_unref() when it is no longer required.
     #[doc(alias = "nm_wifi_p2p_peer_filter_connections")]
     pub fn filter_connections(&self, connections: &[Connection]) -> Vec<Connection> {
         unsafe {
@@ -41,12 +160,22 @@ impl WifiP2PPeer {
         }
     }
 
+    /// Gets the flags of the P2P peer.
+    ///
+    /// # Returns
+    ///
+    /// the flags
     #[doc(alias = "nm_wifi_p2p_peer_get_flags")]
     #[doc(alias = "get_flags")]
     pub fn flags(&self) -> NM80211ApFlags {
         unsafe { from_glib(ffi::nm_wifi_p2p_peer_get_flags(self.to_glib_none().0)) }
     }
 
+    /// Gets the hardware address of the P2P peer.
+    ///
+    /// # Returns
+    ///
+    /// the hardware address
     #[doc(alias = "nm_wifi_p2p_peer_get_hw_address")]
     #[doc(alias = "get_hw_address")]
     #[doc(alias = "hw-address")]
@@ -54,6 +183,12 @@ impl WifiP2PPeer {
         unsafe { from_glib_none(ffi::nm_wifi_p2p_peer_get_hw_address(self.to_glib_none().0)) }
     }
 
+    /// Returns the timestamp (in CLOCK_BOOTTIME seconds) for the last time the
+    /// P2P peer was seen.  A value of -1 means the P2P peer has never been seen.
+    ///
+    /// # Returns
+    ///
+    /// the last seen time in seconds
     #[doc(alias = "nm_wifi_p2p_peer_get_last_seen")]
     #[doc(alias = "get_last_seen")]
     #[doc(alias = "last-seen")]
@@ -61,6 +196,11 @@ impl WifiP2PPeer {
         unsafe { ffi::nm_wifi_p2p_peer_get_last_seen(self.to_glib_none().0) }
     }
 
+    /// Gets the manufacturer of the P2P peer.
+    ///
+    /// # Returns
+    ///
+    /// the manufacturer
     #[doc(alias = "nm_wifi_p2p_peer_get_manufacturer")]
     #[doc(alias = "get_manufacturer")]
     pub fn manufacturer(&self) -> glib::GString {
@@ -71,12 +211,22 @@ impl WifiP2PPeer {
         }
     }
 
+    /// Gets the model of the P2P peer.
+    ///
+    /// # Returns
+    ///
+    /// the model
     #[doc(alias = "nm_wifi_p2p_peer_get_model")]
     #[doc(alias = "get_model")]
     pub fn model(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_wifi_p2p_peer_get_model(self.to_glib_none().0)) }
     }
 
+    /// Gets the model number of the P2P peer.
+    ///
+    /// # Returns
+    ///
+    /// the model number
     #[doc(alias = "nm_wifi_p2p_peer_get_model_number")]
     #[doc(alias = "get_model_number")]
     #[doc(alias = "model-number")]
@@ -88,18 +238,33 @@ impl WifiP2PPeer {
         }
     }
 
+    /// Gets the name of the P2P peer.
+    ///
+    /// # Returns
+    ///
+    /// the name
     #[doc(alias = "nm_wifi_p2p_peer_get_name")]
     #[doc(alias = "get_name")]
     pub fn name(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_wifi_p2p_peer_get_name(self.to_glib_none().0)) }
     }
 
+    /// Gets the serial number of the P2P peer.
+    ///
+    /// # Returns
+    ///
+    /// the serial number
     #[doc(alias = "nm_wifi_p2p_peer_get_serial")]
     #[doc(alias = "get_serial")]
     pub fn serial(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_wifi_p2p_peer_get_serial(self.to_glib_none().0)) }
     }
 
+    /// Gets the current signal strength of the P2P peer as a percentage.
+    ///
+    /// # Returns
+    ///
+    /// the signal strength (0 to 100)
     #[doc(alias = "nm_wifi_p2p_peer_get_strength")]
     #[doc(alias = "get_strength")]
     pub fn strength(&self) -> u8 {

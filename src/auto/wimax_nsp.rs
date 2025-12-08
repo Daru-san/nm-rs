@@ -9,6 +9,55 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// WiMAX is no longer supported by NetworkManager since 1.2.0.
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `name`
+    ///  The name of the WiMAX NSP.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `network-type`
+    ///  The network type of the WiMAX NSP.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `signal-quality`
+    ///  The signal quality of the WiMAX NSP.
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMWimaxNsp")]
     pub struct WimaxNsp(Object<ffi::NMWimaxNsp, ffi::NMWimaxNspClass>) @extends Object;
 
@@ -18,6 +67,20 @@ glib::wrapper! {
 }
 
 impl WimaxNsp {
+    /// Validates a given connection against a given WiMAX NSP to ensure that the
+    /// connection may be activated with that NSP.  The connection must match the
+    /// @self's network name and other attributes.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// WiMAX is no longer supported by NetworkManager since 1.2.0.
+    /// ## `connection`
+    /// an #NMConnection to validate against @self
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the connection may be activated with this WiMAX NSP,
+    /// [`false`] if it cannot be.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_wimax_nsp_connection_valid")]
@@ -27,6 +90,22 @@ impl WimaxNsp {
         }
     }
 
+    /// Filters a given array of connections for a given #NMWimaxNsp object and
+    /// return connections which may be activated with the NSP.  Any returned
+    /// connections will match the @self's network name and other attributes.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// WiMAX is no longer supported by NetworkManager since 1.2.0.
+    /// ## `connections`
+    /// an array of #NMConnections to
+    /// filter
+    ///
+    /// # Returns
+    ///
+    /// an array of
+    /// #NMConnections that could be activated with the given @self.  The array should
+    /// be freed with g_ptr_array_unref() when it is no longer required.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_wimax_nsp_filter_connections")]
@@ -36,6 +115,15 @@ impl WimaxNsp {
         }
     }
 
+    /// Gets the name of the wimax NSP
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// WiMAX is no longer supported by NetworkManager since 1.2.0.
+    ///
+    /// # Returns
+    ///
+    /// the name
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_wimax_nsp_get_name")]
@@ -46,6 +134,15 @@ impl WimaxNsp {
         }
     }
 
+    /// Gets the network type of the wimax NSP.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// WiMAX is no longer supported by NetworkManager since 1.2.0.
+    ///
+    /// # Returns
+    ///
+    /// the network type
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_wimax_nsp_get_network_type")]
@@ -57,6 +154,15 @@ impl WimaxNsp {
         }
     }
 
+    /// Gets the WPA signal quality of the wimax NSP.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// WiMAX is no longer supported by NetworkManager since 1.2.0.
+    ///
+    /// # Returns
+    ///
+    /// the signal quality
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_wimax_nsp_get_signal_quality")]

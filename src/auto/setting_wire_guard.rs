@@ -11,6 +11,108 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// WireGuard Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `fwmark`
+    ///  The use of fwmark is optional and is by default off. Setting it to 0
+    /// disables it. Otherwise, it is a 32-bit fwmark for outgoing packets.
+    ///
+    /// Note that "ip4-auto-default-route" or "ip6-auto-default-route" enabled,
+    /// implies to automatically choose a fwmark.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ip4-auto-default-route`
+    ///  Whether to enable special handling of the IPv4 default route.
+    /// If enabled, the IPv4 default route from wireguard.peer-routes
+    /// will be placed to a dedicated routing-table and two policy routing rules
+    /// will be added. The fwmark number is also used as routing-table for the default-route,
+    /// and if fwmark is zero, an unused fwmark/table is chosen automatically.
+    /// This corresponds to what wg-quick does with Table=auto and what WireGuard
+    /// calls "Improved Rule-based Routing".
+    ///
+    /// Note that for this automatism to work, you usually don't want to set
+    /// ipv4.gateway, because that will result in a conflicting default route.
+    ///
+    /// Leaving this at the default will enable this option automatically
+    /// if ipv4.never-default is not set and there are any peers that use
+    /// a default-route as allowed-ips. Since this automatism only makes
+    /// sense if you also have a peer with an /0 allowed-ips, it is usually
+    /// not necessary to enable this explicitly. However, you can disable
+    /// it if you want to configure your own routing and rules.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ip6-auto-default-route`
+    ///  Like ip4-auto-default-route, but for the IPv6 default route.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `listen-port`
+    ///  The listen-port. If listen-port is not specified, the port will be chosen
+    /// randomly when the interface comes up.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mtu`
+    ///  If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple fragments.
+    ///
+    /// If zero a default MTU is used. Note that contrary to wg-quick's MTU
+    /// setting, this does not take into account the current routes at the
+    /// time of activation.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `peer-routes`
+    ///  Whether to automatically add routes for the AllowedIPs ranges
+    /// of the peers. If [`true`] (the default), NetworkManager will automatically
+    /// add routes in the routing tables according to ipv4.route-table and
+    /// ipv6.route-table. Usually you want this automatism enabled.
+    /// If [`false`], no such routes are added automatically. In this case, the
+    /// user may want to configure static routes in ipv4.routes and ipv6.routes,
+    /// respectively.
+    ///
+    /// Note that if the peer's AllowedIPs is "0.0.0.0/0" or "::/0" and the profile's
+    /// ipv4.never-default or ipv6.never-default setting is enabled, the peer route for
+    /// this peer won't be added automatically.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `private-key`
+    ///  The 256 bit private-key in base64 encoding.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `private-key-flags`
+    ///  Flags indicating how to handle the #NMSettingWirelessSecurity:private-key
+    /// property.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingWireGuard")]
     pub struct SettingWireGuard(Object<ffi::NMSettingWireGuard, ffi::NMSettingWireGuardClass>) @extends Setting;
 
@@ -20,6 +122,11 @@ glib::wrapper! {
 }
 
 impl SettingWireGuard {
+    /// Creates a new #NMSettingWireGuard object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingWireGuard object
     #[doc(alias = "nm_setting_wireguard_new")]
     pub fn new() -> SettingWireGuard {
         assert_initialized_main_thread!();
@@ -37,6 +144,14 @@ impl SettingWireGuard {
             }
         
 
+    /// If a peer with the same public-key already exists, that
+    /// one is replaced by @peer. The new @peer is always appended
+    /// (or moved to) the end, so in case a peer is replaced, the
+    /// indexes are shifted and the number of peers stays unchanged.
+    /// ## `peer`
+    /// the #NMWireGuardPeer instance to append.
+    ///   This seals @peer and keeps a reference on the
+    ///   instance.
     #[doc(alias = "nm_setting_wireguard_append_peer")]
     pub fn append_peer(&self, peer: &WireGuardPeer) {
         unsafe {
@@ -44,6 +159,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of cleared peers.
     #[doc(alias = "nm_setting_wireguard_clear_peers")]
     pub fn clear_peers(&self) -> u32 {
         unsafe {
@@ -51,6 +170,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set firewall mark.
     #[doc(alias = "nm_setting_wireguard_get_fwmark")]
     #[doc(alias = "get_fwmark")]
     pub fn fwmark(&self) -> u32 {
@@ -59,6 +182,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the "ip4-auto-default-route" property of the setting.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_setting_wireguard_get_ip4_auto_default_route")]
@@ -70,6 +197,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the "ip6-auto-default-route" property of the setting.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_setting_wireguard_get_ip6_auto_default_route")]
@@ -81,6 +212,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set UDP listen port.
     #[doc(alias = "nm_setting_wireguard_get_listen_port")]
     #[doc(alias = "get_listen_port")]
     #[doc(alias = "listen-port")]
@@ -90,6 +225,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the MTU of the setting.
     #[doc(alias = "nm_setting_wireguard_get_mtu")]
     #[doc(alias = "get_mtu")]
     pub fn mtu(&self) -> u32 {
@@ -98,6 +237,13 @@ impl SettingWireGuard {
         }
     }
 
+    /// ## `idx`
+    /// the index to lookup.
+    ///
+    /// # Returns
+    ///
+    /// the #NMWireGuardPeer entry at
+    ///   index @idx. If the index is out of range, [`None`] is returned.
     #[doc(alias = "nm_setting_wireguard_get_peer")]
     #[doc(alias = "get_peer")]
     pub fn peer(&self, idx: u32) -> WireGuardPeer {
@@ -106,6 +252,19 @@ impl SettingWireGuard {
         }
     }
 
+    /// ## `public_key`
+    /// the public key for looking up the
+    ///   peer.
+    ///
+    /// # Returns
+    ///
+    /// the #NMWireGuardPeer instance with a
+    ///   matching public key. If no such peer exists, [`None`] is returned.
+    ///
+    /// ## `out_idx`
+    /// optional output argument
+    ///   for the index of the found peer. If no index is found,
+    ///   this is set to the nm_setting_wireguard_get_peers_len().
     #[doc(alias = "nm_setting_wireguard_get_peer_by_public_key")]
     #[doc(alias = "get_peer_by_public_key")]
     pub fn peer_by_public_key(&self, public_key: &str) -> (Option<WireGuardPeer>, u32) {
@@ -116,6 +275,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether automatically add peer routes.
     #[doc(alias = "nm_setting_wireguard_get_peer_routes")]
     #[doc(alias = "get_peer_routes")]
     #[doc(alias = "peer-routes")]
@@ -125,6 +288,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of registered peers.
     #[doc(alias = "nm_setting_wireguard_get_peers_len")]
     #[doc(alias = "get_peers_len")]
     pub fn peers_len(&self) -> u32 {
@@ -133,6 +300,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set private-key or [`None`].
     #[doc(alias = "nm_setting_wireguard_get_private_key")]
     #[doc(alias = "get_private_key")]
     #[doc(alias = "private-key")]
@@ -142,6 +313,10 @@ impl SettingWireGuard {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the secret-flags for #NMSettingWireGuard:private-key.
     #[doc(alias = "nm_setting_wireguard_get_private_key_flags")]
     #[doc(alias = "get_private_key_flags")]
     #[doc(alias = "private-key-flags")]
@@ -151,6 +326,13 @@ impl SettingWireGuard {
         }
     }
 
+    /// ## `idx`
+    /// the index to remove.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @idx was in range and a peer
+    ///   was removed. Otherwise, @self is unchanged.
     #[doc(alias = "nm_setting_wireguard_remove_peer")]
     pub fn remove_peer(&self, idx: u32) -> bool {
         unsafe {
@@ -158,6 +340,26 @@ impl SettingWireGuard {
         }
     }
 
+    /// If @idx is one past the last peer, the behavior is the same
+    /// as nm_setting_wireguard_append_peer().
+    /// Otherwise, the peer will be at @idx and replace the peer
+    /// instance at that index. Note that if a peer with the same
+    /// public-key exists on another index, then that peer will also
+    /// be replaced. In that case, the number of peers will shrink
+    /// by one (because the one at @idx got replace and then one
+    /// with the same public-key got removed). This also means,
+    /// that the resulting index afterwards may be one less than
+    /// @idx (if another peer with a lower index was dropped).
+    /// ## `peer`
+    /// the #NMWireGuardPeer instance to set.
+    ///   This seals @peer and keeps a reference on the
+    ///   instance.
+    /// ## `idx`
+    /// the index, in the range of 0 to the number of
+    ///   peers (including). That means, if @idx is one past
+    ///   the end of the number of peers, this is the same as
+    ///   nm_setting_wireguard_append_peer(). Otherwise, the
+    ///   peer at this index is replaced.
     #[doc(alias = "nm_setting_wireguard_set_peer")]
     pub fn set_peer(&self, peer: &WireGuardPeer, idx: u32) {
         unsafe {
@@ -165,12 +367,34 @@ impl SettingWireGuard {
         }
     }
 
+    /// The use of fwmark is optional and is by default off. Setting it to 0
+    /// disables it. Otherwise, it is a 32-bit fwmark for outgoing packets.
+    ///
+    /// Note that "ip4-auto-default-route" or "ip6-auto-default-route" enabled,
+    /// implies to automatically choose a fwmark.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn set_fwmark(&self, fwmark: u32) {
         ObjectExt::set_property(self,"fwmark", fwmark)
     }
 
+    /// Whether to enable special handling of the IPv4 default route.
+    /// If enabled, the IPv4 default route from wireguard.peer-routes
+    /// will be placed to a dedicated routing-table and two policy routing rules
+    /// will be added. The fwmark number is also used as routing-table for the default-route,
+    /// and if fwmark is zero, an unused fwmark/table is chosen automatically.
+    /// This corresponds to what wg-quick does with Table=auto and what WireGuard
+    /// calls "Improved Rule-based Routing".
+    ///
+    /// Note that for this automatism to work, you usually don't want to set
+    /// ipv4.gateway, because that will result in a conflicting default route.
+    ///
+    /// Leaving this at the default will enable this option automatically
+    /// if ipv4.never-default is not set and there are any peers that use
+    /// a default-route as allowed-ips. Since this automatism only makes
+    /// sense if you also have a peer with an /0 allowed-ips, it is usually
+    /// not necessary to enable this explicitly. However, you can disable
+    /// it if you want to configure your own routing and rules.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "ip4-auto-default-route")]
@@ -178,6 +402,7 @@ impl SettingWireGuard {
         ObjectExt::set_property(self,"ip4-auto-default-route", ip4_auto_default_route)
     }
 
+    /// Like ip4-auto-default-route, but for the IPv6 default route.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "ip6-auto-default-route")]
@@ -185,6 +410,8 @@ impl SettingWireGuard {
         ObjectExt::set_property(self,"ip6-auto-default-route", ip6_auto_default_route)
     }
 
+    /// The listen-port. If listen-port is not specified, the port will be chosen
+    /// randomly when the interface comes up.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "listen-port")]
@@ -192,12 +419,29 @@ impl SettingWireGuard {
         ObjectExt::set_property(self,"listen-port", listen_port)
     }
 
+    /// If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple fragments.
+    ///
+    /// If zero a default MTU is used. Note that contrary to wg-quick's MTU
+    /// setting, this does not take into account the current routes at the
+    /// time of activation.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn set_mtu(&self, mtu: u32) {
         ObjectExt::set_property(self,"mtu", mtu)
     }
 
+    /// Whether to automatically add routes for the AllowedIPs ranges
+    /// of the peers. If [`true`] (the default), NetworkManager will automatically
+    /// add routes in the routing tables according to ipv4.route-table and
+    /// ipv6.route-table. Usually you want this automatism enabled.
+    /// If [`false`], no such routes are added automatically. In this case, the
+    /// user may want to configure static routes in ipv4.routes and ipv6.routes,
+    /// respectively.
+    ///
+    /// Note that if the peer's AllowedIPs is "0.0.0.0/0" or "::/0" and the profile's
+    /// ipv4.never-default or ipv6.never-default setting is enabled, the peer route for
+    /// this peer won't be added automatically.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "peer-routes")]
@@ -205,6 +449,7 @@ impl SettingWireGuard {
         ObjectExt::set_property(self,"peer-routes", peer_routes)
     }
 
+    /// The 256 bit private-key in base64 encoding.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "private-key")]
@@ -212,6 +457,8 @@ impl SettingWireGuard {
         ObjectExt::set_property(self,"private-key", private_key)
     }
 
+    /// Flags indicating how to handle the #NMSettingWirelessSecurity:private-key
+    /// property.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "private-key-flags")]
@@ -362,48 +609,93 @@ pub struct SettingWireGuardBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The use of fwmark is optional and is by default off. Setting it to 0
+                            /// disables it. Otherwise, it is a 32-bit fwmark for outgoing packets.
+                            ///
+                            /// Note that "ip4-auto-default-route" or "ip6-auto-default-route" enabled,
+                            /// implies to automatically choose a fwmark.
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn fwmark(self, fwmark: u32) -> Self {
                             Self { builder: self.builder.property("fwmark", fwmark), }
                         }
 
+                            /// Whether to enable special handling of the IPv4 default route.
+                            /// If enabled, the IPv4 default route from wireguard.peer-routes
+                            /// will be placed to a dedicated routing-table and two policy routing rules
+                            /// will be added. The fwmark number is also used as routing-table for the default-route,
+                            /// and if fwmark is zero, an unused fwmark/table is chosen automatically.
+                            /// This corresponds to what wg-quick does with Table=auto and what WireGuard
+                            /// calls "Improved Rule-based Routing".
+                            ///
+                            /// Note that for this automatism to work, you usually don't want to set
+                            /// ipv4.gateway, because that will result in a conflicting default route.
+                            ///
+                            /// Leaving this at the default will enable this option automatically
+                            /// if ipv4.never-default is not set and there are any peers that use
+                            /// a default-route as allowed-ips. Since this automatism only makes
+                            /// sense if you also have a peer with an /0 allowed-ips, it is usually
+                            /// not necessary to enable this explicitly. However, you can disable
+                            /// it if you want to configure your own routing and rules.
                             #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn ip4_auto_default_route(self, ip4_auto_default_route: Ternary) -> Self {
                             Self { builder: self.builder.property("ip4-auto-default-route", ip4_auto_default_route), }
                         }
 
+                            /// Like ip4-auto-default-route, but for the IPv6 default route.
                             #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn ip6_auto_default_route(self, ip6_auto_default_route: Ternary) -> Self {
                             Self { builder: self.builder.property("ip6-auto-default-route", ip6_auto_default_route), }
                         }
 
+                            /// The listen-port. If listen-port is not specified, the port will be chosen
+                            /// randomly when the interface comes up.
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn listen_port(self, listen_port: u32) -> Self {
                             Self { builder: self.builder.property("listen-port", listen_port), }
                         }
 
+                            /// If non-zero, only transmit packets of the specified size or smaller,
+                            /// breaking larger packets up into multiple fragments.
+                            ///
+                            /// If zero a default MTU is used. Note that contrary to wg-quick's MTU
+                            /// setting, this does not take into account the current routes at the
+                            /// time of activation.
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn mtu(self, mtu: u32) -> Self {
                             Self { builder: self.builder.property("mtu", mtu), }
                         }
 
+                            /// Whether to automatically add routes for the AllowedIPs ranges
+                            /// of the peers. If [`true`] (the default), NetworkManager will automatically
+                            /// add routes in the routing tables according to ipv4.route-table and
+                            /// ipv6.route-table. Usually you want this automatism enabled.
+                            /// If [`false`], no such routes are added automatically. In this case, the
+                            /// user may want to configure static routes in ipv4.routes and ipv6.routes,
+                            /// respectively.
+                            ///
+                            /// Note that if the peer's AllowedIPs is "0.0.0.0/0" or "::/0" and the profile's
+                            /// ipv4.never-default or ipv6.never-default setting is enabled, the peer route for
+                            /// this peer won't be added automatically.
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn peer_routes(self, peer_routes: bool) -> Self {
                             Self { builder: self.builder.property("peer-routes", peer_routes), }
                         }
 
+                            /// The 256 bit private-key in base64 encoding.
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn private_key(self, private_key: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("private-key", private_key.into()), }
                         }
 
+                            /// Flags indicating how to handle the #NMSettingWirelessSecurity:private-key
+                            /// property.
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn private_key_flags(self, private_key_flags: SettingSecretFlags) -> Self {

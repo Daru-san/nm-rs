@@ -8,6 +8,152 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Point-to-Point Protocol Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `baud`
+    ///  If non-zero, instruct pppd to set the serial port to the specified
+    /// baudrate.  This value should normally be left as 0 to automatically
+    /// choose the speed.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `crtscts`
+    ///  If [`true`], specify that pppd should set the serial port to use hardware
+    /// flow control with RTS and CTS signals.  This value should normally be set
+    /// to [`false`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `lcp-echo-failure`
+    ///  If non-zero, instruct pppd to presume the connection to the peer has
+    /// failed if the specified number of LCP echo-requests go unanswered by the
+    /// peer.  The "lcp-echo-interval" property must also be set to a non-zero
+    /// value if this property is used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `lcp-echo-interval`
+    ///  If non-zero, instruct pppd to send an LCP echo-request frame to the peer
+    /// every n seconds (where n is the specified value).  Note that some PPP
+    /// peers will respond to echo requests and some will not, and it is not
+    /// possible to autodetect this.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mppe-stateful`
+    ///  If [`true`], stateful MPPE is used.  See pppd documentation for more
+    /// information on stateful MPPE.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mru`
+    ///  If non-zero, instruct pppd to request that the peer send packets no
+    /// larger than the specified size.  If non-zero, the MRU should be between
+    /// 128 and 16384.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mtu`
+    ///  If non-zero, instruct pppd to send packets no larger than the specified
+    /// size.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `no-vj-comp`
+    ///  If [`true`], Van Jacobsen TCP header compression will not be requested.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `noauth`
+    ///  If [`true`], do not require the other side (usually the PPP server) to
+    /// authenticate itself to the client.  If [`false`], require authentication
+    /// from the remote side.  In almost all cases, this should be [`true`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `nobsdcomp`
+    ///  If [`true`], BSD compression will not be requested.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `nodeflate`
+    ///  If [`true`], "deflate" compression will not be requested.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `refuse-chap`
+    ///  If [`true`], the CHAP authentication method will not be used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `refuse-eap`
+    ///  If [`true`], the EAP authentication method will not be used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `refuse-mschap`
+    ///  If [`true`], the MSCHAP authentication method will not be used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `refuse-mschapv2`
+    ///  If [`true`], the MSCHAPv2 authentication method will not be used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `refuse-pap`
+    ///  If [`true`], the PAP authentication method will not be used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `require-mppe`
+    ///  If [`true`], MPPE (Microsoft Point-to-Point Encryption) will be required for
+    /// the PPP session.  If either 64-bit or 128-bit MPPE is not available the
+    /// session will fail.  Note that MPPE is not used on mobile broadband
+    /// connections.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `require-mppe-128`
+    ///  If [`true`], 128-bit MPPE (Microsoft Point-to-Point Encryption) will be
+    /// required for the PPP session, and the "require-mppe" property must also
+    /// be set to [`true`].  If 128-bit MPPE is not available the session will fail.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingPpp")]
     pub struct SettingPpp(Object<ffi::NMSettingPpp, ffi::NMSettingPppClass>) @extends Setting;
 
@@ -17,6 +163,11 @@ glib::wrapper! {
 }
 
 impl SettingPpp {
+    /// Creates a new #NMSettingPpp object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingPpp object
     #[doc(alias = "nm_setting_ppp_new")]
     pub fn new() -> SettingPpp {
         assert_initialized_main_thread!();
@@ -34,6 +185,10 @@ impl SettingPpp {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:baud property of the setting
     #[doc(alias = "nm_setting_ppp_get_baud")]
     #[doc(alias = "get_baud")]
     pub fn baud(&self) -> u32 {
@@ -42,6 +197,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:crtscts property of the setting
     #[doc(alias = "nm_setting_ppp_get_crtscts")]
     #[doc(alias = "get_crtscts")]
     #[doc(alias = "crtscts")]
@@ -51,6 +210,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:lcp-echo-failure property of the setting
     #[doc(alias = "nm_setting_ppp_get_lcp_echo_failure")]
     #[doc(alias = "get_lcp_echo_failure")]
     #[doc(alias = "lcp-echo-failure")]
@@ -60,6 +223,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:lcp-echo-interval property of the setting
     #[doc(alias = "nm_setting_ppp_get_lcp_echo_interval")]
     #[doc(alias = "get_lcp_echo_interval")]
     #[doc(alias = "lcp-echo-interval")]
@@ -69,6 +236,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:mppe-stateful property of the setting
     #[doc(alias = "nm_setting_ppp_get_mppe_stateful")]
     #[doc(alias = "get_mppe_stateful")]
     #[doc(alias = "mppe-stateful")]
@@ -78,6 +249,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:mru property of the setting
     #[doc(alias = "nm_setting_ppp_get_mru")]
     #[doc(alias = "get_mru")]
     pub fn mru(&self) -> u32 {
@@ -86,6 +261,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:mtu property of the setting
     #[doc(alias = "nm_setting_ppp_get_mtu")]
     #[doc(alias = "get_mtu")]
     pub fn mtu(&self) -> u32 {
@@ -94,6 +273,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:no-vj-comp property of the setting
     #[doc(alias = "nm_setting_ppp_get_no_vj_comp")]
     #[doc(alias = "get_no_vj_comp")]
     #[doc(alias = "no-vj-comp")]
@@ -103,6 +286,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:noauth property of the setting
     #[doc(alias = "nm_setting_ppp_get_noauth")]
     #[doc(alias = "get_noauth")]
     #[doc(alias = "noauth")]
@@ -112,6 +299,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:nobsdcomp property of the setting
     #[doc(alias = "nm_setting_ppp_get_nobsdcomp")]
     #[doc(alias = "get_nobsdcomp")]
     #[doc(alias = "nobsdcomp")]
@@ -121,6 +312,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:nodeflate property of the setting
     #[doc(alias = "nm_setting_ppp_get_nodeflate")]
     #[doc(alias = "get_nodeflate")]
     #[doc(alias = "nodeflate")]
@@ -130,6 +325,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:refuse-chap property of the setting
     #[doc(alias = "nm_setting_ppp_get_refuse_chap")]
     #[doc(alias = "get_refuse_chap")]
     #[doc(alias = "refuse-chap")]
@@ -139,6 +338,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:refuse-eap property of the setting
     #[doc(alias = "nm_setting_ppp_get_refuse_eap")]
     #[doc(alias = "get_refuse_eap")]
     #[doc(alias = "refuse-eap")]
@@ -148,6 +351,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:refuse-mschap property of the setting
     #[doc(alias = "nm_setting_ppp_get_refuse_mschap")]
     #[doc(alias = "get_refuse_mschap")]
     #[doc(alias = "refuse-mschap")]
@@ -157,6 +364,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:refuse-mschapv2 property of the setting
     #[doc(alias = "nm_setting_ppp_get_refuse_mschapv2")]
     #[doc(alias = "get_refuse_mschapv2")]
     #[doc(alias = "refuse-mschapv2")]
@@ -166,6 +377,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:refuse-pap property of the setting
     #[doc(alias = "nm_setting_ppp_get_refuse_pap")]
     #[doc(alias = "get_refuse_pap")]
     #[doc(alias = "refuse-pap")]
@@ -175,6 +390,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:require-mppe property of the setting
     #[doc(alias = "nm_setting_ppp_get_require_mppe")]
     #[doc(alias = "get_require_mppe")]
     #[doc(alias = "require-mppe")]
@@ -184,6 +403,10 @@ impl SettingPpp {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPpp:require-mppe-128 property of the setting
     #[doc(alias = "nm_setting_ppp_get_require_mppe_128")]
     #[doc(alias = "get_require_mppe_128")]
     #[doc(alias = "require-mppe-128")]
@@ -193,84 +416,123 @@ impl SettingPpp {
         }
     }
 
+    /// If non-zero, instruct pppd to set the serial port to the specified
+    /// baudrate.  This value should normally be left as 0 to automatically
+    /// choose the speed.
     pub fn set_baud(&self, baud: u32) {
         ObjectExt::set_property(self,"baud", baud)
     }
 
+    /// If [`true`], specify that pppd should set the serial port to use hardware
+    /// flow control with RTS and CTS signals.  This value should normally be set
+    /// to [`false`].
     pub fn set_crtscts(&self, crtscts: bool) {
         ObjectExt::set_property(self,"crtscts", crtscts)
     }
 
+    /// If non-zero, instruct pppd to presume the connection to the peer has
+    /// failed if the specified number of LCP echo-requests go unanswered by the
+    /// peer.  The "lcp-echo-interval" property must also be set to a non-zero
+    /// value if this property is used.
     #[doc(alias = "lcp-echo-failure")]
     pub fn set_lcp_echo_failure(&self, lcp_echo_failure: u32) {
         ObjectExt::set_property(self,"lcp-echo-failure", lcp_echo_failure)
     }
 
+    /// If non-zero, instruct pppd to send an LCP echo-request frame to the peer
+    /// every n seconds (where n is the specified value).  Note that some PPP
+    /// peers will respond to echo requests and some will not, and it is not
+    /// possible to autodetect this.
     #[doc(alias = "lcp-echo-interval")]
     pub fn set_lcp_echo_interval(&self, lcp_echo_interval: u32) {
         ObjectExt::set_property(self,"lcp-echo-interval", lcp_echo_interval)
     }
 
+    /// If [`true`], stateful MPPE is used.  See pppd documentation for more
+    /// information on stateful MPPE.
     #[doc(alias = "mppe-stateful")]
     pub fn set_mppe_stateful(&self, mppe_stateful: bool) {
         ObjectExt::set_property(self,"mppe-stateful", mppe_stateful)
     }
 
+    /// If non-zero, instruct pppd to request that the peer send packets no
+    /// larger than the specified size.  If non-zero, the MRU should be between
+    /// 128 and 16384.
     pub fn set_mru(&self, mru: u32) {
         ObjectExt::set_property(self,"mru", mru)
     }
 
+    /// If non-zero, instruct pppd to send packets no larger than the specified
+    /// size.
     pub fn set_mtu(&self, mtu: u32) {
         ObjectExt::set_property(self,"mtu", mtu)
     }
 
+    /// If [`true`], Van Jacobsen TCP header compression will not be requested.
     #[doc(alias = "no-vj-comp")]
     pub fn set_no_vj_comp(&self, no_vj_comp: bool) {
         ObjectExt::set_property(self,"no-vj-comp", no_vj_comp)
     }
 
+    /// If [`true`], do not require the other side (usually the PPP server) to
+    /// authenticate itself to the client.  If [`false`], require authentication
+    /// from the remote side.  In almost all cases, this should be [`true`].
     pub fn set_noauth(&self, noauth: bool) {
         ObjectExt::set_property(self,"noauth", noauth)
     }
 
+    /// If [`true`], BSD compression will not be requested.
     pub fn set_nobsdcomp(&self, nobsdcomp: bool) {
         ObjectExt::set_property(self,"nobsdcomp", nobsdcomp)
     }
 
+    /// If [`true`], "deflate" compression will not be requested.
     pub fn set_nodeflate(&self, nodeflate: bool) {
         ObjectExt::set_property(self,"nodeflate", nodeflate)
     }
 
+    /// If [`true`], the CHAP authentication method will not be used.
     #[doc(alias = "refuse-chap")]
     pub fn set_refuse_chap(&self, refuse_chap: bool) {
         ObjectExt::set_property(self,"refuse-chap", refuse_chap)
     }
 
+    /// If [`true`], the EAP authentication method will not be used.
     #[doc(alias = "refuse-eap")]
     pub fn set_refuse_eap(&self, refuse_eap: bool) {
         ObjectExt::set_property(self,"refuse-eap", refuse_eap)
     }
 
+    /// If [`true`], the MSCHAP authentication method will not be used.
     #[doc(alias = "refuse-mschap")]
     pub fn set_refuse_mschap(&self, refuse_mschap: bool) {
         ObjectExt::set_property(self,"refuse-mschap", refuse_mschap)
     }
 
+    /// If [`true`], the MSCHAPv2 authentication method will not be used.
     #[doc(alias = "refuse-mschapv2")]
     pub fn set_refuse_mschapv2(&self, refuse_mschapv2: bool) {
         ObjectExt::set_property(self,"refuse-mschapv2", refuse_mschapv2)
     }
 
+    /// If [`true`], the PAP authentication method will not be used.
     #[doc(alias = "refuse-pap")]
     pub fn set_refuse_pap(&self, refuse_pap: bool) {
         ObjectExt::set_property(self,"refuse-pap", refuse_pap)
     }
 
+    /// If [`true`], MPPE (Microsoft Point-to-Point Encryption) will be required for
+    /// the PPP session.  If either 64-bit or 128-bit MPPE is not available the
+    /// session will fail.  Note that MPPE is not used on mobile broadband
+    /// connections.
     #[doc(alias = "require-mppe")]
     pub fn set_require_mppe(&self, require_mppe: bool) {
         ObjectExt::set_property(self,"require-mppe", require_mppe)
     }
 
+    /// If [`true`], 128-bit MPPE (Microsoft Point-to-Point Encryption) will be
+    /// required for the PPP session, and the "require-mppe" property must also
+    /// be set to [`true`].  If 128-bit MPPE is not available the session will fail.
     #[doc(alias = "require-mppe-128")]
     pub fn set_require_mppe_128(&self, require_mppe_128: bool) {
         ObjectExt::set_property(self,"require-mppe-128", require_mppe_128)
@@ -531,74 +793,113 @@ pub struct SettingPppBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// If non-zero, instruct pppd to set the serial port to the specified
+                            /// baudrate.  This value should normally be left as 0 to automatically
+                            /// choose the speed.
                             pub fn baud(self, baud: u32) -> Self {
                             Self { builder: self.builder.property("baud", baud), }
                         }
 
+                            /// If [`true`], specify that pppd should set the serial port to use hardware
+                            /// flow control with RTS and CTS signals.  This value should normally be set
+                            /// to [`false`].
                             pub fn crtscts(self, crtscts: bool) -> Self {
                             Self { builder: self.builder.property("crtscts", crtscts), }
                         }
 
+                            /// If non-zero, instruct pppd to presume the connection to the peer has
+                            /// failed if the specified number of LCP echo-requests go unanswered by the
+                            /// peer.  The "lcp-echo-interval" property must also be set to a non-zero
+                            /// value if this property is used.
                             pub fn lcp_echo_failure(self, lcp_echo_failure: u32) -> Self {
                             Self { builder: self.builder.property("lcp-echo-failure", lcp_echo_failure), }
                         }
 
+                            /// If non-zero, instruct pppd to send an LCP echo-request frame to the peer
+                            /// every n seconds (where n is the specified value).  Note that some PPP
+                            /// peers will respond to echo requests and some will not, and it is not
+                            /// possible to autodetect this.
                             pub fn lcp_echo_interval(self, lcp_echo_interval: u32) -> Self {
                             Self { builder: self.builder.property("lcp-echo-interval", lcp_echo_interval), }
                         }
 
+                            /// If [`true`], stateful MPPE is used.  See pppd documentation for more
+                            /// information on stateful MPPE.
                             pub fn mppe_stateful(self, mppe_stateful: bool) -> Self {
                             Self { builder: self.builder.property("mppe-stateful", mppe_stateful), }
                         }
 
+                            /// If non-zero, instruct pppd to request that the peer send packets no
+                            /// larger than the specified size.  If non-zero, the MRU should be between
+                            /// 128 and 16384.
                             pub fn mru(self, mru: u32) -> Self {
                             Self { builder: self.builder.property("mru", mru), }
                         }
 
+                            /// If non-zero, instruct pppd to send packets no larger than the specified
+                            /// size.
                             pub fn mtu(self, mtu: u32) -> Self {
                             Self { builder: self.builder.property("mtu", mtu), }
                         }
 
+                            /// If [`true`], Van Jacobsen TCP header compression will not be requested.
                             pub fn no_vj_comp(self, no_vj_comp: bool) -> Self {
                             Self { builder: self.builder.property("no-vj-comp", no_vj_comp), }
                         }
 
+                            /// If [`true`], do not require the other side (usually the PPP server) to
+                            /// authenticate itself to the client.  If [`false`], require authentication
+                            /// from the remote side.  In almost all cases, this should be [`true`].
                             pub fn noauth(self, noauth: bool) -> Self {
                             Self { builder: self.builder.property("noauth", noauth), }
                         }
 
+                            /// If [`true`], BSD compression will not be requested.
                             pub fn nobsdcomp(self, nobsdcomp: bool) -> Self {
                             Self { builder: self.builder.property("nobsdcomp", nobsdcomp), }
                         }
 
+                            /// If [`true`], "deflate" compression will not be requested.
                             pub fn nodeflate(self, nodeflate: bool) -> Self {
                             Self { builder: self.builder.property("nodeflate", nodeflate), }
                         }
 
+                            /// If [`true`], the CHAP authentication method will not be used.
                             pub fn refuse_chap(self, refuse_chap: bool) -> Self {
                             Self { builder: self.builder.property("refuse-chap", refuse_chap), }
                         }
 
+                            /// If [`true`], the EAP authentication method will not be used.
                             pub fn refuse_eap(self, refuse_eap: bool) -> Self {
                             Self { builder: self.builder.property("refuse-eap", refuse_eap), }
                         }
 
+                            /// If [`true`], the MSCHAP authentication method will not be used.
                             pub fn refuse_mschap(self, refuse_mschap: bool) -> Self {
                             Self { builder: self.builder.property("refuse-mschap", refuse_mschap), }
                         }
 
+                            /// If [`true`], the MSCHAPv2 authentication method will not be used.
                             pub fn refuse_mschapv2(self, refuse_mschapv2: bool) -> Self {
                             Self { builder: self.builder.property("refuse-mschapv2", refuse_mschapv2), }
                         }
 
+                            /// If [`true`], the PAP authentication method will not be used.
                             pub fn refuse_pap(self, refuse_pap: bool) -> Self {
                             Self { builder: self.builder.property("refuse-pap", refuse_pap), }
                         }
 
+                            /// If [`true`], MPPE (Microsoft Point-to-Point Encryption) will be required for
+                            /// the PPP session.  If either 64-bit or 128-bit MPPE is not available the
+                            /// session will fail.  Note that MPPE is not used on mobile broadband
+                            /// connections.
                             pub fn require_mppe(self, require_mppe: bool) -> Self {
                             Self { builder: self.builder.property("require-mppe", require_mppe), }
                         }
 
+                            /// If [`true`], 128-bit MPPE (Microsoft Point-to-Point Encryption) will be
+                            /// required for the PPP session, and the "require-mppe" property must also
+                            /// be set to [`true`].  If 128-bit MPPE is not available the session will fail.
                             pub fn require_mppe_128(self, require_mppe_128: bool) -> Self {
                             Self { builder: self.builder.property("require-mppe-128", require_mppe_128), }
                         }

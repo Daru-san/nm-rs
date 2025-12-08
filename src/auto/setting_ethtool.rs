@@ -8,6 +8,11 @@ use crate::{ffi,Setting,Ternary};
 use glib::{prelude::*,translate::*};
 
 glib::wrapper! {
+    /// Ethtool Ethernet Settings
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingEthtool")]
     pub struct SettingEthtool(Object<ffi::NMSettingEthtool, ffi::NMSettingEthtoolClass>) @extends Setting;
 
@@ -17,6 +22,11 @@ glib::wrapper! {
 }
 
 impl SettingEthtool {
+    /// Creates a new #NMSettingEthtool object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingEthtool object
     #[doc(alias = "nm_setting_ethtool_new")]
     pub fn new() -> SettingEthtool {
         assert_initialized_main_thread!();
@@ -25,6 +35,11 @@ impl SettingEthtool {
         }
     }
 
+    /// Clears all offload features settings
+    ///
+    /// # Deprecated since 1.26
+    ///
+    /// use nm_setting_option_clear_by_name() with nm_ethtool_optname_is_feature() predicate instead.
     #[cfg_attr(feature = "v1_26", deprecated = "Since 1.26")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_ethtool_clear_features")]
@@ -34,6 +49,22 @@ impl SettingEthtool {
         }
     }
 
+    /// Gets and offload feature setting. Returns [`Ternary::Default`][crate::Ternary::Default] if the
+    /// feature is not set.
+    ///
+    /// Note that @optname must be a valid name for a feature, according to
+    /// nm_ethtool_optname_is_feature().
+    ///
+    /// # Deprecated since 1.26
+    ///
+    /// use nm_setting_option_get_boolean() instead.
+    /// ## `optname`
+    /// option name of the offload feature to get
+    ///
+    /// # Returns
+    ///
+    /// a #NMTernary value indicating whether the offload feature
+    ///   is enabled, disabled, or left untouched.
     #[cfg_attr(feature = "v1_26", deprecated = "Since 1.26")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_ethtool_get_feature")]
@@ -44,6 +75,22 @@ impl SettingEthtool {
         }
     }
 
+    /// This returns all options names that are set. This includes the feature names
+    /// like [`ETHTOOL_OPTNAME_FEATURE_GRO`][crate::ETHTOOL_OPTNAME_FEATURE_GRO]. See nm_ethtool_optname_is_feature() to
+    /// check whether the option name is valid for offload features.
+    ///
+    /// # Deprecated since 1.26
+    ///
+    /// use nm_setting_option_get_all_names() instead.
+    ///
+    /// # Returns
+    ///
+    /// list of set option
+    ///   names or [`None`] if no options are set. The option names are still owned by
+    ///   @self and may get invalidated when @self gets modified.
+    ///
+    /// ## `out_length`
+    /// return location for the number of keys returned, or [`None`]
     #[cfg_attr(feature = "v1_26", deprecated = "Since 1.26")]
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
@@ -58,6 +105,19 @@ impl SettingEthtool {
         }
     }
 
+    /// Sets and offload feature setting.
+    ///
+    /// Note that @optname must be a valid name for a feature, according to
+    /// nm_ethtool_optname_is_feature().
+    ///
+    /// # Deprecated since 1.26
+    ///
+    /// use nm_setting_option_set() or nm_setting_option_set_boolean() instead.
+    /// ## `optname`
+    /// option name of the offload feature to get
+    /// ## `value`
+    /// the new value to set. The special value [`Ternary::Default`][crate::Ternary::Default]
+    ///   means to clear the offload feature setting.
     #[cfg_attr(feature = "v1_26", deprecated = "Since 1.26")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_ethtool_set_feature")]

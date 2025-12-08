@@ -12,6 +12,23 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSetting")]
     pub struct Setting(Object<ffi::NMSetting, ffi::NMSettingClass>);
 
@@ -23,6 +40,22 @@ glib::wrapper! {
 impl Setting {
     pub const NONE: Option<&'static Setting> = None;
 
+    /// Get the type of the enum that defines the values that the property accepts. It is only
+    /// useful for properties configured to accept values from certain enum type, otherwise
+    /// it will return `G_TYPE_INVALID`. Note that flags (children of G_TYPE_FLAGS) are also
+    /// considered enums.
+    ///
+    /// Note that the GObject property might be implemented as an integer, actually, and not
+    /// as enum. Find out what underlying type is used, checking the #GParamSpec, before
+    /// setting the GObject property.
+    /// ## `setting_type`
+    /// the GType of the NMSetting instance
+    /// ## `property_name`
+    /// the name of the property
+    ///
+    /// # Returns
+    ///
+    /// the enum's GType, or `G_TYPE_INVALID` if the property is not of enum type
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_get_enum_property_type")]
@@ -40,6 +73,14 @@ impl Setting {
         }
     }
 
+    /// Returns the #GType of the setting's class for a given setting name.
+    /// ## `name`
+    /// a setting name
+    ///
+    /// # Returns
+    ///
+    /// the #GType of the setting's class, or `G_TYPE_INVALID` if
+    ///   @name is not recognized.
     #[doc(alias = "nm_setting_lookup_type")]
     pub fn lookup_type(name: &str) -> glib::types::Type {
         assert_initialized_main_thread!();
@@ -54,6 +95,11 @@ impl std::fmt::Display for Setting {
     }
 }
 
+/// Trait containing all [`struct@Setting`] methods.
+///
+/// # Implementors
+///
+/// [`Setting6Lowpan`][struct@crate::Setting6Lowpan], [`Setting8021x`][struct@crate::Setting8021x], [`SettingAdsl`][struct@crate::SettingAdsl], [`SettingBluetooth`][struct@crate::SettingBluetooth], [`SettingBondPort`][struct@crate::SettingBondPort], [`SettingBond`][struct@crate::SettingBond], [`SettingBridgePort`][struct@crate::SettingBridgePort], [`SettingBridge`][struct@crate::SettingBridge], [`SettingCdma`][struct@crate::SettingCdma], [`SettingConnection`][struct@crate::SettingConnection], [`SettingDcb`][struct@crate::SettingDcb], [`SettingDummy`][struct@crate::SettingDummy], [`SettingEthtool`][struct@crate::SettingEthtool], [`SettingGeneric`][struct@crate::SettingGeneric], [`SettingGsm`][struct@crate::SettingGsm], [`SettingHostname`][struct@crate::SettingHostname], [`SettingHsr`][struct@crate::SettingHsr], [`SettingIPConfig`][struct@crate::SettingIPConfig], [`SettingIPTunnel`][struct@crate::SettingIPTunnel], [`SettingInfiniband`][struct@crate::SettingInfiniband], [`SettingIpvlan`][struct@crate::SettingIpvlan], [`SettingLink`][struct@crate::SettingLink], [`SettingLoopback`][struct@crate::SettingLoopback], [`SettingMacsec`][struct@crate::SettingMacsec], [`SettingMacvlan`][struct@crate::SettingMacvlan], [`SettingMatch`][struct@crate::SettingMatch], [`SettingOlpcMesh`][struct@crate::SettingOlpcMesh], [`SettingOvsBridge`][struct@crate::SettingOvsBridge], [`SettingOvsDpdk`][struct@crate::SettingOvsDpdk], [`SettingOvsExternalIDs`][struct@crate::SettingOvsExternalIDs], [`SettingOvsOtherConfig`][struct@crate::SettingOvsOtherConfig], [`SettingOvsPatch`][struct@crate::SettingOvsPatch], [`SettingOvsPort`][struct@crate::SettingOvsPort], [`SettingPpp`][struct@crate::SettingPpp], [`SettingPppoe`][struct@crate::SettingPppoe], [`SettingPrefixDelegation`][struct@crate::SettingPrefixDelegation], [`SettingProxy`][struct@crate::SettingProxy], [`SettingSerial`][struct@crate::SettingSerial], [`SettingSriov`][struct@crate::SettingSriov], [`SettingTCConfig`][struct@crate::SettingTCConfig], [`SettingTeamPort`][struct@crate::SettingTeamPort], [`SettingTeam`][struct@crate::SettingTeam], [`SettingTun`][struct@crate::SettingTun], [`SettingUser`][struct@crate::SettingUser], [`SettingVeth`][struct@crate::SettingVeth], [`SettingVlan`][struct@crate::SettingVlan], [`SettingVpn`][struct@crate::SettingVpn], [`SettingVrf`][struct@crate::SettingVrf], [`SettingVxlan`][struct@crate::SettingVxlan], [`SettingWifiP2P`][struct@crate::SettingWifiP2P], [`SettingWimax`][struct@crate::SettingWimax], [`SettingWireGuard`][struct@crate::SettingWireGuard], [`SettingWired`][struct@crate::SettingWired], [`SettingWirelessSecurity`][struct@crate::SettingWirelessSecurity], [`SettingWireless`][struct@crate::SettingWireless], [`SettingWpan`][struct@crate::SettingWpan], [`Setting`][struct@crate::Setting]
 pub trait SettingExt: IsA<Setting> + 'static {
     #[doc(alias = "nm_setting_compare")]
     fn compare(&self, b: &impl IsA<Setting>, flags: SettingCompareFlags) -> bool {
@@ -71,6 +117,12 @@ pub trait SettingExt: IsA<Setting> + 'static {
     //    unsafe { TODO: call ffi:nm_setting_diff() }
     //}
 
+    /// Duplicates a #NMSetting.
+    ///
+    /// # Returns
+    ///
+    /// a new #NMSetting containing the same properties and values as the
+    /// source #NMSetting
     #[doc(alias = "nm_setting_duplicate")]
     #[must_use]
     fn duplicate(&self) -> Setting {
@@ -88,12 +140,29 @@ pub trait SettingExt: IsA<Setting> + 'static {
     //    unsafe { TODO: call ffi:nm_setting_get_dbus_property_type() }
     //}
 
+    /// Returns the type name of the #NMSetting object
+    ///
+    /// # Returns
+    ///
+    /// a string containing the type name of the #NMSetting object,
+    /// like 'ppp' or 'wireless' or 'wired'.
     #[doc(alias = "nm_setting_get_name")]
     #[doc(alias = "get_name")]
     fn name(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_get_name(self.as_ref().to_glib_none().0)) }
     }
 
+    /// For a given secret, retrieves the #NMSettingSecretFlags describing how to
+    /// handle that secret.
+    /// ## `secret_name`
+    /// the secret key name to get flags for
+    /// ## `out_flags`
+    /// on success, the #NMSettingSecretFlags for the secret
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success (if the given secret name was a valid property of
+    /// this setting, and if that property is secret), [`false`] if not
     #[doc(alias = "nm_setting_get_secret_flags")]
     #[doc(alias = "get_secret_flags")]
     fn secret_flags(
@@ -132,6 +201,14 @@ pub trait SettingExt: IsA<Setting> + 'static {
     //    unsafe { TODO: call ffi:nm_setting_option_get() }
     //}
 
+    /// Gives the name of all set options.
+    ///
+    /// # Returns
+    ///
+    ///
+    ///   A [`None`] terminated array of key names. If no names are present, this returns
+    ///   [`None`]. The returned array and the names are owned by `NMSetting` and might be invalidated
+    ///   by the next operation.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_option_get_all_names")]
@@ -149,6 +226,16 @@ pub trait SettingExt: IsA<Setting> + 'static {
         }
     }
 
+    /// ## `opt_name`
+    /// the option to get
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @opt_name is set to a boolean variant.
+    ///
+    /// ## `out_value`
+    /// the optional output value.
+    ///   If the option is unset, [`false`] will be returned.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_option_get_boolean")]
@@ -164,6 +251,16 @@ pub trait SettingExt: IsA<Setting> + 'static {
         }
     }
 
+    /// ## `opt_name`
+    /// the option to get
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @opt_name is set to a uint32 variant.
+    ///
+    /// ## `out_value`
+    /// the optional output value.
+    ///   If the option is unset, 0 will be returned.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_option_get_uint32")]
@@ -190,6 +287,9 @@ pub trait SettingExt: IsA<Setting> + 'static {
     //    unsafe { TODO: call ffi:nm_setting_option_set() }
     //}
 
+    /// Like nm_setting_option_set() to set a boolean GVariant.
+    /// ## `value`
+    /// the value to set.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_option_set_boolean")]
@@ -203,6 +303,9 @@ pub trait SettingExt: IsA<Setting> + 'static {
         }
     }
 
+    /// Like nm_setting_option_set() to set a uint32 GVariant.
+    /// ## `value`
+    /// the value to set.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_option_set_uint32")]
@@ -216,6 +319,17 @@ pub trait SettingExt: IsA<Setting> + 'static {
         }
     }
 
+    /// For a given secret, stores the #NMSettingSecretFlags describing how to
+    /// handle that secret.
+    /// ## `secret_name`
+    /// the secret key name to set flags for
+    /// ## `flags`
+    /// the #NMSettingSecretFlags for the secret
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success (if the given secret name was a valid property of
+    /// this setting, and if that property is secret), [`false`] if not
     #[doc(alias = "nm_setting_set_secret_flags")]
     fn set_secret_flags(
         &self,
@@ -239,12 +353,33 @@ pub trait SettingExt: IsA<Setting> + 'static {
         }
     }
 
+    /// Convert the setting (including secrets!) into a string. For debugging
+    /// purposes ONLY, should NOT be used for serialization of the setting,
+    /// or machine-parsed in any way. The output format is not guaranteed to
+    /// be stable and may change at any time.
+    ///
+    /// # Returns
+    ///
+    /// an allocated string containing a textual representation of the
+    /// setting's properties and values, which the caller should
+    /// free with g_free()
     #[doc(alias = "nm_setting_to_string")]
     #[doc(alias = "to_string")]
     fn to_str(&self) -> glib::GString {
         unsafe { from_glib_full(ffi::nm_setting_to_string(self.as_ref().to_glib_none().0)) }
     }
 
+    /// Validates the setting.  Each setting's properties have allowed values, and
+    /// some are dependent on other values (hence the need for @connection).  The
+    /// returned #GError contains information about which property of the setting
+    /// failed validation, and in what way that property failed validation.
+    /// ## `connection`
+    /// the #NMConnection that @self came from, or
+    ///   [`None`] if @self is being verified in isolation.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the setting is valid, [`false`] if it is not
     #[doc(alias = "nm_setting_verify")]
     fn verify(&self, connection: Option<&impl IsA<Connection>>) -> Result<(), glib::Error> {
         unsafe {
@@ -263,6 +398,18 @@ pub trait SettingExt: IsA<Setting> + 'static {
         }
     }
 
+    /// Verifies the secrets in the setting.
+    /// The returned #GError contains information about which secret of the setting
+    /// failed validation, and in what way that secret failed validation.
+    /// The secret validation is done separately from main setting validation, because
+    /// in some cases connection failure is not desired just for the secrets.
+    /// ## `connection`
+    /// the #NMConnection that @self came from, or
+    ///   [`None`] if @self is being verified in isolation.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the setting secrets are valid, [`false`] if they are not
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_verify_secrets")]

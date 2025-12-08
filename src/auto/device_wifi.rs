@@ -13,6 +13,320 @@ use glib::{
 use std::{boxed::Box as Box_, pin::Pin};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `access-points`
+    ///  List of all Wi-Fi access points the device can see.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `active-access-point`
+    ///  The active #NMAccessPoint of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `bitrate`
+    ///  The bit rate of the device in kbit/s.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `last-scan`
+    ///  The timestamp (in CLOCK_BOOTTIME seconds) for the last finished
+    /// network scan. A value of -1 means the device never scanned for
+    /// access points.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `mode`
+    ///  The mode of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `perm-hw-address`
+    ///  The hardware (MAC) address of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `wireless-capabilities`
+    ///  The wireless capabilities of the device.
+    ///
+    /// Readable
+    /// <details><summary><h4>Device</h4></summary>
+    ///
+    ///
+    /// #### `active-connection`
+    ///  The #NMActiveConnection object that "owns" this device during activation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `autoconnect`
+    ///  Whether the device can auto-activate a connection.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `available-connections`
+    ///  The available connections of the device
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `capabilities`
+    ///  The capabilities of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `device-type`
+    ///  The numeric type of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp4-config`
+    ///  The IPv4 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp6-config`
+    ///  The IPv6 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver`
+    ///  The driver of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver-version`
+    ///  The version of the device driver.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-missing`
+    ///  When [`true`] indicates the device is likely missing firmware required
+    /// for its operation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-version`
+    ///  The firmware version of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `hw-address`
+    ///  The hardware address of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface`
+    ///  The interface of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface-flags`
+    ///  The interface flags.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip-interface`
+    ///  The IP interface of the device which should be used for all IP-related
+    /// operations like addressing and routing.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-config`
+    ///  The #NMIP4Config of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-connectivity`
+    ///  The IPv4 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-config`
+    ///  The IPv6 #NMIPConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-connectivity`
+    ///  The IPv6 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `lldp-neighbors`
+    ///  The LLDP neighbors.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `managed`
+    ///  Whether the device is managed by NetworkManager.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `metered`
+    ///  Whether the device is metered.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `mtu`
+    ///  The MTU of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `nm-plugin-missing`
+    ///  When [`true`] indicates that the NetworkManager plugin for the device
+    /// is not installed.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The device path as exposed by the udev property ID_PATH.
+    ///
+    /// The string is backslash escaped (C escaping) for invalid
+    /// characters. The escaping can be reverted with g_strcompress(),
+    /// however the result may not be valid UTF-8.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `physical-port-id`
+    ///  The physical port ID of the device. (See
+    /// nm_device_get_physical_port_id().)
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ports`
+    ///  The port devices of the controller device. For devices that cannot be
+    /// controllers this is likely to be always empty.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `product`
+    ///  The product string of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `real`
+    ///  Whether the device is real or is a placeholder device that could
+    /// be created automatically by NetworkManager if one of its
+    /// #NMDevice:available-connections was activated.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state-reason`
+    ///  The reason for the device state.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `udi`
+    ///  An operating-system specific device hardware identifier; this is not
+    /// unique to a specific hardware device across reboots or hotplugs.  It
+    /// is an opaque string which for some device types (Bluetooth, Modem)
+    /// contains an identifier provided by the underlying hardware service daemon
+    /// such as Bluez or ModemManager, and clients can use this property to
+    /// request more information about the device from those services.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `vendor`
+    ///  The vendor string of the device.
+    ///
+    /// Readable
+    /// </details>
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `access-point-added`
+    ///  Notifies that a #NMAccessPoint is added to the Wi-Fi device.
+    ///
+    ///
+    ///
+    ///
+    /// #### `access-point-removed`
+    ///  Notifies that a #NMAccessPoint is removed from the Wi-Fi device.
+    ///
+    ///
+    /// <details><summary><h4>Device</h4></summary>
+    ///
+    ///
+    /// #### `state-changed`
+    ///  Notifies the state change of a #NMDevice.
+    ///
+    ///
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`DeviceExt`][trait@crate::prelude::DeviceExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMDeviceWifi")]
     pub struct DeviceWifi(Object<ffi::NMDeviceWifi, ffi::NMDeviceWifiClass>) @extends Device, Object;
 
@@ -30,6 +344,13 @@ impl DeviceWifi {
         DeviceWifiBuilder::new()
     }
 
+    /// Gets a #NMAccessPoint by path.
+    /// ## `path`
+    /// the object path of the access point
+    ///
+    /// # Returns
+    ///
+    /// the access point or [`None`] if none is found.
     #[doc(alias = "nm_device_wifi_get_access_point_by_path")]
     #[doc(alias = "get_access_point_by_path")]
     pub fn access_point_by_path(&self, path: &str) -> AccessPoint {
@@ -41,6 +362,13 @@ impl DeviceWifi {
         }
     }
 
+    /// Gets all the scanned access points of the #NMDeviceWifi.
+    ///
+    /// # Returns
+    ///
+    /// a #GPtrArray containing all the
+    /// scanned #NMAccessPoints.
+    /// The returned array is owned by the client and should not be modified.
     #[doc(alias = "nm_device_wifi_get_access_points")]
     #[doc(alias = "get_access_points")]
     #[doc(alias = "access-points")]
@@ -52,6 +380,11 @@ impl DeviceWifi {
         }
     }
 
+    /// Gets the active #NMAccessPoint.
+    ///
+    /// # Returns
+    ///
+    /// the access point or [`None`] if none is active
     #[doc(alias = "nm_device_wifi_get_active_access_point")]
     #[doc(alias = "get_active_access_point")]
     #[doc(alias = "active-access-point")]
@@ -63,18 +396,38 @@ impl DeviceWifi {
         }
     }
 
+    /// Gets the bit rate of the #NMDeviceWifi in kbit/s.
+    ///
+    /// # Returns
+    ///
+    /// the bit rate (kbit/s)
     #[doc(alias = "nm_device_wifi_get_bitrate")]
     #[doc(alias = "get_bitrate")]
     pub fn bitrate(&self) -> u32 {
         unsafe { ffi::nm_device_wifi_get_bitrate(self.to_glib_none().0) }
     }
 
+    /// Gets the Wi-Fi capabilities of the #NMDeviceWifi.
+    ///
+    /// # Returns
+    ///
+    /// the capabilities
     #[doc(alias = "nm_device_wifi_get_capabilities")]
     #[doc(alias = "get_capabilities")]
     pub fn capabilities(&self) -> DeviceWifiCapabilities {
         unsafe { from_glib(ffi::nm_device_wifi_get_capabilities(self.to_glib_none().0)) }
     }
 
+    /// Gets the actual hardware (MAC) address of the #NMDeviceWifi
+    ///
+    /// # Deprecated since 1.24
+    ///
+    /// Use nm_device_get_hw_address() instead.
+    ///
+    /// # Returns
+    ///
+    /// the actual hardware address. This is the internal string used by the
+    /// device, and must not be modified.
     #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
     #[allow(deprecated)]
     #[doc(alias = "nm_device_wifi_get_hw_address")]
@@ -83,6 +436,15 @@ impl DeviceWifi {
         unsafe { from_glib_none(ffi::nm_device_wifi_get_hw_address(self.to_glib_none().0)) }
     }
 
+    /// Returns the timestamp (in CLOCK_BOOTTIME milliseconds) for the last finished
+    /// network scan. A value of -1 means the device never scanned for access points.
+    ///
+    /// Use nm_utils_get_timestamp_msec() to obtain current time value suitable for
+    /// comparing to this value.
+    ///
+    /// # Returns
+    ///
+    /// the last scan time in milliseconds (in clock_gettime(CLOCK_BOOTTIME) scale).
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_device_wifi_get_last_scan")]
@@ -92,12 +454,23 @@ impl DeviceWifi {
         unsafe { ffi::nm_device_wifi_get_last_scan(self.to_glib_none().0) }
     }
 
+    /// Gets the #NMDeviceWifi mode.
+    ///
+    /// # Returns
+    ///
+    /// the mode
     #[doc(alias = "nm_device_wifi_get_mode")]
     #[doc(alias = "get_mode")]
     pub fn mode(&self) -> NM80211Mode {
         unsafe { from_glib(ffi::nm_device_wifi_get_mode(self.to_glib_none().0)) }
     }
 
+    /// Gets the permanent hardware (MAC) address of the #NMDeviceWifi
+    ///
+    /// # Returns
+    ///
+    /// the permanent hardware address. This is the internal string used by the
+    /// device, and must not be modified.
     #[doc(alias = "nm_device_wifi_get_permanent_hw_address")]
     #[doc(alias = "get_permanent_hw_address")]
     pub fn permanent_hw_address(&self) -> glib::GString {
@@ -108,6 +481,20 @@ impl DeviceWifi {
         }
     }
 
+    /// Request NM to scan for access points on @self. Note that the function
+    /// returns immediately after requesting the scan, and it may take some time
+    /// after that for the scan to complete.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_device_wifi_request_scan_async() or GDBusConnection.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] on error, in which case @error will be
+    /// set.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_device_wifi_request_scan")]
@@ -131,6 +518,13 @@ impl DeviceWifi {
         }
     }
 
+    /// Request NM to scan for access points on @self. Note that @callback will be
+    /// called immediately after requesting the scan, and it may take some time after
+    /// that for the scan to complete.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the scan has been requested
     #[doc(alias = "nm_device_wifi_request_scan_async")]
     pub fn request_scan_async<P: FnOnce(Result<(), glib::Error>) + 'static>(
         &self,
@@ -205,11 +599,13 @@ impl DeviceWifi {
     //    unsafe { TODO: call ffi:nm_device_wifi_request_scan_options_async() }
     //}
 
+    /// The hardware (MAC) address of the device.
     #[doc(alias = "perm-hw-address")]
     pub fn perm_hw_address(&self) -> Option<glib::GString> {
         ObjectExt::property(self, "perm-hw-address")
     }
 
+    /// The wireless capabilities of the device.
     #[doc(alias = "wireless-capabilities")]
     pub fn wireless_capabilities(&self) -> DeviceWifiCapabilities {
         ObjectExt::property(self, "wireless-capabilities")
@@ -413,6 +809,9 @@ impl DeviceWifiBuilder {
         }
     }
 
+    /// Whether the device can auto-activate a connection.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     pub fn autoconnect(self, autoconnect: bool) -> Self {
         Self {
             builder: self.builder.property("autoconnect", autoconnect),

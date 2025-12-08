@@ -27,6 +27,278 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// Wi-Fi Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `ap-isolation`
+    ///  Configures AP isolation, which prevents communication between
+    /// wireless devices connected to this AP. This property can be set
+    /// to a value different from [`Ternary::Default`][crate::Ternary::Default] only when the
+    /// interface is configured in AP mode.
+    ///
+    /// If set to [`Ternary::True`][crate::Ternary::True], devices are not able to communicate
+    /// with each other. This increases security because it protects
+    /// devices against attacks from other clients in the network. At
+    /// the same time, it prevents devices to access resources on the
+    /// same wireless networks as file shares, printers, etc.
+    ///
+    /// If set to [`Ternary::False`][crate::Ternary::False], devices can talk to each other.
+    ///
+    /// When set to [`Ternary::Default`][crate::Ternary::Default], the global default is used; in
+    /// case the global default is unspecified it is assumed to be
+    /// [`Ternary::False`][crate::Ternary::False].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `band`
+    ///  802.11 frequency band of the network.  One of "a" for 5GHz 802.11a or
+    /// "bg" for 2.4GHz 802.11.  This will lock associations to the Wi-Fi network
+    /// to the specific band, i.e. if "a" is specified, the device will not
+    /// associate with the same network in the 2.4GHz band even if the network's
+    /// settings are compatible.  This setting depends on specific driver
+    /// capability and may not work with all drivers.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `bssid`
+    ///  If specified, directs the device to only associate with the given access
+    /// point.  This capability is highly driver dependent and not supported by
+    /// all devices.  Note: this property does not control the BSSID used when
+    /// creating an Ad-Hoc network and is unlikely to in the future.
+    ///
+    /// Locking a client profile to a certain BSSID will prevent roaming and also
+    /// disable background scanning. That can be useful, if there is only one access
+    /// point for the SSID.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `channel`
+    ///  Wireless channel to use for the Wi-Fi connection.  The device will only
+    /// join (or create for Ad-Hoc networks) a Wi-Fi network on the specified
+    /// channel.  Because channel numbers overlap between bands, this property
+    /// also requires the "band" property to be set.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `channel-width`
+    ///  Specifies width of the wireless channel in Access Point (AP) mode.
+    ///
+    /// When set to [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto] (the default), the
+    /// channel width is automatically determined. At the moment, this means that
+    /// the safest (smallest) width is chosen.
+    ///
+    /// If the value is not [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto], then the
+    /// 'channel' property must also be set. When using the 2.4GHz band, the width
+    /// can be at most 40MHz.
+    ///
+    /// This property can be set to a value different from
+    /// [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto] only when the interface is configured
+    /// in AP mode.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `cloned-mac-address`
+    ///  If specified, request that the device use this MAC address instead.
+    /// This is known as MAC cloning or spoofing.
+    ///
+    /// Beside explicitly specifying a MAC address, the special values "preserve", "permanent",
+    /// "random", "stable" and "stable-ssid" are supported.
+    /// "preserve" means not to touch the MAC address on activation.
+    /// "permanent" means to use the permanent hardware address of the device.
+    /// "random" creates a random MAC address on each connect.
+    /// "stable" creates a hashed MAC address based on connection.stable-id and a
+    /// machine dependent key.
+    /// "stable-ssid" creates a hashed MAC address based on the SSID, the same as setting the
+    /// stable-id to "${NETWORK_SSID}".
+    ///
+    /// If unspecified, the value can be overwritten via global defaults, see manual
+    /// of NetworkManager.conf. If still unspecified, it defaults to "preserve"
+    /// (older versions of NetworkManager may use a different default value).
+    ///
+    /// On D-Bus, this field is expressed as "assigned-mac-address" or the deprecated
+    /// "cloned-mac-address".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `generate-mac-address-mask`
+    ///  With #NMSettingWireless:cloned-mac-address setting "random" or "stable",
+    /// by default all bits of the MAC address are scrambled and a locally-administered,
+    /// unicast MAC address is created. This property allows one to specify that certain bits
+    /// are fixed. Note that the least significant bit of the first MAC address will
+    /// always be unset to create a unicast MAC address.
+    ///
+    /// If the property is [`None`], it is eligible to be overwritten by a default
+    /// connection setting. If the value is still [`None`] or an empty string, the
+    /// default is to create a locally-administered, unicast MAC address.
+    ///
+    /// If the value contains one MAC address, this address is used as mask. The set
+    /// bits of the mask are to be filled with the current MAC address of the device,
+    /// while the unset bits are subject to randomization.
+    /// Setting "FE:FF:FF:00:00:00" means to preserve the OUI of the current MAC address
+    /// and only randomize the lower 3 bytes using the "random" or "stable" algorithm.
+    ///
+    /// If the value contains one additional MAC address after the mask,
+    /// this address is used instead of the current MAC address to fill the bits
+    /// that shall not be randomized. For example, a value of
+    /// "FE:FF:FF:00:00:00 68:F7:28:00:00:00" will set the OUI of the MAC address
+    /// to 68:F7:28, while the lower bits are randomized. A value of
+    /// "02:00:00:00:00:00 00:00:00:00:00:00" will create a fully scrambled
+    /// globally-administered, burned-in MAC address.
+    ///
+    /// If the value contains more than one additional MAC addresses, one of
+    /// them is chosen randomly. For example, "02:00:00:00:00:00 00:00:00:00:00:00 02:00:00:00:00:00"
+    /// will create a fully scrambled MAC address, randomly locally or globally
+    /// administered.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `hidden`
+    ///  If [`true`], indicates that the network is a non-broadcasting network that
+    /// hides its SSID. This works both in infrastructure and AP mode.
+    ///
+    /// In infrastructure mode, various workarounds are used for a more reliable
+    /// discovery of hidden networks, such as probe-scanning the SSID.  However,
+    /// these workarounds expose inherent insecurities with hidden SSID networks,
+    /// and thus hidden SSID networks should be used with caution.
+    ///
+    /// In AP mode, the created network does not broadcast its SSID.
+    ///
+    /// Note that marking the network as hidden may be a privacy issue for you
+    /// (in infrastructure mode) or client stations (in AP mode), as the explicit
+    /// probe-scans are distinctly recognizable on the air.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mac-address`
+    ///  If specified, this connection will only apply to the Wi-Fi device whose
+    /// permanent MAC address matches. This property does not change the MAC
+    /// address of the device (i.e. MAC spoofing).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mac-address-blacklist`
+    ///  A list of permanent MAC addresses of Wi-Fi devices to which this
+    /// connection should never apply.  Each MAC address should be given in the
+    /// standard hex-digits-and-colons notation (eg "00:11:22:33:44:55").
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mac-address-denylist`
+    ///  A list of permanent MAC addresses of Wi-Fi devices to which this
+    /// connection should never apply.  Each MAC address should be given in the
+    /// standard hex-digits-and-colons notation (eg "00:11:22:33:44:55").
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mac-address-randomization`
+    ///  One of [`SettingMacRandomization::Default`][crate::SettingMacRandomization::Default] (never randomize unless
+    /// the user has set a global default to randomize and the supplicant
+    /// supports randomization),  [`SettingMacRandomization::Never`][crate::SettingMacRandomization::Never] (never
+    /// randomize the MAC address), or [`SettingMacRandomization::Always`][crate::SettingMacRandomization::Always]
+    /// (always randomize the MAC address).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mode`
+    ///  Wi-Fi network mode; one of "infrastructure", "mesh", "adhoc" or "ap".  If blank,
+    /// infrastructure is assumed.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mtu`
+    ///  If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple Ethernet frames.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `powersave`
+    ///  One of [`SettingWirelessPowersave::Disable`][crate::SettingWirelessPowersave::Disable] (disable Wi-Fi power
+    /// saving), [`SettingWirelessPowersave::Enable`][crate::SettingWirelessPowersave::Enable] (enable Wi-Fi power
+    /// saving), [`SettingWirelessPowersave::Ignore`][crate::SettingWirelessPowersave::Ignore] (don't touch currently
+    /// configure setting) or [`SettingWirelessPowersave::Default`][crate::SettingWirelessPowersave::Default] (use the
+    /// globally configured value). All other values are reserved.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `rate`
+    ///  This property is not implemented and has no effect.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `seen-bssids`
+    ///  A list of BSSIDs (each BSSID formatted as a MAC address like
+    /// "00:11:22:33:44:55") that have been detected as part of the Wi-Fi
+    /// network.  NetworkManager internally tracks previously seen BSSIDs. The
+    /// property is only meant for reading and reflects the BSSID list of
+    /// NetworkManager. The changes you make to this property will not be
+    /// preserved.
+    ///
+    /// This is not a regular property that the user would configure. Instead,
+    /// NetworkManager automatically sets the seen BSSIDs and tracks them internally
+    /// in "/var/lib/NetworkManager/seen-bssids" file.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ssid`
+    ///  SSID of the Wi-Fi network. Must be specified.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `tx-power`
+    ///  This property is not implemented and has no effect.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `wake-on-wlan`
+    ///  The #NMSettingWirelessWakeOnWLan options to enable. Not all devices support all options.
+    /// May be any combination of [`SettingWirelessWakeOnWLan::ANY`][crate::SettingWirelessWakeOnWLan::ANY],
+    /// [`SettingWirelessWakeOnWLan::DISCONNECT`][crate::SettingWirelessWakeOnWLan::DISCONNECT],
+    /// [`SettingWirelessWakeOnWLan::MAGIC`][crate::SettingWirelessWakeOnWLan::MAGIC],
+    /// [`SettingWirelessWakeOnWLan::GTK_REKEY_FAILURE`][crate::SettingWirelessWakeOnWLan::GTK_REKEY_FAILURE],
+    /// [`SettingWirelessWakeOnWLan::EAP_IDENTITY_REQUEST`][crate::SettingWirelessWakeOnWLan::EAP_IDENTITY_REQUEST],
+    /// [`SettingWirelessWakeOnWLan::_4WAY_HANDSHAKE`][crate::SettingWirelessWakeOnWLan::_4WAY_HANDSHAKE],
+    /// [`SettingWirelessWakeOnWLan::RFKILL_RELEASE`][crate::SettingWirelessWakeOnWLan::RFKILL_RELEASE],
+    /// [`SettingWirelessWakeOnWLan::TCP`][crate::SettingWirelessWakeOnWLan::TCP] or the special values
+    /// [`SettingWirelessWakeOnWLan::DEFAULT`][crate::SettingWirelessWakeOnWLan::DEFAULT] (to use global settings) and
+    /// [`SettingWirelessWakeOnWLan::IGNORE`][crate::SettingWirelessWakeOnWLan::IGNORE] (to disable management of Wake-on-LAN in
+    /// NetworkManager).
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingWireless")]
     pub struct SettingWireless(Object<ffi::NMSettingWireless, ffi::NMSettingWirelessClass>) @extends Setting;
 
@@ -36,6 +308,11 @@ glib::wrapper! {
 }
 
 impl SettingWireless {
+    /// Creates a new #NMSettingWireless object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingWireless object
     #[doc(alias = "nm_setting_wireless_new")]
     pub fn new() -> SettingWireless {
         assert_initialized_main_thread!();
@@ -50,6 +327,18 @@ impl SettingWireless {
         SettingWirelessBuilder::new()
     }
 
+    /// Adds a new MAC address to the #NMSettingWireless:mac-address-denylist property.
+    ///
+    /// # Deprecated since 1.48
+    ///
+    /// Use nm_setting_wireless_add_mac_denylist_item() instead.
+    /// ## `mac`
+    /// the MAC address string (hex-digits-and-colons notation) to denylist
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the MAC address was added; [`false`] if the MAC address
+    /// is invalid or was already present
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_add_mac_blacklist_item")]
@@ -62,6 +351,14 @@ impl SettingWireless {
         }
     }
 
+    /// Adds a new MAC address to the #NMSettingWireless:mac-address-denylist property.
+    /// ## `mac`
+    /// the MAC address string (hex-digits-and-colons notation) to denylist
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the MAC address was added; [`false`] if the MAC address
+    /// is invalid or was already present
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_wireless_add_mac_denylist_item")]
@@ -74,6 +371,16 @@ impl SettingWireless {
         }
     }
 
+    /// Adds a new Wi-Fi AP's BSSID to the previously seen BSSID list of the setting.
+    /// NetworkManager now tracks previously seen BSSIDs internally so this function
+    /// no longer has much use. Actually, changes you make using this function will
+    /// not be preserved.
+    /// ## `bssid`
+    /// the new BSSID to add to the list
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @bssid was already known, [`false`] if not
     #[doc(alias = "nm_setting_wireless_add_seen_bssid")]
     pub fn add_seen_bssid(&self, bssid: &str) -> bool {
         unsafe {
@@ -84,6 +391,29 @@ impl SettingWireless {
         }
     }
 
+    /// Given a #NMSettingWireless and an optional #NMSettingWirelessSecurity,
+    /// determine if the configuration given by the settings is compatible with
+    /// the security of an access point using that access point's capability flags
+    /// and mode.  Useful for clients that wish to filter a set of connections
+    /// against a set of access points and determine which connections are
+    /// compatible with which access points.
+    /// ## `s_wireless_sec`
+    /// a #NMSettingWirelessSecurity or [`None`]
+    /// ## `ap_flags`
+    /// the `NM80211ApFlags` of the given access point
+    /// ## `ap_wpa`
+    /// the `NM80211ApSecurityFlags` of the given access point's WPA
+    /// capabilities
+    /// ## `ap_rsn`
+    /// the `NM80211ApSecurityFlags` of the given access point's WPA2/RSN
+    /// capabilities
+    /// ## `ap_mode`
+    /// the 802.11 mode of the AP, either Ad-Hoc or Infrastructure
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the given settings are compatible with the access point's
+    /// security flags and mode, [`false`] if they are not.
     #[doc(alias = "nm_setting_wireless_ap_security_compatible")]
     pub fn ap_security_compatible(
         &self,
@@ -105,6 +435,11 @@ impl SettingWireless {
         }
     }
 
+    /// Removes all denylisted MAC addresses.
+    ///
+    /// # Deprecated since 1.48
+    ///
+    /// Use nm_setting_wireless_clear_mac_denylist_items() instead.
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_clear_mac_blacklist_items")]
@@ -114,6 +449,7 @@ impl SettingWireless {
         }
     }
 
+    /// Removes all denylisted MAC addresses.
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_wireless_clear_mac_denylist_items")]
@@ -123,6 +459,10 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:ap-isolation property of the setting
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "nm_setting_wireless_get_ap_isolation")]
@@ -136,24 +476,41 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:band property of the setting
     #[doc(alias = "nm_setting_wireless_get_band")]
     #[doc(alias = "get_band")]
     pub fn band(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_wireless_get_band(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:bssid property of the setting
     #[doc(alias = "nm_setting_wireless_get_bssid")]
     #[doc(alias = "get_bssid")]
     pub fn bssid(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_wireless_get_bssid(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:channel property of the setting
     #[doc(alias = "nm_setting_wireless_get_channel")]
     #[doc(alias = "get_channel")]
     pub fn channel(&self) -> u32 {
         unsafe { ffi::nm_setting_wireless_get_channel(self.to_glib_none().0) }
     }
 
+    /// Returns the #NMSettingWireless:channel-width property.
+    ///
+    /// # Returns
+    ///
+    /// the channel width
     #[cfg(feature = "v1_50")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
     #[doc(alias = "nm_setting_wireless_get_channel_width")]
@@ -167,6 +524,10 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:cloned-mac-address property of the setting
     #[doc(alias = "nm_setting_wireless_get_cloned_mac_address")]
     #[doc(alias = "get_cloned_mac_address")]
     #[doc(alias = "cloned-mac-address")]
@@ -178,6 +539,10 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:generate-mac-address-mask property of the setting
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_setting_wireless_get_generate_mac_address_mask")]
@@ -191,6 +556,10 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:hidden property of the setting
     #[doc(alias = "nm_setting_wireless_get_hidden")]
     #[doc(alias = "get_hidden")]
     #[doc(alias = "hidden")]
@@ -198,6 +567,10 @@ impl SettingWireless {
         unsafe { from_glib(ffi::nm_setting_wireless_get_hidden(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:mac-address property of the setting
     #[doc(alias = "nm_setting_wireless_get_mac_address")]
     #[doc(alias = "get_mac_address")]
     #[doc(alias = "mac-address")]
@@ -209,6 +582,14 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Deprecated since 1.48
+    ///
+    /// Use nm_setting_wireless_get_mac_address_denylist() instead.
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:mac-address-blacklist property of the setting
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_get_mac_address_blacklist")]
@@ -222,6 +603,10 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:mac-address-denylist property of the setting
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_wireless_get_mac_address_denylist")]
@@ -235,6 +620,11 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:mac-address-randomization property of the
+    /// setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_wireless_get_mac_address_randomization")]
@@ -248,6 +638,18 @@ impl SettingWireless {
         }
     }
 
+    /// Since 1.46, access at index "len" is allowed and returns NULL.
+    ///
+    /// # Deprecated since 1.48
+    ///
+    /// Use nm_setting_wireless_get_mac_denylist_item() instead.
+    /// ## `idx`
+    /// the zero-based index of the MAC address entry
+    ///
+    /// # Returns
+    ///
+    /// the denylisted MAC address string (hex-digits-and-colons notation)
+    /// at index @idx
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_get_mac_blacklist_item")]
@@ -261,6 +663,13 @@ impl SettingWireless {
         }
     }
 
+    /// ## `idx`
+    /// the zero-based index of the MAC address entry
+    ///
+    /// # Returns
+    ///
+    /// the denylisted MAC address string (hex-digits-and-colons notation)
+    /// at index @idx
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_wireless_get_mac_denylist_item")]
@@ -274,18 +683,34 @@ impl SettingWireless {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:mode property of the setting
     #[doc(alias = "nm_setting_wireless_get_mode")]
     #[doc(alias = "get_mode")]
     pub fn mode(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_wireless_get_mode(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:mtu property of the setting
     #[doc(alias = "nm_setting_wireless_get_mtu")]
     #[doc(alias = "get_mtu")]
     pub fn mtu(&self) -> u32 {
         unsafe { ffi::nm_setting_wireless_get_mtu(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Deprecated since 1.48
+    ///
+    /// Use nm_setting_wireless_get_num_mac_denylist_items() instead.
+    ///
+    /// # Returns
+    ///
+    /// the number of blacklist MAC addresses
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_get_num_mac_blacklist_items")]
@@ -294,6 +719,10 @@ impl SettingWireless {
         unsafe { ffi::nm_setting_wireless_get_num_mac_blacklist_items(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of denylisted MAC addresses
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_wireless_get_num_mac_denylist_items")]
@@ -302,12 +731,20 @@ impl SettingWireless {
         unsafe { ffi::nm_setting_wireless_get_num_mac_denylist_items(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of BSSIDs in the previously seen BSSID list
     #[doc(alias = "nm_setting_wireless_get_num_seen_bssids")]
     #[doc(alias = "get_num_seen_bssids")]
     pub fn num_seen_bssids(&self) -> u32 {
         unsafe { ffi::nm_setting_wireless_get_num_seen_bssids(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:powersave property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_wireless_get_powersave")]
@@ -316,6 +753,14 @@ impl SettingWireless {
         unsafe { ffi::nm_setting_wireless_get_powersave(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Deprecated since 1.44
+    ///
+    /// This setting is not implemented and has no effect.
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:rate property of the setting
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_get_rate")]
@@ -324,6 +769,12 @@ impl SettingWireless {
         unsafe { ffi::nm_setting_wireless_get_rate(self.to_glib_none().0) }
     }
 
+    /// ## `i`
+    /// index of a BSSID in the previously seen BSSID list
+    ///
+    /// # Returns
+    ///
+    /// the BSSID at index @i
     #[doc(alias = "nm_setting_wireless_get_seen_bssid")]
     #[doc(alias = "get_seen_bssid")]
     pub fn seen_bssid(&self, i: u32) -> glib::GString {
@@ -341,6 +792,14 @@ impl SettingWireless {
     //    unsafe { TODO: call ffi:nm_setting_wireless_get_ssid() }
     //}
 
+    ///
+    /// # Deprecated since 1.44
+    ///
+    /// This setting is not implemented and has no effect.
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWireless:tx-power property of the setting
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_get_tx_power")]
@@ -350,6 +809,11 @@ impl SettingWireless {
         unsafe { ffi::nm_setting_wireless_get_tx_power(self.to_glib_none().0) }
     }
 
+    /// Returns the Wake-on-WLAN options enabled for the connection
+    ///
+    /// # Returns
+    ///
+    /// the Wake-on-WLAN options
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_wireless_get_wake_on_wlan")]
@@ -363,6 +827,13 @@ impl SettingWireless {
         }
     }
 
+    /// Removes the MAC address at index @idx from the denylist.
+    ///
+    /// # Deprecated since 1.48
+    ///
+    /// Use nm_setting_wireless_remove_mac_denylist_item() instead.
+    /// ## `idx`
+    /// index number of the MAC address
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_remove_mac_blacklist_item")]
@@ -372,6 +843,18 @@ impl SettingWireless {
         }
     }
 
+    /// Removes the MAC address @mac from the denylist.
+    ///
+    /// # Deprecated since 1.48
+    ///
+    /// Use nm_setting_wireless_remove_mac_denylist_item_by_value() instead.
+    /// ## `mac`
+    /// the MAC address string (hex-digits-and-colons notation) to remove from
+    /// the denylist
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the MAC address was found and removed; [`false`] if it was not.
     #[cfg_attr(feature = "v1_48", deprecated = "Since 1.48")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wireless_remove_mac_blacklist_item_by_value")]
@@ -384,6 +867,9 @@ impl SettingWireless {
         }
     }
 
+    /// Removes the MAC address at index @idx from the denylist.
+    /// ## `idx`
+    /// index number of the MAC address
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_wireless_remove_mac_denylist_item")]
@@ -393,6 +879,14 @@ impl SettingWireless {
         }
     }
 
+    /// Removes the MAC address @mac from the denylist.
+    /// ## `mac`
+    /// the MAC address string (hex-digits-and-colons notation) to remove from
+    /// the denylist
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the MAC address was found and removed; [`false`] if it was not.
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_wireless_remove_mac_denylist_item_by_value")]
@@ -405,6 +899,22 @@ impl SettingWireless {
         }
     }
 
+    /// Configures AP isolation, which prevents communication between
+    /// wireless devices connected to this AP. This property can be set
+    /// to a value different from [`Ternary::Default`][crate::Ternary::Default] only when the
+    /// interface is configured in AP mode.
+    ///
+    /// If set to [`Ternary::True`][crate::Ternary::True], devices are not able to communicate
+    /// with each other. This increases security because it protects
+    /// devices against attacks from other clients in the network. At
+    /// the same time, it prevents devices to access resources on the
+    /// same wireless networks as file shares, printers, etc.
+    ///
+    /// If set to [`Ternary::False`][crate::Ternary::False], devices can talk to each other.
+    ///
+    /// When set to [`Ternary::Default`][crate::Ternary::Default], the global default is used; in
+    /// case the global default is unspecified it is assumed to be
+    /// [`Ternary::False`][crate::Ternary::False].
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "ap-isolation")]
@@ -412,18 +922,49 @@ impl SettingWireless {
         ObjectExt::set_property(self, "ap-isolation", ap_isolation)
     }
 
+    /// 802.11 frequency band of the network.  One of "a" for 5GHz 802.11a or
+    /// "bg" for 2.4GHz 802.11.  This will lock associations to the Wi-Fi network
+    /// to the specific band, i.e. if "a" is specified, the device will not
+    /// associate with the same network in the 2.4GHz band even if the network's
+    /// settings are compatible.  This setting depends on specific driver
+    /// capability and may not work with all drivers.
     pub fn set_band(&self, band: Option<&str>) {
         ObjectExt::set_property(self, "band", band)
     }
 
+    /// If specified, directs the device to only associate with the given access
+    /// point.  This capability is highly driver dependent and not supported by
+    /// all devices.  Note: this property does not control the BSSID used when
+    /// creating an Ad-Hoc network and is unlikely to in the future.
+    ///
+    /// Locking a client profile to a certain BSSID will prevent roaming and also
+    /// disable background scanning. That can be useful, if there is only one access
+    /// point for the SSID.
     pub fn set_bssid(&self, bssid: Option<&str>) {
         ObjectExt::set_property(self, "bssid", bssid)
     }
 
+    /// Wireless channel to use for the Wi-Fi connection.  The device will only
+    /// join (or create for Ad-Hoc networks) a Wi-Fi network on the specified
+    /// channel.  Because channel numbers overlap between bands, this property
+    /// also requires the "band" property to be set.
     pub fn set_channel(&self, channel: u32) {
         ObjectExt::set_property(self, "channel", channel)
     }
 
+    /// Specifies width of the wireless channel in Access Point (AP) mode.
+    ///
+    /// When set to [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto] (the default), the
+    /// channel width is automatically determined. At the moment, this means that
+    /// the safest (smallest) width is chosen.
+    ///
+    /// If the value is not [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto], then the
+    /// 'channel' property must also be set. When using the 2.4GHz band, the width
+    /// can be at most 40MHz.
+    ///
+    /// This property can be set to a value different from
+    /// [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto] only when the interface is configured
+    /// in AP mode.
     #[cfg(feature = "v1_50")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
     #[doc(alias = "channel-width")]
@@ -431,6 +972,25 @@ impl SettingWireless {
         ObjectExt::set_property(self, "channel-width", channel_width)
     }
 
+    /// If specified, request that the device use this MAC address instead.
+    /// This is known as MAC cloning or spoofing.
+    ///
+    /// Beside explicitly specifying a MAC address, the special values "preserve", "permanent",
+    /// "random", "stable" and "stable-ssid" are supported.
+    /// "preserve" means not to touch the MAC address on activation.
+    /// "permanent" means to use the permanent hardware address of the device.
+    /// "random" creates a random MAC address on each connect.
+    /// "stable" creates a hashed MAC address based on connection.stable-id and a
+    /// machine dependent key.
+    /// "stable-ssid" creates a hashed MAC address based on the SSID, the same as setting the
+    /// stable-id to "${NETWORK_SSID}".
+    ///
+    /// If unspecified, the value can be overwritten via global defaults, see manual
+    /// of NetworkManager.conf. If still unspecified, it defaults to "preserve"
+    /// (older versions of NetworkManager may use a different default value).
+    ///
+    /// On D-Bus, this field is expressed as "assigned-mac-address" or the deprecated
+    /// "cloned-mac-address".
     #[doc(alias = "cloned-mac-address")]
     pub fn set_cloned_mac_address(&self, cloned_mac_address: Option<&str>) {
         ObjectExt::set_property(self, "cloned-mac-address", cloned_mac_address)
@@ -443,20 +1003,67 @@ impl SettingWireless {
         ObjectExt::property(self, "generate-mac-address-mask")
     }
 
+    /// With #NMSettingWireless:cloned-mac-address setting "random" or "stable",
+    /// by default all bits of the MAC address are scrambled and a locally-administered,
+    /// unicast MAC address is created. This property allows one to specify that certain bits
+    /// are fixed. Note that the least significant bit of the first MAC address will
+    /// always be unset to create a unicast MAC address.
+    ///
+    /// If the property is [`None`], it is eligible to be overwritten by a default
+    /// connection setting. If the value is still [`None`] or an empty string, the
+    /// default is to create a locally-administered, unicast MAC address.
+    ///
+    /// If the value contains one MAC address, this address is used as mask. The set
+    /// bits of the mask are to be filled with the current MAC address of the device,
+    /// while the unset bits are subject to randomization.
+    /// Setting "FE:FF:FF:00:00:00" means to preserve the OUI of the current MAC address
+    /// and only randomize the lower 3 bytes using the "random" or "stable" algorithm.
+    ///
+    /// If the value contains one additional MAC address after the mask,
+    /// this address is used instead of the current MAC address to fill the bits
+    /// that shall not be randomized. For example, a value of
+    /// "FE:FF:FF:00:00:00 68:F7:28:00:00:00" will set the OUI of the MAC address
+    /// to 68:F7:28, while the lower bits are randomized. A value of
+    /// "02:00:00:00:00:00 00:00:00:00:00:00" will create a fully scrambled
+    /// globally-administered, burned-in MAC address.
+    ///
+    /// If the value contains more than one additional MAC addresses, one of
+    /// them is chosen randomly. For example, "02:00:00:00:00:00 00:00:00:00:00:00 02:00:00:00:00:00"
+    /// will create a fully scrambled MAC address, randomly locally or globally
+    /// administered.
     #[doc(alias = "generate-mac-address-mask")]
     pub fn set_generate_mac_address_mask(&self, generate_mac_address_mask: Option<&str>) {
         ObjectExt::set_property(self, "generate-mac-address-mask", generate_mac_address_mask)
     }
 
+    /// If [`true`], indicates that the network is a non-broadcasting network that
+    /// hides its SSID. This works both in infrastructure and AP mode.
+    ///
+    /// In infrastructure mode, various workarounds are used for a more reliable
+    /// discovery of hidden networks, such as probe-scanning the SSID.  However,
+    /// these workarounds expose inherent insecurities with hidden SSID networks,
+    /// and thus hidden SSID networks should be used with caution.
+    ///
+    /// In AP mode, the created network does not broadcast its SSID.
+    ///
+    /// Note that marking the network as hidden may be a privacy issue for you
+    /// (in infrastructure mode) or client stations (in AP mode), as the explicit
+    /// probe-scans are distinctly recognizable on the air.
     pub fn set_hidden(&self, hidden: bool) {
         ObjectExt::set_property(self, "hidden", hidden)
     }
 
+    /// If specified, this connection will only apply to the Wi-Fi device whose
+    /// permanent MAC address matches. This property does not change the MAC
+    /// address of the device (i.e. MAC spoofing).
     #[doc(alias = "mac-address")]
     pub fn set_mac_address(&self, mac_address: Option<&str>) {
         ObjectExt::set_property(self, "mac-address", mac_address)
     }
 
+    /// A list of permanent MAC addresses of Wi-Fi devices to which this
+    /// connection should never apply.  Each MAC address should be given in the
+    /// standard hex-digits-and-colons notation (eg "00:11:22:33:44:55").
     #[doc(alias = "mac-address-blacklist")]
     pub fn set_mac_address_blacklist(&self, mac_address_blacklist: &[&str]) {
         ObjectExt::set_property(self, "mac-address-blacklist", mac_address_blacklist)
@@ -469,11 +1076,23 @@ impl SettingWireless {
         ObjectExt::property(self, "mac-address-denylist")
     }
 
+    /// A list of permanent MAC addresses of Wi-Fi devices to which this
+    /// connection should never apply.  Each MAC address should be given in the
+    /// standard hex-digits-and-colons notation (eg "00:11:22:33:44:55").
     #[doc(alias = "mac-address-denylist")]
     pub fn set_mac_address_denylist(&self, mac_address_denylist: &[&str]) {
         ObjectExt::set_property(self, "mac-address-denylist", mac_address_denylist)
     }
 
+    /// One of [`SettingMacRandomization::Default`][crate::SettingMacRandomization::Default] (never randomize unless
+    /// the user has set a global default to randomize and the supplicant
+    /// supports randomization),  [`SettingMacRandomization::Never`][crate::SettingMacRandomization::Never] (never
+    /// randomize the MAC address), or [`SettingMacRandomization::Always`][crate::SettingMacRandomization::Always]
+    /// (always randomize the MAC address).
+    ///
+    /// # Deprecated since 1.4
+    ///
+    /// Use the #NMSettingWireless:cloned-mac-address property instead.
     #[cfg_attr(feature = "v1_4", deprecated = "Since 1.4")]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -482,30 +1101,64 @@ impl SettingWireless {
         ObjectExt::set_property(self, "mac-address-randomization", mac_address_randomization)
     }
 
+    /// Wi-Fi network mode; one of "infrastructure", "mesh", "adhoc" or "ap".  If blank,
+    /// infrastructure is assumed.
     pub fn set_mode(&self, mode: Option<&str>) {
         ObjectExt::set_property(self, "mode", mode)
     }
 
+    /// If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple Ethernet frames.
     pub fn set_mtu(&self, mtu: u32) {
         ObjectExt::set_property(self, "mtu", mtu)
     }
 
+    /// One of [`SettingWirelessPowersave::Disable`][crate::SettingWirelessPowersave::Disable] (disable Wi-Fi power
+    /// saving), [`SettingWirelessPowersave::Enable`][crate::SettingWirelessPowersave::Enable] (enable Wi-Fi power
+    /// saving), [`SettingWirelessPowersave::Ignore`][crate::SettingWirelessPowersave::Ignore] (don't touch currently
+    /// configure setting) or [`SettingWirelessPowersave::Default`][crate::SettingWirelessPowersave::Default] (use the
+    /// globally configured value). All other values are reserved.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_powersave(&self, powersave: u32) {
         ObjectExt::set_property(self, "powersave", powersave)
     }
 
+    /// This property is not implemented and has no effect.
+    ///
+    /// # Deprecated since 1.44
+    ///
+    /// This property is not implemented and has no effect.
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     pub fn set_rate(&self, rate: u32) {
         ObjectExt::set_property(self, "rate", rate)
     }
 
+    /// A list of BSSIDs (each BSSID formatted as a MAC address like
+    /// "00:11:22:33:44:55") that have been detected as part of the Wi-Fi
+    /// network.  NetworkManager internally tracks previously seen BSSIDs. The
+    /// property is only meant for reading and reflects the BSSID list of
+    /// NetworkManager. The changes you make to this property will not be
+    /// preserved.
+    ///
+    /// This is not a regular property that the user would configure. Instead,
+    /// NetworkManager automatically sets the seen BSSIDs and tracks them internally
+    /// in "/var/lib/NetworkManager/seen-bssids" file.
     #[doc(alias = "seen-bssids")]
     pub fn seen_bssids(&self) -> Vec<glib::GString> {
         ObjectExt::property(self, "seen-bssids")
     }
 
+    /// A list of BSSIDs (each BSSID formatted as a MAC address like
+    /// "00:11:22:33:44:55") that have been detected as part of the Wi-Fi
+    /// network.  NetworkManager internally tracks previously seen BSSIDs. The
+    /// property is only meant for reading and reflects the BSSID list of
+    /// NetworkManager. The changes you make to this property will not be
+    /// preserved.
+    ///
+    /// This is not a regular property that the user would configure. Instead,
+    /// NetworkManager automatically sets the seen BSSIDs and tracks them internally
+    /// in "/var/lib/NetworkManager/seen-bssids" file.
     #[doc(alias = "seen-bssids")]
     pub fn set_seen_bssids(&self, seen_bssids: &[&str]) {
         ObjectExt::set_property(self, "seen-bssids", seen_bssids)
@@ -515,12 +1168,29 @@ impl SettingWireless {
     //    ObjectExt::set_property(self,"ssid", ssid)
     //}
 
+    /// This property is not implemented and has no effect.
+    ///
+    /// # Deprecated since 1.44
+    ///
+    /// This property is not implemented and has no effect.
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     #[doc(alias = "tx-power")]
     pub fn set_tx_power(&self, tx_power: u32) {
         ObjectExt::set_property(self, "tx-power", tx_power)
     }
 
+    /// The #NMSettingWirelessWakeOnWLan options to enable. Not all devices support all options.
+    /// May be any combination of [`SettingWirelessWakeOnWLan::ANY`][crate::SettingWirelessWakeOnWLan::ANY],
+    /// [`SettingWirelessWakeOnWLan::DISCONNECT`][crate::SettingWirelessWakeOnWLan::DISCONNECT],
+    /// [`SettingWirelessWakeOnWLan::MAGIC`][crate::SettingWirelessWakeOnWLan::MAGIC],
+    /// [`SettingWirelessWakeOnWLan::GTK_REKEY_FAILURE`][crate::SettingWirelessWakeOnWLan::GTK_REKEY_FAILURE],
+    /// [`SettingWirelessWakeOnWLan::EAP_IDENTITY_REQUEST`][crate::SettingWirelessWakeOnWLan::EAP_IDENTITY_REQUEST],
+    /// [`SettingWirelessWakeOnWLan::_4WAY_HANDSHAKE`][crate::SettingWirelessWakeOnWLan::_4WAY_HANDSHAKE],
+    /// [`SettingWirelessWakeOnWLan::RFKILL_RELEASE`][crate::SettingWirelessWakeOnWLan::RFKILL_RELEASE],
+    /// [`SettingWirelessWakeOnWLan::TCP`][crate::SettingWirelessWakeOnWLan::TCP] or the special values
+    /// [`SettingWirelessWakeOnWLan::DEFAULT`][crate::SettingWirelessWakeOnWLan::DEFAULT] (to use global settings) and
+    /// [`SettingWirelessWakeOnWLan::IGNORE`][crate::SettingWirelessWakeOnWLan::IGNORE] (to disable management of Wake-on-LAN in
+    /// NetworkManager).
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "wake-on-wlan")]
@@ -1049,6 +1719,22 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// Configures AP isolation, which prevents communication between
+    /// wireless devices connected to this AP. This property can be set
+    /// to a value different from [`Ternary::Default`][crate::Ternary::Default] only when the
+    /// interface is configured in AP mode.
+    ///
+    /// If set to [`Ternary::True`][crate::Ternary::True], devices are not able to communicate
+    /// with each other. This increases security because it protects
+    /// devices against attacks from other clients in the network. At
+    /// the same time, it prevents devices to access resources on the
+    /// same wireless networks as file shares, printers, etc.
+    ///
+    /// If set to [`Ternary::False`][crate::Ternary::False], devices can talk to each other.
+    ///
+    /// When set to [`Ternary::Default`][crate::Ternary::Default], the global default is used; in
+    /// case the global default is unspecified it is assumed to be
+    /// [`Ternary::False`][crate::Ternary::False].
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     pub fn ap_isolation(self, ap_isolation: Ternary) -> Self {
@@ -1057,24 +1743,55 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// 802.11 frequency band of the network.  One of "a" for 5GHz 802.11a or
+    /// "bg" for 2.4GHz 802.11.  This will lock associations to the Wi-Fi network
+    /// to the specific band, i.e. if "a" is specified, the device will not
+    /// associate with the same network in the 2.4GHz band even if the network's
+    /// settings are compatible.  This setting depends on specific driver
+    /// capability and may not work with all drivers.
     pub fn band(self, band: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("band", band.into()),
         }
     }
 
+    /// If specified, directs the device to only associate with the given access
+    /// point.  This capability is highly driver dependent and not supported by
+    /// all devices.  Note: this property does not control the BSSID used when
+    /// creating an Ad-Hoc network and is unlikely to in the future.
+    ///
+    /// Locking a client profile to a certain BSSID will prevent roaming and also
+    /// disable background scanning. That can be useful, if there is only one access
+    /// point for the SSID.
     pub fn bssid(self, bssid: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("bssid", bssid.into()),
         }
     }
 
+    /// Wireless channel to use for the Wi-Fi connection.  The device will only
+    /// join (or create for Ad-Hoc networks) a Wi-Fi network on the specified
+    /// channel.  Because channel numbers overlap between bands, this property
+    /// also requires the "band" property to be set.
     pub fn channel(self, channel: u32) -> Self {
         Self {
             builder: self.builder.property("channel", channel),
         }
     }
 
+    /// Specifies width of the wireless channel in Access Point (AP) mode.
+    ///
+    /// When set to [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto] (the default), the
+    /// channel width is automatically determined. At the moment, this means that
+    /// the safest (smallest) width is chosen.
+    ///
+    /// If the value is not [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto], then the
+    /// 'channel' property must also be set. When using the 2.4GHz band, the width
+    /// can be at most 40MHz.
+    ///
+    /// This property can be set to a value different from
+    /// [`SettingWirelessChannelWidth::Auto`][crate::SettingWirelessChannelWidth::Auto] only when the interface is configured
+    /// in AP mode.
     #[cfg(feature = "v1_50")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_50")))]
     pub fn channel_width(self, channel_width: i32) -> Self {
@@ -1083,6 +1800,25 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// If specified, request that the device use this MAC address instead.
+    /// This is known as MAC cloning or spoofing.
+    ///
+    /// Beside explicitly specifying a MAC address, the special values "preserve", "permanent",
+    /// "random", "stable" and "stable-ssid" are supported.
+    /// "preserve" means not to touch the MAC address on activation.
+    /// "permanent" means to use the permanent hardware address of the device.
+    /// "random" creates a random MAC address on each connect.
+    /// "stable" creates a hashed MAC address based on connection.stable-id and a
+    /// machine dependent key.
+    /// "stable-ssid" creates a hashed MAC address based on the SSID, the same as setting the
+    /// stable-id to "${NETWORK_SSID}".
+    ///
+    /// If unspecified, the value can be overwritten via global defaults, see manual
+    /// of NetworkManager.conf. If still unspecified, it defaults to "preserve"
+    /// (older versions of NetworkManager may use a different default value).
+    ///
+    /// On D-Bus, this field is expressed as "assigned-mac-address" or the deprecated
+    /// "cloned-mac-address".
     pub fn cloned_mac_address(self, cloned_mac_address: impl Into<glib::GString>) -> Self {
         Self {
             builder: self
@@ -1091,6 +1827,34 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// With #NMSettingWireless:cloned-mac-address setting "random" or "stable",
+    /// by default all bits of the MAC address are scrambled and a locally-administered,
+    /// unicast MAC address is created. This property allows one to specify that certain bits
+    /// are fixed. Note that the least significant bit of the first MAC address will
+    /// always be unset to create a unicast MAC address.
+    ///
+    /// If the property is [`None`], it is eligible to be overwritten by a default
+    /// connection setting. If the value is still [`None`] or an empty string, the
+    /// default is to create a locally-administered, unicast MAC address.
+    ///
+    /// If the value contains one MAC address, this address is used as mask. The set
+    /// bits of the mask are to be filled with the current MAC address of the device,
+    /// while the unset bits are subject to randomization.
+    /// Setting "FE:FF:FF:00:00:00" means to preserve the OUI of the current MAC address
+    /// and only randomize the lower 3 bytes using the "random" or "stable" algorithm.
+    ///
+    /// If the value contains one additional MAC address after the mask,
+    /// this address is used instead of the current MAC address to fill the bits
+    /// that shall not be randomized. For example, a value of
+    /// "FE:FF:FF:00:00:00 68:F7:28:00:00:00" will set the OUI of the MAC address
+    /// to 68:F7:28, while the lower bits are randomized. A value of
+    /// "02:00:00:00:00:00 00:00:00:00:00:00" will create a fully scrambled
+    /// globally-administered, burned-in MAC address.
+    ///
+    /// If the value contains more than one additional MAC addresses, one of
+    /// them is chosen randomly. For example, "02:00:00:00:00:00 00:00:00:00:00:00 02:00:00:00:00:00"
+    /// will create a fully scrambled MAC address, randomly locally or globally
+    /// administered.
     pub fn generate_mac_address_mask(
         self,
         generate_mac_address_mask: impl Into<glib::GString>,
@@ -1103,18 +1867,37 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// If [`true`], indicates that the network is a non-broadcasting network that
+    /// hides its SSID. This works both in infrastructure and AP mode.
+    ///
+    /// In infrastructure mode, various workarounds are used for a more reliable
+    /// discovery of hidden networks, such as probe-scanning the SSID.  However,
+    /// these workarounds expose inherent insecurities with hidden SSID networks,
+    /// and thus hidden SSID networks should be used with caution.
+    ///
+    /// In AP mode, the created network does not broadcast its SSID.
+    ///
+    /// Note that marking the network as hidden may be a privacy issue for you
+    /// (in infrastructure mode) or client stations (in AP mode), as the explicit
+    /// probe-scans are distinctly recognizable on the air.
     pub fn hidden(self, hidden: bool) -> Self {
         Self {
             builder: self.builder.property("hidden", hidden),
         }
     }
 
+    /// If specified, this connection will only apply to the Wi-Fi device whose
+    /// permanent MAC address matches. This property does not change the MAC
+    /// address of the device (i.e. MAC spoofing).
     pub fn mac_address(self, mac_address: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("mac-address", mac_address.into()),
         }
     }
 
+    /// A list of permanent MAC addresses of Wi-Fi devices to which this
+    /// connection should never apply.  Each MAC address should be given in the
+    /// standard hex-digits-and-colons notation (eg "00:11:22:33:44:55").
     pub fn mac_address_blacklist(self, mac_address_blacklist: impl Into<glib::StrV>) -> Self {
         Self {
             builder: self
@@ -1123,6 +1906,9 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// A list of permanent MAC addresses of Wi-Fi devices to which this
+    /// connection should never apply.  Each MAC address should be given in the
+    /// standard hex-digits-and-colons notation (eg "00:11:22:33:44:55").
     pub fn mac_address_denylist(self, mac_address_denylist: impl Into<glib::StrV>) -> Self {
         Self {
             builder: self
@@ -1131,6 +1917,12 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// One of [`SettingMacRandomization::Default`][crate::SettingMacRandomization::Default] (never randomize unless
+    /// the user has set a global default to randomize and the supplicant
+    /// supports randomization),  [`SettingMacRandomization::Never`][crate::SettingMacRandomization::Never] (never
+    /// randomize the MAC address), or [`SettingMacRandomization::Always`][crate::SettingMacRandomization::Always]
+    /// (always randomize the MAC address).
+    /// Use the #NMSettingWireless:cloned-mac-address property instead.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[cfg_attr(feature = "v1_4", deprecated = "Since 1.4")]
@@ -1142,18 +1934,27 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// Wi-Fi network mode; one of "infrastructure", "mesh", "adhoc" or "ap".  If blank,
+    /// infrastructure is assumed.
     pub fn mode(self, mode: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("mode", mode.into()),
         }
     }
 
+    /// If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple Ethernet frames.
     pub fn mtu(self, mtu: u32) -> Self {
         Self {
             builder: self.builder.property("mtu", mtu),
         }
     }
 
+    /// One of [`SettingWirelessPowersave::Disable`][crate::SettingWirelessPowersave::Disable] (disable Wi-Fi power
+    /// saving), [`SettingWirelessPowersave::Enable`][crate::SettingWirelessPowersave::Enable] (enable Wi-Fi power
+    /// saving), [`SettingWirelessPowersave::Ignore`][crate::SettingWirelessPowersave::Ignore] (don't touch currently
+    /// configure setting) or [`SettingWirelessPowersave::Default`][crate::SettingWirelessPowersave::Default] (use the
+    /// globally configured value). All other values are reserved.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn powersave(self, powersave: u32) -> Self {
@@ -1162,6 +1963,8 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// This property is not implemented and has no effect.
+    /// This property is not implemented and has no effect.
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     pub fn rate(self, rate: u32) -> Self {
         Self {
@@ -1169,6 +1972,16 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// A list of BSSIDs (each BSSID formatted as a MAC address like
+    /// "00:11:22:33:44:55") that have been detected as part of the Wi-Fi
+    /// network.  NetworkManager internally tracks previously seen BSSIDs. The
+    /// property is only meant for reading and reflects the BSSID list of
+    /// NetworkManager. The changes you make to this property will not be
+    /// preserved.
+    ///
+    /// This is not a regular property that the user would configure. Instead,
+    /// NetworkManager automatically sets the seen BSSIDs and tracks them internally
+    /// in "/var/lib/NetworkManager/seen-bssids" file.
     pub fn seen_bssids(self, seen_bssids: impl Into<glib::StrV>) -> Self {
         Self {
             builder: self.builder.property("seen-bssids", seen_bssids.into()),
@@ -1179,6 +1992,8 @@ impl SettingWirelessBuilder {
     //    Self { builder: self.builder.property("ssid", ssid), }
     //}
 
+    /// This property is not implemented and has no effect.
+    /// This property is not implemented and has no effect.
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     pub fn tx_power(self, tx_power: u32) -> Self {
         Self {
@@ -1186,6 +2001,18 @@ impl SettingWirelessBuilder {
         }
     }
 
+    /// The #NMSettingWirelessWakeOnWLan options to enable. Not all devices support all options.
+    /// May be any combination of [`SettingWirelessWakeOnWLan::ANY`][crate::SettingWirelessWakeOnWLan::ANY],
+    /// [`SettingWirelessWakeOnWLan::DISCONNECT`][crate::SettingWirelessWakeOnWLan::DISCONNECT],
+    /// [`SettingWirelessWakeOnWLan::MAGIC`][crate::SettingWirelessWakeOnWLan::MAGIC],
+    /// [`SettingWirelessWakeOnWLan::GTK_REKEY_FAILURE`][crate::SettingWirelessWakeOnWLan::GTK_REKEY_FAILURE],
+    /// [`SettingWirelessWakeOnWLan::EAP_IDENTITY_REQUEST`][crate::SettingWirelessWakeOnWLan::EAP_IDENTITY_REQUEST],
+    /// [`SettingWirelessWakeOnWLan::_4WAY_HANDSHAKE`][crate::SettingWirelessWakeOnWLan::_4WAY_HANDSHAKE],
+    /// [`SettingWirelessWakeOnWLan::RFKILL_RELEASE`][crate::SettingWirelessWakeOnWLan::RFKILL_RELEASE],
+    /// [`SettingWirelessWakeOnWLan::TCP`][crate::SettingWirelessWakeOnWLan::TCP] or the special values
+    /// [`SettingWirelessWakeOnWLan::DEFAULT`][crate::SettingWirelessWakeOnWLan::DEFAULT] (to use global settings) and
+    /// [`SettingWirelessWakeOnWLan::IGNORE`][crate::SettingWirelessWakeOnWLan::IGNORE] (to disable management of Wake-on-LAN in
+    /// NetworkManager).
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn wake_on_wlan(self, wake_on_wlan: u32) -> Self {

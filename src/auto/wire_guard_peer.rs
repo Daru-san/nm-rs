@@ -7,6 +7,7 @@ use crate::{SettingCompareFlags, SettingSecretFlags, ffi};
 use glib::translate::*;
 
 glib::wrapper! {
+    /// The settings of one WireGuard peer.
     #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct WireGuardPeer(Shared<ffi::NMWireGuardPeer>);
 
@@ -18,12 +19,34 @@ glib::wrapper! {
 }
 
 impl WireGuardPeer {
+    ///
+    /// # Returns
+    ///
+    /// a new, default, unsealed #NMWireGuardPeer instance.
     #[doc(alias = "nm_wireguard_peer_new")]
     pub fn new() -> WireGuardPeer {
         assert_initialized_main_thread!();
         unsafe { from_glib_full(ffi::nm_wireguard_peer_new()) }
     }
 
+    /// Appends @allowed_ip setting to the list. This does not check
+    /// for duplicates and always appends @allowed_ip to the end of the
+    /// list. If @allowed_ip is valid, it will be normalized and a modified
+    /// for might be appended. If @allowed_ip is invalid, it will still be
+    /// appended, but later verification will fail.
+    ///
+    /// It is a bug trying to modify a sealed #NMWireGuardPeer instance.
+    /// ## `allowed_ip`
+    /// the allowed-ip entry to set.
+    /// ## `accept_invalid`
+    /// if [`true`], also invalid @allowed_ip value
+    ///   will be appended. Otherwise, the function does nothing
+    ///   in face of invalid values and returns [`false`].
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the value is a valid allowed-ips value, [`false`] otherwise.
+    ///   Depending on @accept_invalid, also invalid values are added.
     #[doc(alias = "nm_wireguard_peer_append_allowed_ip")]
     pub fn append_allowed_ip(&self, allowed_ip: &str, accept_invalid: bool) -> bool {
         unsafe {
@@ -35,6 +58,9 @@ impl WireGuardPeer {
         }
     }
 
+    /// Removes all allowed-ip entries.
+    ///
+    /// It is a bug trying to modify a sealed #NMWireGuardPeer instance.
     #[doc(alias = "nm_wireguard_peer_clear_allowed_ips")]
     pub fn clear_allowed_ips(&self) {
         unsafe {
@@ -42,6 +68,17 @@ impl WireGuardPeer {
         }
     }
 
+    /// ## `b`
+    /// the other #NMWireGuardPeer to compare.
+    /// ## `compare_flags`
+    /// #NMSettingCompareFlags to affect the comparison.
+    ///
+    /// # Returns
+    ///
+    /// zero of the two instances are equivalent or
+    ///   a non-zero integer otherwise. This defines a total ordering
+    ///   over the peers. Whether a peer is sealed or not, does not
+    ///   affect the comparison.
     #[doc(alias = "nm_wireguard_peer_cmp")]
     pub fn cmp(&self, b: Option<&WireGuardPeer>, compare_flags: SettingCompareFlags) -> i32 {
         unsafe {
@@ -53,6 +90,20 @@ impl WireGuardPeer {
         }
     }
 
+    /// ## `idx`
+    /// the index from zero to (allowed-ips-len - 1) to
+    ///   retrieve.
+    /// ## `out_is_valid`
+    /// [`true`] if the returned value is a valid allowed-ip
+    ///   setting.
+    ///   This parameter is wrongly not marked as (out) argument, it is
+    ///   thus not accessible via introspection. This cannot be fixed without
+    ///   breaking API for introspection users.
+    ///
+    /// # Returns
+    ///
+    /// the allowed-ip setting at index @idx.
+    ///   If @idx is out of range, [`None`] will be returned.
     #[doc(alias = "nm_wireguard_peer_get_allowed_ip")]
     #[doc(alias = "get_allowed_ip")]
     pub fn allowed_ip(&self, idx: u32, out_is_valid: bool) -> Option<glib::GString> {
@@ -65,24 +116,41 @@ impl WireGuardPeer {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of allowed-ips entries.
     #[doc(alias = "nm_wireguard_peer_get_allowed_ips_len")]
     #[doc(alias = "get_allowed_ips_len")]
     pub fn allowed_ips_len(&self) -> u32 {
         unsafe { ffi::nm_wireguard_peer_get_allowed_ips_len(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the endpoint or [`None`] if none was set.
     #[doc(alias = "nm_wireguard_peer_get_endpoint")]
     #[doc(alias = "get_endpoint")]
     pub fn endpoint(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_wireguard_peer_get_endpoint(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// get the persistent-keepalive setting in seconds. Set to zero to disable
+    ///   keep-alive.
     #[doc(alias = "nm_wireguard_peer_get_persistent_keepalive")]
     #[doc(alias = "get_persistent_keepalive")]
     pub fn persistent_keepalive(&self) -> u16 {
         unsafe { ffi::nm_wireguard_peer_get_persistent_keepalive(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the preshared key or [`None`] if unset.
     #[doc(alias = "nm_wireguard_peer_get_preshared_key")]
     #[doc(alias = "get_preshared_key")]
     pub fn preshared_key(&self) -> glib::GString {
@@ -93,6 +161,10 @@ impl WireGuardPeer {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// get the secret flags for the preshared-key.
     #[doc(alias = "nm_wireguard_peer_get_preshared_key_flags")]
     #[doc(alias = "get_preshared_key_flags")]
     pub fn preshared_key_flags(&self) -> SettingSecretFlags {
@@ -103,17 +175,36 @@ impl WireGuardPeer {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the public key or [`None`] if unset.
     #[doc(alias = "nm_wireguard_peer_get_public_key")]
     #[doc(alias = "get_public_key")]
     pub fn public_key(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_wireguard_peer_get_public_key(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether @self is sealed or not.
     #[doc(alias = "nm_wireguard_peer_is_sealed")]
     pub fn is_sealed(&self) -> bool {
         unsafe { from_glib(ffi::nm_wireguard_peer_is_sealed(self.to_glib_none().0)) }
     }
 
+    /// ## `check_non_secrets`
+    /// if [`true`], secret properties are validated.
+    ///   Otherwise, they are ignored for this purpose.
+    /// ## `check_secrets`
+    /// if [`true`], non-secret properties are validated.
+    ///   Otherwise, they are ignored for this purpose.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the peer is valid or fails with an error
+    ///   reason.
     #[doc(alias = "nm_wireguard_peer_is_valid")]
     pub fn is_valid(
         &self,
@@ -137,6 +228,14 @@ impl WireGuardPeer {
         }
     }
 
+    /// ## `with_secrets`
+    /// if [`true`], the preshared-key secrets are copied
+    ///  as well. Otherwise, they will be removed.
+    ///
+    /// # Returns
+    ///
+    /// a clone of @self. This instance
+    ///   is always unsealed.
     #[doc(alias = "nm_wireguard_peer_new_clone")]
     #[must_use]
     pub fn new_clone(&self, with_secrets: bool) -> WireGuardPeer {
@@ -148,6 +247,19 @@ impl WireGuardPeer {
         }
     }
 
+    /// Removes the allowed-ip at the given @idx. This shifts all
+    /// following entries one index down.
+    ///
+    /// It is a bug trying to modify a sealed #NMWireGuardPeer instance.
+    /// ## `idx`
+    /// the index from zero to (allowed-ips-len - 1) to
+    ///   retrieve. If the index is out of range, [`false`] is returned
+    ///   and nothing is done.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @idx was valid and the allowed-ip was removed.
+    ///   [`false`] otherwise, and the peer will not be changed.
     #[doc(alias = "nm_wireguard_peer_remove_allowed_ip")]
     pub fn remove_allowed_ip(&self, idx: u32) -> bool {
         unsafe {
@@ -158,6 +270,10 @@ impl WireGuardPeer {
         }
     }
 
+    /// Seal the #NMWireGuardPeer instance. Afterwards, it is a bug
+    /// to call all functions that modify the instance (except ref/unref).
+    /// A sealed instance cannot be unsealed again, but you can create
+    /// an unsealed copy with nm_wireguard_peer_new_clone().
     #[doc(alias = "nm_wireguard_peer_seal")]
     pub fn seal(&self) {
         unsafe {
@@ -165,6 +281,21 @@ impl WireGuardPeer {
         }
     }
 
+    /// Sets or clears the endpoint of @self.
+    ///
+    /// It is a bug trying to modify a sealed #NMWireGuardPeer instance.
+    /// ## `endpoint`
+    /// the socket address endpoint to set or [`None`].
+    /// ## `allow_invalid`
+    /// if [`true`], also invalid values are set.
+    ///   If [`false`], the function does nothing for invalid @endpoint
+    ///   arguments.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the endpoint is [`None`] or valid. For an
+    ///   invalid @endpoint argument, [`false`] is returned. Depending
+    ///   on @allow_invalid, the instance will be modified.
     #[doc(alias = "nm_wireguard_peer_set_endpoint")]
     pub fn set_endpoint(&self, endpoint: &str, allow_invalid: bool) -> bool {
         unsafe {
@@ -176,6 +307,9 @@ impl WireGuardPeer {
         }
     }
 
+    /// It is a bug trying to modify a sealed #NMWireGuardPeer instance.
+    /// ## `persistent_keepalive`
+    /// the keep-alive value to set.
     #[doc(alias = "nm_wireguard_peer_set_persistent_keepalive")]
     pub fn set_persistent_keepalive(&self, persistent_keepalive: u16) {
         unsafe {
@@ -186,6 +320,30 @@ impl WireGuardPeer {
         }
     }
 
+    /// Reset the preshared key. Note that if the preshared key is valid, it
+    /// will be normalized (which may or may not modify the set value).
+    ///
+    /// Note that the preshared-key is a secret and consequently has corresponding
+    /// preshared-key-flags property. This is so that secrets can be optional
+    /// and requested on demand from a secret-agent. Also, an invalid  preshared-key
+    /// may optionally cause nm_wireguard_peer_is_valid() to fail or it may
+    /// be accepted.
+    ///
+    /// It is a bug trying to modify a sealed #NMWireGuardPeer instance.
+    /// ## `preshared_key`
+    /// the new preshared
+    ///   key or [`None`] to clear the preshared key.
+    /// ## `accept_invalid`
+    /// whether to allow setting the key to an invalid
+    ///   value. If [`false`], @self is unchanged if the key is invalid
+    ///   and if [`false`] is returned.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the preshared-key is valid, otherwise [`false`].
+    ///   [`None`] is considered a valid value.
+    ///   If the key is invalid, it depends on @accept_invalid whether the
+    ///   previous value was reset.
     #[doc(alias = "nm_wireguard_peer_set_preshared_key")]
     pub fn set_preshared_key(&self, preshared_key: Option<&str>, accept_invalid: bool) -> bool {
         unsafe {
@@ -197,6 +355,9 @@ impl WireGuardPeer {
         }
     }
 
+    /// It is a bug trying to modify a sealed #NMWireGuardPeer instance.
+    /// ## `preshared_key_flags`
+    /// the secret flags to set.
     #[doc(alias = "nm_wireguard_peer_set_preshared_key_flags")]
     pub fn set_preshared_key_flags(&self, preshared_key_flags: SettingSecretFlags) {
         unsafe {
@@ -207,6 +368,22 @@ impl WireGuardPeer {
         }
     }
 
+    /// Reset the public key. Note that if the public key is valid, it
+    /// will be normalized (which may or may not modify the set value).
+    ///
+    /// It is a bug trying to modify a sealed #NMWireGuardPeer instance.
+    /// ## `public_key`
+    /// the new public
+    ///   key or [`None`] to clear the public key.
+    /// ## `accept_invalid`
+    /// if [`true`] and @public_key is not [`None`] and
+    ///   invalid, then do not modify the instance.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the key was valid or [`None`]. Returns
+    ///   [`false`] for invalid keys. Depending on @accept_invalid
+    ///   will an invalid key be set or not.
     #[doc(alias = "nm_wireguard_peer_set_public_key")]
     pub fn set_public_key(&self, public_key: Option<&str>, accept_invalid: bool) -> bool {
         unsafe {

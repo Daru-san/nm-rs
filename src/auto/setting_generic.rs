@@ -13,6 +13,39 @@ use glib::{signal::{connect_raw, SignalHandlerId}};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Generic Link Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `device-handler`
+    ///  Name of the device handler that will be invoked to add and delete
+    /// the device for this connection. The name can only contain ASCII
+    /// alphanumeric characters and '-', '_', '.'. It cannot start with '.'.
+    ///
+    /// See the NetworkManager-dispatcher(8) man page for more details
+    /// about how to write the device handler.
+    ///
+    /// By setting this property the generic connection becomes "virtual",
+    /// meaning that it can be activated without an existing device; the device
+    /// will be created at the time the connection is started by invoking the
+    /// device-handler.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingGeneric")]
     pub struct SettingGeneric(Object<ffi::NMSettingGeneric, ffi::NMSettingGenericClass>) @extends Setting;
 
@@ -22,6 +55,11 @@ glib::wrapper! {
 }
 
 impl SettingGeneric {
+    /// Creates a new #NMSettingGeneric object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingGeneric object
     #[doc(alias = "nm_setting_generic_new")]
     pub fn new() -> SettingGeneric {
         assert_initialized_main_thread!();
@@ -39,6 +77,11 @@ impl SettingGeneric {
             }
         
 
+    /// Returns the #NMSettingGeneric:device-handler property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the device handler name, or [`None`] if no device handler is set
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_generic_get_device_handler")]
@@ -50,6 +93,17 @@ impl SettingGeneric {
         }
     }
 
+    /// Name of the device handler that will be invoked to add and delete
+    /// the device for this connection. The name can only contain ASCII
+    /// alphanumeric characters and '-', '_', '.'. It cannot start with '.'.
+    ///
+    /// See the NetworkManager-dispatcher(8) man page for more details
+    /// about how to write the device handler.
+    ///
+    /// By setting this property the generic connection becomes "virtual",
+    /// meaning that it can be activated without an existing device; the device
+    /// will be created at the time the connection is started by invoking the
+    /// device-handler.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "device-handler")]
@@ -93,6 +147,17 @@ pub struct SettingGenericBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Name of the device handler that will be invoked to add and delete
+                            /// the device for this connection. The name can only contain ASCII
+                            /// alphanumeric characters and '-', '_', '.'. It cannot start with '.'.
+                            ///
+                            /// See the NetworkManager-dispatcher(8) man page for more details
+                            /// about how to write the device handler.
+                            ///
+                            /// By setting this property the generic connection becomes "virtual",
+                            /// meaning that it can be activated without an existing device; the device
+                            /// will be created at the time the connection is started by invoking the
+                            /// device-handler.
                             #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn device_handler(self, device_handler: impl Into<glib::GString>) -> Self {

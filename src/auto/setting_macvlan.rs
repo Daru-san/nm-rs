@@ -16,6 +16,51 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// MAC VLAN Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `mode`
+    ///  The macvlan mode, which specifies the communication mechanism between multiple
+    /// macvlans on the same lower device.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `parent`
+    ///  If given, specifies the parent interface name or parent connection UUID
+    /// from which this MAC-VLAN interface should be created.  If this property is
+    /// not specified, the connection must contain an #NMSettingWired setting
+    /// with a #NMSettingWired:mac-address property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `promiscuous`
+    ///  Whether the parent interface should be put in promiscuous mode (true by default).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `tap`
+    ///  Whether the interface should be a MACVTAP.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingMacvlan")]
     pub struct SettingMacvlan(Object<ffi::NMSettingMacvlan, ffi::NMSettingMacvlanClass>) @extends Setting;
 
@@ -25,6 +70,11 @@ glib::wrapper! {
 }
 
 impl SettingMacvlan {
+    /// Creates a new #NMSettingMacvlan object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingMacvlan object
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_macvlan_new")]
@@ -44,6 +94,10 @@ impl SettingMacvlan {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacvlan:mode property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_macvlan_get_mode")]
@@ -54,6 +108,10 @@ impl SettingMacvlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacvlan:parent property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_macvlan_get_parent")]
@@ -64,6 +122,10 @@ impl SettingMacvlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacvlan:promiscuous property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_macvlan_get_promiscuous")]
@@ -75,6 +137,10 @@ impl SettingMacvlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacvlan:tap property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_macvlan_get_tap")]
@@ -86,24 +152,32 @@ impl SettingMacvlan {
         }
     }
 
+    /// The macvlan mode, which specifies the communication mechanism between multiple
+    /// macvlans on the same lower device.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_mode(&self, mode: u32) {
         ObjectExt::set_property(self,"mode", mode)
     }
 
+    /// If given, specifies the parent interface name or parent connection UUID
+    /// from which this MAC-VLAN interface should be created.  If this property is
+    /// not specified, the connection must contain an #NMSettingWired setting
+    /// with a #NMSettingWired:mac-address property.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_parent(&self, parent: Option<&str>) {
         ObjectExt::set_property(self,"parent", parent)
     }
 
+    /// Whether the parent interface should be put in promiscuous mode (true by default).
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_promiscuous(&self, promiscuous: bool) {
         ObjectExt::set_property(self,"promiscuous", promiscuous)
     }
 
+    /// Whether the interface should be a MACVTAP.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_tap(&self, tap: bool) {
@@ -193,24 +267,32 @@ pub struct SettingMacvlanBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The macvlan mode, which specifies the communication mechanism between multiple
+                            /// macvlans on the same lower device.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn mode(self, mode: u32) -> Self {
                             Self { builder: self.builder.property("mode", mode), }
                         }
 
+                            /// If given, specifies the parent interface name or parent connection UUID
+                            /// from which this MAC-VLAN interface should be created.  If this property is
+                            /// not specified, the connection must contain an #NMSettingWired setting
+                            /// with a #NMSettingWired:mac-address property.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn parent(self, parent: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("parent", parent.into()), }
                         }
 
+                            /// Whether the parent interface should be put in promiscuous mode (true by default).
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn promiscuous(self, promiscuous: bool) -> Self {
                             Self { builder: self.builder.property("promiscuous", promiscuous), }
                         }
 
+                            /// Whether the interface should be a MACVTAP.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn tap(self, tap: bool) -> Self {

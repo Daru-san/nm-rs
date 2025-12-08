@@ -8,6 +8,65 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// ADSL Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `encapsulation`
+    ///  Encapsulation of ADSL connection.  Can be "vcmux" or "llc".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `password`
+    ///  Password used to authenticate with the ADSL service.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `password-flags`
+    ///  Flags indicating how to handle the #NMSettingAdsl:password property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `protocol`
+    ///  ADSL connection protocol.  Can be "pppoa", "pppoe" or "ipoatm".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `username`
+    ///  Username used to authenticate with the ADSL service.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vci`
+    ///  VCI of ADSL connection
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vpi`
+    ///  VPI of ADSL connection
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingAdsl")]
     pub struct SettingAdsl(Object<ffi::NMSettingAdsl, ffi::NMSettingAdslClass>) @extends Setting;
 
@@ -17,6 +76,11 @@ glib::wrapper! {
 }
 
 impl SettingAdsl {
+    /// Creates a new #NMSettingAdsl object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingAdsl object
     #[doc(alias = "nm_setting_adsl_new")]
     pub fn new() -> SettingAdsl {
         assert_initialized_main_thread!();
@@ -34,6 +98,10 @@ impl SettingAdsl {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingAdsl:encapsulation property of the setting
     #[doc(alias = "nm_setting_adsl_get_encapsulation")]
     #[doc(alias = "get_encapsulation")]
     pub fn encapsulation(&self) -> glib::GString {
@@ -42,6 +110,10 @@ impl SettingAdsl {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingAdsl:password property of the setting
     #[doc(alias = "nm_setting_adsl_get_password")]
     #[doc(alias = "get_password")]
     pub fn password(&self) -> glib::GString {
@@ -50,6 +122,10 @@ impl SettingAdsl {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSecretFlags pertaining to the #NMSettingAdsl:password
     #[doc(alias = "nm_setting_adsl_get_password_flags")]
     #[doc(alias = "get_password_flags")]
     #[doc(alias = "password-flags")]
@@ -59,6 +135,10 @@ impl SettingAdsl {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingAdsl:protocol property of the setting
     #[doc(alias = "nm_setting_adsl_get_protocol")]
     #[doc(alias = "get_protocol")]
     pub fn protocol(&self) -> glib::GString {
@@ -67,6 +147,10 @@ impl SettingAdsl {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingAdsl:username property of the setting
     #[doc(alias = "nm_setting_adsl_get_username")]
     #[doc(alias = "get_username")]
     pub fn username(&self) -> glib::GString {
@@ -75,6 +159,10 @@ impl SettingAdsl {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingAdsl:vci property of the setting
     #[doc(alias = "nm_setting_adsl_get_vci")]
     #[doc(alias = "get_vci")]
     pub fn vci(&self) -> u32 {
@@ -83,6 +171,10 @@ impl SettingAdsl {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingAdsl:vpi property of the setting
     #[doc(alias = "nm_setting_adsl_get_vpi")]
     #[doc(alias = "get_vpi")]
     pub fn vpi(&self) -> u32 {
@@ -91,31 +183,38 @@ impl SettingAdsl {
         }
     }
 
+    /// Encapsulation of ADSL connection.  Can be "vcmux" or "llc".
     pub fn set_encapsulation(&self, encapsulation: Option<&str>) {
         ObjectExt::set_property(self,"encapsulation", encapsulation)
     }
 
+    /// Password used to authenticate with the ADSL service.
     pub fn set_password(&self, password: Option<&str>) {
         ObjectExt::set_property(self,"password", password)
     }
 
+    /// Flags indicating how to handle the #NMSettingAdsl:password property.
     #[doc(alias = "password-flags")]
     pub fn set_password_flags(&self, password_flags: SettingSecretFlags) {
         ObjectExt::set_property(self,"password-flags", password_flags)
     }
 
+    /// ADSL connection protocol.  Can be "pppoa", "pppoe" or "ipoatm".
     pub fn set_protocol(&self, protocol: Option<&str>) {
         ObjectExt::set_property(self,"protocol", protocol)
     }
 
+    /// Username used to authenticate with the ADSL service.
     pub fn set_username(&self, username: Option<&str>) {
         ObjectExt::set_property(self,"username", username)
     }
 
+    /// VCI of ADSL connection
     pub fn set_vci(&self, vci: u32) {
         ObjectExt::set_property(self,"vci", vci)
     }
 
+    /// VPI of ADSL connection
     pub fn set_vpi(&self, vpi: u32) {
         ObjectExt::set_property(self,"vpi", vpi)
     }
@@ -232,30 +331,37 @@ pub struct SettingAdslBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Encapsulation of ADSL connection.  Can be "vcmux" or "llc".
                             pub fn encapsulation(self, encapsulation: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("encapsulation", encapsulation.into()), }
                         }
 
+                            /// Password used to authenticate with the ADSL service.
                             pub fn password(self, password: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("password", password.into()), }
                         }
 
+                            /// Flags indicating how to handle the #NMSettingAdsl:password property.
                             pub fn password_flags(self, password_flags: SettingSecretFlags) -> Self {
                             Self { builder: self.builder.property("password-flags", password_flags), }
                         }
 
+                            /// ADSL connection protocol.  Can be "pppoa", "pppoe" or "ipoatm".
                             pub fn protocol(self, protocol: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("protocol", protocol.into()), }
                         }
 
+                            /// Username used to authenticate with the ADSL service.
                             pub fn username(self, username: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("username", username.into()), }
                         }
 
+                            /// VCI of ADSL connection
                             pub fn vci(self, vci: u32) -> Self {
                             Self { builder: self.builder.property("vci", vci), }
                         }
 
+                            /// VPI of ADSL connection
                             pub fn vpi(self, vpi: u32) -> Self {
                             Self { builder: self.builder.property("vpi", vpi), }
                         }

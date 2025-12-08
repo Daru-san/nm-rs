@@ -15,6 +15,236 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// Bridging Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `ageing-time`
+    ///  The Ethernet MAC address aging time, in seconds.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `forward-delay`
+    ///  The Spanning Tree Protocol (STP) forwarding delay, in seconds.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `group-address`
+    ///  If specified, The MAC address of the multicast group this bridge uses for STP.
+    ///
+    /// The address must be a link-local address in standard Ethernet MAC address format,
+    /// ie an address of the form 01:80:C2:00:00:0X, with X in [0, 4..F].
+    /// If not specified the default value is 01:80:C2:00:00:00.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `group-forward-mask`
+    ///  A mask of group addresses to forward. Usually, group addresses in
+    /// the range from 01:80:C2:00:00:00 to 01:80:C2:00:00:0F are not
+    /// forwarded according to standards. This property is a mask of 16 bits,
+    /// each corresponding to a group address in that range that must be
+    /// forwarded. The mask can't have bits 0, 1 or 2 set because they are
+    /// used for STP, MAC pause frames and LACP.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `hello-time`
+    ///  The Spanning Tree Protocol (STP) hello time, in seconds.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mac-address`
+    ///  If specified, the MAC address of bridge. When creating a new bridge, this
+    /// MAC address will be set.
+    ///
+    /// If this field is left unspecified, the "ethernet.cloned-mac-address" is
+    /// referred instead to generate the initial MAC address. Note that setting
+    /// "ethernet.cloned-mac-address" anyway overwrites the MAC address of
+    /// the bridge later while activating the bridge.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `max-age`
+    ///  The Spanning Tree Protocol (STP) maximum message age, in seconds.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-hash-max`
+    ///  Set maximum size of multicast hash table (value must be a power of 2).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-last-member-count`
+    ///  Set the number of queries the bridge will send before
+    /// stopping forwarding a multicast group after a "leave"
+    /// message has been received.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-last-member-interval`
+    ///  Set interval (in deciseconds) between queries to find remaining
+    /// members of a group, after a "leave" message is received.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-membership-interval`
+    ///  Set delay (in deciseconds) after which the bridge will
+    /// leave a group, if no membership reports for this
+    /// group are received.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-querier`
+    ///  Enable or disable sending of multicast queries by the bridge.
+    /// If not specified the option is disabled.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-querier-interval`
+    ///  If no queries are seen after this delay (in deciseconds) has passed,
+    /// the bridge will start to send its own queries.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-query-interval`
+    ///  Interval (in deciseconds) between queries sent
+    /// by the bridge after the end of the startup phase.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-query-response-interval`
+    ///  Set the Max Response Time/Max Response Delay
+    /// (in deciseconds) for IGMP/MLD queries sent by the bridge.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-query-use-ifaddr`
+    ///  If enabled the bridge's own IP address is used as
+    /// the source address for IGMP queries otherwise
+    /// the default of 0.0.0.0 is used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-router`
+    ///  Sets bridge's multicast router. Multicast-snooping must be enabled
+    /// for this option to work.
+    ///
+    /// Supported values are: 'auto', 'disabled', 'enabled' to which kernel
+    /// assigns the numbers 1, 0, and 2, respectively.
+    /// If not specified the default value is 'auto' (1).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-snooping`
+    ///  Controls whether IGMP snooping is enabled for this bridge.
+    /// Note that if snooping was automatically disabled due to hash collisions,
+    /// the system may refuse to enable the feature until the collisions are
+    /// resolved.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-startup-query-count`
+    ///  Set the number of IGMP queries to send during startup phase.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multicast-startup-query-interval`
+    ///  Sets the time (in deciseconds) between queries sent out
+    /// at startup to determine membership information.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority`
+    ///  Sets the Spanning Tree Protocol (STP) priority for this bridge.  Lower
+    /// values are "better"; the lowest priority bridge will be elected the root
+    /// bridge.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `stp`
+    ///  Controls whether Spanning Tree Protocol (STP) is enabled for this bridge.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vlan-default-pvid`
+    ///  The default PVID for the ports of the bridge, that is the VLAN id
+    /// assigned to incoming untagged frames.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vlan-filtering`
+    ///  Control whether VLAN filtering is enabled on the bridge.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vlan-protocol`
+    ///  If specified, the protocol used for VLAN filtering.
+    ///
+    /// Supported values are: '802.1Q', '802.1ad'.
+    /// If not specified the default value is '802.1Q'.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vlan-stats-enabled`
+    ///  Controls whether per-VLAN stats accounting is enabled.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vlans`
+    ///  Array of bridge VLAN objects. In addition to the VLANs
+    /// specified here, the bridge will also have the default-pvid
+    /// VLAN configured  by the bridge.vlan-default-pvid property.
+    ///
+    /// In nmcli the VLAN list can be specified with the following
+    /// syntax:
+    ///
+    ///  $vid [pvid] [untagged] [, $vid [pvid] [untagged]]...
+    ///
+    /// where $vid is either a single id between 1 and 4094 or a
+    /// range, represented as a couple of ids separated by a dash.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingBridge")]
     pub struct SettingBridge(Object<ffi::NMSettingBridge, ffi::NMSettingBridgeClass>) @extends Setting;
 
@@ -24,6 +254,11 @@ glib::wrapper! {
 }
 
 impl SettingBridge {
+    /// Creates a new #NMSettingBridge object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingBridge object
     #[doc(alias = "nm_setting_bridge_new")]
     pub fn new() -> SettingBridge {
         assert_initialized_main_thread!();
@@ -38,6 +273,10 @@ impl SettingBridge {
         SettingBridgeBuilder::new()
     }
 
+    /// Appends a new vlan and associated information to the setting.  The
+    /// given vlan gets sealed and a reference to it is added.
+    /// ## `vlan`
+    /// the vlan to add
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_add_vlan")]
@@ -47,6 +286,7 @@ impl SettingBridge {
         }
     }
 
+    /// Removes all configured VLANs.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_clear_vlans")]
@@ -56,6 +296,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:ageing-time property of the setting
     #[doc(alias = "nm_setting_bridge_get_ageing_time")]
     #[doc(alias = "get_ageing_time")]
     #[doc(alias = "ageing-time")]
@@ -63,6 +307,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_ageing_time(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:forward-delay property of the setting
     #[doc(alias = "nm_setting_bridge_get_forward_delay")]
     #[doc(alias = "get_forward_delay")]
     #[doc(alias = "forward-delay")]
@@ -70,6 +318,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_forward_delay(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:group-address property of the setting
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_setting_bridge_get_group_address")]
@@ -83,6 +335,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:group-forward-mask property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_bridge_get_group_forward_mask")]
@@ -92,6 +348,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_group_forward_mask(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:hello-time property of the setting
     #[doc(alias = "nm_setting_bridge_get_hello_time")]
     #[doc(alias = "get_hello_time")]
     #[doc(alias = "hello-time")]
@@ -99,6 +359,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_hello_time(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:mac-address property of the setting
     #[doc(alias = "nm_setting_bridge_get_mac_address")]
     #[doc(alias = "get_mac_address")]
     #[doc(alias = "mac-address")]
@@ -110,6 +374,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:max-age property of the setting
     #[doc(alias = "nm_setting_bridge_get_max_age")]
     #[doc(alias = "get_max_age")]
     #[doc(alias = "max-age")]
@@ -117,6 +385,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_max_age(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-hash-max property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_hash_max")]
@@ -126,6 +398,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_multicast_hash_max(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-last-member-count property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_last_member_count")]
@@ -135,6 +411,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_multicast_last_member_count(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-last-member-interval property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_last_member_interval")]
@@ -144,6 +424,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_multicast_last_member_interval(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-membership-interval property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_membership_interval")]
@@ -153,6 +437,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_multicast_membership_interval(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-querier property of the setting
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_querier")]
@@ -166,6 +454,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-querier-interval property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_querier_interval")]
@@ -175,6 +467,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_multicast_querier_interval(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-query-interval property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_query_interval")]
@@ -184,6 +480,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_multicast_query_interval(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-query-response-interval property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_query_response_interval")]
@@ -195,6 +495,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-query-use-ifaddr property of the setting
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_query_use_ifaddr")]
@@ -208,6 +512,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-router property of the setting
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_router")]
@@ -221,6 +529,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-snooping property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_snooping")]
@@ -234,6 +546,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-query-response-interval property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_startup_query_count")]
@@ -243,6 +559,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_multicast_startup_query_count(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:multicast-startup-query-interval property of the setting
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_bridge_get_multicast_startup_query_interval")]
@@ -254,6 +574,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of VLANs
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_get_num_vlans")]
@@ -262,12 +586,20 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_num_vlans(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:priority property of the setting
     #[doc(alias = "nm_setting_bridge_get_priority")]
     #[doc(alias = "get_priority")]
     pub fn priority(&self) -> u16 {
         unsafe { ffi::nm_setting_bridge_get_priority(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:stp property of the setting
     #[doc(alias = "nm_setting_bridge_get_stp")]
     #[doc(alias = "get_stp")]
     #[doc(alias = "stp")]
@@ -275,6 +607,12 @@ impl SettingBridge {
         unsafe { from_glib(ffi::nm_setting_bridge_get_stp(self.to_glib_none().0)) }
     }
 
+    /// ## `idx`
+    /// index number of the VLAN to return
+    ///
+    /// # Returns
+    ///
+    /// the VLAN at index @idx
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_get_vlan")]
@@ -283,6 +621,10 @@ impl SettingBridge {
         unsafe { from_glib_none(ffi::nm_setting_bridge_get_vlan(self.to_glib_none().0, idx)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:vlan-default-pvid property of the setting
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_get_vlan_default_pvid")]
@@ -292,6 +634,10 @@ impl SettingBridge {
         unsafe { ffi::nm_setting_bridge_get_vlan_default_pvid(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:vlan-filtering property of the setting
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_get_vlan_filtering")]
@@ -305,6 +651,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:vlan-protocol property of the setting
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_setting_bridge_get_vlan_protocol")]
@@ -318,6 +668,10 @@ impl SettingBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridge:vlan-stats-enabled property of the setting
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_setting_bridge_get_vlan_stats_enabled")]
@@ -331,6 +685,9 @@ impl SettingBridge {
         }
     }
 
+    /// Removes the vlan at index @idx.
+    /// ## `idx`
+    /// index number of the VLAN.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_remove_vlan")]
@@ -340,6 +697,17 @@ impl SettingBridge {
         }
     }
 
+    /// Remove the VLAN with range @vid_start to @vid_end.
+    /// If @vid_end is zero, it is assumed to be equal to @vid_start
+    /// and so the single-id VLAN with id @vid_start is removed.
+    /// ## `vid_start`
+    /// the vlan start index
+    /// ## `vid_end`
+    /// the vlan end index
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the vlan was found and removed; [`false`] otherwise
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_remove_vlan_by_vid")]
@@ -353,16 +721,23 @@ impl SettingBridge {
         }
     }
 
+    /// The Ethernet MAC address aging time, in seconds.
     #[doc(alias = "ageing-time")]
     pub fn set_ageing_time(&self, ageing_time: u32) {
         ObjectExt::set_property(self, "ageing-time", ageing_time)
     }
 
+    /// The Spanning Tree Protocol (STP) forwarding delay, in seconds.
     #[doc(alias = "forward-delay")]
     pub fn set_forward_delay(&self, forward_delay: u32) {
         ObjectExt::set_property(self, "forward-delay", forward_delay)
     }
 
+    /// If specified, The MAC address of the multicast group this bridge uses for STP.
+    ///
+    /// The address must be a link-local address in standard Ethernet MAC address format,
+    /// ie an address of the form 01:80:C2:00:00:0X, with X in [0, 4..F].
+    /// If not specified the default value is 01:80:C2:00:00:00.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "group-address")]
@@ -370,6 +745,12 @@ impl SettingBridge {
         ObjectExt::set_property(self, "group-address", group_address)
     }
 
+    /// A mask of group addresses to forward. Usually, group addresses in
+    /// the range from 01:80:C2:00:00:00 to 01:80:C2:00:00:0F are not
+    /// forwarded according to standards. This property is a mask of 16 bits,
+    /// each corresponding to a group address in that range that must be
+    /// forwarded. The mask can't have bits 0, 1 or 2 set because they are
+    /// used for STP, MAC pause frames and LACP.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "group-forward-mask")]
@@ -377,17 +758,30 @@ impl SettingBridge {
         ObjectExt::set_property(self, "group-forward-mask", group_forward_mask)
     }
 
+    /// The Spanning Tree Protocol (STP) hello time, in seconds.
     #[doc(alias = "hello-time")]
     pub fn set_hello_time(&self, hello_time: u32) {
         ObjectExt::set_property(self, "hello-time", hello_time)
     }
 
+    /// If specified, the MAC address of bridge. When creating a new bridge, this
+    /// MAC address will be set.
+    ///
+    /// If this field is left unspecified, the "ethernet.cloned-mac-address" is
+    /// referred instead to generate the initial MAC address. Note that setting
+    /// "ethernet.cloned-mac-address" anyway overwrites the MAC address of
+    /// the bridge later while activating the bridge.
+    ///
+    /// # Deprecated since 1.12
+    ///
+    /// Use the #NMSettingWired:cloned-mac-address property instead.
     #[cfg_attr(feature = "v1_12", deprecated = "Since 1.12")]
     #[doc(alias = "mac-address")]
     pub fn set_mac_address(&self, mac_address: Option<&str>) {
         ObjectExt::set_property(self, "mac-address", mac_address)
     }
 
+    /// The Spanning Tree Protocol (STP) maximum message age, in seconds.
     #[doc(alias = "max-age")]
     pub fn set_max_age(&self, max_age: u32) {
         ObjectExt::set_property(self, "max-age", max_age)
@@ -400,6 +794,7 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-hash-max")
     }
 
+    /// Set maximum size of multicast hash table (value must be a power of 2).
     #[doc(alias = "multicast-hash-max")]
     pub fn set_multicast_hash_max(&self, multicast_hash_max: u32) {
         ObjectExt::set_property(self, "multicast-hash-max", multicast_hash_max)
@@ -412,6 +807,9 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-last-member-count")
     }
 
+    /// Set the number of queries the bridge will send before
+    /// stopping forwarding a multicast group after a "leave"
+    /// message has been received.
     #[doc(alias = "multicast-last-member-count")]
     pub fn set_multicast_last_member_count(&self, multicast_last_member_count: u32) {
         ObjectExt::set_property(
@@ -428,6 +826,8 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-last-member-interval")
     }
 
+    /// Set interval (in deciseconds) between queries to find remaining
+    /// members of a group, after a "leave" message is received.
     #[doc(alias = "multicast-last-member-interval")]
     pub fn set_multicast_last_member_interval(&self, multicast_last_member_interval: u64) {
         ObjectExt::set_property(
@@ -444,6 +844,9 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-membership-interval")
     }
 
+    /// Set delay (in deciseconds) after which the bridge will
+    /// leave a group, if no membership reports for this
+    /// group are received.
     #[doc(alias = "multicast-membership-interval")]
     pub fn set_multicast_membership_interval(&self, multicast_membership_interval: u64) {
         ObjectExt::set_property(
@@ -460,6 +863,8 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-querier")
     }
 
+    /// Enable or disable sending of multicast queries by the bridge.
+    /// If not specified the option is disabled.
     #[doc(alias = "multicast-querier")]
     pub fn set_multicast_querier(&self, multicast_querier: bool) {
         ObjectExt::set_property(self, "multicast-querier", multicast_querier)
@@ -472,6 +877,8 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-querier-interval")
     }
 
+    /// If no queries are seen after this delay (in deciseconds) has passed,
+    /// the bridge will start to send its own queries.
     #[doc(alias = "multicast-querier-interval")]
     pub fn set_multicast_querier_interval(&self, multicast_querier_interval: u64) {
         ObjectExt::set_property(
@@ -488,6 +895,8 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-query-interval")
     }
 
+    /// Interval (in deciseconds) between queries sent
+    /// by the bridge after the end of the startup phase.
     #[doc(alias = "multicast-query-interval")]
     pub fn set_multicast_query_interval(&self, multicast_query_interval: u64) {
         ObjectExt::set_property(self, "multicast-query-interval", multicast_query_interval)
@@ -500,6 +909,8 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-query-response-interval")
     }
 
+    /// Set the Max Response Time/Max Response Delay
+    /// (in deciseconds) for IGMP/MLD queries sent by the bridge.
     #[doc(alias = "multicast-query-response-interval")]
     pub fn set_multicast_query_response_interval(&self, multicast_query_response_interval: u64) {
         ObjectExt::set_property(
@@ -516,6 +927,9 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-query-use-ifaddr")
     }
 
+    /// If enabled the bridge's own IP address is used as
+    /// the source address for IGMP queries otherwise
+    /// the default of 0.0.0.0 is used.
     #[doc(alias = "multicast-query-use-ifaddr")]
     pub fn set_multicast_query_use_ifaddr(&self, multicast_query_use_ifaddr: bool) {
         ObjectExt::set_property(
@@ -532,11 +946,21 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-router")
     }
 
+    /// Sets bridge's multicast router. Multicast-snooping must be enabled
+    /// for this option to work.
+    ///
+    /// Supported values are: 'auto', 'disabled', 'enabled' to which kernel
+    /// assigns the numbers 1, 0, and 2, respectively.
+    /// If not specified the default value is 'auto' (1).
     #[doc(alias = "multicast-router")]
     pub fn set_multicast_router(&self, multicast_router: Option<&str>) {
         ObjectExt::set_property(self, "multicast-router", multicast_router)
     }
 
+    /// Controls whether IGMP snooping is enabled for this bridge.
+    /// Note that if snooping was automatically disabled due to hash collisions,
+    /// the system may refuse to enable the feature until the collisions are
+    /// resolved.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "multicast-snooping")]
@@ -551,6 +975,7 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-startup-query-count")
     }
 
+    /// Set the number of IGMP queries to send during startup phase.
     #[doc(alias = "multicast-startup-query-count")]
     pub fn set_multicast_startup_query_count(&self, multicast_startup_query_count: u32) {
         ObjectExt::set_property(
@@ -567,6 +992,8 @@ impl SettingBridge {
         ObjectExt::property(self, "multicast-startup-query-interval")
     }
 
+    /// Sets the time (in deciseconds) between queries sent out
+    /// at startup to determine membership information.
     #[doc(alias = "multicast-startup-query-interval")]
     pub fn set_multicast_startup_query_interval(&self, multicast_startup_query_interval: u64) {
         ObjectExt::set_property(
@@ -576,14 +1003,20 @@ impl SettingBridge {
         )
     }
 
+    /// Sets the Spanning Tree Protocol (STP) priority for this bridge.  Lower
+    /// values are "better"; the lowest priority bridge will be elected the root
+    /// bridge.
     pub fn set_priority(&self, priority: u32) {
         ObjectExt::set_property(self, "priority", priority)
     }
 
+    /// Controls whether Spanning Tree Protocol (STP) is enabled for this bridge.
     pub fn set_stp(&self, stp: bool) {
         ObjectExt::set_property(self, "stp", stp)
     }
 
+    /// The default PVID for the ports of the bridge, that is the VLAN id
+    /// assigned to incoming untagged frames.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "vlan-default-pvid")]
@@ -591,6 +1024,7 @@ impl SettingBridge {
         ObjectExt::set_property(self, "vlan-default-pvid", vlan_default_pvid)
     }
 
+    /// Control whether VLAN filtering is enabled on the bridge.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "vlan-filtering")]
@@ -598,6 +1032,10 @@ impl SettingBridge {
         ObjectExt::set_property(self, "vlan-filtering", vlan_filtering)
     }
 
+    /// If specified, the protocol used for VLAN filtering.
+    ///
+    /// Supported values are: '802.1Q', '802.1ad'.
+    /// If not specified the default value is '802.1Q'.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "vlan-protocol")]
@@ -612,11 +1050,23 @@ impl SettingBridge {
         ObjectExt::property(self, "vlan-stats-enabled")
     }
 
+    /// Controls whether per-VLAN stats accounting is enabled.
     #[doc(alias = "vlan-stats-enabled")]
     pub fn set_vlan_stats_enabled(&self, vlan_stats_enabled: bool) {
         ObjectExt::set_property(self, "vlan-stats-enabled", vlan_stats_enabled)
     }
 
+    /// Array of bridge VLAN objects. In addition to the VLANs
+    /// specified here, the bridge will also have the default-pvid
+    /// VLAN configured  by the bridge.vlan-default-pvid property.
+    ///
+    /// In nmcli the VLAN list can be specified with the following
+    /// syntax:
+    ///
+    ///  $vid [pvid] [untagged] [, $vid [pvid] [untagged]]...
+    ///
+    /// where $vid is either a single id between 1 and 4094 or a
+    /// range, represented as a couple of ids separated by a dash.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlans(&self) -> Vec<BridgeVlan> {
@@ -630,6 +1080,17 @@ impl SettingBridge {
             .collect()
     }
 
+    /// Array of bridge VLAN objects. In addition to the VLANs
+    /// specified here, the bridge will also have the default-pvid
+    /// VLAN configured  by the bridge.vlan-default-pvid property.
+    ///
+    /// In nmcli the VLAN list can be specified with the following
+    /// syntax:
+    ///
+    ///  $vid [pvid] [untagged] [, $vid [pvid] [untagged]]...
+    ///
+    /// where $vid is either a single id between 1 and 4094 or a
+    /// range, represented as a couple of ids separated by a dash.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn set_vlans(&self, vlans: &[&BridgeVlan]) {
@@ -1377,18 +1838,25 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// The Ethernet MAC address aging time, in seconds.
     pub fn ageing_time(self, ageing_time: u32) -> Self {
         Self {
             builder: self.builder.property("ageing-time", ageing_time),
         }
     }
 
+    /// The Spanning Tree Protocol (STP) forwarding delay, in seconds.
     pub fn forward_delay(self, forward_delay: u32) -> Self {
         Self {
             builder: self.builder.property("forward-delay", forward_delay),
         }
     }
 
+    /// If specified, The MAC address of the multicast group this bridge uses for STP.
+    ///
+    /// The address must be a link-local address in standard Ethernet MAC address format,
+    /// ie an address of the form 01:80:C2:00:00:0X, with X in [0, 4..F].
+    /// If not specified the default value is 01:80:C2:00:00:00.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn group_address(self, group_address: impl Into<glib::GString>) -> Self {
@@ -1397,6 +1865,12 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// A mask of group addresses to forward. Usually, group addresses in
+    /// the range from 01:80:C2:00:00:00 to 01:80:C2:00:00:0F are not
+    /// forwarded according to standards. This property is a mask of 16 bits,
+    /// each corresponding to a group address in that range that must be
+    /// forwarded. The mask can't have bits 0, 1 or 2 set because they are
+    /// used for STP, MAC pause frames and LACP.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn group_forward_mask(self, group_forward_mask: u32) -> Self {
@@ -1407,12 +1881,21 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// The Spanning Tree Protocol (STP) hello time, in seconds.
     pub fn hello_time(self, hello_time: u32) -> Self {
         Self {
             builder: self.builder.property("hello-time", hello_time),
         }
     }
 
+    /// If specified, the MAC address of bridge. When creating a new bridge, this
+    /// MAC address will be set.
+    ///
+    /// If this field is left unspecified, the "ethernet.cloned-mac-address" is
+    /// referred instead to generate the initial MAC address. Note that setting
+    /// "ethernet.cloned-mac-address" anyway overwrites the MAC address of
+    /// the bridge later while activating the bridge.
+    /// Use the #NMSettingWired:cloned-mac-address property instead.
     #[cfg_attr(feature = "v1_12", deprecated = "Since 1.12")]
     pub fn mac_address(self, mac_address: impl Into<glib::GString>) -> Self {
         Self {
@@ -1420,12 +1903,14 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// The Spanning Tree Protocol (STP) maximum message age, in seconds.
     pub fn max_age(self, max_age: u32) -> Self {
         Self {
             builder: self.builder.property("max-age", max_age),
         }
     }
 
+    /// Set maximum size of multicast hash table (value must be a power of 2).
     pub fn multicast_hash_max(self, multicast_hash_max: u32) -> Self {
         Self {
             builder: self
@@ -1434,6 +1919,9 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Set the number of queries the bridge will send before
+    /// stopping forwarding a multicast group after a "leave"
+    /// message has been received.
     pub fn multicast_last_member_count(self, multicast_last_member_count: u32) -> Self {
         Self {
             builder: self
@@ -1442,6 +1930,8 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Set interval (in deciseconds) between queries to find remaining
+    /// members of a group, after a "leave" message is received.
     pub fn multicast_last_member_interval(self, multicast_last_member_interval: u64) -> Self {
         Self {
             builder: self.builder.property(
@@ -1451,6 +1941,9 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Set delay (in deciseconds) after which the bridge will
+    /// leave a group, if no membership reports for this
+    /// group are received.
     pub fn multicast_membership_interval(self, multicast_membership_interval: u64) -> Self {
         Self {
             builder: self.builder.property(
@@ -1460,6 +1953,8 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Enable or disable sending of multicast queries by the bridge.
+    /// If not specified the option is disabled.
     pub fn multicast_querier(self, multicast_querier: bool) -> Self {
         Self {
             builder: self
@@ -1468,6 +1963,8 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// If no queries are seen after this delay (in deciseconds) has passed,
+    /// the bridge will start to send its own queries.
     pub fn multicast_querier_interval(self, multicast_querier_interval: u64) -> Self {
         Self {
             builder: self
@@ -1476,6 +1973,8 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Interval (in deciseconds) between queries sent
+    /// by the bridge after the end of the startup phase.
     pub fn multicast_query_interval(self, multicast_query_interval: u64) -> Self {
         Self {
             builder: self
@@ -1484,6 +1983,8 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Set the Max Response Time/Max Response Delay
+    /// (in deciseconds) for IGMP/MLD queries sent by the bridge.
     pub fn multicast_query_response_interval(self, multicast_query_response_interval: u64) -> Self {
         Self {
             builder: self.builder.property(
@@ -1493,6 +1994,9 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// If enabled the bridge's own IP address is used as
+    /// the source address for IGMP queries otherwise
+    /// the default of 0.0.0.0 is used.
     pub fn multicast_query_use_ifaddr(self, multicast_query_use_ifaddr: bool) -> Self {
         Self {
             builder: self
@@ -1501,6 +2005,12 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Sets bridge's multicast router. Multicast-snooping must be enabled
+    /// for this option to work.
+    ///
+    /// Supported values are: 'auto', 'disabled', 'enabled' to which kernel
+    /// assigns the numbers 1, 0, and 2, respectively.
+    /// If not specified the default value is 'auto' (1).
     pub fn multicast_router(self, multicast_router: impl Into<glib::GString>) -> Self {
         Self {
             builder: self
@@ -1509,6 +2019,10 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Controls whether IGMP snooping is enabled for this bridge.
+    /// Note that if snooping was automatically disabled due to hash collisions,
+    /// the system may refuse to enable the feature until the collisions are
+    /// resolved.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn multicast_snooping(self, multicast_snooping: bool) -> Self {
@@ -1519,6 +2033,7 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Set the number of IGMP queries to send during startup phase.
     pub fn multicast_startup_query_count(self, multicast_startup_query_count: u32) -> Self {
         Self {
             builder: self.builder.property(
@@ -1528,6 +2043,8 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Sets the time (in deciseconds) between queries sent out
+    /// at startup to determine membership information.
     pub fn multicast_startup_query_interval(self, multicast_startup_query_interval: u64) -> Self {
         Self {
             builder: self.builder.property(
@@ -1537,18 +2054,24 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Sets the Spanning Tree Protocol (STP) priority for this bridge.  Lower
+    /// values are "better"; the lowest priority bridge will be elected the root
+    /// bridge.
     pub fn priority(self, priority: u32) -> Self {
         Self {
             builder: self.builder.property("priority", priority),
         }
     }
 
+    /// Controls whether Spanning Tree Protocol (STP) is enabled for this bridge.
     pub fn stp(self, stp: bool) -> Self {
         Self {
             builder: self.builder.property("stp", stp),
         }
     }
 
+    /// The default PVID for the ports of the bridge, that is the VLAN id
+    /// assigned to incoming untagged frames.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlan_default_pvid(self, vlan_default_pvid: u32) -> Self {
@@ -1559,6 +2082,7 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Control whether VLAN filtering is enabled on the bridge.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlan_filtering(self, vlan_filtering: bool) -> Self {
@@ -1567,6 +2091,10 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// If specified, the protocol used for VLAN filtering.
+    ///
+    /// Supported values are: '802.1Q', '802.1ad'.
+    /// If not specified the default value is '802.1Q'.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn vlan_protocol(self, vlan_protocol: impl Into<glib::GString>) -> Self {
@@ -1575,6 +2103,7 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Controls whether per-VLAN stats accounting is enabled.
     pub fn vlan_stats_enabled(self, vlan_stats_enabled: bool) -> Self {
         Self {
             builder: self
@@ -1583,6 +2112,17 @@ impl SettingBridgeBuilder {
         }
     }
 
+    /// Array of bridge VLAN objects. In addition to the VLANs
+    /// specified here, the bridge will also have the default-pvid
+    /// VLAN configured  by the bridge.vlan-default-pvid property.
+    ///
+    /// In nmcli the VLAN list can be specified with the following
+    /// syntax:
+    ///
+    ///  $vid [pvid] [untagged] [, $vid [pvid] [untagged]]...
+    ///
+    /// where $vid is either a single id between 1 and 4094 or a
+    /// range, represented as a couple of ids separated by a dash.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlans(self, vlans: &[&BridgeVlan]) -> Self {

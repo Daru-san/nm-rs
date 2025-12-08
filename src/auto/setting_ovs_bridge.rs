@@ -13,6 +13,53 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// OvsBridge Link Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `datapath-type`
+    ///  The data path type. One of "system", "netdev" or empty.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `fail-mode`
+    ///  The bridge failure mode. One of "secure", "standalone" or empty.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mcast-snooping-enable`
+    ///  Enable or disable multicast snooping.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `rstp-enable`
+    ///  Enable or disable RSTP.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `stp-enable`
+    ///  Enable or disable STP.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingOvsBridge")]
     pub struct SettingOvsBridge(Object<ffi::NMSettingOvsBridge, ffi::NMSettingOvsBridgeClass>) @extends Setting;
 
@@ -22,6 +69,11 @@ glib::wrapper! {
 }
 
 impl SettingOvsBridge {
+    /// Creates a new #NMSettingOvsBridge object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingOvsBridge object
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_bridge_new")]
@@ -41,6 +93,10 @@ impl SettingOvsBridge {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsBridge:datapath_type property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_bridge_get_datapath_type")]
@@ -52,6 +108,10 @@ impl SettingOvsBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsBridge:fail_mode property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_bridge_get_fail_mode")]
@@ -63,6 +123,10 @@ impl SettingOvsBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsBridge:mcast_snooping_enable property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_bridge_get_mcast_snooping_enable")]
@@ -74,6 +138,10 @@ impl SettingOvsBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsBridge:rstp_enable property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_bridge_get_rstp_enable")]
@@ -85,6 +153,10 @@ impl SettingOvsBridge {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsBridge:stp_enable property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_bridge_get_stp_enable")]
@@ -103,6 +175,7 @@ impl SettingOvsBridge {
         ObjectExt::property(self, "datapath-type")
     }
 
+    /// The data path type. One of "system", "netdev" or empty.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "datapath-type")]
@@ -110,6 +183,7 @@ impl SettingOvsBridge {
         ObjectExt::set_property(self,"datapath-type", datapath_type)
     }
 
+    /// The bridge failure mode. One of "secure", "standalone" or empty.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "fail-mode")]
@@ -117,6 +191,7 @@ impl SettingOvsBridge {
         ObjectExt::set_property(self,"fail-mode", fail_mode)
     }
 
+    /// Enable or disable multicast snooping.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "mcast-snooping-enable")]
@@ -124,6 +199,7 @@ impl SettingOvsBridge {
         ObjectExt::set_property(self,"mcast-snooping-enable", mcast_snooping_enable)
     }
 
+    /// Enable or disable RSTP.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "rstp-enable")]
@@ -131,6 +207,7 @@ impl SettingOvsBridge {
         ObjectExt::set_property(self,"rstp-enable", rstp_enable)
     }
 
+    /// Enable or disable STP.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "stp-enable")]
@@ -236,30 +313,35 @@ pub struct SettingOvsBridgeBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The data path type. One of "system", "netdev" or empty.
                             #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn datapath_type(self, datapath_type: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("datapath-type", datapath_type.into()), }
                         }
 
+                            /// The bridge failure mode. One of "secure", "standalone" or empty.
                             #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn fail_mode(self, fail_mode: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("fail-mode", fail_mode.into()), }
                         }
 
+                            /// Enable or disable multicast snooping.
                             #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn mcast_snooping_enable(self, mcast_snooping_enable: bool) -> Self {
                             Self { builder: self.builder.property("mcast-snooping-enable", mcast_snooping_enable), }
                         }
 
+                            /// Enable or disable RSTP.
                             #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn rstp_enable(self, rstp_enable: bool) -> Self {
                             Self { builder: self.builder.property("rstp-enable", rstp_enable), }
                         }
 
+                            /// Enable or disable STP.
                             #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn stp_enable(self, stp_enable: bool) -> Self {

@@ -35,6 +35,36 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// NMConnection is the interface implemented by #NMRemoteConnection on the
+    /// client side, and #NMSettingsConnection on the daemon side.
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `changed`
+    ///  The ::changed signal is emitted when any property (including secrets)
+    /// of any setting of the connection is modified, or when settings are
+    /// added or removed.
+    ///
+    ///
+    ///
+    ///
+    /// #### `secrets-cleared`
+    ///  The ::secrets-cleared signal is emitted when the secrets of a connection
+    /// are cleared.
+    ///
+    ///
+    ///
+    ///
+    /// #### `secrets-updated`
+    ///  The ::secrets-updated signal is emitted when the secrets of a setting
+    /// have been changed.
+    ///
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`ConnectionExt`][trait@crate::prelude::ConnectionExt]
     #[doc(alias = "NMConnection")]
     pub struct Connection(Interface<ffi::NMConnection, ffi::NMConnectionInterface>);
 
@@ -47,7 +77,18 @@ impl Connection {
     pub const NONE: Option<&'static Connection> = None;
 }
 
+/// Trait containing all [`struct@Connection`] methods.
+///
+/// # Implementors
+///
+/// [`Connection`][struct@crate::Connection], [`RemoteConnection`][struct@crate::RemoteConnection], [`SimpleConnection`][struct@crate::SimpleConnection]
 pub trait ConnectionExt: IsA<Connection> + 'static {
+    /// Adds a #NMSetting to the connection, replacing any previous #NMSetting of the
+    /// same name which has previously been added to the #NMConnection.  The
+    /// connection takes ownership of the #NMSetting object and does not increase
+    /// the setting object's reference count.
+    /// ## `setting`
+    /// the #NMSetting to add to the connection object
     #[doc(alias = "nm_connection_add_setting")]
     fn add_setting(&self, setting: impl IsA<Setting>) {
         unsafe {
@@ -58,6 +99,8 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Clears and frees any secrets that may be stored in the connection, to avoid
+    /// keeping secret data in memory when not needed.
     #[doc(alias = "nm_connection_clear_secrets")]
     fn clear_secrets(&self) {
         unsafe {
@@ -65,6 +108,10 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Clears and frees secrets determined by @func.
+    /// ## `func`
+    /// function to be called to determine whether a
+    ///     specific secret should be cleared or not. If [`None`], all secrets are cleared.
     #[doc(alias = "nm_connection_clear_secrets_with_flags")]
     fn clear_secrets_with_flags(
         &self,
@@ -109,6 +156,7 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Deletes all of @self's settings.
     #[doc(alias = "nm_connection_clear_settings")]
     fn clear_settings(&self) {
         unsafe {
@@ -132,6 +180,10 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     //    unsafe { TODO: call ffi:nm_connection_diff() }
     //}
 
+    /// Print the connection (including secrets!) to stdout. For debugging
+    /// purposes ONLY, should NOT be used for serialization of the setting,
+    /// or machine-parsed in any way. The output format is not guaranteed to
+    /// be stable and may change at any time.
     #[doc(alias = "nm_connection_dump")]
     fn dump(&self) {
         unsafe {
@@ -144,6 +196,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     //    unsafe { TODO: call ffi:nm_connection_for_each_setting_value() }
     //}
 
+    /// A shortcut to return the type from the connection's #NMSettingConnection.
+    ///
+    /// # Returns
+    ///
+    /// the type from the connection's 'connection' setting
     #[doc(alias = "nm_connection_get_connection_type")]
     #[doc(alias = "get_connection_type")]
     fn connection_type(&self) -> glib::GString {
@@ -154,12 +211,27 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return the ID from the connection's #NMSettingConnection.
+    ///
+    /// # Returns
+    ///
+    /// the ID from the connection's 'connection' setting
     #[doc(alias = "nm_connection_get_id")]
     #[doc(alias = "get_id")]
     fn id(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_connection_get_id(self.as_ref().to_glib_none().0)) }
     }
 
+    /// Returns the interface name as stored in NMSettingConnection:interface_name.
+    /// If the connection contains no NMSettingConnection, it will return [`None`].
+    ///
+    /// For hardware devices and software devices created outside of NetworkManager,
+    /// this name is used to match the device. for software devices created by
+    /// NetworkManager, this is the name of the created interface.
+    ///
+    /// # Returns
+    ///
+    /// Name of the kernel interface or [`None`]
     #[doc(alias = "nm_connection_get_interface_name")]
     #[doc(alias = "get_interface_name")]
     fn interface_name(&self) -> glib::GString {
@@ -170,12 +242,27 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Returns the connection's D-Bus path.
+    ///
+    /// # Returns
+    ///
+    /// the D-Bus path of the connection, previously set by a call to
+    /// nm_connection_set_path().
     #[doc(alias = "nm_connection_get_path")]
     #[doc(alias = "get_path")]
     fn path(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_connection_get_path(self.as_ref().to_glib_none().0)) }
     }
 
+    /// Gets the #NMSetting with the given #GType, if one has been previously added
+    /// to the #NMConnection.
+    /// ## `setting_type`
+    /// the #GType of the setting object to return
+    ///
+    /// # Returns
+    ///
+    /// the #NMSetting, or [`None`] if no setting of that type was previously
+    /// added to the #NMConnection
     #[doc(alias = "nm_connection_get_setting")]
     #[doc(alias = "get_setting")]
     fn setting(&self, setting_type: glib::types::Type) -> Setting {
@@ -187,6 +274,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSetting8021x the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSetting8021x if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_802_1x")]
     #[doc(alias = "get_setting_802_1x")]
     fn setting_802_1x(&self) -> Setting8021x {
@@ -197,6 +289,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingAdsl the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingAdsl if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_adsl")]
     #[doc(alias = "get_setting_adsl")]
     fn setting_adsl(&self) -> SettingAdsl {
@@ -207,6 +304,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingBluetooth the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingBluetooth if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_bluetooth")]
     #[doc(alias = "get_setting_bluetooth")]
     fn setting_bluetooth(&self) -> SettingBluetooth {
@@ -217,6 +319,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingBond the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingBond if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_bond")]
     #[doc(alias = "get_setting_bond")]
     fn setting_bond(&self) -> SettingBond {
@@ -227,6 +334,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingBridge the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingBridge if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_bridge")]
     #[doc(alias = "get_setting_bridge")]
     fn setting_bridge(&self) -> SettingBridge {
@@ -237,6 +349,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingBridgePort the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingBridgePort if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_bridge_port")]
     #[doc(alias = "get_setting_bridge_port")]
     fn setting_bridge_port(&self) -> SettingBridgePort {
@@ -247,6 +364,15 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Gets the #NMSetting with the given name, if one has been previously added
+    /// the #NMConnection.
+    /// ## `name`
+    /// a setting name
+    ///
+    /// # Returns
+    ///
+    /// the #NMSetting, or [`None`] if no setting with that name was previously
+    /// added to the #NMConnection
     #[doc(alias = "nm_connection_get_setting_by_name")]
     #[doc(alias = "get_setting_by_name")]
     fn setting_by_name(&self, name: &str) -> Setting {
@@ -258,6 +384,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingCdma the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingCdma if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_cdma")]
     #[doc(alias = "get_setting_cdma")]
     fn setting_cdma(&self) -> SettingCdma {
@@ -268,6 +399,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingConnection the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingConnection if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_connection")]
     #[doc(alias = "get_setting_connection")]
     fn setting_connection(&self) -> SettingConnection {
@@ -278,6 +414,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingDcb the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingDcb if the connection contains one, otherwise NULL
     #[doc(alias = "nm_connection_get_setting_dcb")]
     #[doc(alias = "get_setting_dcb")]
     fn setting_dcb(&self) -> SettingDcb {
@@ -288,6 +429,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingDummy the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingDummy if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     #[doc(alias = "nm_connection_get_setting_dummy")]
@@ -300,6 +446,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingGeneric the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingGeneric if the connection contains one, otherwise NULL
     #[doc(alias = "nm_connection_get_setting_generic")]
     #[doc(alias = "get_setting_generic")]
     fn setting_generic(&self) -> SettingGeneric {
@@ -310,6 +461,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingGsm the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingGsm if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_gsm")]
     #[doc(alias = "get_setting_gsm")]
     fn setting_gsm(&self) -> SettingGsm {
@@ -320,6 +476,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingInfiniband the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingInfiniband if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_infiniband")]
     #[doc(alias = "get_setting_infiniband")]
     fn setting_infiniband(&self) -> SettingInfiniband {
@@ -330,6 +491,16 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingIP4Config the connection might contain.
+    ///
+    /// Note that it returns the value as type #NMSettingIPConfig, since the vast
+    /// majority of IPv4-setting-related methods are on that type, not
+    /// #NMSettingIP4Config.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingIP4Config if the
+    /// connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_ip4_config")]
     #[doc(alias = "get_setting_ip4_config")]
     fn setting_ip4_config(&self) -> SettingIP4Config {
@@ -340,6 +511,16 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingIP6Config the connection might contain.
+    ///
+    /// Note that it returns the value as type #NMSettingIPConfig, since the vast
+    /// majority of IPv6-setting-related methods are on that type, not
+    /// #NMSettingIP6Config.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingIP6Config if the
+    /// connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_ip6_config")]
     #[doc(alias = "get_setting_ip6_config")]
     fn setting_ip6_config(&self) -> SettingIP6Config {
@@ -350,6 +531,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingIPTunnel the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingIPTunnel if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_connection_get_setting_ip_tunnel")]
@@ -362,6 +548,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingMacsec the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingMacsec if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_connection_get_setting_macsec")]
@@ -374,6 +565,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingMacvlan the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingMacvlan if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_connection_get_setting_macvlan")]
@@ -386,6 +582,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingOlpcMesh the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingOlpcMesh if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_olpc_mesh")]
     #[doc(alias = "get_setting_olpc_mesh")]
     fn setting_olpc_mesh(&self) -> SettingOlpcMesh {
@@ -396,6 +597,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingOvsBridge the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingOvsBridge if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_connection_get_setting_ovs_bridge")]
@@ -416,6 +622,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     //    unsafe { TODO: call ffi:nm_connection_get_setting_ovs_interface() }
     //}
 
+    /// A shortcut to return any #NMSettingOvsPatch the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingOvsPatch if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_connection_get_setting_ovs_patch")]
@@ -428,6 +639,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingOvsPort the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingOvsPort if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_connection_get_setting_ovs_port")]
@@ -440,6 +656,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingPpp the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingPpp if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_ppp")]
     #[doc(alias = "get_setting_ppp")]
     fn setting_ppp(&self) -> SettingPpp {
@@ -450,6 +671,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingPppoe the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingPppoe if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_pppoe")]
     #[doc(alias = "get_setting_pppoe")]
     fn setting_pppoe(&self) -> SettingPppoe {
@@ -460,6 +686,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingProxy the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingProxy if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_connection_get_setting_proxy")]
@@ -472,6 +703,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingSerial the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingSerial if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_serial")]
     #[doc(alias = "get_setting_serial")]
     fn setting_serial(&self) -> SettingSerial {
@@ -482,6 +718,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingTCConfig the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingTCConfig if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_connection_get_setting_tc_config")]
@@ -494,6 +735,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingTeam the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingTeam if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_team")]
     #[doc(alias = "get_setting_team")]
     fn setting_team(&self) -> SettingTeam {
@@ -504,6 +750,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingTeamPort the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingTeamPort if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_team_port")]
     #[doc(alias = "get_setting_team_port")]
     fn setting_team_port(&self) -> SettingTeamPort {
@@ -514,6 +765,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingTun the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingTun if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_connection_get_setting_tun")]
@@ -526,6 +782,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingVlan the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingVlan if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_vlan")]
     #[doc(alias = "get_setting_vlan")]
     fn setting_vlan(&self) -> SettingVlan {
@@ -536,6 +797,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingVpn the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingVpn if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_vpn")]
     #[doc(alias = "get_setting_vpn")]
     fn setting_vpn(&self) -> SettingVpn {
@@ -546,6 +812,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingVxlan the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingVxlan if the connection contains one, otherwise [`None`]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_connection_get_setting_vxlan")]
@@ -558,6 +829,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingWimax the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingWimax if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_wimax")]
     #[doc(alias = "get_setting_wimax")]
     fn setting_wimax(&self) -> SettingWimax {
@@ -568,6 +844,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingWired the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingWired if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_wired")]
     #[doc(alias = "get_setting_wired")]
     fn setting_wired(&self) -> SettingWired {
@@ -578,6 +859,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingWireless the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingWireless if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_wireless")]
     #[doc(alias = "get_setting_wireless")]
     fn setting_wireless(&self) -> SettingWireless {
@@ -588,6 +874,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return any #NMSettingWirelessSecurity the connection might contain.
+    ///
+    /// # Returns
+    ///
+    /// an #NMSettingWirelessSecurity if the connection contains one, otherwise [`None`]
     #[doc(alias = "nm_connection_get_setting_wireless_security")]
     #[doc(alias = "get_setting_wireless_security")]
     fn setting_wireless_security(&self) -> SettingWirelessSecurity {
@@ -598,6 +889,15 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Retrieves the settings in @self.
+    ///
+    /// The returned array is [`None`]-terminated.
+    ///
+    /// # Returns
+    ///
+    /// a
+    ///   [`None`]-terminated array containing every setting of @self.
+    ///   If the connection has no settings, [`None`] is returned.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_connection_get_settings")]
@@ -616,12 +916,25 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A shortcut to return the UUID from the connection's #NMSettingConnection.
+    ///
+    /// # Returns
+    ///
+    /// the UUID from the connection's 'connection' setting
     #[doc(alias = "nm_connection_get_uuid")]
     #[doc(alias = "get_uuid")]
     fn uuid(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_connection_get_uuid(self.as_ref().to_glib_none().0)) }
     }
 
+    /// Returns the name that nm_device_disambiguate_names() would
+    /// return for the virtual device that would be created for @self.
+    /// Eg, "VLAN (eth1.1)".
+    ///
+    /// # Returns
+    ///
+    /// the name of @self's device,
+    ///   or [`None`] if @self is not a virtual connection type
     #[doc(alias = "nm_connection_get_virtual_device_description")]
     #[doc(alias = "get_virtual_device_description")]
     fn virtual_device_description(&self) -> glib::GString {
@@ -632,6 +945,16 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// A convenience function to check if the given @self is a particular
+    /// type (ie wired, Wi-Fi, ppp, etc). Checks the #NMSettingConnection:type
+    /// property of the connection and matches that against @type_.
+    /// ## `type_`
+    /// a setting name to check the connection's type against (like
+    /// [`SETTING_WIRELESS_SETTING_NAME`][crate::SETTING_WIRELESS_SETTING_NAME] or [`SETTING_WIRED_SETTING_NAME`][crate::SETTING_WIRED_SETTING_NAME])
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the connection is of the given @type_, [`false`] if not
     #[doc(alias = "nm_connection_is_type")]
     fn is_type(&self, type_: &str) -> bool {
         unsafe {
@@ -642,6 +965,12 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Checks if @self refers to a virtual device (and thus can potentially be
+    /// activated even if the device it refers to doesn't exist).
+    ///
+    /// # Returns
+    ///
+    /// whether @self refers to a virtual device
     #[doc(alias = "nm_connection_is_virtual")]
     fn is_virtual(&self) -> bool {
         unsafe {
@@ -651,6 +980,24 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Returns the name of the first setting object in the connection which would
+    /// need secrets to make a successful connection.  The returned hints are only
+    /// intended as a guide to what secrets may be required, because in some
+    /// circumstances, there is no way to conclusively determine exactly which
+    /// secrets are needed.
+    ///
+    /// # Returns
+    ///
+    /// the setting name of the #NMSetting object which has
+    ///   invalid or missing secrets
+    ///
+    /// ## `hints`
+    ///
+    ///   the address of a pointer to a #GPtrArray, initialized to [`None`], which on
+    ///   return points to an allocated #GPtrArray containing the property names of
+    ///   secrets of the #NMSetting which may be required; the caller owns the array
+    ///   and must free the array itself with g_ptr_array_free(), but not free its
+    ///   elements
     #[doc(alias = "nm_connection_need_secrets")]
     fn need_secrets(&self) -> (Option<glib::GString>, Vec<glib::GString>) {
         unsafe {
@@ -668,6 +1015,10 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     //    unsafe { TODO: call ffi:nm_connection_normalize() }
     //}
 
+    /// Removes the #NMSetting with the given #GType from the #NMConnection.  This
+    /// operation dereferences the #NMSetting object.
+    /// ## `setting_type`
+    /// the #GType of the setting object to remove
     #[doc(alias = "nm_connection_remove_setting")]
     fn remove_setting(&self, setting_type: glib::types::Type) {
         unsafe {
@@ -683,6 +1034,10 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     //    unsafe { TODO: call ffi:nm_connection_replace_settings() }
     //}
 
+    /// Deep-copies the settings of @new_connection and replaces the settings of @self
+    /// with the copied settings.
+    /// ## `new_connection`
+    /// a #NMConnection to replace the settings of @self with
     #[doc(alias = "nm_connection_replace_settings_from_connection")]
     fn replace_settings_from_connection(&self, new_connection: &impl IsA<Connection>) {
         unsafe {
@@ -693,6 +1048,12 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Sets the D-Bus path of the connection.  This property is not serialized, and
+    /// is only for the reference of the caller.  Sets the #NMConnection:path
+    /// property.
+    /// ## `path`
+    /// the D-Bus path of the connection as given by the settings service
+    /// which provides the connection
     #[doc(alias = "nm_connection_set_path")]
     fn set_path(&self, path: &str) {
         unsafe {
@@ -710,6 +1071,19 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     //    unsafe { TODO: call ffi:nm_connection_update_secrets() }
     //}
 
+    /// Validates the connection and all its settings.  Each setting's properties
+    /// have allowed values, and some values are dependent on other values.  For
+    /// example, if a Wi-Fi connection is security enabled, the #NMSettingWireless
+    /// setting object's 'security' property must contain the setting name of the
+    /// #NMSettingWirelessSecurity object, which must also be present in the
+    /// connection for the connection to be valid.  As another example, the
+    /// #NMSettingWired object's 'mac-address' property must be a validly formatted
+    /// MAC address.  The returned #GError contains information about which
+    /// setting and which property failed validation, and how it failed validation.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the connection is valid, [`false`] if it is not
     #[doc(alias = "nm_connection_verify")]
     fn verify(&self) -> Result<(), glib::Error> {
         unsafe {
@@ -724,6 +1098,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// Verifies the secrets in the connection.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the secrets are valid, [`false`] if they are not
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_connection_verify_secrets")]
@@ -741,6 +1120,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// The ::changed signal is emitted when any property (including secrets)
+    /// of any setting of the connection is modified, or when settings are
+    /// added or removed.
     #[doc(alias = "changed")]
     fn connect_changed<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
         unsafe extern "C" fn changed_trampoline<P: IsA<Connection>, F: Fn(&P) + 'static>(
@@ -763,6 +1145,8 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// The ::secrets-cleared signal is emitted when the secrets of a connection
+    /// are cleared.
     #[doc(alias = "secrets-cleared")]
     fn connect_secrets_cleared<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
         unsafe extern "C" fn secrets_cleared_trampoline<P: IsA<Connection>, F: Fn(&P) + 'static>(
@@ -785,6 +1169,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
         }
     }
 
+    /// The ::secrets-updated signal is emitted when the secrets of a setting
+    /// have been changed.
+    /// ## `setting_name`
+    /// the setting name of the #NMSetting for which secrets were
+    /// updated
     #[doc(alias = "secrets-updated")]
     fn connect_secrets_updated<F: Fn(&Self, &str) + 'static>(&self, f: F) -> SignalHandlerId {
         unsafe extern "C" fn secrets_updated_trampoline<

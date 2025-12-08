@@ -16,6 +16,51 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// IPVLAN Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `mode`
+    ///  The IPVLAN mode. Valid values: [`SettingIpvlanMode::L2`][crate::SettingIpvlanMode::L2],
+    /// [`SettingIpvlanMode::L3`][crate::SettingIpvlanMode::L3] and [`SettingIpvlanMode::L3s`][crate::SettingIpvlanMode::L3s].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `parent`
+    ///  If given, specifies the parent interface name or parent connection UUID
+    /// from which this IPVLAN interface should be created. If this property is
+    /// not specified, the connection must contain an #NMSettingWired setting
+    /// with a #NMSettingWired:mac-address property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `private`
+    ///  Whether the interface should be put in private mode.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vepa`
+    ///  Whether the interface should be put in VEPA mode.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingIpvlan")]
     pub struct SettingIpvlan(Object<ffi::NMSettingIpvlan, ffi::NMSettingIpvlanClass>) @extends Setting;
 
@@ -25,6 +70,11 @@ glib::wrapper! {
 }
 
 impl SettingIpvlan {
+    /// Creates a new #NMSettingIpvlan object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingIpvlan object
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ipvlan_new")]
@@ -44,6 +94,10 @@ impl SettingIpvlan {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIpvlan:mode property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ipvlan_get_mode")]
@@ -54,6 +108,10 @@ impl SettingIpvlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIpvlan:parent property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ipvlan_get_parent")]
@@ -64,6 +122,10 @@ impl SettingIpvlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIpvlan:private property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ipvlan_get_private")]
@@ -75,6 +137,10 @@ impl SettingIpvlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIpvlan:vepa property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ipvlan_get_vepa")]
@@ -86,24 +152,32 @@ impl SettingIpvlan {
         }
     }
 
+    /// The IPVLAN mode. Valid values: [`SettingIpvlanMode::L2`][crate::SettingIpvlanMode::L2],
+    /// [`SettingIpvlanMode::L3`][crate::SettingIpvlanMode::L3] and [`SettingIpvlanMode::L3s`][crate::SettingIpvlanMode::L3s].
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn set_mode(&self, mode: u32) {
         ObjectExt::set_property(self,"mode", mode)
     }
 
+    /// If given, specifies the parent interface name or parent connection UUID
+    /// from which this IPVLAN interface should be created. If this property is
+    /// not specified, the connection must contain an #NMSettingWired setting
+    /// with a #NMSettingWired:mac-address property.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn set_parent(&self, parent: Option<&str>) {
         ObjectExt::set_property(self,"parent", parent)
     }
 
+    /// Whether the interface should be put in private mode.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn set_private(&self, private: bool) {
         ObjectExt::set_property(self,"private", private)
     }
 
+    /// Whether the interface should be put in VEPA mode.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn set_vepa(&self, vepa: bool) {
@@ -193,24 +267,32 @@ pub struct SettingIpvlanBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The IPVLAN mode. Valid values: [`SettingIpvlanMode::L2`][crate::SettingIpvlanMode::L2],
+                            /// [`SettingIpvlanMode::L3`][crate::SettingIpvlanMode::L3] and [`SettingIpvlanMode::L3s`][crate::SettingIpvlanMode::L3s].
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn mode(self, mode: u32) -> Self {
                             Self { builder: self.builder.property("mode", mode), }
                         }
 
+                            /// If given, specifies the parent interface name or parent connection UUID
+                            /// from which this IPVLAN interface should be created. If this property is
+                            /// not specified, the connection must contain an #NMSettingWired setting
+                            /// with a #NMSettingWired:mac-address property.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn parent(self, parent: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("parent", parent.into()), }
                         }
 
+                            /// Whether the interface should be put in private mode.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn private(self, private: bool) -> Self {
                             Self { builder: self.builder.property("private", private), }
                         }
 
+                            /// Whether the interface should be put in VEPA mode.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn vepa(self, vepa: bool) -> Self {

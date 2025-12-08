@@ -20,6 +20,17 @@ glib::wrapper! {
 }
 
 impl Range {
+    /// Creates a new #NMRange object for the given range. Setting @end
+    /// equal to @start creates a single-element range.
+    /// ## `start`
+    /// the first element of the range
+    /// ## `end`
+    /// the last element of the range, must be greater than or equal
+    /// to @start.
+    ///
+    /// # Returns
+    ///
+    /// the new #NMRange object.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_range_new")]
@@ -30,6 +41,15 @@ impl Range {
         }
     }
 
+    /// Compare two ranges.
+    /// ## `b`
+    /// another #NMRange
+    ///
+    /// # Returns
+    ///
+    /// zero if the two instances are equivalent or
+    ///   a non-zero integer otherwise. This defines a total ordering
+    ///   over the ranges.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_range_cmp")]
@@ -39,6 +59,18 @@ impl Range {
         }
     }
 
+    /// Gets the start and end values for the range.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the range contains more than one
+    /// element, [`false`] otherwise.
+    ///
+    /// ## `start`
+    /// location to store the start value
+    ///
+    /// ## `end`
+    /// location to store the end value
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_range_get_range")]
@@ -52,6 +84,11 @@ impl Range {
         }
     }
 
+    /// Convert a `NMRange` to a string.
+    ///
+    /// # Returns
+    ///
+    /// a string representing the range.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_range_to_str")]
@@ -61,6 +98,14 @@ impl Range {
         }
     }
 
+    /// Parses the string representation of the range to create a `NMRange`
+    /// instance.
+    /// ## `str`
+    /// the string representation of a range
+    ///
+    /// # Returns
+    ///
+    /// the `NMRange` or [`None`]
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_range_from_str")]

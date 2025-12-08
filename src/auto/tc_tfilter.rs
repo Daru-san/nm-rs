@@ -23,6 +23,15 @@ glib::wrapper! {
 }
 
 impl TCTfilter {
+    /// Creates a new #NMTCTfilter object.
+    /// ## `kind`
+    /// name of the queueing discipline
+    /// ## `parent`
+    /// the parent queueing discipline
+    ///
+    /// # Returns
+    ///
+    /// the new #NMTCTfilter object, or [`None`] on error
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_tfilter_new")]
@@ -35,6 +44,11 @@ impl TCTfilter {
         }
     }
 
+    /// Creates a copy of @self
+    ///
+    /// # Returns
+    ///
+    /// a copy of @self
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_tfilter_dup")]
@@ -54,6 +68,10 @@ impl TCTfilter {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the action associated with a traffic filter.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_tc_tfilter_get_action")]
@@ -64,6 +82,10 @@ impl TCTfilter {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the queueing discipline handle
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_tfilter_get_handle")]
@@ -84,6 +106,10 @@ impl TCTfilter {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the parent class
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_tfilter_get_parent")]
@@ -94,6 +120,9 @@ impl TCTfilter {
         }
     }
 
+    /// Sets the action associated with a traffic filter.
+    /// ## `action`
+    /// the action object
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_tc_tfilter_set_action")]
@@ -103,6 +132,9 @@ impl TCTfilter {
         }
     }
 
+    /// Sets the queueing discipline handle.
+    /// ## `handle`
+    /// the queueing discipline handle
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_tfilter_set_handle")]

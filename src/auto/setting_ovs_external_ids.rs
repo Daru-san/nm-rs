@@ -13,6 +13,29 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// OVS External IDs Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `data`
+    ///  A dictionary of key/value pairs with external-ids for OVS.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingOvsExternalIDs")]
     pub struct SettingOvsExternalIDs(Object<ffi::NMSettingOvsExternalIDs, ffi::NMSettingOvsExternalIDsClass>) @extends Setting;
 
@@ -22,6 +45,12 @@ glib::wrapper! {
 }
 
 impl SettingOvsExternalIDs {
+    /// Creates a new #NMSettingOvsExternalIDs object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty
+    /// #NMSettingOvsExternalIDs object
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     #[doc(alias = "nm_setting_ovs_external_ids_new")]
@@ -41,6 +70,13 @@ impl SettingOvsExternalIDs {
             }
         
 
+    /// ## `key`
+    /// the external-id to lookup
+    ///
+    /// # Returns
+    ///
+    /// the value associated with @key or [`None`] if no such
+    ///   value exists.
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     #[doc(alias = "nm_setting_ovs_external_ids_get_data")]
@@ -51,6 +87,11 @@ impl SettingOvsExternalIDs {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// a
+    ///   [`None`]-terminated array containing each key from the table.
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     #[doc(alias = "nm_setting_ovs_external_ids_get_data_keys")]
@@ -63,6 +104,10 @@ impl SettingOvsExternalIDs {
         }
     }
 
+    /// ## `key`
+    /// the key to set
+    /// ## `val`
+    /// the value to set or [`None`] to clear a key.
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     #[doc(alias = "nm_setting_ovs_external_ids_set_data")]
@@ -73,6 +118,16 @@ impl SettingOvsExternalIDs {
         }
     }
 
+    /// Checks whether @key is a valid key for OVS' external-ids.
+    /// This means, the key cannot be [`None`], not too large and valid ASCII.
+    /// Also, only digits and numbers are allowed with a few special
+    /// characters. They key must also not start with "NM.".
+    /// ## `key`
+    /// the key to check
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @key is a valid user data key.
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     #[doc(alias = "nm_setting_ovs_external_ids_check_key")]
@@ -86,6 +141,14 @@ impl SettingOvsExternalIDs {
         }
     }
 
+    /// Checks whether @val is a valid user data value. This means,
+    /// value is not [`None`], not too large and valid UTF-8.
+    /// ## `val`
+    /// the value to check
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @val is a valid user data value.
     #[cfg(feature = "v1_30")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     #[doc(alias = "nm_setting_ovs_external_ids_check_val")]

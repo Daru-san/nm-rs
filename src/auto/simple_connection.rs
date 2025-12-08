@@ -7,6 +7,11 @@ use crate::{Connection, ffi};
 use glib::{prelude::*, translate::*};
 
 glib::wrapper! {
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`ConnectionExt`][trait@crate::prelude::ConnectionExt]
     #[doc(alias = "NMSimpleConnection")]
     pub struct SimpleConnection(Object<ffi::NMSimpleConnection, ffi::NMSimpleConnectionClass>) @implements Connection;
 
@@ -16,12 +21,25 @@ glib::wrapper! {
 }
 
 impl SimpleConnection {
+    /// Creates a new #NMSimpleConnection object with no #NMSetting objects.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMConnection object
     #[doc(alias = "nm_simple_connection_new")]
     pub fn new() -> Connection {
         assert_initialized_main_thread!();
         unsafe { from_glib_full(ffi::nm_simple_connection_new()) }
     }
 
+    /// Clones an #NMConnection as an #NMSimpleConnection.
+    /// ## `connection`
+    /// the #NMConnection to clone
+    ///
+    /// # Returns
+    ///
+    /// a new #NMConnection containing the same settings
+    /// and properties as the source #NMConnection
     #[doc(alias = "nm_simple_connection_new_clone")]
     pub fn new_clone(connection: &impl IsA<Connection>) -> Connection {
         skip_assert_initialized!();

@@ -13,6 +13,30 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// OvsPatch Link Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `peer`
+    ///  Specifies the name of the interface for the other side of the patch.
+    /// The patch on the other side must also set this interface as peer.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingOvsPatch")]
     pub struct SettingOvsPatch(Object<ffi::NMSettingOvsPatch, ffi::NMSettingOvsPatchClass>) @extends Setting;
 
@@ -22,6 +46,11 @@ glib::wrapper! {
 }
 
 impl SettingOvsPatch {
+    /// Creates a new #NMSettingOvsPatch object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingOvsPatch object
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_patch_new")]
@@ -41,6 +70,10 @@ impl SettingOvsPatch {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsPatch:peer property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_patch_get_peer")]
@@ -51,6 +84,8 @@ impl SettingOvsPatch {
         }
     }
 
+    /// Specifies the name of the interface for the other side of the patch.
+    /// The patch on the other side must also set this interface as peer.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn set_peer(&self, peer: Option<&str>) {
@@ -95,6 +130,8 @@ pub struct SettingOvsPatchBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Specifies the name of the interface for the other side of the patch.
+                            /// The patch on the other side must also set this interface as peer.
                             #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn peer(self, peer: impl Into<glib::GString>) -> Self {

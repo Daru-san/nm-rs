@@ -20,6 +20,13 @@ glib::wrapper! {
 }
 
 impl TCAction {
+    /// Creates a new #NMTCAction object.
+    /// ## `kind`
+    /// name of the queueing discipline
+    ///
+    /// # Returns
+    ///
+    /// the new #NMTCAction object, or [`None`] on error
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_action_new")]
@@ -32,6 +39,11 @@ impl TCAction {
         }
     }
 
+    /// Creates a copy of @self
+    ///
+    /// # Returns
+    ///
+    /// a copy of @self
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_action_dup")]
@@ -59,6 +71,11 @@ impl TCAction {
     //    unsafe { TODO: call ffi:nm_tc_action_get_attribute() }
     //}
 
+    /// Gets an array of attribute names defined on @self.
+    ///
+    /// # Returns
+    ///
+    /// a [`None`]-terminated array of attribute names,
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_action_get_attribute_names")]

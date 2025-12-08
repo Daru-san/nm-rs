@@ -13,6 +13,51 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// Linux Traffic Control Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `qdiscs`
+    ///  Array of TC queueing disciplines.
+    ///
+    /// When the #NMSettingTCConfig setting is present, qdiscs from this
+    /// property are applied upon activation. If the property is empty,
+    /// all qdiscs are removed and the device will only
+    /// have the default qdisc assigned by kernel according to the
+    /// "net.core.default_qdisc" sysctl.
+    ///
+    /// If the #NMSettingTCConfig setting is not present, NetworkManager
+    /// doesn't touch the qdiscs present on the interface.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `tfilters`
+    ///  Array of TC traffic filters.
+    ///
+    /// When the #NMSettingTCConfig setting is present, filters from this
+    /// property are applied upon activation. If the property is empty,
+    /// NetworkManager removes all the filters.
+    ///
+    /// If the #NMSettingTCConfig setting is not present, NetworkManager
+    /// doesn't touch the filters present on the interface.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingTCConfig")]
     pub struct SettingTCConfig(Object<ffi::NMSettingTCConfig, ffi::NMSettingTCConfigClass>) @extends Setting;
 
@@ -22,6 +67,11 @@ glib::wrapper! {
 }
 
 impl SettingTCConfig {
+    /// Creates a new #NMSettingTCConfig object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingTCConfig object
     #[doc(alias = "nm_setting_tc_config_new")]
     pub fn new() -> SettingTCConfig {
         assert_initialized_main_thread!();
@@ -36,6 +86,16 @@ impl SettingTCConfig {
         SettingTCConfigBuilder::new()
     }
 
+    /// Appends a new qdisc and associated information to the setting.  The
+    /// given qdisc is duplicated internally and is not changed by this function.
+    /// If an identical qdisc (considering attributes as well) already exists, the
+    /// qdisc is not added and the function returns [`false`].
+    /// ## `qdisc`
+    /// the qdisc to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the qdisc was added; [`false`] if the qdisc was already known.
     #[doc(alias = "nm_setting_tc_config_add_qdisc")]
     pub fn add_qdisc(&self, qdisc: &TCQdisc) -> bool {
         unsafe {
@@ -46,6 +106,16 @@ impl SettingTCConfig {
         }
     }
 
+    /// Appends a new tfilter and associated information to the setting.  The
+    /// given tfilter is duplicated internally and is not changed by this function.
+    /// If an identical tfilter (considering attributes as well) already exists, the
+    /// tfilter is not added and the function returns [`false`].
+    /// ## `tfilter`
+    /// the tfilter to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the tfilter was added; [`false`] if the tfilter was already known.
     #[doc(alias = "nm_setting_tc_config_add_tfilter")]
     pub fn add_tfilter(&self, tfilter: &TCTfilter) -> bool {
         unsafe {
@@ -56,6 +126,7 @@ impl SettingTCConfig {
         }
     }
 
+    /// Removes all configured queueing disciplines.
     #[doc(alias = "nm_setting_tc_config_clear_qdiscs")]
     pub fn clear_qdiscs(&self) {
         unsafe {
@@ -63,6 +134,7 @@ impl SettingTCConfig {
         }
     }
 
+    /// Removes all configured queueing disciplines.
     #[doc(alias = "nm_setting_tc_config_clear_tfilters")]
     pub fn clear_tfilters(&self) {
         unsafe {
@@ -70,18 +142,32 @@ impl SettingTCConfig {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured queueing disciplines
     #[doc(alias = "nm_setting_tc_config_get_num_qdiscs")]
     #[doc(alias = "get_num_qdiscs")]
     pub fn num_qdiscs(&self) -> u32 {
         unsafe { ffi::nm_setting_tc_config_get_num_qdiscs(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured queueing disciplines
     #[doc(alias = "nm_setting_tc_config_get_num_tfilters")]
     #[doc(alias = "get_num_tfilters")]
     pub fn num_tfilters(&self) -> u32 {
         unsafe { ffi::nm_setting_tc_config_get_num_tfilters(self.to_glib_none().0) }
     }
 
+    /// ## `idx`
+    /// index number of the qdisc to return
+    ///
+    /// # Returns
+    ///
+    /// the qdisc at index @idx
     #[doc(alias = "nm_setting_tc_config_get_qdisc")]
     #[doc(alias = "get_qdisc")]
     pub fn qdisc(&self, idx: u32) -> TCQdisc {
@@ -93,6 +179,12 @@ impl SettingTCConfig {
         }
     }
 
+    /// ## `idx`
+    /// index number of the tfilter to return
+    ///
+    /// # Returns
+    ///
+    /// the tfilter at index @idx
     #[doc(alias = "nm_setting_tc_config_get_tfilter")]
     #[doc(alias = "get_tfilter")]
     pub fn tfilter(&self, idx: u32) -> TCTfilter {
@@ -104,6 +196,9 @@ impl SettingTCConfig {
         }
     }
 
+    /// Removes the qdisc at index @idx.
+    /// ## `idx`
+    /// index number of the qdisc
     #[doc(alias = "nm_setting_tc_config_remove_qdisc")]
     pub fn remove_qdisc(&self, idx: u32) {
         unsafe {
@@ -111,6 +206,13 @@ impl SettingTCConfig {
         }
     }
 
+    /// Removes the first matching qdisc that matches @qdisc.
+    /// ## `qdisc`
+    /// the qdisc to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the qdisc was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_tc_config_remove_qdisc_by_value")]
     pub fn remove_qdisc_by_value(&self, qdisc: &TCQdisc) -> bool {
         unsafe {
@@ -121,6 +223,9 @@ impl SettingTCConfig {
         }
     }
 
+    /// Removes the tfilter at index @idx.
+    /// ## `idx`
+    /// index number of the tfilter
     #[doc(alias = "nm_setting_tc_config_remove_tfilter")]
     pub fn remove_tfilter(&self, idx: u32) {
         unsafe {
@@ -128,6 +233,13 @@ impl SettingTCConfig {
         }
     }
 
+    /// Removes the first matching tfilter that matches @tfilter.
+    /// ## `tfilter`
+    /// the tfilter to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the tfilter was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_tc_config_remove_tfilter_by_value")]
     pub fn remove_tfilter_by_value(&self, tfilter: &TCTfilter) -> bool {
         unsafe {
@@ -138,6 +250,16 @@ impl SettingTCConfig {
         }
     }
 
+    /// Array of TC queueing disciplines.
+    ///
+    /// When the #NMSettingTCConfig setting is present, qdiscs from this
+    /// property are applied upon activation. If the property is empty,
+    /// all qdiscs are removed and the device will only
+    /// have the default qdisc assigned by kernel according to the
+    /// "net.core.default_qdisc" sysctl.
+    ///
+    /// If the #NMSettingTCConfig setting is not present, NetworkManager
+    /// doesn't touch the qdiscs present on the interface.
     pub fn qdiscs(&self) -> Vec<TCQdisc> {
         let vals = ObjectExt::property::<glib::ValueArray>(self, "qdiscs");
         vals.iter()
@@ -145,6 +267,16 @@ impl SettingTCConfig {
             .collect()
     }
 
+    /// Array of TC queueing disciplines.
+    ///
+    /// When the #NMSettingTCConfig setting is present, qdiscs from this
+    /// property are applied upon activation. If the property is empty,
+    /// all qdiscs are removed and the device will only
+    /// have the default qdisc assigned by kernel according to the
+    /// "net.core.default_qdisc" sysctl.
+    ///
+    /// If the #NMSettingTCConfig setting is not present, NetworkManager
+    /// doesn't touch the qdiscs present on the interface.
     pub fn set_qdiscs(&self, qdiscs: &[&TCQdisc]) {
         ObjectExt::set_property(
             self,
@@ -156,6 +288,14 @@ impl SettingTCConfig {
         )
     }
 
+    /// Array of TC traffic filters.
+    ///
+    /// When the #NMSettingTCConfig setting is present, filters from this
+    /// property are applied upon activation. If the property is empty,
+    /// NetworkManager removes all the filters.
+    ///
+    /// If the #NMSettingTCConfig setting is not present, NetworkManager
+    /// doesn't touch the filters present on the interface.
     pub fn tfilters(&self) -> Vec<TCTfilter> {
         let vals = ObjectExt::property::<glib::ValueArray>(self, "tfilters");
         vals.iter()
@@ -163,6 +303,14 @@ impl SettingTCConfig {
             .collect()
     }
 
+    /// Array of TC traffic filters.
+    ///
+    /// When the #NMSettingTCConfig setting is present, filters from this
+    /// property are applied upon activation. If the property is empty,
+    /// NetworkManager removes all the filters.
+    ///
+    /// If the #NMSettingTCConfig setting is not present, NetworkManager
+    /// doesn't touch the filters present on the interface.
     pub fn set_tfilters(&self, tfilters: &[&TCTfilter]) {
         ObjectExt::set_property(
             self,
@@ -245,6 +393,16 @@ impl SettingTCConfigBuilder {
         }
     }
 
+    /// Array of TC queueing disciplines.
+    ///
+    /// When the #NMSettingTCConfig setting is present, qdiscs from this
+    /// property are applied upon activation. If the property is empty,
+    /// all qdiscs are removed and the device will only
+    /// have the default qdisc assigned by kernel according to the
+    /// "net.core.default_qdisc" sysctl.
+    ///
+    /// If the #NMSettingTCConfig setting is not present, NetworkManager
+    /// doesn't touch the qdiscs present on the interface.
     pub fn qdiscs(self, qdiscs: &[&TCQdisc]) -> Self {
         Self {
             builder: self.builder.property(
@@ -257,6 +415,14 @@ impl SettingTCConfigBuilder {
         }
     }
 
+    /// Array of TC traffic filters.
+    ///
+    /// When the #NMSettingTCConfig setting is present, filters from this
+    /// property are applied upon activation. If the property is empty,
+    /// NetworkManager removes all the filters.
+    ///
+    /// If the #NMSettingTCConfig setting is not present, NetworkManager
+    /// doesn't touch the filters present on the interface.
     pub fn tfilters(self, tfilters: &[&TCTfilter]) -> Self {
         Self {
             builder: self.builder.property(

@@ -13,6 +13,127 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// VXLAN Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `ageing`
+    ///  Specifies the lifetime in seconds of FDB entries learnt by the kernel.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `destination-port`
+    ///  Specifies the UDP destination port to communicate to the remote VXLAN
+    /// tunnel endpoint.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `id`
+    ///  Specifies the VXLAN Network Identifier (or VXLAN Segment Identifier) to
+    /// use.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `l2-miss`
+    ///  Specifies whether netlink LL ADDR miss notifications are generated.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `l3-miss`
+    ///  Specifies whether netlink IP ADDR miss notifications are generated.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `learning`
+    ///  Specifies whether unknown source link layer addresses and IP addresses
+    /// are entered into the VXLAN device forwarding database.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `limit`
+    ///  Specifies the maximum number of FDB entries. A value of zero means that
+    /// the kernel will store unlimited entries.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `local`
+    ///  If given, specifies the source IP address to use in outgoing packets.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `parent`
+    ///  If given, specifies the parent interface name or parent connection UUID.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `proxy`
+    ///  Specifies whether ARP proxy is turned on.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `remote`
+    ///  Specifies the unicast destination IP address to use in outgoing packets
+    /// when the destination link layer address is not known in the VXLAN device
+    /// forwarding database, or the multicast IP address to join.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `rsc`
+    ///  Specifies whether route short circuit is turned on.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `source-port-max`
+    ///  Specifies the maximum UDP source port to communicate to the remote VXLAN
+    /// tunnel endpoint.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `source-port-min`
+    ///  Specifies the minimum UDP source port to communicate to the remote VXLAN
+    /// tunnel endpoint.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `tos`
+    ///  Specifies the TOS value to use in outgoing packets.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ttl`
+    ///  Specifies the time-to-live value to use in outgoing packets.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingVxlan")]
     pub struct SettingVxlan(Object<ffi::NMSettingVxlan, ffi::NMSettingVxlanClass>) @extends Setting;
 
@@ -22,6 +143,11 @@ glib::wrapper! {
 }
 
 impl SettingVxlan {
+    /// Creates a new #NMSettingVxlan object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingVxlan object
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_new")]
@@ -41,6 +167,10 @@ impl SettingVxlan {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:ageing property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_ageing")]
@@ -51,6 +181,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:destination-port property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_destination_port")]
@@ -62,6 +196,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:id property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_id")]
@@ -72,6 +210,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:l2_miss property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_l2_miss")]
@@ -83,6 +225,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:l3_miss property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_l3_miss")]
@@ -94,6 +240,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:learning property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_learning")]
@@ -105,6 +255,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:limit property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_limit")]
@@ -115,6 +269,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:local property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_local")]
@@ -125,6 +283,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:parent property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_parent")]
@@ -135,6 +297,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:proxy property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_proxy")]
@@ -146,6 +312,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:remote property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_remote")]
@@ -156,6 +326,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:rsc property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_rsc")]
@@ -167,6 +341,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:source-port-max property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_source_port_max")]
@@ -178,6 +356,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:source-port-min property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_source_port_min")]
@@ -189,6 +371,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:tos property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_tos")]
@@ -199,6 +385,10 @@ impl SettingVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVxlan:ttl property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vxlan_get_ttl")]
@@ -209,12 +399,15 @@ impl SettingVxlan {
         }
     }
 
+    /// Specifies the lifetime in seconds of FDB entries learnt by the kernel.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_ageing(&self, ageing: u32) {
         ObjectExt::set_property(self,"ageing", ageing)
     }
 
+    /// Specifies the UDP destination port to communicate to the remote VXLAN
+    /// tunnel endpoint.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "destination-port")]
@@ -222,12 +415,15 @@ impl SettingVxlan {
         ObjectExt::set_property(self,"destination-port", destination_port)
     }
 
+    /// Specifies the VXLAN Network Identifier (or VXLAN Segment Identifier) to
+    /// use.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_id(&self, id: u32) {
         ObjectExt::set_property(self,"id", id)
     }
 
+    /// Specifies whether netlink LL ADDR miss notifications are generated.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "l2-miss")]
@@ -235,6 +431,7 @@ impl SettingVxlan {
         ObjectExt::set_property(self,"l2-miss", l2_miss)
     }
 
+    /// Specifies whether netlink IP ADDR miss notifications are generated.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "l3-miss")]
@@ -242,48 +439,61 @@ impl SettingVxlan {
         ObjectExt::set_property(self,"l3-miss", l3_miss)
     }
 
+    /// Specifies whether unknown source link layer addresses and IP addresses
+    /// are entered into the VXLAN device forwarding database.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_learning(&self, learning: bool) {
         ObjectExt::set_property(self,"learning", learning)
     }
 
+    /// Specifies the maximum number of FDB entries. A value of zero means that
+    /// the kernel will store unlimited entries.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_limit(&self, limit: u32) {
         ObjectExt::set_property(self,"limit", limit)
     }
 
+    /// If given, specifies the source IP address to use in outgoing packets.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_local(&self, local: Option<&str>) {
         ObjectExt::set_property(self,"local", local)
     }
 
+    /// If given, specifies the parent interface name or parent connection UUID.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_parent(&self, parent: Option<&str>) {
         ObjectExt::set_property(self,"parent", parent)
     }
 
+    /// Specifies whether ARP proxy is turned on.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_proxy(&self, proxy: bool) {
         ObjectExt::set_property(self,"proxy", proxy)
     }
 
+    /// Specifies the unicast destination IP address to use in outgoing packets
+    /// when the destination link layer address is not known in the VXLAN device
+    /// forwarding database, or the multicast IP address to join.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_remote(&self, remote: Option<&str>) {
         ObjectExt::set_property(self,"remote", remote)
     }
 
+    /// Specifies whether route short circuit is turned on.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_rsc(&self, rsc: bool) {
         ObjectExt::set_property(self,"rsc", rsc)
     }
 
+    /// Specifies the maximum UDP source port to communicate to the remote VXLAN
+    /// tunnel endpoint.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "source-port-max")]
@@ -291,6 +501,8 @@ impl SettingVxlan {
         ObjectExt::set_property(self,"source-port-max", source_port_max)
     }
 
+    /// Specifies the minimum UDP source port to communicate to the remote VXLAN
+    /// tunnel endpoint.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "source-port-min")]
@@ -298,12 +510,14 @@ impl SettingVxlan {
         ObjectExt::set_property(self,"source-port-min", source_port_min)
     }
 
+    /// Specifies the TOS value to use in outgoing packets.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_tos(&self, tos: u32) {
         ObjectExt::set_property(self,"tos", tos)
     }
 
+    /// Specifies the time-to-live value to use in outgoing packets.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_ttl(&self, ttl: u32) {
@@ -573,96 +787,120 @@ pub struct SettingVxlanBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Specifies the lifetime in seconds of FDB entries learnt by the kernel.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn ageing(self, ageing: u32) -> Self {
                             Self { builder: self.builder.property("ageing", ageing), }
                         }
 
+                            /// Specifies the UDP destination port to communicate to the remote VXLAN
+                            /// tunnel endpoint.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn destination_port(self, destination_port: u32) -> Self {
                             Self { builder: self.builder.property("destination-port", destination_port), }
                         }
 
+                            /// Specifies the VXLAN Network Identifier (or VXLAN Segment Identifier) to
+                            /// use.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn id(self, id: u32) -> Self {
                             Self { builder: self.builder.property("id", id), }
                         }
 
+                            /// Specifies whether netlink LL ADDR miss notifications are generated.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn l2_miss(self, l2_miss: bool) -> Self {
                             Self { builder: self.builder.property("l2-miss", l2_miss), }
                         }
 
+                            /// Specifies whether netlink IP ADDR miss notifications are generated.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn l3_miss(self, l3_miss: bool) -> Self {
                             Self { builder: self.builder.property("l3-miss", l3_miss), }
                         }
 
+                            /// Specifies whether unknown source link layer addresses and IP addresses
+                            /// are entered into the VXLAN device forwarding database.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn learning(self, learning: bool) -> Self {
                             Self { builder: self.builder.property("learning", learning), }
                         }
 
+                            /// Specifies the maximum number of FDB entries. A value of zero means that
+                            /// the kernel will store unlimited entries.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn limit(self, limit: u32) -> Self {
                             Self { builder: self.builder.property("limit", limit), }
                         }
 
+                            /// If given, specifies the source IP address to use in outgoing packets.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn local(self, local: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("local", local.into()), }
                         }
 
+                            /// If given, specifies the parent interface name or parent connection UUID.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn parent(self, parent: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("parent", parent.into()), }
                         }
 
+                            /// Specifies whether ARP proxy is turned on.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn proxy(self, proxy: bool) -> Self {
                             Self { builder: self.builder.property("proxy", proxy), }
                         }
 
+                            /// Specifies the unicast destination IP address to use in outgoing packets
+                            /// when the destination link layer address is not known in the VXLAN device
+                            /// forwarding database, or the multicast IP address to join.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn remote(self, remote: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("remote", remote.into()), }
                         }
 
+                            /// Specifies whether route short circuit is turned on.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn rsc(self, rsc: bool) -> Self {
                             Self { builder: self.builder.property("rsc", rsc), }
                         }
 
+                            /// Specifies the maximum UDP source port to communicate to the remote VXLAN
+                            /// tunnel endpoint.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn source_port_max(self, source_port_max: u32) -> Self {
                             Self { builder: self.builder.property("source-port-max", source_port_max), }
                         }
 
+                            /// Specifies the minimum UDP source port to communicate to the remote VXLAN
+                            /// tunnel endpoint.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn source_port_min(self, source_port_min: u32) -> Self {
                             Self { builder: self.builder.property("source-port-min", source_port_min), }
                         }
 
+                            /// Specifies the TOS value to use in outgoing packets.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn tos(self, tos: u32) -> Self {
                             Self { builder: self.builder.property("tos", tos), }
                         }
 
+                            /// Specifies the time-to-live value to use in outgoing packets.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn ttl(self, ttl: u32) -> Self {

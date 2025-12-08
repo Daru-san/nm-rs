@@ -15,6 +15,76 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// Team Port Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `config`
+    ///  The JSON configuration for the team port. The property should contain raw
+    /// JSON configuration data suitable for teamd, because the value is passed
+    /// directly to teamd. If not specified, the default configuration is
+    /// used. See man teamd.conf for the format details.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `lacp-key`
+    ///  Corresponds to the teamd ports.PORTIFNAME.lacp_key.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `lacp-prio`
+    ///  Corresponds to the teamd ports.PORTIFNAME.lacp_prio.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `link-watchers`
+    ///  Link watchers configuration for the connection: each link watcher is
+    /// defined by a dictionary, whose keys depend upon the selected link
+    /// watcher. Available link watchers are 'ethtool', 'nsna_ping' and
+    /// 'arp_ping' and it is specified in the dictionary with the key 'name'.
+    /// Available keys are:   ethtool: 'delay-up', 'delay-down', 'init-wait';
+    /// nsna_ping: 'init-wait', 'interval', 'missed-max', 'target-host';
+    /// arp_ping: all the ones in nsna_ping and 'source-host', 'validate-active',
+    /// 'validate-inactive', 'send-always'. See teamd.conf man for more details.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `prio`
+    ///  Corresponds to the teamd ports.PORTIFNAME.prio.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `queue-id`
+    ///  Corresponds to the teamd ports.PORTIFNAME.queue_id.
+    /// When set to -1 means the parameter is skipped from the json config.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `sticky`
+    ///  Corresponds to the teamd ports.PORTIFNAME.sticky.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingTeamPort")]
     pub struct SettingTeamPort(Object<ffi::NMSettingTeamPort, ffi::NMSettingTeamPortClass>) @extends Setting;
 
@@ -24,6 +94,11 @@ glib::wrapper! {
 }
 
 impl SettingTeamPort {
+    /// Creates a new #NMSettingTeamPort object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingTeamPort object
     #[doc(alias = "nm_setting_team_port_new")]
     pub fn new() -> SettingTeamPort {
         assert_initialized_main_thread!();
@@ -38,6 +113,14 @@ impl SettingTeamPort {
         SettingTeamPortBuilder::new()
     }
 
+    /// Appends a new link watcher to the setting.
+    /// ## `link_watcher`
+    /// the link watcher to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the link watcher is added; [`false`] if an identical link
+    /// watcher was already there.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_add_link_watcher")]
@@ -50,6 +133,7 @@ impl SettingTeamPort {
         }
     }
 
+    /// Removes all configured link watchers.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_clear_link_watchers")]
@@ -59,12 +143,20 @@ impl SettingTeamPort {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTeamPort:config property of the setting
     #[doc(alias = "nm_setting_team_port_get_config")]
     #[doc(alias = "get_config")]
     pub fn config(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_team_port_get_config(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTeamPort:lacp-key property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_get_lacp_key")]
@@ -74,6 +166,10 @@ impl SettingTeamPort {
         unsafe { ffi::nm_setting_team_port_get_lacp_key(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTeamPort:lacp-prio property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_get_lacp_prio")]
@@ -83,6 +179,12 @@ impl SettingTeamPort {
         unsafe { ffi::nm_setting_team_port_get_lacp_prio(self.to_glib_none().0) }
     }
 
+    /// ## `idx`
+    /// index number of the link watcher to return
+    ///
+    /// # Returns
+    ///
+    /// the link watcher at index @idx.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_get_link_watcher")]
@@ -96,6 +198,10 @@ impl SettingTeamPort {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured link watchers
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_get_num_link_watchers")]
@@ -104,6 +210,10 @@ impl SettingTeamPort {
         unsafe { ffi::nm_setting_team_port_get_num_link_watchers(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTeamPort:prio property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_get_prio")]
@@ -112,6 +222,10 @@ impl SettingTeamPort {
         unsafe { ffi::nm_setting_team_port_get_prio(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTeamPort:queue_id property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_get_queue_id")]
@@ -121,6 +235,10 @@ impl SettingTeamPort {
         unsafe { ffi::nm_setting_team_port_get_queue_id(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTeamPort:sticky property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_get_sticky")]
@@ -130,6 +248,9 @@ impl SettingTeamPort {
         unsafe { from_glib(ffi::nm_setting_team_port_get_sticky(self.to_glib_none().0)) }
     }
 
+    /// Removes the link watcher at index #idx.
+    /// ## `idx`
+    /// index number of the link watcher to remove
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_remove_link_watcher")]
@@ -139,6 +260,13 @@ impl SettingTeamPort {
         }
     }
 
+    /// Removes the link watcher entry matching link_watcher.
+    /// ## `link_watcher`
+    /// the link watcher to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the link watcher was found and removed, [`false`] otherwise.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_port_remove_link_watcher_by_value")]
@@ -151,10 +279,15 @@ impl SettingTeamPort {
         }
     }
 
+    /// The JSON configuration for the team port. The property should contain raw
+    /// JSON configuration data suitable for teamd, because the value is passed
+    /// directly to teamd. If not specified, the default configuration is
+    /// used. See man teamd.conf for the format details.
     pub fn set_config(&self, config: Option<&str>) {
         ObjectExt::set_property(self, "config", config)
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.lacp_key.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "lacp-key")]
@@ -162,6 +295,7 @@ impl SettingTeamPort {
         ObjectExt::set_property(self, "lacp-key", lacp_key)
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.lacp_prio.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "lacp-prio")]
@@ -169,6 +303,14 @@ impl SettingTeamPort {
         ObjectExt::set_property(self, "lacp-prio", lacp_prio)
     }
 
+    /// Link watchers configuration for the connection: each link watcher is
+    /// defined by a dictionary, whose keys depend upon the selected link
+    /// watcher. Available link watchers are 'ethtool', 'nsna_ping' and
+    /// 'arp_ping' and it is specified in the dictionary with the key 'name'.
+    /// Available keys are:   ethtool: 'delay-up', 'delay-down', 'init-wait';
+    /// nsna_ping: 'init-wait', 'interval', 'missed-max', 'target-host';
+    /// arp_ping: all the ones in nsna_ping and 'source-host', 'validate-active',
+    /// 'validate-inactive', 'send-always'. See teamd.conf man for more details.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "link-watchers")]
@@ -183,6 +325,14 @@ impl SettingTeamPort {
             .collect()
     }
 
+    /// Link watchers configuration for the connection: each link watcher is
+    /// defined by a dictionary, whose keys depend upon the selected link
+    /// watcher. Available link watchers are 'ethtool', 'nsna_ping' and
+    /// 'arp_ping' and it is specified in the dictionary with the key 'name'.
+    /// Available keys are:   ethtool: 'delay-up', 'delay-down', 'init-wait';
+    /// nsna_ping: 'init-wait', 'interval', 'missed-max', 'target-host';
+    /// arp_ping: all the ones in nsna_ping and 'source-host', 'validate-active',
+    /// 'validate-inactive', 'send-always'. See teamd.conf man for more details.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "link-watchers")]
@@ -197,12 +347,15 @@ impl SettingTeamPort {
         )
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.prio.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn set_prio(&self, prio: i32) {
         ObjectExt::set_property(self, "prio", prio)
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.queue_id.
+    /// When set to -1 means the parameter is skipped from the json config.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "queue-id")]
@@ -210,6 +363,7 @@ impl SettingTeamPort {
         ObjectExt::set_property(self, "queue-id", queue_id)
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.sticky.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn set_sticky(&self, sticky: bool) {
@@ -412,12 +566,17 @@ impl SettingTeamPortBuilder {
         }
     }
 
+    /// The JSON configuration for the team port. The property should contain raw
+    /// JSON configuration data suitable for teamd, because the value is passed
+    /// directly to teamd. If not specified, the default configuration is
+    /// used. See man teamd.conf for the format details.
     pub fn config(self, config: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("config", config.into()),
         }
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.lacp_key.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn lacp_key(self, lacp_key: i32) -> Self {
@@ -426,6 +585,7 @@ impl SettingTeamPortBuilder {
         }
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.lacp_prio.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn lacp_prio(self, lacp_prio: i32) -> Self {
@@ -434,6 +594,14 @@ impl SettingTeamPortBuilder {
         }
     }
 
+    /// Link watchers configuration for the connection: each link watcher is
+    /// defined by a dictionary, whose keys depend upon the selected link
+    /// watcher. Available link watchers are 'ethtool', 'nsna_ping' and
+    /// 'arp_ping' and it is specified in the dictionary with the key 'name'.
+    /// Available keys are:   ethtool: 'delay-up', 'delay-down', 'init-wait';
+    /// nsna_ping: 'init-wait', 'interval', 'missed-max', 'target-host';
+    /// arp_ping: all the ones in nsna_ping and 'source-host', 'validate-active',
+    /// 'validate-inactive', 'send-always'. See teamd.conf man for more details.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn link_watchers(self, link_watchers: &[&TeamLinkWatcher]) -> Self {
@@ -448,6 +616,7 @@ impl SettingTeamPortBuilder {
         }
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.prio.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn prio(self, prio: i32) -> Self {
@@ -456,6 +625,8 @@ impl SettingTeamPortBuilder {
         }
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.queue_id.
+    /// When set to -1 means the parameter is skipped from the json config.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn queue_id(self, queue_id: i32) -> Self {
@@ -464,6 +635,7 @@ impl SettingTeamPortBuilder {
         }
     }
 
+    /// Corresponds to the teamd ports.PORTIFNAME.sticky.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn sticky(self, sticky: bool) -> Self {

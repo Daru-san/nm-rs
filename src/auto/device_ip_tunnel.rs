@@ -11,6 +11,338 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `encapsulation-limit`
+    ///  How many additional levels of encapsulation are permitted to
+    /// be prepended to packets. This property applies only to IPv6
+    /// tunnels.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `flags`
+    ///  Tunnel flags.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `flow-label`
+    ///  The flow label to assign to tunnel packets. This property
+    /// applies only to IPv6 tunnels.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `fwmark`
+    ///  The fwmark value to assign to tunnel packets. This property applies only
+    /// to VTI tunnels.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `input-key`
+    ///  The key used for tunneled input packets, if applicable.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `local`
+    ///  The local endpoint of the tunnel.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `mode`
+    ///  The tunneling mode of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `output-key`
+    ///  The key used for tunneled output packets, if applicable.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `parent`
+    ///  The devices's parent device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path-mtu-discovery`
+    ///  Whether path MTU discovery is enabled on this tunnel.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `remote`
+    ///  The remote endpoint of the tunnel.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `tos`
+    ///  The type of service (IPv4) or traffic class (IPv6) assigned to
+    /// tunneled packets.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ttl`
+    ///  The TTL assigned to tunneled packets. 0 is a special value
+    ///  meaning that packets inherit the TTL value
+    ///
+    /// Readable
+    /// <details><summary><h4>Device</h4></summary>
+    ///
+    ///
+    /// #### `active-connection`
+    ///  The #NMActiveConnection object that "owns" this device during activation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `autoconnect`
+    ///  Whether the device can auto-activate a connection.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `available-connections`
+    ///  The available connections of the device
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `capabilities`
+    ///  The capabilities of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `device-type`
+    ///  The numeric type of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp4-config`
+    ///  The IPv4 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp6-config`
+    ///  The IPv6 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver`
+    ///  The driver of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver-version`
+    ///  The version of the device driver.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-missing`
+    ///  When [`true`] indicates the device is likely missing firmware required
+    /// for its operation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-version`
+    ///  The firmware version of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `hw-address`
+    ///  The hardware address of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface`
+    ///  The interface of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface-flags`
+    ///  The interface flags.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip-interface`
+    ///  The IP interface of the device which should be used for all IP-related
+    /// operations like addressing and routing.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-config`
+    ///  The #NMIP4Config of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-connectivity`
+    ///  The IPv4 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-config`
+    ///  The IPv6 #NMIPConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-connectivity`
+    ///  The IPv6 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `lldp-neighbors`
+    ///  The LLDP neighbors.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `managed`
+    ///  Whether the device is managed by NetworkManager.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `metered`
+    ///  Whether the device is metered.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `mtu`
+    ///  The MTU of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `nm-plugin-missing`
+    ///  When [`true`] indicates that the NetworkManager plugin for the device
+    /// is not installed.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The device path as exposed by the udev property ID_PATH.
+    ///
+    /// The string is backslash escaped (C escaping) for invalid
+    /// characters. The escaping can be reverted with g_strcompress(),
+    /// however the result may not be valid UTF-8.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `physical-port-id`
+    ///  The physical port ID of the device. (See
+    /// nm_device_get_physical_port_id().)
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ports`
+    ///  The port devices of the controller device. For devices that cannot be
+    /// controllers this is likely to be always empty.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `product`
+    ///  The product string of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `real`
+    ///  Whether the device is real or is a placeholder device that could
+    /// be created automatically by NetworkManager if one of its
+    /// #NMDevice:available-connections was activated.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state-reason`
+    ///  The reason for the device state.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `udi`
+    ///  An operating-system specific device hardware identifier; this is not
+    /// unique to a specific hardware device across reboots or hotplugs.  It
+    /// is an opaque string which for some device types (Bluetooth, Modem)
+    /// contains an identifier provided by the underlying hardware service daemon
+    /// such as Bluez or ModemManager, and clients can use this property to
+    /// request more information about the device from those services.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `vendor`
+    ///  The vendor string of the device.
+    ///
+    /// Readable
+    /// </details>
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`DeviceExt`][trait@crate::prelude::DeviceExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMDeviceIPTunnel")]
     pub struct DeviceIPTunnel(Object<ffi::NMDeviceIPTunnel, ffi::NMDeviceIPTunnelClass>) @extends Device, Object;
 
@@ -29,6 +361,10 @@ impl DeviceIPTunnel {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the maximum permitted encapsulation level
     #[doc(alias = "nm_device_ip_tunnel_get_encapsulation_limit")]
     #[doc(alias = "get_encapsulation_limit")]
     #[doc(alias = "encapsulation-limit")]
@@ -38,6 +374,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the tunnel flags
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_device_ip_tunnel_get_flags")]
@@ -48,6 +388,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the flow label assigned to tunnel packets
     #[doc(alias = "nm_device_ip_tunnel_get_flow_label")]
     #[doc(alias = "get_flow_label")]
     #[doc(alias = "flow-label")]
@@ -57,6 +401,11 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the fwmark assigned to tunnel packets. This property applies only
+    /// to VTI tunnels.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_device_ip_tunnel_get_fwmark")]
@@ -67,6 +416,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the key used for incoming packets
     #[doc(alias = "nm_device_ip_tunnel_get_input_key")]
     #[doc(alias = "get_input_key")]
     #[doc(alias = "input-key")]
@@ -76,6 +429,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the local endpoint of the tunnel
     #[doc(alias = "nm_device_ip_tunnel_get_local")]
     #[doc(alias = "get_local")]
     pub fn local(&self) -> glib::GString {
@@ -84,6 +441,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the tunneling mode
     #[doc(alias = "nm_device_ip_tunnel_get_mode")]
     #[doc(alias = "get_mode")]
     pub fn mode(&self) -> IPTunnelMode {
@@ -92,6 +453,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the key used for outgoing packets
     #[doc(alias = "nm_device_ip_tunnel_get_output_key")]
     #[doc(alias = "get_output_key")]
     #[doc(alias = "output-key")]
@@ -101,6 +466,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the device's parent device
     #[doc(alias = "nm_device_ip_tunnel_get_parent")]
     #[doc(alias = "get_parent")]
     pub fn parent(&self) -> Device {
@@ -109,6 +478,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether path MTU discovery is enabled
     #[doc(alias = "nm_device_ip_tunnel_get_path_mtu_discovery")]
     #[doc(alias = "get_path_mtu_discovery")]
     #[doc(alias = "path-mtu-discovery")]
@@ -118,6 +491,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the remote endpoint of the tunnel
     #[doc(alias = "nm_device_ip_tunnel_get_remote")]
     #[doc(alias = "get_remote")]
     pub fn remote(&self) -> glib::GString {
@@ -126,6 +503,11 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// type of service (IPv4) or traffic class (IPv6) assigned
+    /// to tunneled packets.
     #[doc(alias = "nm_device_ip_tunnel_get_tos")]
     #[doc(alias = "get_tos")]
     pub fn tos(&self) -> u8 {
@@ -134,6 +516,10 @@ impl DeviceIPTunnel {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the TTL assigned to tunneled packets
     #[doc(alias = "nm_device_ip_tunnel_get_ttl")]
     #[doc(alias = "get_ttl")]
     pub fn ttl(&self) -> u8 {
@@ -352,6 +738,9 @@ pub struct DeviceIPTunnelBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Whether the device can auto-activate a connection.
+                            ///
+                            /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
                             pub fn autoconnect(self, autoconnect: bool) -> Self {
                             Self { builder: self.builder.property("autoconnect", autoconnect), }
                         }

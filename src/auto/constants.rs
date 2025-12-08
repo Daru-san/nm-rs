@@ -1040,10 +1040,16 @@ pub static SETTING_BLUETOOTH_BDADDR: &GStr = unsafe{GStr::from_utf8_with_nul_unc
 pub static SETTING_BLUETOOTH_SETTING_NAME: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_BLUETOOTH_SETTING_NAME)};
 #[doc(alias = "NM_SETTING_BLUETOOTH_TYPE")]
 pub static SETTING_BLUETOOTH_TYPE: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_BLUETOOTH_TYPE)};
+/// Connection type describing a connection to devices that support the Bluetooth
+/// DUN profile.
 #[doc(alias = "NM_SETTING_BLUETOOTH_TYPE_DUN")]
 pub static SETTING_BLUETOOTH_TYPE_DUN: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_BLUETOOTH_TYPE_DUN)};
+/// Connection type describing a Bluetooth NAP (Network Access Point),
+/// which accepts PANU clients.
 #[doc(alias = "NM_SETTING_BLUETOOTH_TYPE_NAP")]
 pub static SETTING_BLUETOOTH_TYPE_NAP: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_BLUETOOTH_TYPE_NAP)};
+/// Connection type describing PANU connection to a Bluetooth NAP (Network
+/// Access Point).
 #[doc(alias = "NM_SETTING_BLUETOOTH_TYPE_PANU")]
 pub static SETTING_BLUETOOTH_TYPE_PANU: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_BLUETOOTH_TYPE_PANU)};
 #[doc(alias = "NM_SETTING_BOND_OPTIONS")]
@@ -1284,8 +1290,10 @@ pub static SETTING_DCB_APP_FIP_PRIORITY: &GStr = unsafe{GStr::from_utf8_with_nul
 pub static SETTING_DCB_APP_ISCSI_FLAGS: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_DCB_APP_ISCSI_FLAGS)};
 #[doc(alias = "NM_SETTING_DCB_APP_ISCSI_PRIORITY")]
 pub static SETTING_DCB_APP_ISCSI_PRIORITY: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_DCB_APP_ISCSI_PRIORITY)};
+/// Indicates that the FCoE controller should use "fabric" mode (default)
 #[doc(alias = "NM_SETTING_DCB_FCOE_MODE_FABRIC")]
 pub static SETTING_DCB_FCOE_MODE_FABRIC: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_DCB_FCOE_MODE_FABRIC)};
+/// Indicates that the FCoE controller should use "VN2VN" mode.
 #[doc(alias = "NM_SETTING_DCB_FCOE_MODE_VN2VN")]
 pub static SETTING_DCB_FCOE_MODE_VN2VN: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_DCB_FCOE_MODE_VN2VN)};
 #[doc(alias = "NM_SETTING_DCB_PRIORITY_BANDWIDTH")]
@@ -1448,14 +1456,28 @@ pub static SETTING_IP4_CONFIG_DHCP_IPV6_ONLY_PREFERRED: &GStr = unsafe{GStr::fro
 pub static SETTING_IP4_CONFIG_DHCP_VENDOR_CLASS_IDENTIFIER: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP4_CONFIG_DHCP_VENDOR_CLASS_IDENTIFIER)};
 #[doc(alias = "NM_SETTING_IP4_CONFIG_LINK_LOCAL")]
 pub static SETTING_IP4_CONFIG_LINK_LOCAL: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP4_CONFIG_LINK_LOCAL)};
+/// IPv4 configuration should be automatically determined via a method appropriate
+/// for the hardware interface, ie DHCP or PPP or some other device-specific
+/// manner.
 #[doc(alias = "NM_SETTING_IP4_CONFIG_METHOD_AUTO")]
 pub static SETTING_IP4_CONFIG_METHOD_AUTO: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP4_CONFIG_METHOD_AUTO)};
+/// This connection does not use or require IPv4 address and it should be disabled.
 #[doc(alias = "NM_SETTING_IP4_CONFIG_METHOD_DISABLED")]
 pub static SETTING_IP4_CONFIG_METHOD_DISABLED: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP4_CONFIG_METHOD_DISABLED)};
+/// IPv4 configuration should be automatically configured for link-local-only
+/// operation.
 #[doc(alias = "NM_SETTING_IP4_CONFIG_METHOD_LINK_LOCAL")]
 pub static SETTING_IP4_CONFIG_METHOD_LINK_LOCAL: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP4_CONFIG_METHOD_LINK_LOCAL)};
+/// All necessary IPv4 configuration (addresses, prefix, DNS, etc) is specified
+/// in the setting's properties.
 #[doc(alias = "NM_SETTING_IP4_CONFIG_METHOD_MANUAL")]
 pub static SETTING_IP4_CONFIG_METHOD_MANUAL: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP4_CONFIG_METHOD_MANUAL)};
+/// This connection specifies configuration that allows other computers to
+/// connect through it to the default network (usually the Internet).  The
+/// connection's interface will be assigned a private address, and a DHCP server,
+/// caching DNS server, and Network Address Translation (NAT) functionality will
+/// be started on this connection's interface to allow other devices to connect
+/// through that interface to the default network.
 #[doc(alias = "NM_SETTING_IP4_CONFIG_METHOD_SHARED")]
 pub static SETTING_IP4_CONFIG_METHOD_SHARED: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP4_CONFIG_METHOD_SHARED)};
 #[doc(alias = "NM_SETTING_IP4_CONFIG_SETTING_NAME")]
@@ -1468,20 +1490,39 @@ pub static SETTING_IP6_CONFIG_DHCP_DUID: &GStr = unsafe{GStr::from_utf8_with_nul
 pub static SETTING_IP6_CONFIG_DHCP_PD_HINT: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_DHCP_PD_HINT)};
 #[doc(alias = "NM_SETTING_IP6_CONFIG_IP6_PRIVACY")]
 pub static SETTING_IP6_CONFIG_IP6_PRIVACY: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_IP6_PRIVACY)};
+/// IPv6 configuration should be automatically determined via a method appropriate
+/// for the hardware interface, ie router advertisements, DHCP, or PPP or some
+/// other device-specific manner.
 #[doc(alias = "NM_SETTING_IP6_CONFIG_METHOD_AUTO")]
 pub static SETTING_IP6_CONFIG_METHOD_AUTO: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_METHOD_AUTO)};
+/// IPv6 configuration should be automatically determined via DHCPv6 only and
+/// router advertisements should be ignored.
 #[doc(alias = "NM_SETTING_IP6_CONFIG_METHOD_DHCP")]
 pub static SETTING_IP6_CONFIG_METHOD_DHCP: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_METHOD_DHCP)};
+/// IPv6 is disabled for the connection.
 #[cfg(feature = "v1_20")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
 #[doc(alias = "NM_SETTING_IP6_CONFIG_METHOD_DISABLED")]
 pub static SETTING_IP6_CONFIG_METHOD_DISABLED: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_METHOD_DISABLED)};
+/// IPv6 is not required or is handled by some other mechanism, and NetworkManager
+/// should not configure IPv6 for this connection.
 #[doc(alias = "NM_SETTING_IP6_CONFIG_METHOD_IGNORE")]
 pub static SETTING_IP6_CONFIG_METHOD_IGNORE: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_METHOD_IGNORE)};
+/// IPv6 configuration should be automatically configured for link-local-only
+/// operation.
 #[doc(alias = "NM_SETTING_IP6_CONFIG_METHOD_LINK_LOCAL")]
 pub static SETTING_IP6_CONFIG_METHOD_LINK_LOCAL: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_METHOD_LINK_LOCAL)};
+/// All necessary IPv6 configuration (addresses, prefix, DNS, etc) is specified
+/// in the setting's properties.
 #[doc(alias = "NM_SETTING_IP6_CONFIG_METHOD_MANUAL")]
 pub static SETTING_IP6_CONFIG_METHOD_MANUAL: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_METHOD_MANUAL)};
+/// This connection specifies configuration that allows other computers to
+/// connect through it to the default network (usually the Internet).  The
+/// connection's interface will be assigned a private address, and router
+/// advertisements, a caching DNS server, and Network Address Translation (NAT)
+/// functionality will be started on this connection's interface to allow other
+/// devices to connect through that interface to the default network. (not yet
+/// supported for IPv6)
 #[doc(alias = "NM_SETTING_IP6_CONFIG_METHOD_SHARED")]
 pub static SETTING_IP6_CONFIG_METHOD_SHARED: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_IP6_CONFIG_METHOD_SHARED)};
 #[doc(alias = "NM_SETTING_IP6_CONFIG_MTU")]
@@ -1988,6 +2029,7 @@ pub static SETTING_VXLAN_SOURCE_PORT_MIN: &GStr = unsafe{GStr::from_utf8_with_nu
 pub static SETTING_VXLAN_TOS: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_VXLAN_TOS)};
 #[doc(alias = "NM_SETTING_VXLAN_TTL")]
 pub static SETTING_VXLAN_TTL: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_VXLAN_TTL)};
+/// The mac address of the peer to connect to.
 #[doc(alias = "NM_SETTING_WIFI_P2P_PEER")]
 pub static SETTING_WIFI_P2P_PEER: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_WIFI_P2P_PEER)};
 #[doc(alias = "NM_SETTING_WIFI_P2P_SETTING_NAME")]
@@ -2082,12 +2124,18 @@ pub static SETTING_WIRELESS_MAC_ADDRESS_DENYLIST: &GStr = unsafe{GStr::from_utf8
 pub static SETTING_WIRELESS_MAC_ADDRESS_RANDOMIZATION: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_WIRELESS_MAC_ADDRESS_RANDOMIZATION)};
 #[doc(alias = "NM_SETTING_WIRELESS_MODE")]
 pub static SETTING_WIRELESS_MODE: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_WIRELESS_MODE)};
+/// Indicates Ad-Hoc mode where no access point is expected to be present.
 #[doc(alias = "NM_SETTING_WIRELESS_MODE_ADHOC")]
 pub static SETTING_WIRELESS_MODE_ADHOC: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_WIRELESS_MODE_ADHOC)};
+/// Indicates AP/master mode where the wireless device is started as an access
+/// point/hotspot.
 #[doc(alias = "NM_SETTING_WIRELESS_MODE_AP")]
 pub static SETTING_WIRELESS_MODE_AP: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_WIRELESS_MODE_AP)};
+/// Indicates infrastructure mode where an access point is expected to be present
+/// for this connection.
 #[doc(alias = "NM_SETTING_WIRELESS_MODE_INFRA")]
 pub static SETTING_WIRELESS_MODE_INFRA: &GStr = unsafe{GStr::from_utf8_with_nul_unchecked(ffi::NM_SETTING_WIRELESS_MODE_INFRA)};
+/// Indicates that the connection should create a mesh point.
 #[cfg(feature = "v1_20")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
 #[doc(alias = "NM_SETTING_WIRELESS_MODE_MESH")]

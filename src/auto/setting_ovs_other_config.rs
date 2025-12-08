@@ -8,6 +8,31 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// OVS Other Config Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `data`
+    ///  A dictionary of key/value pairs with other_config settings for OVS.
+    /// See also "other_config" in the "ovs-vswitchd.conf.db" manual for the keys
+    /// that OVS supports.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingOvsOtherConfig")]
     pub struct SettingOvsOtherConfig(Object<ffi::NMSettingOvsOtherConfig, ffi::NMSettingOvsOtherConfigClass>) @extends Setting;
 
@@ -17,6 +42,12 @@ glib::wrapper! {
 }
 
 impl SettingOvsOtherConfig {
+    /// Creates a new #NMSettingOvsOtherConfig object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty
+    /// #NMSettingOvsOtherConfig object
     #[doc(alias = "nm_setting_ovs_other_config_new")]
     pub fn new() -> SettingOvsOtherConfig {
         assert_initialized_main_thread!();
@@ -34,6 +65,13 @@ impl SettingOvsOtherConfig {
             }
         
 
+    /// ## `key`
+    /// the other-config to lookup
+    ///
+    /// # Returns
+    ///
+    /// the value associated with @key or [`None`] if no such
+    ///   value exists.
     #[doc(alias = "nm_setting_ovs_other_config_get_data")]
     #[doc(alias = "get_data")]
     pub fn data(&self, key: &str) -> glib::GString {
@@ -42,6 +80,11 @@ impl SettingOvsOtherConfig {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// a
+    ///   [`None`]-terminated array containing each key from the table.
     #[doc(alias = "nm_setting_ovs_other_config_get_data_keys")]
     #[doc(alias = "get_data_keys")]
     pub fn data_keys(&self) -> Vec<glib::GString> {
@@ -52,6 +95,10 @@ impl SettingOvsOtherConfig {
         }
     }
 
+    /// ## `key`
+    /// the key to set
+    /// ## `val`
+    /// the value to set or [`None`] to clear a key.
     #[doc(alias = "nm_setting_ovs_other_config_set_data")]
     #[doc(alias = "data")]
     pub fn set_data(&self, key: &str, val: Option<&str>) {

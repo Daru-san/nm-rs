@@ -18,6 +18,11 @@ glib::wrapper! {
 }
 
 impl DnsEntry {
+    /// Gets the list of DNS domains.
+    ///
+    /// # Returns
+    ///
+    /// the list of DNS domains
     #[doc(alias = "nm_dns_entry_get_domains")]
     #[doc(alias = "get_domains")]
     pub fn domains(&mut self) -> Vec<glib::GString> {
@@ -26,6 +31,11 @@ impl DnsEntry {
         }
     }
 
+    /// Gets the interface on which name servers are contacted.
+    ///
+    /// # Returns
+    ///
+    /// the interface name
     #[doc(alias = "nm_dns_entry_get_interface")]
     #[doc(alias = "get_interface")]
     pub fn interface(&mut self) -> glib::GString {
@@ -34,6 +44,11 @@ impl DnsEntry {
         }
     }
 
+    /// Gets the list of name servers for this entry.
+    ///
+    /// # Returns
+    ///
+    /// the list of name servers
     #[doc(alias = "nm_dns_entry_get_nameservers")]
     #[doc(alias = "get_nameservers")]
     pub fn nameservers(&mut self) -> Vec<glib::GString> {
@@ -42,6 +57,11 @@ impl DnsEntry {
         }
     }
 
+    /// Gets the priority of the entry
+    ///
+    /// # Returns
+    ///
+    /// the priority of the entry
     #[doc(alias = "nm_dns_entry_get_priority")]
     #[doc(alias = "get_priority")]
     pub fn priority(&mut self) -> i32 {
@@ -50,6 +70,11 @@ impl DnsEntry {
         }
     }
 
+    /// Gets whether the entry refers to VPN name servers.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the entry refers to VPN name servers
     #[doc(alias = "nm_dns_entry_get_vpn")]
     #[doc(alias = "get_vpn")]
     pub fn is_vpn(&mut self) -> bool {

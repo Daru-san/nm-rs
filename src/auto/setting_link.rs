@@ -8,6 +8,54 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Link settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `gro-max-size`
+    ///  The maximum size of a packet built by the Generic Receive Offload stack for
+    /// this device. The value must be between 0 and 4294967295. When set to -1, the
+    /// existing value is preserved.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `gso-max-segments`
+    ///  The maximum segments of a Generic Segment Offload packet the device should accept.
+    /// The value must be between 0 and 4294967295. When set to -1, the existing value
+    /// is preserved.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `gso-max-size`
+    ///  The maximum size of a Generic Segment Offload packet the device should accept.
+    /// The value must be between 0 and 4294967295. When set to -1, the existing value
+    /// is preserved.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `tx-queue-length`
+    ///  The size of the transmit queue for the device, in number of packets. The value
+    /// must be between 0 and 4294967295. When set to -1, the existing value is preserved.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingLink")]
     pub struct SettingLink(Object<ffi::NMSettingLink, ffi::NMSettingLinkClass>) @extends Setting;
 
@@ -17,6 +65,11 @@ glib::wrapper! {
 }
 
 impl SettingLink {
+    /// Creates a new #NMSettingLink object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingLink object
     #[doc(alias = "nm_setting_link_new")]
     pub fn new() -> SettingLink {
         assert_initialized_main_thread!();
@@ -34,6 +87,12 @@ impl SettingLink {
             }
         
 
+    /// Returns the value contained in the #NMSettingLink:gro-max-size
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the 'gro-max-size' property value
     #[doc(alias = "nm_setting_link_get_gro_max_size")]
     #[doc(alias = "get_gro_max_size")]
     #[doc(alias = "gro-max-size")]
@@ -43,6 +102,12 @@ impl SettingLink {
         }
     }
 
+    /// Returns the value contained in the #NMSettingLink:gso-max-segments
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the 'gso-max-segments' property value
     #[doc(alias = "nm_setting_link_get_gso_max_segments")]
     #[doc(alias = "get_gso_max_segments")]
     #[doc(alias = "gso-max-segments")]
@@ -52,6 +117,12 @@ impl SettingLink {
         }
     }
 
+    /// Returns the value contained in the #NMSettingLink:gso-max-size
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the 'gso-max-size' property value
     #[doc(alias = "nm_setting_link_get_gso_max_size")]
     #[doc(alias = "get_gso_max_size")]
     #[doc(alias = "gso-max-size")]
@@ -61,6 +132,12 @@ impl SettingLink {
         }
     }
 
+    /// Returns the value contained in the #NMSettingLink:tx-queue-length
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the 'tx-queue-length' property value
     #[doc(alias = "nm_setting_link_get_tx_queue_length")]
     #[doc(alias = "get_tx_queue_length")]
     #[doc(alias = "tx-queue-length")]
@@ -70,6 +147,9 @@ impl SettingLink {
         }
     }
 
+    /// The maximum size of a packet built by the Generic Receive Offload stack for
+    /// this device. The value must be between 0 and 4294967295. When set to -1, the
+    /// existing value is preserved.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "gro-max-size")]
@@ -77,6 +157,9 @@ impl SettingLink {
         ObjectExt::set_property(self,"gro-max-size", gro_max_size)
     }
 
+    /// The maximum segments of a Generic Segment Offload packet the device should accept.
+    /// The value must be between 0 and 4294967295. When set to -1, the existing value
+    /// is preserved.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "gso-max-segments")]
@@ -84,6 +167,9 @@ impl SettingLink {
         ObjectExt::set_property(self,"gso-max-segments", gso_max_segments)
     }
 
+    /// The maximum size of a Generic Segment Offload packet the device should accept.
+    /// The value must be between 0 and 4294967295. When set to -1, the existing value
+    /// is preserved.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "gso-max-size")]
@@ -91,6 +177,8 @@ impl SettingLink {
         ObjectExt::set_property(self,"gso-max-size", gso_max_size)
     }
 
+    /// The size of the transmit queue for the device, in number of packets. The value
+    /// must be between 0 and 4294967295. When set to -1, the existing value is preserved.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "tx-queue-length")]
@@ -181,24 +269,35 @@ pub struct SettingLinkBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The maximum size of a packet built by the Generic Receive Offload stack for
+                            /// this device. The value must be between 0 and 4294967295. When set to -1, the
+                            /// existing value is preserved.
                             #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn gro_max_size(self, gro_max_size: i64) -> Self {
                             Self { builder: self.builder.property("gro-max-size", gro_max_size), }
                         }
 
+                            /// The maximum segments of a Generic Segment Offload packet the device should accept.
+                            /// The value must be between 0 and 4294967295. When set to -1, the existing value
+                            /// is preserved.
                             #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn gso_max_segments(self, gso_max_segments: i64) -> Self {
                             Self { builder: self.builder.property("gso-max-segments", gso_max_segments), }
                         }
 
+                            /// The maximum size of a Generic Segment Offload packet the device should accept.
+                            /// The value must be between 0 and 4294967295. When set to -1, the existing value
+                            /// is preserved.
                             #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn gso_max_size(self, gso_max_size: i64) -> Self {
                             Self { builder: self.builder.property("gso-max-size", gso_max_size), }
                         }
 
+                            /// The size of the transmit queue for the device, in number of packets. The value
+                            /// must be between 0 and 4294967295. When set to -1, the existing value is preserved.
                             #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn tx_queue_length(self, tx_queue_length: i64) -> Self {

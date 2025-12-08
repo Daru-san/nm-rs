@@ -23,6 +23,13 @@ glib::wrapper! {
 }
 
 impl SriovVF {
+    /// Creates a new #NMSriovVF object.
+    /// ## `index`
+    /// the VF index
+    ///
+    /// # Returns
+    ///
+    /// the new #NMSriovVF object.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_new")]
@@ -33,6 +40,13 @@ impl SriovVF {
         }
     }
 
+    /// Adds a VLAN to the VF. Currently kernel only supports one VLAN per VF.
+    /// ## `vlan_id`
+    /// the VLAN id
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the VLAN was added; [`false`] if it already existed
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_add_vlan")]
@@ -42,6 +56,11 @@ impl SriovVF {
         }
     }
 
+    /// Creates a copy of @self.
+    ///
+    /// # Returns
+    ///
+    /// a copy of @self
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_dup")]
@@ -69,6 +88,11 @@ impl SriovVF {
     //    unsafe { TODO: call ffi:nm_sriov_vf_get_attribute() }
     //}
 
+    /// Gets an array of attribute names defined on @self.
+    ///
+    /// # Returns
+    ///
+    /// a [`None`]-terminated array of attribute names
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_get_attribute_names")]
@@ -79,6 +103,11 @@ impl SriovVF {
         }
     }
 
+    /// Gets the index property of this VF object.
+    ///
+    /// # Returns
+    ///
+    /// the VF index
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_get_index")]
@@ -89,6 +118,12 @@ impl SriovVF {
         }
     }
 
+    /// Returns the VLANs currently configured on the VF. Currently kernel only
+    /// supports one VLAN per VF.
+    ///
+    /// # Returns
+    ///
+    /// a list of VLAN ids configured on the VF.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_get_vlan_ids")]
@@ -101,6 +136,13 @@ impl SriovVF {
         }
     }
 
+    /// Returns the configured protocol for the given VLAN.
+    /// ## `vlan_id`
+    /// the VLAN id
+    ///
+    /// # Returns
+    ///
+    /// the configured protocol
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_get_vlan_protocol")]
@@ -111,6 +153,13 @@ impl SriovVF {
         }
     }
 
+    /// Returns the QoS value for the given VLAN.
+    /// ## `vlan_id`
+    /// the VLAN id
+    ///
+    /// # Returns
+    ///
+    /// the QoS value
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_get_vlan_qos")]
@@ -121,6 +170,14 @@ impl SriovVF {
         }
     }
 
+    /// Removes a VLAN from a VF.
+    /// ## `vlan_id`
+    /// the VLAN id
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the VLAN was removed, [`false`] if the VLAN @vlan_id
+    ///     did not belong to the VF.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_remove_vlan")]
@@ -137,6 +194,11 @@ impl SriovVF {
     //    unsafe { TODO: call ffi:nm_sriov_vf_set_attribute() }
     //}
 
+    /// Sets the protocol for the given VLAN.
+    /// ## `vlan_id`
+    /// the VLAN id
+    /// ## `protocol`
+    /// the VLAN protocol
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_set_vlan_protocol")]
@@ -146,6 +208,11 @@ impl SriovVF {
         }
     }
 
+    /// Sets a QoS value for the given VLAN.
+    /// ## `vlan_id`
+    /// the VLAN id
+    /// ## `qos`
+    /// a QoS (priority) value
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_sriov_vf_set_vlan_qos")]

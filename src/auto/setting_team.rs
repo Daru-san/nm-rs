@@ -15,6 +15,131 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// Teaming Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `config`
+    ///  The JSON configuration for the team network interface.  The property
+    /// should contain raw JSON configuration data suitable for teamd, because
+    /// the value is passed directly to teamd. If not specified, the default
+    /// configuration is used.  See man teamd.conf for the format details.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `link-watchers`
+    ///  Link watchers configuration for the connection: each link watcher is
+    /// defined by a dictionary, whose keys depend upon the selected link
+    /// watcher. Available link watchers are 'ethtool', 'nsna_ping' and
+    /// 'arp_ping' and it is specified in the dictionary with the key 'name'.
+    /// Available keys are:   ethtool: 'delay-up', 'delay-down', 'init-wait';
+    /// nsna_ping: 'init-wait', 'interval', 'missed-max', 'target-host';
+    /// arp_ping: all the ones in nsna_ping and 'source-host', 'validate-active',
+    /// 'validate-inactive', 'send-always'. See teamd.conf man for more details.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mcast-rejoin-count`
+    ///  Corresponds to the teamd mcast_rejoin.count.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mcast-rejoin-interval`
+    ///  Corresponds to the teamd mcast_rejoin.interval.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `notify-peers-count`
+    ///  Corresponds to the teamd notify_peers.count.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `notify-peers-interval`
+    ///  Corresponds to the teamd notify_peers.interval.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner`
+    ///  Corresponds to the teamd runner.name.
+    /// Permitted values are: "roundrobin", "broadcast", "activebackup",
+    /// "loadbalance", "lacp", "random".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-active`
+    ///  Corresponds to the teamd runner.active.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-agg-select-policy`
+    ///  Corresponds to the teamd runner.agg_select_policy.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-fast-rate`
+    ///  Corresponds to the teamd runner.fast_rate.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-hwaddr-policy`
+    ///  Corresponds to the teamd runner.hwaddr_policy.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-min-ports`
+    ///  Corresponds to the teamd runner.min_ports.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-sys-prio`
+    ///  Corresponds to the teamd runner.sys_prio.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-tx-balancer`
+    ///  Corresponds to the teamd runner.tx_balancer.name.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-tx-balancer-interval`
+    ///  Corresponds to the teamd runner.tx_balancer.interval.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `runner-tx-hash`
+    ///  Corresponds to the teamd runner.tx_hash.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingTeam")]
     pub struct SettingTeam(Object<ffi::NMSettingTeam, ffi::NMSettingTeamClass>) @extends Setting;
 
@@ -24,6 +149,11 @@ glib::wrapper! {
 }
 
 impl SettingTeam {
+    /// Creates a new #NMSettingTeam object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingTeam object
     #[doc(alias = "nm_setting_team_new")]
     pub fn new() -> SettingTeam {
         assert_initialized_main_thread!();
@@ -38,6 +168,14 @@ impl SettingTeam {
         SettingTeamBuilder::new()
     }
 
+    /// Appends a new link watcher to the setting.
+    /// ## `link_watcher`
+    /// the link watcher to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the link watcher is added; [`false`] if an identical link
+    /// watcher was already there.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_add_link_watcher")]
@@ -62,6 +200,7 @@ impl SettingTeam {
         }
     }
 
+    /// Removes all configured link watchers.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_clear_link_watchers")]
@@ -71,12 +210,22 @@ impl SettingTeam {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTeam:config property of the setting
     #[doc(alias = "nm_setting_team_get_config")]
     #[doc(alias = "get_config")]
     pub fn config(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_team_get_config(self.to_glib_none().0)) }
     }
 
+    /// ## `idx`
+    /// index number of the link watcher to return
+    ///
+    /// # Returns
+    ///
+    /// the link watcher at index @idx.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_link_watcher")]
@@ -90,6 +239,10 @@ impl SettingTeam {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:mcast-rejoin-count property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_mcast_rejoin_count")]
@@ -99,6 +252,10 @@ impl SettingTeam {
         unsafe { ffi::nm_setting_team_get_mcast_rejoin_count(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:mcast-rejoin-interval property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_mcast_rejoin_interval")]
@@ -108,6 +265,10 @@ impl SettingTeam {
         unsafe { ffi::nm_setting_team_get_mcast_rejoin_interval(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:notify-peers-count property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_notify_peers_count")]
@@ -117,6 +278,10 @@ impl SettingTeam {
         unsafe { ffi::nm_setting_team_get_notify_peers_count(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:notify-peers-interval property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_notify_peers_interval")]
@@ -126,6 +291,10 @@ impl SettingTeam {
         unsafe { ffi::nm_setting_team_get_notify_peers_interval(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured link watchers
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_num_link_watchers")]
@@ -142,6 +311,10 @@ impl SettingTeam {
         unsafe { ffi::nm_setting_team_get_num_runner_tx_hash(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner")]
@@ -150,6 +323,10 @@ impl SettingTeam {
         unsafe { from_glib_none(ffi::nm_setting_team_get_runner(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner_active property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner_active")]
@@ -163,6 +340,10 @@ impl SettingTeam {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner-agg-select-policy property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner_agg_select_policy")]
@@ -176,6 +357,10 @@ impl SettingTeam {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner-fast-rate property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner_fast_rate")]
@@ -189,6 +374,10 @@ impl SettingTeam {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner-hwaddr-policy property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner_hwaddr_policy")]
@@ -202,6 +391,10 @@ impl SettingTeam {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner-min-ports property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner_min_ports")]
@@ -211,6 +404,10 @@ impl SettingTeam {
         unsafe { ffi::nm_setting_team_get_runner_min_ports(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner-sys-prio property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner_sys_prio")]
@@ -220,6 +417,10 @@ impl SettingTeam {
         unsafe { ffi::nm_setting_team_get_runner_sys_prio(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner-tx-balancer property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner_tx_balancer")]
@@ -233,6 +434,10 @@ impl SettingTeam {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ##NMSettingTeam:runner-tx-balancer_interval property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_get_runner_tx_balancer_interval")]
@@ -256,6 +461,9 @@ impl SettingTeam {
         }
     }
 
+    /// Removes the link watcher at index #idx.
+    /// ## `idx`
+    /// index number of the link watcher to remove
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_remove_link_watcher")]
@@ -265,6 +473,13 @@ impl SettingTeam {
         }
     }
 
+    /// Removes the link watcher entry matching link_watcher.
+    /// ## `link_watcher`
+    /// the link watcher to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the link watcher was found and removed, [`false`] otherwise.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_remove_link_watcher_by_value")]
@@ -286,6 +501,13 @@ impl SettingTeam {
         }
     }
 
+    /// Removes the txhash element #txhash
+    /// ## `txhash`
+    /// the txhash element to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the txhash element was found and removed; [`false`] if it was not.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_team_remove_runner_tx_hash_by_value")]
@@ -298,10 +520,22 @@ impl SettingTeam {
         }
     }
 
+    /// The JSON configuration for the team network interface.  The property
+    /// should contain raw JSON configuration data suitable for teamd, because
+    /// the value is passed directly to teamd. If not specified, the default
+    /// configuration is used.  See man teamd.conf for the format details.
     pub fn set_config(&self, config: Option<&str>) {
         ObjectExt::set_property(self, "config", config)
     }
 
+    /// Link watchers configuration for the connection: each link watcher is
+    /// defined by a dictionary, whose keys depend upon the selected link
+    /// watcher. Available link watchers are 'ethtool', 'nsna_ping' and
+    /// 'arp_ping' and it is specified in the dictionary with the key 'name'.
+    /// Available keys are:   ethtool: 'delay-up', 'delay-down', 'init-wait';
+    /// nsna_ping: 'init-wait', 'interval', 'missed-max', 'target-host';
+    /// arp_ping: all the ones in nsna_ping and 'source-host', 'validate-active',
+    /// 'validate-inactive', 'send-always'. See teamd.conf man for more details.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "link-watchers")]
@@ -316,6 +550,14 @@ impl SettingTeam {
             .collect()
     }
 
+    /// Link watchers configuration for the connection: each link watcher is
+    /// defined by a dictionary, whose keys depend upon the selected link
+    /// watcher. Available link watchers are 'ethtool', 'nsna_ping' and
+    /// 'arp_ping' and it is specified in the dictionary with the key 'name'.
+    /// Available keys are:   ethtool: 'delay-up', 'delay-down', 'init-wait';
+    /// nsna_ping: 'init-wait', 'interval', 'missed-max', 'target-host';
+    /// arp_ping: all the ones in nsna_ping and 'source-host', 'validate-active',
+    /// 'validate-inactive', 'send-always'. See teamd.conf man for more details.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "link-watchers")]
@@ -330,6 +572,7 @@ impl SettingTeam {
         )
     }
 
+    /// Corresponds to the teamd mcast_rejoin.count.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "mcast-rejoin-count")]
@@ -337,6 +580,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "mcast-rejoin-count", mcast_rejoin_count)
     }
 
+    /// Corresponds to the teamd mcast_rejoin.interval.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "mcast-rejoin-interval")]
@@ -344,6 +588,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "mcast-rejoin-interval", mcast_rejoin_interval)
     }
 
+    /// Corresponds to the teamd notify_peers.count.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "notify-peers-count")]
@@ -351,6 +596,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "notify-peers-count", notify_peers_count)
     }
 
+    /// Corresponds to the teamd notify_peers.interval.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "notify-peers-interval")]
@@ -358,12 +604,16 @@ impl SettingTeam {
         ObjectExt::set_property(self, "notify-peers-interval", notify_peers_interval)
     }
 
+    /// Corresponds to the teamd runner.name.
+    /// Permitted values are: "roundrobin", "broadcast", "activebackup",
+    /// "loadbalance", "lacp", "random".
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn set_runner(&self, runner: Option<&str>) {
         ObjectExt::set_property(self, "runner", runner)
     }
 
+    /// Corresponds to the teamd runner.active.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-active")]
@@ -371,6 +621,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "runner-active", runner_active)
     }
 
+    /// Corresponds to the teamd runner.agg_select_policy.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-agg-select-policy")]
@@ -378,6 +629,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "runner-agg-select-policy", runner_agg_select_policy)
     }
 
+    /// Corresponds to the teamd runner.fast_rate.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-fast-rate")]
@@ -385,6 +637,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "runner-fast-rate", runner_fast_rate)
     }
 
+    /// Corresponds to the teamd runner.hwaddr_policy.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-hwaddr-policy")]
@@ -392,6 +645,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "runner-hwaddr-policy", runner_hwaddr_policy)
     }
 
+    /// Corresponds to the teamd runner.min_ports.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-min-ports")]
@@ -399,6 +653,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "runner-min-ports", runner_min_ports)
     }
 
+    /// Corresponds to the teamd runner.sys_prio.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-sys-prio")]
@@ -406,6 +661,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "runner-sys-prio", runner_sys_prio)
     }
 
+    /// Corresponds to the teamd runner.tx_balancer.name.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-tx-balancer")]
@@ -413,6 +669,7 @@ impl SettingTeam {
         ObjectExt::set_property(self, "runner-tx-balancer", runner_tx_balancer)
     }
 
+    /// Corresponds to the teamd runner.tx_balancer.interval.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-tx-balancer-interval")]
@@ -424,6 +681,7 @@ impl SettingTeam {
         )
     }
 
+    /// Corresponds to the teamd runner.tx_hash.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "runner-tx-hash")]
@@ -886,12 +1144,24 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// The JSON configuration for the team network interface.  The property
+    /// should contain raw JSON configuration data suitable for teamd, because
+    /// the value is passed directly to teamd. If not specified, the default
+    /// configuration is used.  See man teamd.conf for the format details.
     pub fn config(self, config: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("config", config.into()),
         }
     }
 
+    /// Link watchers configuration for the connection: each link watcher is
+    /// defined by a dictionary, whose keys depend upon the selected link
+    /// watcher. Available link watchers are 'ethtool', 'nsna_ping' and
+    /// 'arp_ping' and it is specified in the dictionary with the key 'name'.
+    /// Available keys are:   ethtool: 'delay-up', 'delay-down', 'init-wait';
+    /// nsna_ping: 'init-wait', 'interval', 'missed-max', 'target-host';
+    /// arp_ping: all the ones in nsna_ping and 'source-host', 'validate-active',
+    /// 'validate-inactive', 'send-always'. See teamd.conf man for more details.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn link_watchers(self, link_watchers: &[&TeamLinkWatcher]) -> Self {
@@ -906,6 +1176,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd mcast_rejoin.count.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn mcast_rejoin_count(self, mcast_rejoin_count: i32) -> Self {
@@ -916,6 +1187,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd mcast_rejoin.interval.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn mcast_rejoin_interval(self, mcast_rejoin_interval: i32) -> Self {
@@ -926,6 +1198,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd notify_peers.count.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn notify_peers_count(self, notify_peers_count: i32) -> Self {
@@ -936,6 +1209,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd notify_peers.interval.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn notify_peers_interval(self, notify_peers_interval: i32) -> Self {
@@ -946,6 +1220,9 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.name.
+    /// Permitted values are: "roundrobin", "broadcast", "activebackup",
+    /// "loadbalance", "lacp", "random".
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner(self, runner: impl Into<glib::GString>) -> Self {
@@ -954,6 +1231,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.active.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_active(self, runner_active: bool) -> Self {
@@ -962,6 +1240,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.agg_select_policy.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_agg_select_policy(
@@ -975,6 +1254,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.fast_rate.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_fast_rate(self, runner_fast_rate: bool) -> Self {
@@ -983,6 +1263,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.hwaddr_policy.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_hwaddr_policy(self, runner_hwaddr_policy: impl Into<glib::GString>) -> Self {
@@ -993,6 +1274,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.min_ports.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_min_ports(self, runner_min_ports: i32) -> Self {
@@ -1001,6 +1283,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.sys_prio.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_sys_prio(self, runner_sys_prio: i32) -> Self {
@@ -1009,6 +1292,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.tx_balancer.name.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_tx_balancer(self, runner_tx_balancer: impl Into<glib::GString>) -> Self {
@@ -1019,6 +1303,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.tx_balancer.interval.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_tx_balancer_interval(self, runner_tx_balancer_interval: i32) -> Self {
@@ -1029,6 +1314,7 @@ impl SettingTeamBuilder {
         }
     }
 
+    /// Corresponds to the teamd runner.tx_hash.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn runner_tx_hash(self, runner_tx_hash: impl Into<glib::StrV>) -> Self {

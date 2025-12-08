@@ -8,6 +8,32 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// IPv6 prefix delegation settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `subnet-id`
+    ///  The subnet ID to use on the interface from the prefix delegation received via
+    /// an upstream interface. Set to a value between 0 and 0xffffffff (2^32 - 1)
+    /// to indicate a specific subnet ID; or set to -1 to automatically choose
+    /// an available subnet ID.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingPrefixDelegation")]
     pub struct SettingPrefixDelegation(Object<ffi::NMSettingPrefixDelegation, ffi::NMSettingPrefixDelegationClass>) @extends Setting;
 
@@ -17,6 +43,11 @@ glib::wrapper! {
 }
 
 impl SettingPrefixDelegation {
+    /// Creates a new #NMSettingPrefixDelegation object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingPrefixDelegation object
     #[doc(alias = "nm_setting_prefix_delegation_new")]
     pub fn new() -> SettingPrefixDelegation {
         assert_initialized_main_thread!();
@@ -34,6 +65,10 @@ impl SettingPrefixDelegation {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the subnet ID for prefix delegation
     #[doc(alias = "nm_setting_prefix_delegation_get_subnet_id")]
     #[doc(alias = "get_subnet_id")]
     #[doc(alias = "subnet-id")]
@@ -43,6 +78,10 @@ impl SettingPrefixDelegation {
         }
     }
 
+    /// The subnet ID to use on the interface from the prefix delegation received via
+    /// an upstream interface. Set to a value between 0 and 0xffffffff (2^32 - 1)
+    /// to indicate a specific subnet ID; or set to -1 to automatically choose
+    /// an available subnet ID.
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "subnet-id")]
@@ -88,6 +127,10 @@ pub struct SettingPrefixDelegationBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The subnet ID to use on the interface from the prefix delegation received via
+                            /// an upstream interface. Set to a value between 0 and 0xffffffff (2^32 - 1)
+                            /// to indicate a specific subnet ID; or set to -1 to automatically choose
+                            /// an available subnet ID.
                             #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     pub fn subnet_id(self, subnet_id: i64) -> Self {

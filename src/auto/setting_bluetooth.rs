@@ -8,6 +8,36 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Bluetooth Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `bdaddr`
+    ///  The Bluetooth address of the device.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `type`
+    ///  Either "dun" for Dial-Up Networking connections or "panu" for Personal
+    /// Area Networking connections to devices supporting the NAP profile.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingBluetooth")]
     pub struct SettingBluetooth(Object<ffi::NMSettingBluetooth, ffi::NMSettingBluetoothClass>) @extends Setting;
 
@@ -17,6 +47,11 @@ glib::wrapper! {
 }
 
 impl SettingBluetooth {
+    /// Creates a new #NMSettingBluetooth object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingBluetooth object
     #[doc(alias = "nm_setting_bluetooth_new")]
     pub fn new() -> SettingBluetooth {
         assert_initialized_main_thread!();
@@ -34,6 +69,12 @@ impl SettingBluetooth {
             }
         
 
+    /// Gets the Bluetooth address of the remote device which this setting
+    /// describes a connection to.
+    ///
+    /// # Returns
+    ///
+    /// the Bluetooth address
     #[doc(alias = "nm_setting_bluetooth_get_bdaddr")]
     #[doc(alias = "get_bdaddr")]
     pub fn bdaddr(&self) -> glib::GString {
@@ -42,6 +83,13 @@ impl SettingBluetooth {
         }
     }
 
+    /// Returns the connection method for communicating with the remote device (i.e.
+    /// either DUN to a DUN-capable device or PANU to a NAP-capable device).
+    ///
+    /// # Returns
+    ///
+    /// the type, either [`SETTING_BLUETOOTH_TYPE_PANU`][crate::SETTING_BLUETOOTH_TYPE_PANU],
+    /// [`SETTING_BLUETOOTH_TYPE_NAP`][crate::SETTING_BLUETOOTH_TYPE_NAP] or [`SETTING_BLUETOOTH_TYPE_DUN`][crate::SETTING_BLUETOOTH_TYPE_DUN]
     #[doc(alias = "nm_setting_bluetooth_get_connection_type")]
     #[doc(alias = "get_connection_type")]
     pub fn connection_type(&self) -> glib::GString {
@@ -50,15 +98,20 @@ impl SettingBluetooth {
         }
     }
 
+    /// The Bluetooth address of the device.
     pub fn set_bdaddr(&self, bdaddr: Option<&str>) {
         ObjectExt::set_property(self,"bdaddr", bdaddr)
     }
 
+    /// Either "dun" for Dial-Up Networking connections or "panu" for Personal
+    /// Area Networking connections to devices supporting the NAP profile.
     #[doc(alias = "type")]
     pub fn type_(&self) -> Option<glib::GString> {
         ObjectExt::property(self, "type")
     }
 
+    /// Either "dun" for Dial-Up Networking connections or "panu" for Personal
+    /// Area Networking connections to devices supporting the NAP profile.
     #[doc(alias = "type")]
     pub fn set_type(&self, type_: Option<&str>) {
         ObjectExt::set_property(self,"type", type_)
@@ -111,6 +164,7 @@ pub struct SettingBluetoothBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The Bluetooth address of the device.
                             pub fn bdaddr(self, bdaddr: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("bdaddr", bdaddr.into()), }
                         }

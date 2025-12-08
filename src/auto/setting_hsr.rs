@@ -13,6 +13,47 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// HSR/PRP Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `multicast-spec`
+    ///  The last byte of supervision address.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `port1`
+    ///  The port1 interface name of the HSR. This property is mandatory.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `port2`
+    ///  The port2 interface name of the HSR. This property is mandatory.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `prp`
+    ///  The protocol used by the interface, whether it is PRP or HSR.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingHsr")]
     pub struct SettingHsr(Object<ffi::NMSettingHsr, ffi::NMSettingHsrClass>) @extends Setting;
 
@@ -22,6 +63,11 @@ glib::wrapper! {
 }
 
 impl SettingHsr {
+    /// Creates a new #NMSettingHsr object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingHsr object
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_hsr_new")]
@@ -41,6 +87,10 @@ impl SettingHsr {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingHsr:multicast_spec property of the setting
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_hsr_get_multicast_spec")]
@@ -52,6 +102,10 @@ impl SettingHsr {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingHsr:port1 property of the setting
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_hsr_get_port1")]
@@ -62,6 +116,10 @@ impl SettingHsr {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingHsr:port2 property of the setting
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_hsr_get_port2")]
@@ -72,6 +130,10 @@ impl SettingHsr {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingHsr:prp property of the setting
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_hsr_get_prp")]
@@ -83,6 +145,7 @@ impl SettingHsr {
         }
     }
 
+    /// The last byte of supervision address.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "multicast-spec")]
@@ -90,18 +153,21 @@ impl SettingHsr {
         ObjectExt::set_property(self,"multicast-spec", multicast_spec)
     }
 
+    /// The port1 interface name of the HSR. This property is mandatory.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn set_port1(&self, port1: Option<&str>) {
         ObjectExt::set_property(self,"port1", port1)
     }
 
+    /// The port2 interface name of the HSR. This property is mandatory.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn set_port2(&self, port2: Option<&str>) {
         ObjectExt::set_property(self,"port2", port2)
     }
 
+    /// The protocol used by the interface, whether it is PRP or HSR.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn set_prp(&self, prp: bool) {
@@ -191,24 +257,28 @@ pub struct SettingHsrBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The last byte of supervision address.
                             #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn multicast_spec(self, multicast_spec: u32) -> Self {
                             Self { builder: self.builder.property("multicast-spec", multicast_spec), }
                         }
 
+                            /// The port1 interface name of the HSR. This property is mandatory.
                             #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn port1(self, port1: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("port1", port1.into()), }
                         }
 
+                            /// The port2 interface name of the HSR. This property is mandatory.
                             #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn port2(self, port2: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("port2", port2.into()), }
                         }
 
+                            /// The protocol used by the interface, whether it is PRP or HSR.
                             #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn prp(self, prp: bool) -> Self {

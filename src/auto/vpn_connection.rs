@@ -8,6 +8,166 @@ use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandle
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `banner`
+    ///  The VPN login banner of the active VPN connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `vpn-state`
+    ///  The VPN state of the active VPN connection.
+    ///
+    /// Readable
+    /// <details><summary><h4>ActiveConnection</h4></summary>
+    ///
+    ///
+    /// #### `connection`
+    ///  The connection that this is an active instance of.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `controller`
+    ///  The controller device if one exists. This replaces the deprecated
+    /// "master" property.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `default`
+    ///  Whether the active connection is the default IPv4 one.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `default6`
+    ///  Whether the active connection is the default IPv6 one.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `devices`
+    ///  The devices of the active connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp4-config`
+    ///  The IPv4 #NMDhcpConfig of the connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp6-config`
+    ///  The IPv6 #NMDhcpConfig of the connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `id`
+    ///  The active connection's ID
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-config`
+    ///  The IPv4 #NMIPConfig of the connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-config`
+    ///  The IPv6 #NMIPConfig of the connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `master`
+    ///  The controller device if one exists. Replaced by the "controller" property.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `specific-object-path`
+    ///  The path to the "specific object" of the active connection; see
+    /// nm_active_connection_get_specific_object_path() for more details.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the active connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state-flags`
+    ///  The state flags of the active connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `type`
+    ///  The active connection's type
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `uuid`
+    ///  The active connection's UUID
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `vpn`
+    ///  Whether the active connection is a VPN connection.
+    ///
+    /// Readable
+    /// </details>
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `vpn-state-changed`
+    ///
+    /// <details><summary><h4>ActiveConnection</h4></summary>
+    ///
+    ///
+    /// #### `state-changed`
+    ///
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`ActiveConnectionExt`][trait@crate::prelude::ActiveConnectionExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMVpnConnection")]
     pub struct VpnConnection(Object<ffi::NMVpnConnection, ffi::NMVpnConnectionClass>) @extends ActiveConnection, Object;
 
@@ -17,6 +177,12 @@ glib::wrapper! {
 }
 
 impl VpnConnection {
+    /// Gets the VPN login banner of the active #NMVpnConnection.
+    ///
+    /// # Returns
+    ///
+    /// the VPN login banner of the VPN connection. This is the internal
+    /// string used by the connection, and must not be modified.
     #[doc(alias = "nm_vpn_connection_get_banner")]
     #[doc(alias = "get_banner")]
     pub fn banner(&self) -> glib::GString {
@@ -25,6 +191,11 @@ impl VpnConnection {
         }
     }
 
+    /// Gets the current #NMVpnConnection state.
+    ///
+    /// # Returns
+    ///
+    /// the VPN state of the active VPN connection.
     #[doc(alias = "nm_vpn_connection_get_vpn_state")]
     #[doc(alias = "get_vpn_state")]
     #[doc(alias = "vpn-state")]

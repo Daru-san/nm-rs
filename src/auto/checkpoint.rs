@@ -8,6 +8,54 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `created`
+    ///  The timestamp (in CLOCK_BOOTTIME milliseconds) of checkpoint creation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `devices`
+    ///  The devices that are part of this checkpoint.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `rollback-timeout`
+    ///  Timeout in seconds for automatic rollback, or zero.
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMCheckpoint")]
     pub struct Checkpoint(Object<ffi::NMCheckpoint, ffi::NMCheckpointClass>) @extends Object;
 
@@ -17,6 +65,14 @@ glib::wrapper! {
 }
 
 impl Checkpoint {
+    /// Gets the timestamp (in CLOCK_BOOTTIME milliseconds) of checkpoint creation.
+    ///
+    /// Use nm_utils_get_timestamp_msec() to obtain current time value suitable for
+    /// comparing to this value.
+    ///
+    /// # Returns
+    ///
+    /// the timestamp of checkpoint creation.
     #[doc(alias = "nm_checkpoint_get_created")]
     #[doc(alias = "get_created")]
     pub fn created(&self) -> i64 {
@@ -25,6 +81,11 @@ impl Checkpoint {
         }
     }
 
+    /// The devices that are part of this checkpoint.
+    ///
+    /// # Returns
+    ///
+    /// the devices list.
     #[doc(alias = "nm_checkpoint_get_devices")]
     #[doc(alias = "get_devices")]
     pub fn devices(&self) -> Vec<Device> {
@@ -33,6 +94,11 @@ impl Checkpoint {
         }
     }
 
+    /// Gets the timeout in seconds for automatic rollback.
+    ///
+    /// # Returns
+    ///
+    /// the rollback timeout.
     #[doc(alias = "nm_checkpoint_get_rollback_timeout")]
     #[doc(alias = "get_rollback_timeout")]
     #[doc(alias = "rollback-timeout")]

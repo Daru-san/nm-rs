@@ -15,6 +15,31 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `description`
+    ///  Longer description of the VPN plugin.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `name`
+    ///  Short display name of the VPN plugin.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `service`
+    ///  D-Bus service name of the plugin's VPN service.
+    ///
+    /// Readable
+    ///
+    /// # Implements
+    ///
+    /// [`VpnEditorPluginExt`][trait@crate::prelude::VpnEditorPluginExt]
     #[doc(alias = "NMVpnEditorPlugin")]
     pub struct VpnEditorPlugin(Interface<ffi::NMVpnEditorPlugin, ffi::NMVpnEditorPluginInterface>);
 
@@ -26,6 +51,25 @@ glib::wrapper! {
 impl VpnEditorPlugin {
     pub const NONE: Option<&'static VpnEditorPlugin> = None;
 
+    /// Load the shared library @plugin_name and create a new
+    /// #NMVpnEditorPlugin instance via the #NMVpnEditorPluginFactory
+    /// function.
+    ///
+    /// This is similar to nm_vpn_editor_plugin_load_from_file(), but
+    /// it does no validation of the plugin name, instead passes it directly
+    /// to dlopen(). If you have the full path to a plugin file,
+    /// nm_vpn_editor_plugin_load_from_file() is preferred.
+    /// ## `plugin_name`
+    /// The name of the shared library to load.
+    ///  This path will be directly passed to dlopen() without
+    ///  further checks.
+    /// ## `check_service`
+    /// if not-null, check that the loaded plugin advertises
+    ///  the given service.
+    ///
+    /// # Returns
+    ///
+    /// a new plugin instance or [`None`] on error.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_editor_plugin_load")]
@@ -54,6 +98,11 @@ impl VpnEditorPlugin {
     //}
 }
 
+/// Trait containing all [`struct@VpnEditorPlugin`] methods.
+///
+/// # Implementors
+///
+/// [`VpnEditorPlugin`][struct@crate::VpnEditorPlugin]
 pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     #[doc(alias = "nm_vpn_editor_plugin_export")]
     fn export(&self, path: &str, connection: &impl IsA<Connection>) -> Result<(), glib::Error> {
@@ -84,6 +133,12 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
         }
     }
 
+    /// ## `connection`
+    /// the #NMConnection to be edited
+    ///
+    /// # Returns
+    ///
+    /// a new #NMVpnEditor or [`None`] on error
     #[doc(alias = "nm_vpn_editor_plugin_get_editor")]
     #[doc(alias = "get_editor")]
     fn editor(&self, connection: &impl IsA<Connection>) -> Result<VpnEditor, glib::Error> {
@@ -102,6 +157,10 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// if set, return the #NMVpnPluginInfo instance.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_editor_plugin_get_plugin_info")]
@@ -125,6 +184,21 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
         }
     }
 
+    /// Returns an opaque VT function table for the plugin to extend
+    /// functionality. The actual meaning of NMVpnEditorPluginVT is not
+    /// defined in public API of libnm, instead it must be agreed by
+    /// both the plugin and the caller. See the header-only file
+    /// 'nm-vpn-editor-plugin-call.h' which defines the meaning.
+    /// ## `vt_size`
+    /// the size of the buffer. Can be 0 to only query the
+    ///   size of plugin's VT.
+    ///
+    /// # Returns
+    ///
+    /// the actual size of the @self's virtual function table.
+    ///
+    /// ## `vt`
+    /// buffer to be filled with the VT table of the plugin
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_editor_plugin_get_vt")]
@@ -141,6 +215,13 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
         }
     }
 
+    /// ## `path`
+    /// full path to the file to attempt to read into a new #NMConnection
+    ///
+    /// # Returns
+    ///
+    /// a new #NMConnection imported from @path, or [`None`]
+    /// on error or if the file at @path was not recognized by this plugin
     #[doc(alias = "nm_vpn_editor_plugin_import")]
     fn import(&self, path: &str) -> Result<Connection, glib::Error> {
         unsafe {
@@ -158,6 +239,11 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
         }
     }
 
+    /// Set or clear the plugin-info instance.
+    /// This takes a weak reference on @plugin_info, to avoid circular
+    /// reference as the plugin-info might also reference the editor-plugin.
+    /// ## `plugin_info`
+    /// a #NMVpnPluginInfo instance or [`None`]
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_editor_plugin_set_plugin_info")]
@@ -170,14 +256,17 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
         }
     }
 
+    /// Longer description of the VPN plugin.
     fn description(&self) -> Option<glib::GString> {
         ObjectExt::property(self.as_ref(), "description")
     }
 
+    /// Short display name of the VPN plugin.
     fn name(&self) -> Option<glib::GString> {
         ObjectExt::property(self.as_ref(), "name")
     }
 
+    /// D-Bus service name of the plugin's VPN service.
     fn service(&self) -> Option<glib::GString> {
         ObjectExt::property(self.as_ref(), "service")
     }

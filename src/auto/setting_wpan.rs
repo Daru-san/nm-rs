@@ -8,6 +8,56 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// IEEE 802.15.4 (WPAN) MAC Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `channel`
+    ///  IEEE 802.15.4 channel. A positive integer or -1, meaning "do not
+    /// set, use whatever the device is already set to".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mac-address`
+    ///  If specified, this connection will only apply to the IEEE 802.15.4 (WPAN)
+    /// MAC layer device whose permanent MAC address matches.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `page`
+    ///  IEEE 802.15.4 channel page. A positive integer or -1, meaning "do not
+    /// set, use whatever the device is already set to".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `pan-id`
+    ///  IEEE 802.15.4 Personal Area Network (PAN) identifier.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `short-address`
+    ///  Short IEEE 802.15.4 address to be used within a restricted environment.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingWpan")]
     pub struct SettingWpan(Object<ffi::NMSettingWpan, ffi::NMSettingWpanClass>) @extends Setting;
 
@@ -17,6 +67,11 @@ glib::wrapper! {
 }
 
 impl SettingWpan {
+    /// Creates a new #NMSettingWpan object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingWpan object
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_wpan_new")]
@@ -36,6 +91,10 @@ impl SettingWpan {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWpan:channel property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_wpan_get_channel")]
@@ -46,6 +105,10 @@ impl SettingWpan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWpan:mac-address property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_wpan_get_mac_address")]
@@ -57,6 +120,10 @@ impl SettingWpan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWpan:page property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_wpan_get_page")]
@@ -67,6 +134,10 @@ impl SettingWpan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWpan:pan-id property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_wpan_get_pan_id")]
@@ -78,6 +149,10 @@ impl SettingWpan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWpan:short-address property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_wpan_get_short_address")]
@@ -95,6 +170,8 @@ impl SettingWpan {
         ObjectExt::property(self, "channel")
     }
 
+    /// IEEE 802.15.4 channel. A positive integer or -1, meaning "do not
+    /// set, use whatever the device is already set to".
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn set_channel(&self, channel: i32) {
@@ -108,6 +185,8 @@ impl SettingWpan {
         ObjectExt::property(self, "mac-address")
     }
 
+    /// If specified, this connection will only apply to the IEEE 802.15.4 (WPAN)
+    /// MAC layer device whose permanent MAC address matches.
     #[doc(alias = "mac-address")]
     pub fn set_mac_address(&self, mac_address: Option<&str>) {
         ObjectExt::set_property(self,"mac-address", mac_address)
@@ -119,6 +198,8 @@ impl SettingWpan {
         ObjectExt::property(self, "page")
     }
 
+    /// IEEE 802.15.4 channel page. A positive integer or -1, meaning "do not
+    /// set, use whatever the device is already set to".
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn set_page(&self, page: i32) {
@@ -132,6 +213,7 @@ impl SettingWpan {
         ObjectExt::property(self, "pan-id")
     }
 
+    /// IEEE 802.15.4 Personal Area Network (PAN) identifier.
     #[doc(alias = "pan-id")]
     pub fn set_pan_id(&self, pan_id: u32) {
         ObjectExt::set_property(self,"pan-id", pan_id)
@@ -144,6 +226,7 @@ impl SettingWpan {
         ObjectExt::property(self, "short-address")
     }
 
+    /// Short IEEE 802.15.4 address to be used within a restricted environment.
     #[doc(alias = "short-address")]
     pub fn set_short_address(&self, short_address: u32) {
         ObjectExt::set_property(self,"short-address", short_address)
@@ -241,26 +324,34 @@ pub struct SettingWpanBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// IEEE 802.15.4 channel. A positive integer or -1, meaning "do not
+                            /// set, use whatever the device is already set to".
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn channel(self, channel: i32) -> Self {
                             Self { builder: self.builder.property("channel", channel), }
                         }
 
+                            /// If specified, this connection will only apply to the IEEE 802.15.4 (WPAN)
+                            /// MAC layer device whose permanent MAC address matches.
                             pub fn mac_address(self, mac_address: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("mac-address", mac_address.into()), }
                         }
 
+                            /// IEEE 802.15.4 channel page. A positive integer or -1, meaning "do not
+                            /// set, use whatever the device is already set to".
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn page(self, page: i32) -> Self {
                             Self { builder: self.builder.property("page", page), }
                         }
 
+                            /// IEEE 802.15.4 Personal Area Network (PAN) identifier.
                             pub fn pan_id(self, pan_id: u32) -> Self {
                             Self { builder: self.builder.property("pan-id", pan_id), }
                         }
 
+                            /// Short IEEE 802.15.4 address to be used within a restricted environment.
                             pub fn short_address(self, short_address: u32) -> Self {
                             Self { builder: self.builder.property("short-address", short_address), }
                         }

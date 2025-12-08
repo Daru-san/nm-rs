@@ -11,6 +11,11 @@ use glib::{prelude::*};
 use glib::{translate::*};
 
 glib::wrapper! {
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`DeviceExt`][trait@crate::prelude::DeviceExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMDeviceDummy")]
     pub struct DeviceDummy(Object<ffi::NMDeviceDummy, ffi::NMDeviceDummyClass>) @extends Device, Object;
 
@@ -29,6 +34,16 @@ impl DeviceDummy {
             }
         
 
+    /// Gets the hardware (MAC) address of the #NMDeviceDummy
+    ///
+    /// # Deprecated since 1.24
+    ///
+    /// Use nm_device_get_hw_address() instead.
+    ///
+    /// # Returns
+    ///
+    /// the hardware address. This is the internal string used by the
+    /// device, and must not be modified.
     #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
@@ -56,6 +71,9 @@ pub struct DeviceDummyBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Whether the device can auto-activate a connection.
+                            ///
+                            /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
                             pub fn autoconnect(self, autoconnect: bool) -> Self {
                             Self { builder: self.builder.property("autoconnect", autoconnect), }
                         }

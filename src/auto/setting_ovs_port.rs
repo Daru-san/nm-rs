@@ -19,6 +19,70 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// OvsPort Link Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `bond-downdelay`
+    ///  The time port must be inactive in order to be considered down.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `bond-mode`
+    ///  Bonding mode. One of "active-backup", "balance-slb", or "balance-tcp".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `bond-updelay`
+    ///  The time port must be active before it starts forwarding traffic.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `lacp`
+    ///  LACP mode. One of "active", "off", or "passive".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `tag`
+    ///  The VLAN tag in the range 0-4095.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `trunks`
+    ///  A list of VLAN ranges that this port trunks.
+    ///
+    /// The property is valid only for ports with mode "trunk",
+    /// "native-tagged", or "native-untagged port".
+    /// If it is empty, the port trunks all VLANs.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vlan-mode`
+    ///  The VLAN mode. One of "access", "native-tagged", "native-untagged",
+    /// "trunk", "dot1q-tunnel" or unset.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingOvsPort")]
     pub struct SettingOvsPort(Object<ffi::NMSettingOvsPort, ffi::NMSettingOvsPortClass>) @extends Setting;
 
@@ -28,6 +92,11 @@ glib::wrapper! {
 }
 
 impl SettingOvsPort {
+    /// Creates a new #NMSettingOvsPort object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingOvsPort object
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_port_new")]
@@ -44,6 +113,10 @@ impl SettingOvsPort {
         SettingOvsPortBuilder::new()
     }
 
+    /// Appends a new trunk range to the setting.
+    /// This takes a reference to @trunk.
+    /// ## `trunk`
+    /// the trunk to add
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_port_add_trunk")]
@@ -53,6 +126,7 @@ impl SettingOvsPort {
         }
     }
 
+    /// Removes all configured trunk ranges.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_port_clear_trunks")]
@@ -62,6 +136,10 @@ impl SettingOvsPort {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsPort:bond-downdelay property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_port_get_bond_downdelay")]
@@ -71,6 +149,10 @@ impl SettingOvsPort {
         unsafe { ffi::nm_setting_ovs_port_get_bond_downdelay(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsPort:bond-mode property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_port_get_bond_mode")]
@@ -84,6 +166,10 @@ impl SettingOvsPort {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsPort:bond-updelay property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_port_get_bond_updelay")]
@@ -93,6 +179,10 @@ impl SettingOvsPort {
         unsafe { ffi::nm_setting_ovs_port_get_bond_updelay(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsPort:lacp property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_port_get_lacp")]
@@ -101,6 +191,10 @@ impl SettingOvsPort {
         unsafe { from_glib_none(ffi::nm_setting_ovs_port_get_lacp(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of trunk ranges
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_port_get_num_trunks")]
@@ -109,6 +203,10 @@ impl SettingOvsPort {
         unsafe { ffi::nm_setting_ovs_port_get_num_trunks(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsPort:tag property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_port_get_tag")]
@@ -117,6 +215,12 @@ impl SettingOvsPort {
         unsafe { ffi::nm_setting_ovs_port_get_tag(self.to_glib_none().0) }
     }
 
+    /// ## `idx`
+    /// index number of the trunk range to return
+    ///
+    /// # Returns
+    ///
+    /// the trunk range at index @idx
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_port_get_trunk")]
@@ -130,6 +234,10 @@ impl SettingOvsPort {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsPort:vlan-mode property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ovs_port_get_vlan_mode")]
@@ -143,6 +251,9 @@ impl SettingOvsPort {
         }
     }
 
+    /// Removes the trunk range at index @idx.
+    /// ## `idx`
+    /// index number of the trunk range.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_port_remove_trunk")]
@@ -152,6 +263,15 @@ impl SettingOvsPort {
         }
     }
 
+    /// Remove the trunk range with range @start to @end.
+    /// ## `start`
+    /// the trunk range start index
+    /// ## `end`
+    /// the trunk range end index
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the trunk range was found and removed; [`false`] otherwise
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_port_remove_trunk_by_value")]
@@ -165,6 +285,7 @@ impl SettingOvsPort {
         }
     }
 
+    /// The time port must be inactive in order to be considered down.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-downdelay")]
@@ -172,6 +293,7 @@ impl SettingOvsPort {
         ObjectExt::set_property(self, "bond-downdelay", bond_downdelay)
     }
 
+    /// Bonding mode. One of "active-backup", "balance-slb", or "balance-tcp".
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-mode")]
@@ -179,6 +301,7 @@ impl SettingOvsPort {
         ObjectExt::set_property(self, "bond-mode", bond_mode)
     }
 
+    /// The time port must be active before it starts forwarding traffic.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-updelay")]
@@ -186,18 +309,25 @@ impl SettingOvsPort {
         ObjectExt::set_property(self, "bond-updelay", bond_updelay)
     }
 
+    /// LACP mode. One of "active", "off", or "passive".
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn set_lacp(&self, lacp: Option<&str>) {
         ObjectExt::set_property(self, "lacp", lacp)
     }
 
+    /// The VLAN tag in the range 0-4095.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn set_tag(&self, tag: u32) {
         ObjectExt::set_property(self, "tag", tag)
     }
 
+    /// A list of VLAN ranges that this port trunks.
+    ///
+    /// The property is valid only for ports with mode "trunk",
+    /// "native-tagged", or "native-untagged port".
+    /// If it is empty, the port trunks all VLANs.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn trunks(&self) -> Vec<Range> {
@@ -211,6 +341,11 @@ impl SettingOvsPort {
             .collect()
     }
 
+    /// A list of VLAN ranges that this port trunks.
+    ///
+    /// The property is valid only for ports with mode "trunk",
+    /// "native-tagged", or "native-untagged port".
+    /// If it is empty, the port trunks all VLANs.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn set_trunks(&self, trunks: &[&Range]) {
@@ -224,6 +359,8 @@ impl SettingOvsPort {
         )
     }
 
+    /// The VLAN mode. One of "access", "native-tagged", "native-untagged",
+    /// "trunk", "dot1q-tunnel" or unset.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "vlan-mode")]
@@ -431,6 +568,7 @@ impl SettingOvsPortBuilder {
         }
     }
 
+    /// The time port must be inactive in order to be considered down.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn bond_downdelay(self, bond_downdelay: u32) -> Self {
@@ -439,6 +577,7 @@ impl SettingOvsPortBuilder {
         }
     }
 
+    /// Bonding mode. One of "active-backup", "balance-slb", or "balance-tcp".
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn bond_mode(self, bond_mode: impl Into<glib::GString>) -> Self {
@@ -447,6 +586,7 @@ impl SettingOvsPortBuilder {
         }
     }
 
+    /// The time port must be active before it starts forwarding traffic.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn bond_updelay(self, bond_updelay: u32) -> Self {
@@ -455,6 +595,7 @@ impl SettingOvsPortBuilder {
         }
     }
 
+    /// LACP mode. One of "active", "off", or "passive".
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn lacp(self, lacp: impl Into<glib::GString>) -> Self {
@@ -463,6 +604,7 @@ impl SettingOvsPortBuilder {
         }
     }
 
+    /// The VLAN tag in the range 0-4095.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn tag(self, tag: u32) -> Self {
@@ -471,6 +613,11 @@ impl SettingOvsPortBuilder {
         }
     }
 
+    /// A list of VLAN ranges that this port trunks.
+    ///
+    /// The property is valid only for ports with mode "trunk",
+    /// "native-tagged", or "native-untagged port".
+    /// If it is empty, the port trunks all VLANs.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn trunks(self, trunks: &[&Range]) -> Self {
@@ -485,6 +632,8 @@ impl SettingOvsPortBuilder {
         }
     }
 
+    /// The VLAN mode. One of "access", "native-tagged", "native-untagged",
+    /// "trunk", "dot1q-tunnel" or unset.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn vlan_mode(self, vlan_mode: impl Into<glib::GString>) -> Self {

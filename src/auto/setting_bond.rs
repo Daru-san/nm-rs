@@ -8,6 +8,31 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Bonding Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `options`
+    ///  Dictionary of key/value pairs of bonding options.  Both keys and values
+    /// must be strings. Option names must contain only alphanumeric characters
+    /// (ie, [a-zA-Z0-9]).
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingBond")]
     pub struct SettingBond(Object<ffi::NMSettingBond, ffi::NMSettingBondClass>) @extends Setting;
 
@@ -17,6 +42,11 @@ glib::wrapper! {
 }
 
 impl SettingBond {
+    /// Creates a new #NMSettingBond object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingBond object
     #[doc(alias = "nm_setting_bond_new")]
     pub fn new() -> SettingBond {
         assert_initialized_main_thread!();
@@ -34,6 +64,24 @@ impl SettingBond {
             }
         
 
+    /// Add an option to the table. Adding a new name replaces any existing name/value pair
+    /// that may already exist.
+    /// ## `name`
+    /// name for the option
+    /// ## `value`
+    /// value for the option
+    ///
+    /// # Returns
+    ///
+    /// returns [`false`] if either @name or @value is [`None`], in that case
+    /// the option is not set. Otherwise, the function does not fail and does not validate
+    /// the arguments. All validation happens via nm_connection_verify() or do basic validation
+    /// yourself with nm_setting_bond_validate_option().
+    ///
+    /// Note: Before 1.30, libnm would perform basic validation of the name and the value
+    /// via nm_setting_bond_validate_option() and reject the request by returning FALSE.
+    /// Since 1.30, libnm no longer rejects any values as the setter is not supposed
+    /// to perform validation.
     #[doc(alias = "nm_setting_bond_add_option")]
     pub fn add_option(&self, name: &str, value: &str) -> bool {
         unsafe {
@@ -41,6 +89,13 @@ impl SettingBond {
         }
     }
 
+    /// Returns the number of options that should be set for this bond when it
+    /// is activated. This can be used to retrieve each option individually
+    /// using nm_setting_bond_get_option().
+    ///
+    /// # Returns
+    ///
+    /// the number of bonding options
     #[doc(alias = "nm_setting_bond_get_num_options")]
     #[doc(alias = "get_num_options")]
     pub fn num_options(&self) -> u32 {
@@ -49,6 +104,29 @@ impl SettingBond {
         }
     }
 
+    /// Given an index, return the value of the bonding option at that index.  Indexes
+    /// are *not* guaranteed to be static across modifications to options done by
+    /// nm_setting_bond_add_option() and nm_setting_bond_remove_option(),
+    /// and should not be used to refer to options except for short periods of time
+    /// such as during option iteration.
+    /// ## `idx`
+    /// index of the desired option, from 0 to
+    /// nm_setting_bond_get_num_options() - 1
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success if the index was valid and an option was found,
+    /// [`false`] if the index was invalid (ie, greater than the number of options
+    /// currently held by the setting)
+    ///
+    /// ## `out_name`
+    /// on return, the name of the bonding option;
+    ///   this value is owned by the setting and should not be modified
+    ///
+    /// ## `out_value`
+    /// on return, the value of the name of the
+    ///   bonding option; this value is owned by the setting and should not be
+    ///   modified
     #[doc(alias = "nm_setting_bond_get_option")]
     #[doc(alias = "get_option")]
     pub fn option(&self, idx: u32) -> Option<(glib::GString, glib::GString)> {
@@ -60,6 +138,15 @@ impl SettingBond {
         }
     }
 
+    /// Returns the value associated with the bonding option specified by
+    /// @name, if it exists.
+    /// ## `name`
+    /// the option name for which to retrieve the value
+    ///
+    /// # Returns
+    ///
+    /// the value, or [`None`] if the key/value pair was never added to the
+    /// setting; the value is owned by the setting and must not be modified
     #[doc(alias = "nm_setting_bond_get_option_by_name")]
     #[doc(alias = "get_option_by_name")]
     pub fn option_by_name(&self, name: &str) -> glib::GString {
@@ -68,6 +155,13 @@ impl SettingBond {
         }
     }
 
+    /// ## `name`
+    /// the name of the option
+    ///
+    /// # Returns
+    ///
+    /// the value of the bond option if not overridden by an entry in
+    ///   the #NMSettingBond:options property.
     #[doc(alias = "nm_setting_bond_get_option_default")]
     #[doc(alias = "get_option_default")]
     pub fn option_default(&self, name: &str) -> glib::GString {
@@ -76,6 +170,14 @@ impl SettingBond {
         }
     }
 
+    /// ## `name`
+    /// the name of the option
+    ///
+    /// # Returns
+    ///
+    /// the value of the bond option after normalization, which is what NetworkManager
+    ///   will actually apply when activating the connection. [`None`] if the option won't be applied
+    ///   to the connection.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_setting_bond_get_option_normalized")]
@@ -86,6 +188,13 @@ impl SettingBond {
         }
     }
 
+    /// Returns a list of valid bond options.
+    ///
+    /// The @self argument is unused and may be passed as [`None`].
+    ///
+    /// # Returns
+    ///
+    /// a [`None`]-terminated array of strings of valid bond options.
     #[doc(alias = "nm_setting_bond_get_valid_options")]
     #[doc(alias = "get_valid_options")]
     pub fn valid_options(&self) -> Vec<glib::GString> {
@@ -94,6 +203,15 @@ impl SettingBond {
         }
     }
 
+    /// Remove the bonding option referenced by @name from the internal option
+    /// list.
+    /// ## `name`
+    /// name of the option to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the option was found and removed from the internal option
+    /// list, [`false`] if it was not.
     #[doc(alias = "nm_setting_bond_remove_option")]
     pub fn remove_option(&self, name: &str) -> bool {
         unsafe {
@@ -109,6 +227,17 @@ impl SettingBond {
     //    ObjectExt::set_property(self,"options", options)
     //}
 
+    /// Checks whether @name is a valid bond option and @value is a valid value for
+    /// the @name. If @value is [`None`], the function only validates the option name.
+    /// ## `name`
+    /// the name of the option to validate
+    /// ## `value`
+    /// the value of the option to validate.
+    ///
+    /// # Returns
+    ///
+    /// [`true`], if the @value is valid for the given name.
+    /// If the @name is not a valid option, [`false`] will be returned.
     #[doc(alias = "nm_setting_bond_validate_option")]
     pub fn validate_option(name: &str, value: Option<&str>) -> bool {
         assert_initialized_main_thread!();

@@ -19,6 +19,128 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// IP Tunneling Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `encapsulation-limit`
+    ///  How many additional levels of encapsulation are permitted to be prepended
+    /// to packets. This property applies only to IPv6 tunnels. To disable this option,
+    /// add [`IPTunnelFlags::IP6_IGN_ENCAP_LIMIT`][crate::IPTunnelFlags::IP6_IGN_ENCAP_LIMIT] to ip-tunnel flags.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `flags`
+    ///  Tunnel flags. Currently, the following values are supported:
+    /// [`IPTunnelFlags::IP6_IGN_ENCAP_LIMIT`][crate::IPTunnelFlags::IP6_IGN_ENCAP_LIMIT], [`IPTunnelFlags::IP6_USE_ORIG_TCLASS`][crate::IPTunnelFlags::IP6_USE_ORIG_TCLASS],
+    /// [`IPTunnelFlags::IP6_USE_ORIG_FLOWLABEL`][crate::IPTunnelFlags::IP6_USE_ORIG_FLOWLABEL], [`IPTunnelFlags::IP6_MIP6_DEV`][crate::IPTunnelFlags::IP6_MIP6_DEV],
+    /// [`IPTunnelFlags::IP6_RCV_DSCP_COPY`][crate::IPTunnelFlags::IP6_RCV_DSCP_COPY], [`IPTunnelFlags::IP6_USE_ORIG_FWMARK`][crate::IPTunnelFlags::IP6_USE_ORIG_FWMARK].
+    /// They are valid only for IPv6 tunnels.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `flow-label`
+    ///  The flow label to assign to tunnel packets. This property applies only to
+    /// IPv6 tunnels.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `fwmark`
+    ///  The fwmark value to assign to tunnel packets. This property can be set
+    /// to a non zero value only on VTI and VTI6 tunnels.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `input-key`
+    ///  The key used for tunnel input packets; the property is valid only for
+    /// certain tunnel modes (GRE, IP6GRE). If empty, no key is used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `local`
+    ///  The local endpoint of the tunnel; the value can be empty, otherwise it
+    /// must contain an IPv4 or IPv6 address.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mode`
+    ///  The tunneling mode. Valid values: [`IPTunnelMode::Ipip`][crate::IPTunnelMode::Ipip],
+    /// [`IPTunnelMode::Gre`][crate::IPTunnelMode::Gre], [`IPTunnelMode::Sit`][crate::IPTunnelMode::Sit], [`IPTunnelMode::Isatap`][crate::IPTunnelMode::Isatap],
+    /// [`IPTunnelMode::Vti`][crate::IPTunnelMode::Vti], [`IPTunnelMode::Ip6ip6`][crate::IPTunnelMode::Ip6ip6], [`IPTunnelMode::Ipip6`][crate::IPTunnelMode::Ipip6],
+    /// [`IPTunnelMode::Ip6gre`][crate::IPTunnelMode::Ip6gre], [`IPTunnelMode::Vti6`][crate::IPTunnelMode::Vti6], [`IPTunnelMode::Gretap`][crate::IPTunnelMode::Gretap]
+    /// and [`IPTunnelMode::Ip6gretap`][crate::IPTunnelMode::Ip6gretap]
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mtu`
+    ///  If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple fragments.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `output-key`
+    ///  The key used for tunnel output packets; the property is valid only for
+    /// certain tunnel modes (GRE, IP6GRE). If empty, no key is used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `parent`
+    ///  If given, specifies the parent interface name or parent connection UUID
+    /// the new device will be bound to so that tunneled packets will only be
+    /// routed via that interface.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `path-mtu-discovery`
+    ///  Whether to enable Path MTU Discovery on this tunnel.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `remote`
+    ///  The remote endpoint of the tunnel; the value must contain an IPv4 or IPv6
+    /// address.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `tos`
+    ///  The type of service (IPv4) or traffic class (IPv6) field to be set on
+    /// tunneled packets.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ttl`
+    ///  The TTL to assign to tunneled packets. 0 is a special value meaning that
+    /// packets inherit the TTL value.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingIPTunnel")]
     pub struct SettingIPTunnel(Object<ffi::NMSettingIPTunnel, ffi::NMSettingIPTunnelClass>) @extends Setting;
 
@@ -28,6 +150,11 @@ glib::wrapper! {
 }
 
 impl SettingIPTunnel {
+    /// Creates a new #NMSettingIPTunnel object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingIPTunnel object
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_new")]
@@ -47,6 +174,11 @@ impl SettingIPTunnel {
             }
         
 
+    /// Returns the #NMSettingIPTunnel:encapsulation-limit property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the encapsulation limit value
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_encapsulation_limit")]
@@ -58,6 +190,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:flags property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the tunnel flags
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_flags")]
@@ -68,6 +205,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:flow-label property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the flow label value
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_flow_label")]
@@ -79,6 +221,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:fwmark property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the fwmark value
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_fwmark")]
@@ -89,6 +236,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:input-key property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the input key
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_input_key")]
@@ -100,6 +252,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:local property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the local endpoint
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_local")]
@@ -110,6 +267,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:mode property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the tunnel mode
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_mode")]
@@ -120,6 +282,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:mtu property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the MTU
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_mtu")]
@@ -130,6 +297,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:output-key property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the output key
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_output_key")]
@@ -141,6 +313,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:parent property of the setting
+    ///
+    /// # Returns
+    ///
+    /// the parent device
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_parent")]
@@ -151,6 +328,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:path-mtu-discovery property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// whether path MTU discovery is enabled
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_path_mtu_discovery")]
@@ -162,6 +344,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:remote property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the remote endpoint
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_remote")]
@@ -172,6 +359,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:tos property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the TOS value
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_tos")]
@@ -182,6 +374,11 @@ impl SettingIPTunnel {
         }
     }
 
+    /// Returns the #NMSettingIPTunnel:ttl property of the setting.
+    ///
+    /// # Returns
+    ///
+    /// the Time-to-live value
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_tunnel_get_ttl")]
@@ -199,6 +396,9 @@ impl SettingIPTunnel {
         ObjectExt::property(self, "encapsulation-limit")
     }
 
+    /// How many additional levels of encapsulation are permitted to be prepended
+    /// to packets. This property applies only to IPv6 tunnels. To disable this option,
+    /// add [`IPTunnelFlags::IP6_IGN_ENCAP_LIMIT`][crate::IPTunnelFlags::IP6_IGN_ENCAP_LIMIT] to ip-tunnel flags.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "encapsulation-limit")]
@@ -206,6 +406,11 @@ impl SettingIPTunnel {
         ObjectExt::set_property(self,"encapsulation-limit", encapsulation_limit)
     }
 
+    /// Tunnel flags. Currently, the following values are supported:
+    /// [`IPTunnelFlags::IP6_IGN_ENCAP_LIMIT`][crate::IPTunnelFlags::IP6_IGN_ENCAP_LIMIT], [`IPTunnelFlags::IP6_USE_ORIG_TCLASS`][crate::IPTunnelFlags::IP6_USE_ORIG_TCLASS],
+    /// [`IPTunnelFlags::IP6_USE_ORIG_FLOWLABEL`][crate::IPTunnelFlags::IP6_USE_ORIG_FLOWLABEL], [`IPTunnelFlags::IP6_MIP6_DEV`][crate::IPTunnelFlags::IP6_MIP6_DEV],
+    /// [`IPTunnelFlags::IP6_RCV_DSCP_COPY`][crate::IPTunnelFlags::IP6_RCV_DSCP_COPY], [`IPTunnelFlags::IP6_USE_ORIG_FWMARK`][crate::IPTunnelFlags::IP6_USE_ORIG_FWMARK].
+    /// They are valid only for IPv6 tunnels.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn set_flags(&self, flags: u32) {
@@ -219,6 +424,8 @@ impl SettingIPTunnel {
         ObjectExt::property(self, "flow-label")
     }
 
+    /// The flow label to assign to tunnel packets. This property applies only to
+    /// IPv6 tunnels.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "flow-label")]
@@ -226,12 +433,16 @@ impl SettingIPTunnel {
         ObjectExt::set_property(self,"flow-label", flow_label)
     }
 
+    /// The fwmark value to assign to tunnel packets. This property can be set
+    /// to a non zero value only on VTI and VTI6 tunnels.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn set_fwmark(&self, fwmark: u32) {
         ObjectExt::set_property(self,"fwmark", fwmark)
     }
 
+    /// The key used for tunnel input packets; the property is valid only for
+    /// certain tunnel modes (GRE, IP6GRE). If empty, no key is used.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "input-key")]
@@ -239,24 +450,35 @@ impl SettingIPTunnel {
         ObjectExt::set_property(self,"input-key", input_key)
     }
 
+    /// The local endpoint of the tunnel; the value can be empty, otherwise it
+    /// must contain an IPv4 or IPv6 address.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_local(&self, local: Option<&str>) {
         ObjectExt::set_property(self,"local", local)
     }
 
+    /// The tunneling mode. Valid values: [`IPTunnelMode::Ipip`][crate::IPTunnelMode::Ipip],
+    /// [`IPTunnelMode::Gre`][crate::IPTunnelMode::Gre], [`IPTunnelMode::Sit`][crate::IPTunnelMode::Sit], [`IPTunnelMode::Isatap`][crate::IPTunnelMode::Isatap],
+    /// [`IPTunnelMode::Vti`][crate::IPTunnelMode::Vti], [`IPTunnelMode::Ip6ip6`][crate::IPTunnelMode::Ip6ip6], [`IPTunnelMode::Ipip6`][crate::IPTunnelMode::Ipip6],
+    /// [`IPTunnelMode::Ip6gre`][crate::IPTunnelMode::Ip6gre], [`IPTunnelMode::Vti6`][crate::IPTunnelMode::Vti6], [`IPTunnelMode::Gretap`][crate::IPTunnelMode::Gretap]
+    /// and [`IPTunnelMode::Ip6gretap`][crate::IPTunnelMode::Ip6gretap]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_mode(&self, mode: u32) {
         ObjectExt::set_property(self,"mode", mode)
     }
 
+    /// If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple fragments.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_mtu(&self, mtu: u32) {
         ObjectExt::set_property(self,"mtu", mtu)
     }
 
+    /// The key used for tunnel output packets; the property is valid only for
+    /// certain tunnel modes (GRE, IP6GRE). If empty, no key is used.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "output-key")]
@@ -264,12 +486,16 @@ impl SettingIPTunnel {
         ObjectExt::set_property(self,"output-key", output_key)
     }
 
+    /// If given, specifies the parent interface name or parent connection UUID
+    /// the new device will be bound to so that tunneled packets will only be
+    /// routed via that interface.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_parent(&self, parent: Option<&str>) {
         ObjectExt::set_property(self,"parent", parent)
     }
 
+    /// Whether to enable Path MTU Discovery on this tunnel.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "path-mtu-discovery")]
@@ -277,18 +503,24 @@ impl SettingIPTunnel {
         ObjectExt::set_property(self,"path-mtu-discovery", path_mtu_discovery)
     }
 
+    /// The remote endpoint of the tunnel; the value must contain an IPv4 or IPv6
+    /// address.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_remote(&self, remote: Option<&str>) {
         ObjectExt::set_property(self,"remote", remote)
     }
 
+    /// The type of service (IPv4) or traffic class (IPv6) field to be set on
+    /// tunneled packets.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_tos(&self, tos: u32) {
         ObjectExt::set_property(self,"tos", tos)
     }
 
+    /// The TTL to assign to tunneled packets. 0 is a special value meaning that
+    /// packets inherit the TTL value.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_ttl(&self, ttl: u32) {
@@ -528,84 +760,119 @@ pub struct SettingIPTunnelBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// How many additional levels of encapsulation are permitted to be prepended
+                            /// to packets. This property applies only to IPv6 tunnels. To disable this option,
+                            /// add [`IPTunnelFlags::IP6_IGN_ENCAP_LIMIT`][crate::IPTunnelFlags::IP6_IGN_ENCAP_LIMIT] to ip-tunnel flags.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn encapsulation_limit(self, encapsulation_limit: u32) -> Self {
                             Self { builder: self.builder.property("encapsulation-limit", encapsulation_limit), }
                         }
 
+                            /// Tunnel flags. Currently, the following values are supported:
+                            /// [`IPTunnelFlags::IP6_IGN_ENCAP_LIMIT`][crate::IPTunnelFlags::IP6_IGN_ENCAP_LIMIT], [`IPTunnelFlags::IP6_USE_ORIG_TCLASS`][crate::IPTunnelFlags::IP6_USE_ORIG_TCLASS],
+                            /// [`IPTunnelFlags::IP6_USE_ORIG_FLOWLABEL`][crate::IPTunnelFlags::IP6_USE_ORIG_FLOWLABEL], [`IPTunnelFlags::IP6_MIP6_DEV`][crate::IPTunnelFlags::IP6_MIP6_DEV],
+                            /// [`IPTunnelFlags::IP6_RCV_DSCP_COPY`][crate::IPTunnelFlags::IP6_RCV_DSCP_COPY], [`IPTunnelFlags::IP6_USE_ORIG_FWMARK`][crate::IPTunnelFlags::IP6_USE_ORIG_FWMARK].
+                            /// They are valid only for IPv6 tunnels.
                             #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn flags(self, flags: u32) -> Self {
                             Self { builder: self.builder.property("flags", flags), }
                         }
 
+                            /// The flow label to assign to tunnel packets. This property applies only to
+                            /// IPv6 tunnels.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn flow_label(self, flow_label: u32) -> Self {
                             Self { builder: self.builder.property("flow-label", flow_label), }
                         }
 
+                            /// The fwmark value to assign to tunnel packets. This property can be set
+                            /// to a non zero value only on VTI and VTI6 tunnels.
                             #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn fwmark(self, fwmark: u32) -> Self {
                             Self { builder: self.builder.property("fwmark", fwmark), }
                         }
 
+                            /// The key used for tunnel input packets; the property is valid only for
+                            /// certain tunnel modes (GRE, IP6GRE). If empty, no key is used.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn input_key(self, input_key: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("input-key", input_key.into()), }
                         }
 
+                            /// The local endpoint of the tunnel; the value can be empty, otherwise it
+                            /// must contain an IPv4 or IPv6 address.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn local(self, local: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("local", local.into()), }
                         }
 
+                            /// The tunneling mode. Valid values: [`IPTunnelMode::Ipip`][crate::IPTunnelMode::Ipip],
+                            /// [`IPTunnelMode::Gre`][crate::IPTunnelMode::Gre], [`IPTunnelMode::Sit`][crate::IPTunnelMode::Sit], [`IPTunnelMode::Isatap`][crate::IPTunnelMode::Isatap],
+                            /// [`IPTunnelMode::Vti`][crate::IPTunnelMode::Vti], [`IPTunnelMode::Ip6ip6`][crate::IPTunnelMode::Ip6ip6], [`IPTunnelMode::Ipip6`][crate::IPTunnelMode::Ipip6],
+                            /// [`IPTunnelMode::Ip6gre`][crate::IPTunnelMode::Ip6gre], [`IPTunnelMode::Vti6`][crate::IPTunnelMode::Vti6], [`IPTunnelMode::Gretap`][crate::IPTunnelMode::Gretap]
+                            /// and [`IPTunnelMode::Ip6gretap`][crate::IPTunnelMode::Ip6gretap]
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn mode(self, mode: u32) -> Self {
                             Self { builder: self.builder.property("mode", mode), }
                         }
 
+                            /// If non-zero, only transmit packets of the specified size or smaller,
+                            /// breaking larger packets up into multiple fragments.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn mtu(self, mtu: u32) -> Self {
                             Self { builder: self.builder.property("mtu", mtu), }
                         }
 
+                            /// The key used for tunnel output packets; the property is valid only for
+                            /// certain tunnel modes (GRE, IP6GRE). If empty, no key is used.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn output_key(self, output_key: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("output-key", output_key.into()), }
                         }
 
+                            /// If given, specifies the parent interface name or parent connection UUID
+                            /// the new device will be bound to so that tunneled packets will only be
+                            /// routed via that interface.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn parent(self, parent: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("parent", parent.into()), }
                         }
 
+                            /// Whether to enable Path MTU Discovery on this tunnel.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn path_mtu_discovery(self, path_mtu_discovery: bool) -> Self {
                             Self { builder: self.builder.property("path-mtu-discovery", path_mtu_discovery), }
                         }
 
+                            /// The remote endpoint of the tunnel; the value must contain an IPv4 or IPv6
+                            /// address.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn remote(self, remote: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("remote", remote.into()), }
                         }
 
+                            /// The type of service (IPv4) or traffic class (IPv6) field to be set on
+                            /// tunneled packets.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn tos(self, tos: u32) -> Self {
                             Self { builder: self.builder.property("tos", tos), }
                         }
 
+                            /// The TTL to assign to tunneled packets. 0 is a special value meaning that
+                            /// packets inherit the TTL value.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn ttl(self, ttl: u32) -> Self {

@@ -7,6 +7,11 @@ use crate::{ffi,Device,Object};
 use glib::{prelude::*};
 
 glib::wrapper! {
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`DeviceExt`][trait@crate::prelude::DeviceExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMDevicePpp")]
     pub struct DevicePpp(Object<ffi::NMDevicePpp, ffi::NMDevicePppClass>) @extends Device, Object;
 
@@ -40,6 +45,9 @@ pub struct DevicePppBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Whether the device can auto-activate a connection.
+                            ///
+                            /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
                             pub fn autoconnect(self, autoconnect: bool) -> Self {
                             Self { builder: self.builder.property("autoconnect", autoconnect), }
                         }

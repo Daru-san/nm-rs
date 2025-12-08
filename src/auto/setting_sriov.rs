@@ -18,6 +18,136 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// SR-IOV settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `autoprobe-drivers`
+    ///  Whether to autoprobe virtual functions by a compatible driver.
+    ///
+    /// If set to [`Ternary::True`][crate::Ternary::True], the kernel will try to bind VFs to
+    /// a compatible driver and if this succeeds a new network
+    /// interface will be instantiated for each VF.
+    ///
+    /// If set to [`Ternary::False`][crate::Ternary::False], VFs will not be claimed and no
+    /// network interfaces will be created for them.
+    ///
+    /// When set to [`Ternary::Default`][crate::Ternary::Default], the global default is used; in
+    /// case the global default is unspecified it is assumed to be
+    /// [`Ternary::True`][crate::Ternary::True].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `eswitch-encap-mode`
+    ///  Select the eswitch encapsulation support.
+    ///
+    /// Currently it's only supported for PCI PF devices, and only if the eswitch device
+    /// is managed from the same PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchEncapMode::Preserve`][crate::SriovEswitchEncapMode::Preserve] (default) the eswitch encap-mode
+    /// won't be modified by NetworkManager.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `eswitch-inline-mode`
+    ///  Select the eswitch inline-mode of the device. Some HWs need the VF driver to put
+    /// part of the packet headers on the TX descriptor so the e-switch can do proper
+    /// matching and steering.
+    ///
+    /// Currently it's only supported for PCI PF devices, and only if the eswitch device
+    /// is managed from the same PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchInlineMode::Preserve`][crate::SriovEswitchInlineMode::Preserve] (default) the eswitch inline-mode
+    /// won't be modified by NetworkManager.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `eswitch-mode`
+    ///  Select the eswitch mode of the device. Currently it's only supported for
+    /// PCI PF devices, and only if the eswitch device is managed from the same
+    /// PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchMode::Preserve`][crate::SriovEswitchMode::Preserve] (default) the eswitch mode won't be
+    /// modified by NetworkManager.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `preserve-on-down`
+    ///  This controls whether NetworkManager preserves the SR-IOV parameters set on
+    /// the device when the connection is deactivated, or whether it resets them to
+    /// their default value. The SR-IOV parameters are those specified in this setting
+    /// (the "sriov" setting), like the number of VFs to create, the eswitch
+    /// configuration, etc.
+    ///
+    /// If set to [`SriovPreserveOnDown::No`][crate::SriovPreserveOnDown::No], NetworkManager resets the SR-IOV
+    /// parameters when the connection is deactivated. When set to
+    /// [`SriovPreserveOnDown::Yes`][crate::SriovPreserveOnDown::Yes], NetworkManager preserves those parameters
+    /// on the device. If the value is [`SriovPreserveOnDown::Default`][crate::SriovPreserveOnDown::Default], NetworkManager
+    /// looks up a global default value in the configuration; in case no such value is
+    /// defined, it uses [`SriovPreserveOnDown::No`][crate::SriovPreserveOnDown::No] as fallback.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `total-vfs`
+    ///  The total number of virtual functions to create.
+    ///
+    /// Note that when the sriov setting is present NetworkManager
+    /// enforces the number of virtual functions on the interface
+    /// (also when it is zero) during activation and resets it
+    /// upon deactivation. To prevent any changes to SR-IOV
+    /// parameters don't add a sriov setting to the connection.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vfs`
+    ///  Array of virtual function descriptors.
+    ///
+    /// Each VF descriptor is a dictionary mapping attribute names
+    /// to GVariant values. The 'index' entry is mandatory for
+    /// each VF.
+    ///
+    /// When represented as string a VF is in the form:
+    ///
+    ///   "INDEX [ATTR=VALUE[ ATTR=VALUE]...]".
+    ///
+    /// for example:
+    ///
+    ///   "2 mac=00:11:22:33:44:55 spoof-check=true".
+    ///
+    /// Multiple VFs can be specified using a comma as separator.
+    /// Currently, the following attributes are supported: mac,
+    /// spoof-check, trust, min-tx-rate, max-tx-rate, vlans.
+    ///
+    /// The "vlans" attribute is represented as a semicolon-separated
+    /// list of VLAN descriptors, where each descriptor has the form
+    ///
+    ///   "ID[.PRIORITY[.PROTO]]".
+    ///
+    /// PROTO can be either 'q' for 802.1Q (the default) or 'ad' for
+    /// 802.1ad.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingSriov")]
     pub struct SettingSriov(Object<ffi::NMSettingSriov, ffi::NMSettingSriovClass>) @extends Setting;
 
@@ -27,6 +157,11 @@ glib::wrapper! {
 }
 
 impl SettingSriov {
+    /// Creates a new #NMSettingSriov object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingSriov object
     #[doc(alias = "nm_setting_sriov_new")]
     pub fn new() -> SettingSriov {
         assert_initialized_main_thread!();
@@ -41,6 +176,10 @@ impl SettingSriov {
         SettingSriovBuilder::new()
     }
 
+    /// Appends a new VF and associated information to the setting.  The
+    /// given VF is duplicated internally and is not changed by this function.
+    /// ## `vf`
+    /// the VF to add
     #[doc(alias = "nm_setting_sriov_add_vf")]
     pub fn add_vf(&self, vf: &SriovVF) {
         unsafe {
@@ -48,6 +187,7 @@ impl SettingSriov {
         }
     }
 
+    /// Removes all configured VFs.
     #[doc(alias = "nm_setting_sriov_clear_vfs")]
     pub fn clear_vfs(&self) {
         unsafe {
@@ -55,6 +195,12 @@ impl SettingSriov {
         }
     }
 
+    /// Returns the value contained in the #NMSettingSriov:autoprobe-drivers
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the autoprobe-drivers property value
     #[doc(alias = "nm_setting_sriov_get_autoprobe_drivers")]
     #[doc(alias = "get_autoprobe_drivers")]
     #[doc(alias = "autoprobe-drivers")]
@@ -66,6 +212,10 @@ impl SettingSriov {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the value contained in the #NMSettingSriov:eswitch-encap-mode property.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_sriov_get_eswitch_encap_mode")]
@@ -79,6 +229,10 @@ impl SettingSriov {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the value contained in the #NMSettingSriov:eswitch-inline-mode property.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_sriov_get_eswitch_inline_mode")]
@@ -92,6 +246,10 @@ impl SettingSriov {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the value contained in the #NMSettingSriov:eswitch-mode property.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_sriov_get_eswitch_mode")]
@@ -105,12 +263,20 @@ impl SettingSriov {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured VFs
     #[doc(alias = "nm_setting_sriov_get_num_vfs")]
     #[doc(alias = "get_num_vfs")]
     pub fn num_vfs(&self) -> u32 {
         unsafe { ffi::nm_setting_sriov_get_num_vfs(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the value contained in the #NMSettingSriov:preserve-on-down property.
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "nm_setting_sriov_get_preserve_on_down")]
@@ -124,6 +290,12 @@ impl SettingSriov {
         }
     }
 
+    /// Returns the value contained in the #NMSettingSriov:total-vfs
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the total number of SR-IOV virtual functions to create
     #[doc(alias = "nm_setting_sriov_get_total_vfs")]
     #[doc(alias = "get_total_vfs")]
     #[doc(alias = "total-vfs")]
@@ -131,12 +303,21 @@ impl SettingSriov {
         unsafe { ffi::nm_setting_sriov_get_total_vfs(self.to_glib_none().0) }
     }
 
+    /// ## `idx`
+    /// index number of the VF to return
+    ///
+    /// # Returns
+    ///
+    /// the VF at index @idx
     #[doc(alias = "nm_setting_sriov_get_vf")]
     #[doc(alias = "get_vf")]
     pub fn vf(&self, idx: u32) -> SriovVF {
         unsafe { from_glib_none(ffi::nm_setting_sriov_get_vf(self.to_glib_none().0, idx)) }
     }
 
+    /// Removes the VF at index @idx.
+    /// ## `idx`
+    /// index number of the VF
     #[doc(alias = "nm_setting_sriov_remove_vf")]
     pub fn remove_vf(&self, idx: u32) {
         unsafe {
@@ -144,6 +325,13 @@ impl SettingSriov {
         }
     }
 
+    /// Removes the VF with VF index @index.
+    /// ## `index`
+    /// the VF index of the VF to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the VF was found and removed; [`false`] if it was not
     #[doc(alias = "nm_setting_sriov_remove_vf_by_index")]
     pub fn remove_vf_by_index(&self, index: u32) -> bool {
         unsafe {
@@ -154,6 +342,18 @@ impl SettingSriov {
         }
     }
 
+    /// Whether to autoprobe virtual functions by a compatible driver.
+    ///
+    /// If set to [`Ternary::True`][crate::Ternary::True], the kernel will try to bind VFs to
+    /// a compatible driver and if this succeeds a new network
+    /// interface will be instantiated for each VF.
+    ///
+    /// If set to [`Ternary::False`][crate::Ternary::False], VFs will not be claimed and no
+    /// network interfaces will be created for them.
+    ///
+    /// When set to [`Ternary::Default`][crate::Ternary::Default], the global default is used; in
+    /// case the global default is unspecified it is assumed to be
+    /// [`Ternary::True`][crate::Ternary::True].
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "autoprobe-drivers")]
@@ -161,6 +361,13 @@ impl SettingSriov {
         ObjectExt::set_property(self, "autoprobe-drivers", autoprobe_drivers)
     }
 
+    /// Select the eswitch encapsulation support.
+    ///
+    /// Currently it's only supported for PCI PF devices, and only if the eswitch device
+    /// is managed from the same PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchEncapMode::Preserve`][crate::SriovEswitchEncapMode::Preserve] (default) the eswitch encap-mode
+    /// won't be modified by NetworkManager.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-encap-mode")]
@@ -168,6 +375,15 @@ impl SettingSriov {
         ObjectExt::set_property(self, "eswitch-encap-mode", eswitch_encap_mode)
     }
 
+    /// Select the eswitch inline-mode of the device. Some HWs need the VF driver to put
+    /// part of the packet headers on the TX descriptor so the e-switch can do proper
+    /// matching and steering.
+    ///
+    /// Currently it's only supported for PCI PF devices, and only if the eswitch device
+    /// is managed from the same PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchInlineMode::Preserve`][crate::SriovEswitchInlineMode::Preserve] (default) the eswitch inline-mode
+    /// won't be modified by NetworkManager.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-inline-mode")]
@@ -175,6 +391,12 @@ impl SettingSriov {
         ObjectExt::set_property(self, "eswitch-inline-mode", eswitch_inline_mode)
     }
 
+    /// Select the eswitch mode of the device. Currently it's only supported for
+    /// PCI PF devices, and only if the eswitch device is managed from the same
+    /// PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchMode::Preserve`][crate::SriovEswitchMode::Preserve] (default) the eswitch mode won't be
+    /// modified by NetworkManager.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-mode")]
@@ -182,6 +404,18 @@ impl SettingSriov {
         ObjectExt::set_property(self, "eswitch-mode", eswitch_mode)
     }
 
+    /// This controls whether NetworkManager preserves the SR-IOV parameters set on
+    /// the device when the connection is deactivated, or whether it resets them to
+    /// their default value. The SR-IOV parameters are those specified in this setting
+    /// (the "sriov" setting), like the number of VFs to create, the eswitch
+    /// configuration, etc.
+    ///
+    /// If set to [`SriovPreserveOnDown::No`][crate::SriovPreserveOnDown::No], NetworkManager resets the SR-IOV
+    /// parameters when the connection is deactivated. When set to
+    /// [`SriovPreserveOnDown::Yes`][crate::SriovPreserveOnDown::Yes], NetworkManager preserves those parameters
+    /// on the device. If the value is [`SriovPreserveOnDown::Default`][crate::SriovPreserveOnDown::Default], NetworkManager
+    /// looks up a global default value in the configuration; in case no such value is
+    /// defined, it uses [`SriovPreserveOnDown::No`][crate::SriovPreserveOnDown::No] as fallback.
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "preserve-on-down")]
@@ -189,6 +423,13 @@ impl SettingSriov {
         ObjectExt::set_property(self, "preserve-on-down", preserve_on_down)
     }
 
+    /// The total number of virtual functions to create.
+    ///
+    /// Note that when the sriov setting is present NetworkManager
+    /// enforces the number of virtual functions on the interface
+    /// (also when it is zero) during activation and resets it
+    /// upon deactivation. To prevent any changes to SR-IOV
+    /// parameters don't add a sriov setting to the connection.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "total-vfs")]
@@ -196,6 +437,31 @@ impl SettingSriov {
         ObjectExt::set_property(self, "total-vfs", total_vfs)
     }
 
+    /// Array of virtual function descriptors.
+    ///
+    /// Each VF descriptor is a dictionary mapping attribute names
+    /// to GVariant values. The 'index' entry is mandatory for
+    /// each VF.
+    ///
+    /// When represented as string a VF is in the form:
+    ///
+    ///   "INDEX [ATTR=VALUE[ ATTR=VALUE]...]".
+    ///
+    /// for example:
+    ///
+    ///   "2 mac=00:11:22:33:44:55 spoof-check=true".
+    ///
+    /// Multiple VFs can be specified using a comma as separator.
+    /// Currently, the following attributes are supported: mac,
+    /// spoof-check, trust, min-tx-rate, max-tx-rate, vlans.
+    ///
+    /// The "vlans" attribute is represented as a semicolon-separated
+    /// list of VLAN descriptors, where each descriptor has the form
+    ///
+    ///   "ID[.PRIORITY[.PROTO]]".
+    ///
+    /// PROTO can be either 'q' for 802.1Q (the default) or 'ad' for
+    /// 802.1ad.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn vfs(&self) -> Vec<SriovVF> {
@@ -209,6 +475,31 @@ impl SettingSriov {
             .collect()
     }
 
+    /// Array of virtual function descriptors.
+    ///
+    /// Each VF descriptor is a dictionary mapping attribute names
+    /// to GVariant values. The 'index' entry is mandatory for
+    /// each VF.
+    ///
+    /// When represented as string a VF is in the form:
+    ///
+    ///   "INDEX [ATTR=VALUE[ ATTR=VALUE]...]".
+    ///
+    /// for example:
+    ///
+    ///   "2 mac=00:11:22:33:44:55 spoof-check=true".
+    ///
+    /// Multiple VFs can be specified using a comma as separator.
+    /// Currently, the following attributes are supported: mac,
+    /// spoof-check, trust, min-tx-rate, max-tx-rate, vlans.
+    ///
+    /// The "vlans" attribute is represented as a semicolon-separated
+    /// list of VLAN descriptors, where each descriptor has the form
+    ///
+    ///   "ID[.PRIORITY[.PROTO]]".
+    ///
+    /// PROTO can be either 'q' for 802.1Q (the default) or 'ad' for
+    /// 802.1ad.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn set_vfs(&self, vfs: &[&SriovVF]) {
@@ -434,6 +725,18 @@ impl SettingSriovBuilder {
         }
     }
 
+    /// Whether to autoprobe virtual functions by a compatible driver.
+    ///
+    /// If set to [`Ternary::True`][crate::Ternary::True], the kernel will try to bind VFs to
+    /// a compatible driver and if this succeeds a new network
+    /// interface will be instantiated for each VF.
+    ///
+    /// If set to [`Ternary::False`][crate::Ternary::False], VFs will not be claimed and no
+    /// network interfaces will be created for them.
+    ///
+    /// When set to [`Ternary::Default`][crate::Ternary::Default], the global default is used; in
+    /// case the global default is unspecified it is assumed to be
+    /// [`Ternary::True`][crate::Ternary::True].
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn autoprobe_drivers(self, autoprobe_drivers: Ternary) -> Self {
@@ -444,6 +747,13 @@ impl SettingSriovBuilder {
         }
     }
 
+    /// Select the eswitch encapsulation support.
+    ///
+    /// Currently it's only supported for PCI PF devices, and only if the eswitch device
+    /// is managed from the same PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchEncapMode::Preserve`][crate::SriovEswitchEncapMode::Preserve] (default) the eswitch encap-mode
+    /// won't be modified by NetworkManager.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn eswitch_encap_mode(self, eswitch_encap_mode: i32) -> Self {
@@ -454,6 +764,15 @@ impl SettingSriovBuilder {
         }
     }
 
+    /// Select the eswitch inline-mode of the device. Some HWs need the VF driver to put
+    /// part of the packet headers on the TX descriptor so the e-switch can do proper
+    /// matching and steering.
+    ///
+    /// Currently it's only supported for PCI PF devices, and only if the eswitch device
+    /// is managed from the same PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchInlineMode::Preserve`][crate::SriovEswitchInlineMode::Preserve] (default) the eswitch inline-mode
+    /// won't be modified by NetworkManager.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn eswitch_inline_mode(self, eswitch_inline_mode: i32) -> Self {
@@ -464,6 +783,12 @@ impl SettingSriovBuilder {
         }
     }
 
+    /// Select the eswitch mode of the device. Currently it's only supported for
+    /// PCI PF devices, and only if the eswitch device is managed from the same
+    /// PCI address than the PF.
+    ///
+    /// If set to [`SriovEswitchMode::Preserve`][crate::SriovEswitchMode::Preserve] (default) the eswitch mode won't be
+    /// modified by NetworkManager.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn eswitch_mode(self, eswitch_mode: i32) -> Self {
@@ -472,6 +797,18 @@ impl SettingSriovBuilder {
         }
     }
 
+    /// This controls whether NetworkManager preserves the SR-IOV parameters set on
+    /// the device when the connection is deactivated, or whether it resets them to
+    /// their default value. The SR-IOV parameters are those specified in this setting
+    /// (the "sriov" setting), like the number of VFs to create, the eswitch
+    /// configuration, etc.
+    ///
+    /// If set to [`SriovPreserveOnDown::No`][crate::SriovPreserveOnDown::No], NetworkManager resets the SR-IOV
+    /// parameters when the connection is deactivated. When set to
+    /// [`SriovPreserveOnDown::Yes`][crate::SriovPreserveOnDown::Yes], NetworkManager preserves those parameters
+    /// on the device. If the value is [`SriovPreserveOnDown::Default`][crate::SriovPreserveOnDown::Default], NetworkManager
+    /// looks up a global default value in the configuration; in case no such value is
+    /// defined, it uses [`SriovPreserveOnDown::No`][crate::SriovPreserveOnDown::No] as fallback.
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     pub fn preserve_on_down(self, preserve_on_down: i32) -> Self {
@@ -480,6 +817,13 @@ impl SettingSriovBuilder {
         }
     }
 
+    /// The total number of virtual functions to create.
+    ///
+    /// Note that when the sriov setting is present NetworkManager
+    /// enforces the number of virtual functions on the interface
+    /// (also when it is zero) during activation and resets it
+    /// upon deactivation. To prevent any changes to SR-IOV
+    /// parameters don't add a sriov setting to the connection.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn total_vfs(self, total_vfs: u32) -> Self {
@@ -488,6 +832,31 @@ impl SettingSriovBuilder {
         }
     }
 
+    /// Array of virtual function descriptors.
+    ///
+    /// Each VF descriptor is a dictionary mapping attribute names
+    /// to GVariant values. The 'index' entry is mandatory for
+    /// each VF.
+    ///
+    /// When represented as string a VF is in the form:
+    ///
+    ///   "INDEX [ATTR=VALUE[ ATTR=VALUE]...]".
+    ///
+    /// for example:
+    ///
+    ///   "2 mac=00:11:22:33:44:55 spoof-check=true".
+    ///
+    /// Multiple VFs can be specified using a comma as separator.
+    /// Currently, the following attributes are supported: mac,
+    /// spoof-check, trust, min-tx-rate, max-tx-rate, vlans.
+    ///
+    /// The "vlans" attribute is represented as a semicolon-separated
+    /// list of VLAN descriptors, where each descriptor has the form
+    ///
+    ///   "ID[.PRIORITY[.PROTO]]".
+    ///
+    /// PROTO can be either 'q' for 802.1Q (the default) or 'ad' for
+    /// 802.1ad.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn vfs(self, vfs: &[&SriovVF]) -> Self {

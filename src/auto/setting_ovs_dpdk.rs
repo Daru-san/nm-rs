@@ -16,6 +16,68 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// OvsDpdk Link Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `devargs`
+    ///  Open vSwitch DPDK device arguments.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `lsc-interrupt`
+    ///  Configures the Link State Change (LSC) detection mode for the OVS DPDK interface.
+    /// When set to [`SettingOvsDpdkLscInterrupt::Ignore`][crate::SettingOvsDpdkLscInterrupt::Ignore], NetworkManager doesn't
+    /// change the default value configured by Open vSwitch.
+    /// [`SettingOvsDpdkLscInterrupt::Enabled`][crate::SettingOvsDpdkLscInterrupt::Enabled] enables interrupts.
+    /// [`SettingOvsDpdkLscInterrupt::Disabled`][crate::SettingOvsDpdkLscInterrupt::Disabled] disables interrupts, thus setting the
+    /// interface in poll mode.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `n-rxq`
+    ///  Open vSwitch DPDK number of rx queues.
+    /// Defaults to zero which means to leave the parameter in OVS unspecified
+    /// and effectively configures one queue.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `n-rxq-desc`
+    ///  The rx queue size (number of rx descriptors) for DPDK ports.
+    /// Must be zero or a power of 2 between 1 and 4096, and supported
+    /// by the hardware. Defaults to zero which means to leave the
+    /// parameter in OVS unspecified and effectively configures 2048
+    /// descriptors.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `n-txq-desc`
+    ///  The tx queue size (number of tx descriptors) for DPDK ports.
+    /// Must be zero or a power of 2 between 1 and 4096, and supported
+    /// by the hardware. Defaults to zero which means to leave the
+    /// parameter in OVS unspecified and effectively configures 2048
+    /// descriptors.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingOvsDpdk")]
     pub struct SettingOvsDpdk(Object<ffi::NMSettingOvsDpdk, ffi::NMSettingOvsDpdkClass>) @extends Setting;
 
@@ -25,6 +87,11 @@ glib::wrapper! {
 }
 
 impl SettingOvsDpdk {
+    /// Creates a new #NMSettingOvsDpdk object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingOvsDpdk object
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_setting_ovs_dpdk_new")]
@@ -44,6 +111,10 @@ impl SettingOvsDpdk {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsDpdk:devargs property of the setting
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_setting_ovs_dpdk_get_devargs")]
@@ -54,6 +125,10 @@ impl SettingOvsDpdk {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsDpdk:lsc-interrupt property of the setting
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "nm_setting_ovs_dpdk_get_lsc_interrupt")]
@@ -65,6 +140,10 @@ impl SettingOvsDpdk {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsDpdk:n-rxq property of the setting
     #[cfg(feature = "v1_36")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_36")))]
     #[doc(alias = "nm_setting_ovs_dpdk_get_n_rxq")]
@@ -76,6 +155,10 @@ impl SettingOvsDpdk {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsDpdk:n-rxq-desc property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_dpdk_get_n_rxq_desc")]
@@ -87,6 +170,10 @@ impl SettingOvsDpdk {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingOvsDpdk:n-txq-desc property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ovs_dpdk_get_n_txq_desc")]
@@ -98,12 +185,19 @@ impl SettingOvsDpdk {
         }
     }
 
+    /// Open vSwitch DPDK device arguments.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn set_devargs(&self, devargs: Option<&str>) {
         ObjectExt::set_property(self,"devargs", devargs)
     }
 
+    /// Configures the Link State Change (LSC) detection mode for the OVS DPDK interface.
+    /// When set to [`SettingOvsDpdkLscInterrupt::Ignore`][crate::SettingOvsDpdkLscInterrupt::Ignore], NetworkManager doesn't
+    /// change the default value configured by Open vSwitch.
+    /// [`SettingOvsDpdkLscInterrupt::Enabled`][crate::SettingOvsDpdkLscInterrupt::Enabled] enables interrupts.
+    /// [`SettingOvsDpdkLscInterrupt::Disabled`][crate::SettingOvsDpdkLscInterrupt::Disabled] disables interrupts, thus setting the
+    /// interface in poll mode.
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "lsc-interrupt")]
@@ -111,6 +205,9 @@ impl SettingOvsDpdk {
         ObjectExt::set_property(self,"lsc-interrupt", lsc_interrupt)
     }
 
+    /// Open vSwitch DPDK number of rx queues.
+    /// Defaults to zero which means to leave the parameter in OVS unspecified
+    /// and effectively configures one queue.
     #[cfg(feature = "v1_36")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_36")))]
     #[doc(alias = "n-rxq")]
@@ -118,6 +215,11 @@ impl SettingOvsDpdk {
         ObjectExt::set_property(self,"n-rxq", n_rxq)
     }
 
+    /// The rx queue size (number of rx descriptors) for DPDK ports.
+    /// Must be zero or a power of 2 between 1 and 4096, and supported
+    /// by the hardware. Defaults to zero which means to leave the
+    /// parameter in OVS unspecified and effectively configures 2048
+    /// descriptors.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "n-rxq-desc")]
@@ -125,6 +227,11 @@ impl SettingOvsDpdk {
         ObjectExt::set_property(self,"n-rxq-desc", n_rxq_desc)
     }
 
+    /// The tx queue size (number of tx descriptors) for DPDK ports.
+    /// Must be zero or a power of 2 between 1 and 4096, and supported
+    /// by the hardware. Defaults to zero which means to leave the
+    /// parameter in OVS unspecified and effectively configures 2048
+    /// descriptors.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "n-txq-desc")]
@@ -230,30 +337,50 @@ pub struct SettingOvsDpdkBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Open vSwitch DPDK device arguments.
                             #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn devargs(self, devargs: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("devargs", devargs.into()), }
                         }
 
+                            /// Configures the Link State Change (LSC) detection mode for the OVS DPDK interface.
+                            /// When set to [`SettingOvsDpdkLscInterrupt::Ignore`][crate::SettingOvsDpdkLscInterrupt::Ignore], NetworkManager doesn't
+                            /// change the default value configured by Open vSwitch.
+                            /// [`SettingOvsDpdkLscInterrupt::Enabled`][crate::SettingOvsDpdkLscInterrupt::Enabled] enables interrupts.
+                            /// [`SettingOvsDpdkLscInterrupt::Disabled`][crate::SettingOvsDpdkLscInterrupt::Disabled] disables interrupts, thus setting the
+                            /// interface in poll mode.
                             #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     pub fn lsc_interrupt(self, lsc_interrupt: i32) -> Self {
                             Self { builder: self.builder.property("lsc-interrupt", lsc_interrupt), }
                         }
 
+                            /// Open vSwitch DPDK number of rx queues.
+                            /// Defaults to zero which means to leave the parameter in OVS unspecified
+                            /// and effectively configures one queue.
                             #[cfg(feature = "v1_36")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_36")))]
     pub fn n_rxq(self, n_rxq: u32) -> Self {
                             Self { builder: self.builder.property("n-rxq", n_rxq), }
                         }
 
+                            /// The rx queue size (number of rx descriptors) for DPDK ports.
+                            /// Must be zero or a power of 2 between 1 and 4096, and supported
+                            /// by the hardware. Defaults to zero which means to leave the
+                            /// parameter in OVS unspecified and effectively configures 2048
+                            /// descriptors.
                             #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn n_rxq_desc(self, n_rxq_desc: u32) -> Self {
                             Self { builder: self.builder.property("n-rxq-desc", n_rxq_desc), }
                         }
 
+                            /// The tx queue size (number of tx descriptors) for DPDK ports.
+                            /// Must be zero or a power of 2 between 1 and 4096, and supported
+                            /// by the hardware. Defaults to zero which means to leave the
+                            /// parameter in OVS unspecified and effectively configures 2048
+                            /// descriptors.
                             #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn n_txq_desc(self, n_txq_desc: u32) -> Self {

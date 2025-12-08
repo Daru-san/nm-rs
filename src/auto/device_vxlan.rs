@@ -9,6 +9,364 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `ageing`
+    ///  The lifetime in seconds of FDB entries learnt by the kernel.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `carrier`
+    ///  Whether the device has carrier.
+    ///
+    /// This property is not implemented yet, and the property is always FALSE.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dst-port`
+    ///  The UDP destination port used to communicate with the remote VXLAN tunnel
+    /// endpoint.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `group`
+    ///  The unicast destination IP address used in outgoing packets when the
+    /// destination link layer address is not known in the VXLAN device
+    /// forwarding database or the multicast IP address joined.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `id`
+    ///  The device's VXLAN ID.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `l2miss`
+    ///  Whether netlink LL ADDR miss notifications are generated.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `l3miss`
+    ///  Whether netlink IP ADDR miss notifications are generated.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `learning`
+    ///  Whether unknown source link layer addresses and IP addresses are entered
+    /// into the VXLAN device forwarding database.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `limit`
+    ///  The maximum number of entries that can be added to the forwarding table.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `local`
+    ///  The source IP address to use in outgoing packets.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `parent`
+    ///  The devices's parent device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `proxy`
+    ///  Whether ARP proxy is turned on.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `rsc`
+    ///  Whether route short circuit is turned on.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `src-port-max`
+    ///  The maximum UDP source port used to communicate with the remote VXLAN
+    /// tunnel endpoint.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `src-port-min`
+    ///  The minimum UDP source port used to communicate with the remote VXLAN
+    /// tunnel endpoint.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `tos`
+    ///  The TOS value to use in outgoing packets.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ttl`
+    ///  The time-to-live value to use in outgoing packets.
+    ///
+    /// Readable
+    /// <details><summary><h4>Device</h4></summary>
+    ///
+    ///
+    /// #### `active-connection`
+    ///  The #NMActiveConnection object that "owns" this device during activation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `autoconnect`
+    ///  Whether the device can auto-activate a connection.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `available-connections`
+    ///  The available connections of the device
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `capabilities`
+    ///  The capabilities of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `device-type`
+    ///  The numeric type of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp4-config`
+    ///  The IPv4 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp6-config`
+    ///  The IPv6 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver`
+    ///  The driver of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver-version`
+    ///  The version of the device driver.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-missing`
+    ///  When [`true`] indicates the device is likely missing firmware required
+    /// for its operation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-version`
+    ///  The firmware version of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `hw-address`
+    ///  The hardware address of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface`
+    ///  The interface of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface-flags`
+    ///  The interface flags.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip-interface`
+    ///  The IP interface of the device which should be used for all IP-related
+    /// operations like addressing and routing.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-config`
+    ///  The #NMIP4Config of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-connectivity`
+    ///  The IPv4 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-config`
+    ///  The IPv6 #NMIPConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-connectivity`
+    ///  The IPv6 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `lldp-neighbors`
+    ///  The LLDP neighbors.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `managed`
+    ///  Whether the device is managed by NetworkManager.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `metered`
+    ///  Whether the device is metered.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `mtu`
+    ///  The MTU of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `nm-plugin-missing`
+    ///  When [`true`] indicates that the NetworkManager plugin for the device
+    /// is not installed.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The device path as exposed by the udev property ID_PATH.
+    ///
+    /// The string is backslash escaped (C escaping) for invalid
+    /// characters. The escaping can be reverted with g_strcompress(),
+    /// however the result may not be valid UTF-8.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `physical-port-id`
+    ///  The physical port ID of the device. (See
+    /// nm_device_get_physical_port_id().)
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ports`
+    ///  The port devices of the controller device. For devices that cannot be
+    /// controllers this is likely to be always empty.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `product`
+    ///  The product string of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `real`
+    ///  Whether the device is real or is a placeholder device that could
+    /// be created automatically by NetworkManager if one of its
+    /// #NMDevice:available-connections was activated.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state-reason`
+    ///  The reason for the device state.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `udi`
+    ///  An operating-system specific device hardware identifier; this is not
+    /// unique to a specific hardware device across reboots or hotplugs.  It
+    /// is an opaque string which for some device types (Bluetooth, Modem)
+    /// contains an identifier provided by the underlying hardware service daemon
+    /// such as Bluez or ModemManager, and clients can use this property to
+    /// request more information about the device from those services.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `vendor`
+    ///  The vendor string of the device.
+    ///
+    /// Readable
+    /// </details>
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`DeviceExt`][trait@crate::prelude::DeviceExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMDeviceVxlan")]
     pub struct DeviceVxlan(Object<ffi::NMDeviceVxlan, ffi::NMDeviceVxlanClass>) @extends Device, Object;
 
@@ -27,6 +385,10 @@ impl DeviceVxlan {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the lifetime in seconds of FDB entries learnt by the kernel
     #[doc(alias = "nm_device_vxlan_get_ageing")]
     #[doc(alias = "get_ageing")]
     pub fn ageing(&self) -> u32 {
@@ -35,6 +397,14 @@ impl DeviceVxlan {
         }
     }
 
+    /// Whether the device has carrier.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the device has carrier.
+    ///
+    /// This property is not implemented yet, and the function always returns
+    /// FALSE.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_device_vxlan_get_carrier")]
@@ -46,6 +416,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the UDP destination port
     #[doc(alias = "nm_device_vxlan_get_dst_port")]
     #[doc(alias = "get_dst_port")]
     #[doc(alias = "dst-port")]
@@ -55,6 +429,11 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// The unicast destination IP address or the multicast
+    /// IP address joined
     #[doc(alias = "nm_device_vxlan_get_group")]
     #[doc(alias = "get_group")]
     pub fn group(&self) -> glib::GString {
@@ -63,6 +442,16 @@ impl DeviceVxlan {
         }
     }
 
+    /// Gets the hardware (MAC) address of the #NMDeviceVxlan
+    ///
+    /// # Deprecated since 1.24
+    ///
+    /// Use nm_device_get_hw_address() instead.
+    ///
+    /// # Returns
+    ///
+    /// the hardware address. This is the internal string used by the
+    /// device, and must not be modified.
     #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
     #[allow(deprecated)]
     #[doc(alias = "nm_device_vxlan_get_hw_address")]
@@ -73,6 +462,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the device's VXLAN ID.
     #[doc(alias = "nm_device_vxlan_get_id")]
     #[doc(alias = "get_id")]
     pub fn id(&self) -> u32 {
@@ -81,6 +474,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether netlink LL ADDR miss notifications are generated
     #[doc(alias = "nm_device_vxlan_get_l2miss")]
     #[doc(alias = "get_l2miss")]
     #[doc(alias = "l2miss")]
@@ -90,6 +487,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether netlink IP ADDR miss notifications are generated
     #[doc(alias = "nm_device_vxlan_get_l3miss")]
     #[doc(alias = "get_l3miss")]
     #[doc(alias = "l3miss")]
@@ -99,6 +500,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether address learning is enabled
     #[doc(alias = "nm_device_vxlan_get_learning")]
     #[doc(alias = "get_learning")]
     #[doc(alias = "learning")]
@@ -108,6 +513,11 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the maximum number of entries that can be added to the
+    /// forwarding table
     #[doc(alias = "nm_device_vxlan_get_limit")]
     #[doc(alias = "get_limit")]
     pub fn limit(&self) -> u32 {
@@ -116,6 +526,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the source IP address to use in outgoing packets
     #[doc(alias = "nm_device_vxlan_get_local")]
     #[doc(alias = "get_local")]
     pub fn local(&self) -> glib::GString {
@@ -124,6 +538,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the device's parent device
     #[doc(alias = "nm_device_vxlan_get_parent")]
     #[doc(alias = "get_parent")]
     pub fn parent(&self) -> Device {
@@ -132,6 +550,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether ARP proxy is turned on
     #[doc(alias = "nm_device_vxlan_get_proxy")]
     #[doc(alias = "get_proxy")]
     #[doc(alias = "proxy")]
@@ -141,6 +563,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether route short circuit is turned on
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_device_vxlan_get_rsc")]
@@ -152,6 +578,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the maximum UDP source port
     #[doc(alias = "nm_device_vxlan_get_src_port_max")]
     #[doc(alias = "get_src_port_max")]
     #[doc(alias = "src-port-max")]
@@ -161,6 +591,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the minimum UDP source port
     #[doc(alias = "nm_device_vxlan_get_src_port_min")]
     #[doc(alias = "get_src_port_min")]
     #[doc(alias = "src-port-min")]
@@ -170,6 +604,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the TOS value to use in outgoing packets
     #[doc(alias = "nm_device_vxlan_get_tos")]
     #[doc(alias = "get_tos")]
     pub fn tos(&self) -> u32 {
@@ -178,6 +616,10 @@ impl DeviceVxlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the time-to-live value to use in outgoing packets
     #[doc(alias = "nm_device_vxlan_get_ttl")]
     #[doc(alias = "get_ttl")]
     pub fn ttl(&self) -> u32 {
@@ -468,6 +910,9 @@ pub struct DeviceVxlanBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Whether the device can auto-activate a connection.
+                            ///
+                            /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
                             pub fn autoconnect(self, autoconnect: bool) -> Self {
                             Self { builder: self.builder.property("autoconnect", autoconnect), }
                         }

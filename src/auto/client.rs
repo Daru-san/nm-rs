@@ -35,6 +35,327 @@ use std::{boxed::Box as Box_, pin::Pin};
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
 glib::wrapper! {
+    /// NMClient contains a cache of the objects of NetworkManager's D-Bus API.
+    /// It uses #GMainContext and #GDBusConnection for that and registers to
+    /// D-Bus signals. That means, when iterating the associated #GMainContext,
+    /// D-Bus signals gets processed and the #NMClient instance updates and
+    /// emits #GObject signals.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `activating-connection`
+    ///  The #NMActiveConnection of the activating connection that is
+    /// likely to become the new #NMClient:primary-connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `active-connections`
+    ///  The active connections.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `all-devices`
+    ///  List of both real devices and device placeholders.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `can-modify`
+    ///  If [`true`], adding and modifying connections is supported.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `capabilities`
+    ///  The list of capabilities numbers as guint32 or [`None`] if
+    /// there are no capabilities. The numeric value correspond
+    /// to `NMCapability` enum.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `checkpoints`
+    ///  The list of active checkpoints.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `connections`
+    ///  The list of configured connections that are available to the user. (Note
+    /// that this differs from the underlying D-Bus property, which may also
+    /// contain the object paths of connections that the user does not have
+    /// permission to read the details of.)
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `connectivity`
+    ///  The network connectivity state.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `connectivity-check-available`
+    ///  Readable
+    ///
+    ///
+    /// #### `connectivity-check-enabled`
+    ///  Readable | Writeable
+    ///
+    ///
+    /// #### `connectivity-check-uri`
+    ///  The used URI for connectivity checking.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dbus-connection`
+    ///  The #GDBusConnection to use.
+    ///
+    /// If this is not set during object construction, the D-Bus connection will
+    /// automatically be chosen during async/sync initalization via g_bus_get().
+    ///
+    /// Readable | Writeable | Construct Only
+    ///
+    ///
+    /// #### `dbus-name-owner`
+    ///  The name owner of the NetworkManager D-Bus service.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `devices`
+    ///  List of real network devices.  Does not include placeholder devices.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dns-configuration`
+    ///  The current DNS configuration, represented as an array
+    /// of #NMDnsEntry objects.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dns-mode`
+    ///  The current DNS processing mode.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dns-rc-manager`
+    ///  The current resolv.conf management mode.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `hostname`
+    ///  The machine hostname stored in persistent configuration. This can be
+    /// modified by calling nm_client_save_hostname().
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `instance-flags`
+    ///  #NMClientInstanceFlags for the instance. These affect behavior of #NMClient.
+    /// This is a construct property and you may only set most flags only during
+    /// construction.
+    ///
+    /// The flag [`ClientInstanceFlags::NO_AUTO_FETCH_PERMISSIONS`][crate::ClientInstanceFlags::NO_AUTO_FETCH_PERMISSIONS] can be toggled any time,
+    /// even after constructing the instance. Note that you may want to watch NMClient:permissions-state
+    /// property to know whether permissions are ready. Note that permissions are only fetched
+    /// when NMClient has a D-Bus name owner.
+    ///
+    /// The flags [`ClientInstanceFlags::INITIALIZED_GOOD`][crate::ClientInstanceFlags::INITIALIZED_GOOD] and [`ClientInstanceFlags::INITIALIZED_BAD`][crate::ClientInstanceFlags::INITIALIZED_BAD]
+    /// cannot be set, however they will be returned by the getter after initialization completes.
+    ///
+    /// Readable | Writeable | Construct
+    ///
+    ///
+    /// #### `metered`
+    ///  Whether the connectivity is metered.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `networking-enabled`
+    ///  Whether networking is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `nm-running`
+    ///  Whether the daemon is running.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `permissions-state`
+    ///  The state of the cached permissions. The value [`Ternary::Default`][crate::Ternary::Default]
+    /// means that no permissions are yet received (or not yet requested).
+    /// [`Ternary::True`][crate::Ternary::True] means that permissions are received, cached and up
+    /// to date. [`Ternary::False`][crate::Ternary::False] means that permissions were received and are
+    /// cached, but in the meantime a "CheckPermissions" signal was received
+    /// that invalidated the cached permissions.
+    /// Note that NMClient will always emit a notify::permissions-state signal
+    /// when a "CheckPermissions" signal got received or after new permissions
+    /// got received (that is regardless whether the value of the permission state
+    /// actually changed). With this you can watch the permissions-state property
+    /// to know whether the permissions are ready. Note that while NMClient has
+    /// no D-Bus name owner, no permissions are fetched (and this property won't
+    /// change).
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `primary-connection`
+    ///  The #NMActiveConnection of the device with the default route;
+    /// see nm_client_get_primary_connection() for more details.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `radio-flags`
+    ///  Flags for radio interfaces. See #NMRadioFlags.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `startup`
+    ///  Whether the daemon is still starting up.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state`
+    ///  The current daemon state.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `version`
+    ///  The NetworkManager version.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `version-info`
+    ///  Expose version info and capabilities of NetworkManager. If non-empty,
+    /// the first element is NM_VERSION, which encodes the version of the
+    /// daemon as "(major << 16 | minor << 8 | micro)". The following elements
+    /// is a bitfields of `NMVersionInfoCapability`. If a bit is set, then
+    /// the running NetworkManager has the respective capability.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `wimax-enabled`
+    ///  Whether WiMAX functionality is enabled.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `wimax-hardware-enabled`
+    ///  Whether the WiMAX hardware is enabled.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `wireless-enabled`
+    ///  Whether wireless is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `wireless-hardware-enabled`
+    ///  Whether the wireless hardware is enabled.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `wwan-enabled`
+    ///  Whether WWAN functionality is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `wwan-hardware-enabled`
+    ///  Whether the WWAN hardware is enabled.
+    ///
+    /// Readable
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `active-connection-added`
+    ///  Notifies that a #NMActiveConnection has been added.
+    ///
+    ///
+    ///
+    ///
+    /// #### `active-connection-removed`
+    ///  Notifies that a #NMActiveConnection has been removed.
+    ///
+    ///
+    ///
+    ///
+    /// #### `any-device-added`
+    ///  Notifies that a #NMDevice is added.  This signal is emitted for both
+    /// regular devices and placeholder devices.
+    ///
+    ///
+    ///
+    ///
+    /// #### `any-device-removed`
+    ///  Notifies that a #NMDevice is removed.  This signal is emitted for both
+    /// regular devices and placeholder devices.
+    ///
+    ///
+    ///
+    ///
+    /// #### `connection-added`
+    ///  Notifies that a #NMConnection has been added.
+    ///
+    ///
+    ///
+    ///
+    /// #### `connection-removed`
+    ///  Notifies that a #NMConnection has been removed.
+    ///
+    ///
+    ///
+    ///
+    /// #### `device-added`
+    ///  Notifies that a #NMDevice is added.  This signal is not emitted for
+    /// placeholder devices.
+    ///
+    ///
+    ///
+    ///
+    /// #### `device-removed`
+    ///  Notifies that a #NMDevice is removed.  This signal is not emitted for
+    /// placeholder devices.
+    ///
+    ///
+    ///
+    ///
+    /// #### `permission-changed`
+    ///  Notifies that a permission has changed
+    ///
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`trait@gio::prelude::AsyncInitableExt`], [`trait@gio::prelude::InitableExt`]
     #[doc(alias = "NMClient")]
     pub struct Client(Object<ffi::NMClient, ffi::NMClientClass>) @implements gio::AsyncInitable, gio::Initable;
 
@@ -65,6 +386,45 @@ glib::wrapper! {
 }
 
 impl Client {
+    /// Creates a new #NMClient synchronously.
+    ///
+    /// Note that this will block until a NMClient instance is fully initialized.
+    /// This does nothing beside calling g_initable_new(). You are free to call
+    /// g_initable_new() or g_object_new()/g_initable_init() directly for more
+    /// control, to set GObject properties or get access to the NMClient instance
+    /// while it is still initializing.
+    ///
+    /// Using the synchronous initialization creates an #NMClient instance
+    /// that uses an internal #GMainContext. This context is invisible to the
+    /// user. This introduces an additional overhead that is payed not
+    /// only during object initialization, but for the entire lifetime of
+    /// this object.
+    /// Also, due to this internal #GMainContext, the events are no longer
+    /// in sync with other messages from #GDBusConnection (but all events
+    /// of the NMClient will themselves still be ordered).
+    /// For a serious program, you should therefore avoid these problems by
+    /// using g_async_initable_init_async() or nm_client_new_async() instead.
+    /// The sync initialization is still useful for simple scripts or interactive
+    /// testing for example via pygobject.
+    ///
+    /// Creating an #NMClient instance can only fail for two reasons. First, if you didn't
+    /// provide a [`CLIENT_DBUS_CONNECTION`][crate::CLIENT_DBUS_CONNECTION] and the call to g_bus_get()
+    /// fails. You can avoid that by using g_initable_new() directly and
+    /// set a D-Bus connection.
+    /// Second, if you cancelled the creation. If you do that, then note
+    /// that after the failure there might still be idle actions pending
+    /// which keep nm_client_get_main_context() alive. That means,
+    /// in that case you must continue iterating the context to avoid
+    /// leaks. See nm_client_get_context_busy_watcher().
+    ///
+    /// Creating an #NMClient instance when NetworkManager is not running
+    /// does not cause a failure.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// a new #NMClient or NULL on an error
     #[doc(alias = "nm_client_new")]
     pub fn new(cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<Client, glib::Error> {
         assert_initialized_main_thread!();
@@ -88,6 +448,38 @@ impl Client {
         ClientBuilder::new()
     }
 
+    /// Asynchronously starts a connection to a particular network using the
+    /// configuration settings from @connection and the network device @device.
+    /// Certain connection types also take a "specific object" which is the object
+    /// path of a connection- specific object, like an #NMAccessPoint for Wi-Fi
+    /// connections, or an #NMWimaxNsp for WiMAX connections, to which you wish to
+    /// connect.  If the specific object is not given, NetworkManager can, in some
+    /// cases, automatically determine which network to connect to given the settings
+    /// in @connection.
+    ///
+    /// If @connection is not given for a device-based activation, NetworkManager
+    /// picks the best available connection for the device and activates it.
+    ///
+    /// Note that the callback is invoked when NetworkManager has started activating
+    /// the new connection, not when it finishes. You can use the returned
+    /// #NMActiveConnection object (in particular, #NMActiveConnection:state) to
+    /// track the activation to its completion.
+    /// ## `connection`
+    /// an #NMConnection
+    /// ## `device`
+    /// the #NMDevice
+    /// ## `specific_object`
+    /// the object path of a connection-type-specific
+    ///   object this activation should use. This parameter is currently ignored for
+    ///   wired and mobile broadband connections, and the value of [`None`] should be used
+    ///   (ie, no specific object).  For Wi-Fi or WiMAX connections, pass the object
+    ///   path of a #NMAccessPoint or #NMWimaxNsp owned by @device, which you can
+    ///   get using nm_object_get_path(), and which will be used to complete the
+    ///   details of the newly added connection.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the activation has started
     #[doc(alias = "nm_client_activate_connection_async")]
     pub fn activate_connection_async<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(
         &self,
@@ -199,6 +591,35 @@ impl Client {
     //}))
     //}
 
+    /// Adds a new connection using the given details (if any) as a template,
+    /// automatically filling in missing settings with the capabilities of the given
+    /// device and specific object.  The new connection is then asynchronously
+    /// activated as with nm_client_activate_connection_async(). Cannot be used for
+    /// VPN connections at this time.
+    ///
+    /// Note that the callback is invoked when NetworkManager has started activating
+    /// the new connection, not when it finishes. You can used the returned
+    /// #NMActiveConnection object (in particular, #NMActiveConnection:state) to
+    /// track the activation to its completion.
+    /// ## `partial`
+    /// an #NMConnection to add; the connection may be
+    ///   partially filled (or even [`None`]) and will be completed by NetworkManager
+    ///   using the given @device and @specific_object before being added
+    /// ## `device`
+    /// the #NMDevice
+    /// ## `specific_object`
+    /// the object path of a connection-type-specific
+    ///   object this activation should use. This parameter is currently ignored for
+    ///   wired and mobile broadband connections, and the value of [`None`] should be used
+    ///   (ie, no specific object).  For Wi-Fi or WiMAX connections, pass the object
+    ///   path of a #NMAccessPoint or #NMWimaxNsp owned by @device, which you can
+    ///   get using nm_object_get_path(), and which will be used to complete the
+    ///   details of the newly added connection.
+    ///   If the variant is floating, it will be consumed.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the activation has started
     #[doc(alias = "nm_client_add_and_activate_connection_async")]
     pub fn add_and_activate_connection_async<
         P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static,
@@ -310,6 +731,29 @@ impl Client {
     //}))
     //}
 
+    /// Requests that the remote settings service add the given settings to a new
+    /// connection.  If @save_to_disk is [`true`], the connection is immediately written
+    /// to disk; otherwise it is initially only stored in memory, but may be saved
+    /// later by calling the connection's nm_remote_connection_commit_changes()
+    /// method.
+    ///
+    /// @connection is untouched by this function and only serves as a template of
+    /// the settings to add.  The #NMRemoteConnection object that represents what
+    /// NetworkManager actually added is returned to @callback when the addition
+    /// operation is complete.
+    ///
+    /// Note that the #NMRemoteConnection returned in @callback may not contain
+    /// identical settings to @connection as NetworkManager may perform automatic
+    /// completion and/or normalization of connection properties.
+    /// ## `connection`
+    /// the connection to add. Note that this object's settings will be
+    ///   added, not the object itself
+    /// ## `save_to_disk`
+    /// whether to immediately save the connection to disk
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the add operation completes
     #[doc(alias = "nm_client_add_connection_async")]
     pub fn add_connection_async<P: FnOnce(Result<RemoteConnection, glib::Error>) + 'static>(
         &self,
@@ -377,6 +821,22 @@ impl Client {
         }))
     }
 
+    /// Updates the network connectivity state and returns the (new)
+    /// current state. Contrast nm_client_get_connectivity(), which returns
+    /// the most recent known state without re-checking.
+    ///
+    /// This is a blocking call; use nm_client_check_connectivity_async()
+    /// if you do not want to block.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_client_check_connectivity_async() or GDBusConnection.
+    /// ## `cancellable`
+    /// a #GCancellable
+    ///
+    /// # Returns
+    ///
+    /// the (new) current connectivity state
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_check_connectivity")]
@@ -399,6 +859,14 @@ impl Client {
         }
     }
 
+    /// Asynchronously updates the network connectivity state and invokes
+    /// @callback when complete. Contrast nm_client_get_connectivity(),
+    /// which (immediately) returns the most recent known state without
+    /// re-checking, and nm_client_check_connectivity(), which blocks.
+    /// ## `cancellable`
+    /// a #GCancellable
+    /// ## `callback`
+    /// callback to call with the result
     #[doc(alias = "nm_client_check_connectivity_async")]
     pub fn check_connectivity_async<P: FnOnce(Result<ConnectivityState, glib::Error>) + 'static>(
         &self,
@@ -459,6 +927,17 @@ impl Client {
         }))
     }
 
+    /// Resets the timeout for the checkpoint with path @checkpoint_path
+    /// to @timeout_add.
+    /// ## `checkpoint_path`
+    /// a D-Bus path to a checkpoint
+    /// ## `add_timeout`
+    /// the timeout in seconds counting from now.
+    ///   Set to zero, to disable the timeout.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the add operation completes
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_client_checkpoint_adjust_rollback_timeout")]
@@ -537,6 +1016,21 @@ impl Client {
         }))
     }
 
+    /// Creates a checkpoint of the current networking configuration
+    /// for given interfaces. An empty @devices argument means all
+    /// devices. If @rollback_timeout is not zero, a rollback is
+    /// automatically performed after the given timeout.
+    /// ## `devices`
+    /// a list of devices for which a
+    ///   checkpoint should be created.
+    /// ## `rollback_timeout`
+    /// the rollback timeout in seconds
+    /// ## `flags`
+    /// creation flags
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the add operation completes
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_client_checkpoint_create")]
@@ -707,6 +1201,13 @@ impl Client {
     //}))
     //}
 
+    /// Determine whether connectivity checking is available.  This
+    /// requires that the URI of a connectivity service has been set in the
+    /// configuration file.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if connectivity checking is available.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_client_connectivity_check_get_available")]
@@ -718,6 +1219,11 @@ impl Client {
         }
     }
 
+    /// Determine whether connectivity checking is enabled.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if connectivity checking is enabled.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_client_connectivity_check_get_enabled")]
@@ -729,6 +1235,12 @@ impl Client {
         }
     }
 
+    /// Get the URI that will be queried to determine if there is internet
+    /// connectivity.
+    ///
+    /// # Returns
+    ///
+    /// the connectivity URI in use
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_client_connectivity_check_get_uri")]
@@ -740,6 +1252,16 @@ impl Client {
         }
     }
 
+    /// Enable or disable connectivity checking.  Note that if a
+    /// connectivity checking URI has not been configured, this will not
+    /// have any effect.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use the async command nm_client_dbus_set_property() on [`DBUS_PATH`][crate::DBUS_PATH],
+    /// [`DBUS_INTERFACE`][crate::DBUS_INTERFACE] to set "ConnectivityCheckEnabled" property to a "(b)" value.
+    /// ## `enabled`
+    /// [`true`] to enable connectivity checking
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
@@ -818,6 +1340,19 @@ impl Client {
     //}))
     //}
 
+    /// Deactivates an active #NMActiveConnection.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_client_deactivate_connection_async() or GDBusConnection.
+    /// ## `active`
+    /// the #NMActiveConnection to deactivate
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// success or failure
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_deactivate_connection")]
@@ -843,6 +1378,13 @@ impl Client {
         }
     }
 
+    /// Asynchronously deactivates an active #NMActiveConnection.
+    /// ## `active`
+    /// the #NMActiveConnection to deactivate
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the deactivation has completed
     #[doc(alias = "nm_client_deactivate_connection_async")]
     pub fn deactivate_connection_async<P: FnOnce(Result<(), glib::Error>) + 'static>(
         &self,
@@ -905,6 +1447,14 @@ impl Client {
         }))
     }
 
+    /// Gets the #NMActiveConnection corresponding to a
+    /// currently-activating connection that is expected to become the new
+    /// #NMClient:primary-connection upon successful activation.
+    ///
+    /// # Returns
+    ///
+    /// the appropriate #NMActiveConnection, if
+    /// any.
     #[doc(alias = "nm_client_get_activating_connection")]
     #[doc(alias = "get_activating_connection")]
     #[doc(alias = "activating-connection")]
@@ -916,6 +1466,13 @@ impl Client {
         }
     }
 
+    /// Gets the active connections.
+    ///
+    /// # Returns
+    ///
+    /// a #GPtrArray
+    ///  containing all the active #NMActiveConnections.
+    /// The returned array is owned by the client and should not be modified.
     #[doc(alias = "nm_client_get_active_connections")]
     #[doc(alias = "get_active_connections")]
     #[doc(alias = "active-connections")]
@@ -927,6 +1484,21 @@ impl Client {
         }
     }
 
+    /// Gets both real devices and device placeholders (eg, software devices which
+    /// do not currently exist, but could be created automatically by NetworkManager
+    /// if one of their NMDevice::ActivatableConnections was activated).  Use
+    /// nm_device_is_real() to determine whether each device is a real device or
+    /// a placeholder.
+    ///
+    /// Use nm_device_get_type() or the NM_IS_DEVICE_XXXX() functions to determine
+    /// what kind of device each member of the returned array is, and then you may
+    /// use device-specific methods such as nm_device_ethernet_get_hw_address().
+    ///
+    /// # Returns
+    ///
+    /// a #GPtrArray
+    /// containing all the #NMDevices.  The returned array is owned by the
+    /// #NMClient object and should not be modified.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_client_get_all_devices")]
@@ -940,6 +1512,15 @@ impl Client {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the
+    ///   list of capabilities reported by the server or [`None`]
+    ///   if the capabilities are unknown.
+    ///   The numeric values correspond to #NMCapability enum.
+    ///   The array is terminated by a numeric zero sentinel
+    ///   at position @length.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_client_get_capabilities")]
@@ -955,6 +1536,13 @@ impl Client {
         }
     }
 
+    /// Gets all the active checkpoints.
+    ///
+    /// # Returns
+    ///
+    /// a #GPtrArray
+    /// containing all the #NMCheckpoint.  The returned array is owned by the
+    /// #NMClient object and should not be modified.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_client_get_checkpoints")]
@@ -967,6 +1555,17 @@ impl Client {
         }
     }
 
+    /// Returns the first matching `NMRemoteConnection` matching a given @id.
+    /// ## `id`
+    /// the id of the remote connection
+    ///
+    /// # Returns
+    ///
+    /// the remote connection object on success, or [`None`] if no
+    ///  matching object was found.
+    ///
+    /// The connection is as received from D-Bus and might not validate according
+    /// to nm_connection_verify().
     #[doc(alias = "nm_client_get_connection_by_id")]
     #[doc(alias = "get_connection_by_id")]
     pub fn connection_by_id(&self, id: &str) -> RemoteConnection {
@@ -978,6 +1577,17 @@ impl Client {
         }
     }
 
+    /// Returns the `NMRemoteConnection` representing the connection at @path.
+    /// ## `path`
+    /// the D-Bus object path of the remote connection
+    ///
+    /// # Returns
+    ///
+    /// the remote connection object on success, or [`None`] if the object was
+    ///  not known
+    ///
+    /// The connection is as received from D-Bus and might not validate according
+    /// to nm_connection_verify().
     #[doc(alias = "nm_client_get_connection_by_path")]
     #[doc(alias = "get_connection_by_path")]
     pub fn connection_by_path(&self, path: &str) -> RemoteConnection {
@@ -989,6 +1599,17 @@ impl Client {
         }
     }
 
+    /// Returns the `NMRemoteConnection` identified by @uuid.
+    /// ## `uuid`
+    /// the UUID of the remote connection
+    ///
+    /// # Returns
+    ///
+    /// the remote connection object on success, or [`None`] if the object was
+    ///  not known
+    ///
+    /// The connection is as received from D-Bus and might not validate according
+    /// to nm_connection_verify().
     #[doc(alias = "nm_client_get_connection_by_uuid")]
     #[doc(alias = "get_connection_by_uuid")]
     pub fn connection_by_uuid(&self, uuid: &str) -> RemoteConnection {
@@ -1000,6 +1621,15 @@ impl Client {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// an array
+    /// containing all connections provided by the remote settings service.  The
+    /// returned array is owned by the #NMClient object and should not be modified.
+    ///
+    /// The connections are as received from D-Bus and might not validate according
+    /// to nm_connection_verify().
     #[doc(alias = "nm_client_get_connections")]
     #[doc(alias = "get_connections")]
     pub fn connections(&self) -> Vec<RemoteConnection> {
@@ -1010,6 +1640,14 @@ impl Client {
         }
     }
 
+    /// Gets the current network connectivity state. Contrast
+    /// nm_client_check_connectivity() and
+    /// nm_client_check_connectivity_async(), which re-check the
+    /// connectivity state first before returning any information.
+    ///
+    /// # Returns
+    ///
+    /// the current connectivity state
     #[doc(alias = "nm_client_get_connectivity")]
     #[doc(alias = "get_connectivity")]
     pub fn connectivity(&self) -> ConnectivityState {
@@ -1033,6 +1671,10 @@ impl Client {
     //    unsafe { TODO: call ffi:nm_client_get_dbus_connection() }
     //}
 
+    ///
+    /// # Returns
+    ///
+    /// the current name owner of the D-Bus service of NetworkManager.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "nm_client_get_dbus_name_owner")]
@@ -1042,6 +1684,13 @@ impl Client {
         unsafe { from_glib_none(ffi::nm_client_get_dbus_name_owner(self.to_glib_none().0)) }
     }
 
+    /// Gets a #NMDevice from a #NMClient.
+    /// ## `iface`
+    /// the interface name to search for
+    ///
+    /// # Returns
+    ///
+    /// the #NMDevice for the given @iface or [`None`] if none is found.
     #[doc(alias = "nm_client_get_device_by_iface")]
     #[doc(alias = "get_device_by_iface")]
     pub fn device_by_iface(&self, iface: &str) -> Device {
@@ -1053,6 +1702,13 @@ impl Client {
         }
     }
 
+    /// Gets a #NMDevice from a #NMClient.
+    /// ## `object_path`
+    /// the object path to search for
+    ///
+    /// # Returns
+    ///
+    /// the #NMDevice for the given @object_path or [`None`] if none is found.
     #[doc(alias = "nm_client_get_device_by_path")]
     #[doc(alias = "get_device_by_path")]
     pub fn device_by_path(&self, object_path: &str) -> Device {
@@ -1064,6 +1720,16 @@ impl Client {
         }
     }
 
+    /// Gets all the known network devices.  Use nm_device_get_type() or the
+    /// <literal>NM_IS_DEVICE_XXXX</literal> functions to determine what kind of
+    /// device member of the returned array is, and then you may use device-specific
+    /// methods such as nm_device_ethernet_get_hw_address().
+    ///
+    /// # Returns
+    ///
+    /// a #GPtrArray
+    /// containing all the #NMDevices.  The returned array is owned by the
+    /// #NMClient object and should not be modified.
     #[doc(alias = "nm_client_get_devices")]
     #[doc(alias = "get_devices")]
     pub fn devices(&self) -> Vec<Device> {
@@ -1072,6 +1738,14 @@ impl Client {
         }
     }
 
+    /// Gets the current DNS configuration
+    ///
+    /// # Returns
+    ///
+    /// a #GPtrArray
+    /// containing #NMDnsEntry elements or [`None`] in case the value is not
+    /// available.  The returned array is owned by the #NMClient object
+    /// and should not be modified.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_client_get_dns_configuration")]
@@ -1085,6 +1759,12 @@ impl Client {
         }
     }
 
+    /// Gets the current DNS processing mode.
+    ///
+    /// # Returns
+    ///
+    /// the DNS processing mode, or [`None`] in case the
+    ///   value is not available.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_client_get_dns_mode")]
@@ -1094,6 +1774,12 @@ impl Client {
         unsafe { from_glib_none(ffi::nm_client_get_dns_mode(self.to_glib_none().0)) }
     }
 
+    /// Gets the current DNS resolv.conf manager.
+    ///
+    /// # Returns
+    ///
+    /// the resolv.conf manager or [`None`] in case the
+    ///   value is not available.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_client_get_dns_rc_manager")]
@@ -1103,6 +1789,10 @@ impl Client {
         unsafe { from_glib_none(ffi::nm_client_get_dns_rc_manager(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMClientInstanceFlags flags.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_client_get_instance_flags")]
@@ -1112,6 +1802,24 @@ impl Client {
         unsafe { from_glib(ffi::nm_client_get_instance_flags(self.to_glib_none().0)) }
     }
 
+    /// Gets NetworkManager current logging level and domains.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use the async command nm_client_dbus_call() on [`DBUS_PATH`][crate::DBUS_PATH],
+    /// [`DBUS_INTERFACE`][crate::DBUS_INTERFACE] to call "GetLogging" with no arguments to get "(ss)" for level
+    /// and domains.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] otherwise
+    ///
+    /// ## `level`
+    /// return location for logging level string
+    ///
+    /// ## `domains`
+    /// return location for log domains string. The string is
+    ///   a list of domains separated by ","
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_get_logging")]
@@ -1144,6 +1852,10 @@ impl Client {
     //    unsafe { TODO: call ffi:nm_client_get_main_context() }
     //}
 
+    ///
+    /// # Returns
+    ///
+    /// whether the default route is metered.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "nm_client_get_metered")]
@@ -1152,6 +1864,11 @@ impl Client {
         unsafe { from_glib(ffi::nm_client_get_metered(self.to_glib_none().0)) }
     }
 
+    /// Determines whether the daemon is running.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the daemon is running
     #[doc(alias = "nm_client_get_nm_running")]
     #[doc(alias = "get_nm_running")]
     #[doc(alias = "nm-running")]
@@ -1159,6 +1876,13 @@ impl Client {
         unsafe { from_glib(ffi::nm_client_get_nm_running(self.to_glib_none().0)) }
     }
 
+    /// ## `dbus_path`
+    /// the D-Bus path of the object to look up
+    ///
+    /// # Returns
+    ///
+    /// the #NMObject instance that is
+    ///   cached under @dbus_path, or [`None`] if no such object exists.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_client_get_object_by_path")]
@@ -1172,6 +1896,14 @@ impl Client {
         }
     }
 
+    /// Requests the result of a specific permission, which indicates whether the
+    /// client can or cannot perform the action the permission represents
+    /// ## `permission`
+    /// the permission for which to return the result, one of #NMClientPermission
+    ///
+    /// # Returns
+    ///
+    /// the permission's result, one of #NMClientPermissionResult
     #[doc(alias = "nm_client_get_permission_result")]
     #[doc(alias = "get_permission_result")]
     pub fn permission_result(&self, permission: ClientPermission) -> ClientPermissionResult {
@@ -1183,6 +1915,15 @@ impl Client {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the state of the cached permissions. [`Ternary::Default`][crate::Ternary::Default]
+    ///   means that no permissions result was yet received. All permissions
+    ///   are unknown. [`Ternary::True`][crate::Ternary::True] means that the permissions got received
+    ///   and are cached. %[`Ternary::False`][crate::Ternary::False] means that permissions are cached,
+    ///   but they are invalided as "CheckPermissions" signal was received
+    ///   in the meantime.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_client_get_permissions_state")]
@@ -1192,6 +1933,22 @@ impl Client {
         unsafe { from_glib(ffi::nm_client_get_permissions_state(self.to_glib_none().0)) }
     }
 
+    /// Gets the #NMActiveConnection corresponding to the primary active
+    /// network device.
+    ///
+    /// In particular, when there is no VPN active, or the VPN does not
+    /// have the default route, this returns the active connection that has
+    /// the default route. If there is a VPN active with the default route,
+    /// then this function returns the active connection that contains the
+    /// route to the VPN endpoint.
+    ///
+    /// If there is no default route, or the default route is over a
+    /// non-NetworkManager-recognized device, this will return [`None`].
+    ///
+    /// # Returns
+    ///
+    /// the appropriate #NMActiveConnection, if
+    /// any
     #[doc(alias = "nm_client_get_primary_connection")]
     #[doc(alias = "get_primary_connection")]
     #[doc(alias = "primary-connection")]
@@ -1199,6 +1956,11 @@ impl Client {
         unsafe { from_glib_none(ffi::nm_client_get_primary_connection(self.to_glib_none().0)) }
     }
 
+    /// Get radio flags.
+    ///
+    /// # Returns
+    ///
+    /// the #NMRadioFlags.
     #[cfg(feature = "v1_38")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_38")))]
     #[doc(alias = "nm_client_get_radio_flags")]
@@ -1208,6 +1970,12 @@ impl Client {
         unsafe { from_glib(ffi::nm_client_get_radio_flags(self.to_glib_none().0)) }
     }
 
+    /// Tests whether the daemon is still in the process of activating
+    /// connections at startup.
+    ///
+    /// # Returns
+    ///
+    /// whether the daemon is still starting up
     #[doc(alias = "nm_client_get_startup")]
     #[doc(alias = "get_startup")]
     #[doc(alias = "startup")]
@@ -1215,18 +1983,38 @@ impl Client {
         unsafe { from_glib(ffi::nm_client_get_startup(self.to_glib_none().0)) }
     }
 
+    /// Gets the current daemon state.
+    ///
+    /// # Returns
+    ///
+    /// the current `NMState`
     #[doc(alias = "nm_client_get_state")]
     #[doc(alias = "get_state")]
     pub fn state(&self) -> State {
         unsafe { from_glib(ffi::nm_client_get_state(self.to_glib_none().0)) }
     }
 
+    /// Gets NetworkManager version.
+    ///
+    /// # Returns
+    ///
+    /// string with the version (or [`None`] if NetworkManager is not running)
     #[doc(alias = "nm_client_get_version")]
     #[doc(alias = "get_version")]
     pub fn version(&self) -> glib::GString {
         unsafe { glib::GString::from_glib_none(ffi::nm_client_get_version(self.to_glib_none().0)) }
     }
 
+    /// If available, the first element in the array is NM_VERSION which
+    /// encodes the daemon version as "(major << 16 | minor << 8 | micro)".
+    /// The following elements are a bitfield of `NMVersionInfoCapability`
+    /// that indicate that the daemon supports a certain capability.
+    ///
+    /// # Returns
+    ///
+    /// the
+    ///   list of capabilities reported by the server or [`None`]
+    ///   if the capabilities are unknown.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_client_get_version_info")]
@@ -1243,6 +2031,42 @@ impl Client {
         }
     }
 
+    /// Requests that the remote settings service load or reload the given files,
+    /// adding or updating the connections described within.
+    ///
+    /// The changes to the indicated files will not yet be reflected in
+    /// @self's connections array when the function returns.
+    ///
+    /// If all of the indicated files were successfully loaded, the
+    /// function will return [`true`], and @failures will be set to [`None`]. If
+    /// NetworkManager tried to load the files, but some (or all) failed,
+    /// then @failures will be set to a [`None`]-terminated array of the
+    /// filenames that failed to load.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_client_load_connections_async() or GDBusConnection.
+    /// ## `filenames`
+    /// [`None`]-terminated array of filenames to load
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success.
+    ///
+    /// Warning: before libnm 1.22, the boolean return value was inconsistent.
+    ///   That is made worse, because when running against certain server versions
+    ///   before 1.20, the server would return wrong values for success/failure.
+    ///   This means, if you use this function in libnm before 1.22, you are advised
+    ///   to ignore the boolean return value and only look at @failures and @error.
+    ///   With libnm >= 1.22, the boolean return value corresponds to whether @error was
+    ///   set. Note that even in the success case, you might have individual @failures.
+    ///   With 1.22, the return value is consistent with nm_client_load_connections_finish().
+    ///
+    /// ## `failures`
+    /// on return, a [`None`]-terminated array of
+    ///   filenames that failed to load
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_load_connections")]
@@ -1270,6 +2094,16 @@ impl Client {
         }
     }
 
+    /// Requests that the remote settings service asynchronously load or reload the
+    /// given files, adding or updating the connections described within.
+    ///
+    /// See nm_client_load_connections() for more details.
+    /// ## `filenames`
+    /// [`None`]-terminated array of filenames to load
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the operation completes
     #[doc(alias = "nm_client_load_connections_async")]
     pub fn load_connections_async<P: FnOnce(Result<Vec<glib::GString>, glib::Error>) + 'static>(
         &self,
@@ -1351,11 +2185,30 @@ impl Client {
         }))
     }
 
+    /// Whether networking is enabled or disabled.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if networking is enabled, [`false`] if networking is disabled
     #[doc(alias = "nm_client_networking_get_enabled")]
     pub fn networking_get_enabled(&self) -> bool {
         unsafe { from_glib(ffi::nm_client_networking_get_enabled(self.to_glib_none().0)) }
     }
 
+    /// Enables or disables networking.  When networking is disabled, all controlled
+    /// interfaces are disconnected and deactivated.  When networking is enabled,
+    /// all controlled interfaces are available for activation.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use the async command nm_client_dbus_call() on [`DBUS_PATH`][crate::DBUS_PATH],
+    /// [`DBUS_INTERFACE`][crate::DBUS_INTERFACE] to call "Enable" with "(b)" arguments and no return value.
+    /// ## `enabled`
+    /// [`true`] to set networking enabled, [`false`] to set networking disabled
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] otherwise
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_networking_set_enabled")]
@@ -1376,6 +2229,17 @@ impl Client {
         }
     }
 
+    /// Reload NetworkManager's configuration and perform certain updates, like
+    /// flushing caches or rewriting external state to disk. This is similar to
+    /// sending SIGHUP to NetworkManager but it allows for more fine-grained control
+    /// over what to reload (see @flags). It also allows non-root access via
+    /// PolicyKit and contrary to signals it is synchronous.
+    /// ## `flags`
+    /// flags indicating what to reload.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the add operation completes
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "nm_client_reload")]
@@ -1439,6 +2303,19 @@ impl Client {
         }))
     }
 
+    /// Requests that the remote settings service reload all connection
+    /// files from disk, adding, updating, and removing connections until
+    /// the in-memory state matches the on-disk state.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_client_reload_connections_async() or GDBusConnection.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] on failure
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_reload_connections")]
@@ -1462,6 +2339,13 @@ impl Client {
         }
     }
 
+    /// Requests that the remote settings service begin reloading all connection
+    /// files from disk, adding, updating, and removing connections until the
+    /// in-memory state matches the on-disk state.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the reload operation completes
     #[doc(alias = "nm_client_reload_connections_async")]
     pub fn reload_connections_async<P: FnOnce(Result<(), glib::Error>) + 'static>(
         &self,
@@ -1520,6 +2404,21 @@ impl Client {
         }))
     }
 
+    /// Requests that the machine's persistent hostname be set to the specified value
+    /// or cleared.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_client_save_hostname_async() or GDBusConnection.
+    /// ## `hostname`
+    /// the new persistent hostname to set, or [`None`] to
+    ///   clear any existing persistent hostname
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the request was successful, [`false`] if it failed
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_save_hostname")]
@@ -1545,6 +2444,15 @@ impl Client {
         }
     }
 
+    /// Requests that the machine's persistent hostname be set to the specified value
+    /// or cleared.
+    /// ## `hostname`
+    /// the new persistent hostname to set, or [`None`] to
+    ///   clear any existing persistent hostname
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the operation completes
     #[doc(alias = "nm_client_save_hostname_async")]
     pub fn save_hostname_async<P: FnOnce(Result<(), glib::Error>) + 'static>(
         &self,
@@ -1611,6 +2519,21 @@ impl Client {
         }))
     }
 
+    /// Sets NetworkManager logging level and/or domains.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use the async command nm_client_dbus_call() on [`DBUS_PATH`][crate::DBUS_PATH],
+    /// [`DBUS_INTERFACE`][crate::DBUS_INTERFACE] to call "SetLogging" with "(ss)" arguments for level and domains.
+    /// ## `level`
+    /// logging level to set ([`None`] or an empty string for no change)
+    /// ## `domains`
+    /// logging domains to set. The string should be a list of log
+    ///   domains separated by ",". ([`None`] or an empty string for no change)
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] otherwise
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_set_logging")]
@@ -1636,6 +2559,65 @@ impl Client {
         }
     }
 
+    /// The way to stop #NMClient is by unrefing it. That will cancel all
+    /// internally pending async operations. However, as async operations in
+    /// NMClient use GTask, hence they cannot complete right away. Instead,
+    /// their (internal) result callback still needs to be dispatched by iterating
+    /// the client's main context.
+    ///
+    /// You thus cannot stop iterating the client's main context until
+    /// everything is wrapped up. nm_client_get_context_busy_watcher()
+    /// helps to watch how long that will be.
+    ///
+    /// This function automates that waiting. Like all glib async operations
+    /// this honors the current g_main_context_get_thread_default().
+    ///
+    /// In any case, to complete the shutdown, nm_client_get_main_context()
+    /// must be iterated. If the current g_main_context_get_thread_default() is
+    /// the same as nm_client_get_main_context(), then @integrate_maincontext
+    /// is ignored. In that case, the caller is required to iterate the context
+    /// for shutdown to complete. Otherwise, if g_main_context_get_thread_default()
+    /// differs from nm_client_get_main_context() and @integrate_maincontext
+    /// is [`false`], the caller must make sure that both contexts are iterated
+    /// until completion. Otherwise, if @integrate_maincontext is [`true`], then
+    /// nm_client_get_main_context() will be integrated in g_main_context_get_thread_default().
+    /// This means, the caller gives nm_client_get_main_context() up until the waiting
+    /// completes, the function will acquire the context and hook it into
+    /// g_main_context_get_thread_default().
+    /// It is a bug to request @integrate_maincontext while having nm_client_get_main_context()
+    /// acquired or iterated otherwise because a context can only be acquired once
+    /// at a time.
+    ///
+    /// Shutdown can only complete after all references to @self were released.
+    ///
+    /// It is possible to call this function multiple times for the same client.
+    /// But note that with @integrate_maincontext the client's context is acquired,
+    /// which can only be done once at a time.
+    ///
+    /// It is permissible to start waiting before the objects is fully initialized.
+    ///
+    /// The function really allows two separate things. To get a notification (callback) when
+    /// shutdown is complete, and to integrate the client's context in another context.
+    /// The latter case is useful if the client has a separate context and you hand it
+    /// over to another GMainContext to wrap up.
+    ///
+    /// The main use is to have a NMClient and a separate GMainContext on a worker
+    /// thread. When being done, you can hand over the cleanup of the context
+    /// to g_main_context_default(), assuming that the main thread iterates
+    /// the default context. In that case, you don't need to care about passing
+    /// a callback to know when shutdown completed.
+    /// ## `integrate_maincontext`
+    /// whether to hook the client's maincontext
+    ///   in the current thread default. Otherwise, you must ensure
+    ///   that the client's maincontext gets iterated so that it can complete.
+    ///   By integrating the maincontext in the current thread default, you
+    ///   may instead only iterate the latter.
+    /// ## `cancellable`
+    /// the #GCancellable to abort the shutdown.
+    /// ## `callback`
+    /// a #GAsyncReadyCallback to call when the request
+    ///   is satisfied or [`None`] if you don't care about the result of the
+    ///   method invocation.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_client_wait_shutdown")]
@@ -1701,6 +2683,15 @@ impl Client {
         }))
     }
 
+    /// Determines whether WiMAX is enabled.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// This function always returns FALSE because WiMax is no longer supported.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if WiMAX is enabled
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_wimax_get_enabled")]
@@ -1708,6 +2699,15 @@ impl Client {
         unsafe { from_glib(ffi::nm_client_wimax_get_enabled(self.to_glib_none().0)) }
     }
 
+    /// Determines whether the WiMAX hardware is enabled.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// This function always returns FALSE because WiMax is no longer supported.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the WiMAX hardware is enabled
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_wimax_hardware_get_enabled")]
@@ -1719,6 +2719,13 @@ impl Client {
         }
     }
 
+    /// Enables or disables WiMAX devices.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// This function does nothing because WiMax is no longer supported.
+    /// ## `enabled`
+    /// [`true`] to enable WiMAX
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_wimax_set_enabled")]
@@ -1728,11 +2735,21 @@ impl Client {
         }
     }
 
+    /// Determines whether the wireless is enabled.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if wireless is enabled
     #[doc(alias = "nm_client_wireless_get_enabled")]
     pub fn wireless_get_enabled(&self) -> bool {
         unsafe { from_glib(ffi::nm_client_wireless_get_enabled(self.to_glib_none().0)) }
     }
 
+    /// Determines whether the wireless hardware is enabled.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the wireless hardware is enabled
     #[doc(alias = "nm_client_wireless_hardware_get_enabled")]
     pub fn wireless_hardware_get_enabled(&self) -> bool {
         unsafe {
@@ -1742,6 +2759,14 @@ impl Client {
         }
     }
 
+    /// Enables or disables wireless devices.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use the async command nm_client_dbus_set_property() on [`DBUS_PATH`][crate::DBUS_PATH],
+    /// [`DBUS_INTERFACE`][crate::DBUS_INTERFACE] to set "WirelessEnabled" property to a "(b)" value.
+    /// ## `enabled`
+    /// [`true`] to enable wireless
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_wireless_set_enabled")]
@@ -1751,11 +2776,21 @@ impl Client {
         }
     }
 
+    /// Determines whether WWAN is enabled.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if WWAN is enabled
     #[doc(alias = "nm_client_wwan_get_enabled")]
     pub fn wwan_get_enabled(&self) -> bool {
         unsafe { from_glib(ffi::nm_client_wwan_get_enabled(self.to_glib_none().0)) }
     }
 
+    /// Determines whether the WWAN hardware is enabled.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the WWAN hardware is enabled
     #[doc(alias = "nm_client_wwan_hardware_get_enabled")]
     pub fn wwan_hardware_get_enabled(&self) -> bool {
         unsafe {
@@ -1765,6 +2800,14 @@ impl Client {
         }
     }
 
+    /// Enables or disables WWAN devices.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use the async command nm_client_dbus_set_property() on [`DBUS_PATH`][crate::DBUS_PATH],
+    /// [`DBUS_INTERFACE`][crate::DBUS_INTERFACE] to set "WwanEnabled" property to a "(b)" value.
+    /// ## `enabled`
+    /// [`true`] to enable WWAN
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_wwan_set_enabled")]
@@ -1774,6 +2817,7 @@ impl Client {
         }
     }
 
+    /// If [`true`], adding and modifying connections is supported.
     #[doc(alias = "can-modify")]
     pub fn can_modify(&self) -> bool {
         ObjectExt::property(self, "can-modify")
@@ -1798,6 +2842,7 @@ impl Client {
         )
     }
 
+    /// The used URI for connectivity checking.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "connectivity-check-uri")]
@@ -1805,10 +2850,23 @@ impl Client {
         ObjectExt::property(self, "connectivity-check-uri")
     }
 
+    /// The machine hostname stored in persistent configuration. This can be
+    /// modified by calling nm_client_save_hostname().
     pub fn hostname(&self) -> Option<glib::GString> {
         ObjectExt::property(self, "hostname")
     }
 
+    /// #NMClientInstanceFlags for the instance. These affect behavior of #NMClient.
+    /// This is a construct property and you may only set most flags only during
+    /// construction.
+    ///
+    /// The flag [`ClientInstanceFlags::NO_AUTO_FETCH_PERMISSIONS`][crate::ClientInstanceFlags::NO_AUTO_FETCH_PERMISSIONS] can be toggled any time,
+    /// even after constructing the instance. Note that you may want to watch NMClient:permissions-state
+    /// property to know whether permissions are ready. Note that permissions are only fetched
+    /// when NMClient has a D-Bus name owner.
+    ///
+    /// The flags [`ClientInstanceFlags::INITIALIZED_GOOD`][crate::ClientInstanceFlags::INITIALIZED_GOOD] and [`ClientInstanceFlags::INITIALIZED_BAD`][crate::ClientInstanceFlags::INITIALIZED_BAD]
+    /// cannot be set, however they will be returned by the getter after initialization completes.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "instance-flags")]
@@ -1822,64 +2880,124 @@ impl Client {
         ObjectExt::property(self, "metered")
     }
 
+    /// Whether networking is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     #[doc(alias = "networking-enabled")]
     pub fn is_networking_enabled(&self) -> bool {
         ObjectExt::property(self, "networking-enabled")
     }
 
+    /// Whether networking is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     #[doc(alias = "networking-enabled")]
     pub fn set_networking_enabled(&self, networking_enabled: bool) {
         ObjectExt::set_property(self, "networking-enabled", networking_enabled)
     }
 
+    /// Whether WiMAX functionality is enabled.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// WiMAX is no longer supported and this always returns FALSE. The setter has no effect.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[doc(alias = "wimax-enabled")]
     pub fn is_wimax_enabled(&self) -> bool {
         ObjectExt::property(self, "wimax-enabled")
     }
 
+    /// Whether WiMAX functionality is enabled.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// WiMAX is no longer supported and this always returns FALSE. The setter has no effect.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[doc(alias = "wimax-enabled")]
     pub fn set_wimax_enabled(&self, wimax_enabled: bool) {
         ObjectExt::set_property(self, "wimax-enabled", wimax_enabled)
     }
 
+    /// Whether the WiMAX hardware is enabled.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// WiMAX is no longer supported and this always returns FALSE.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[doc(alias = "wimax-hardware-enabled")]
     pub fn is_wimax_hardware_enabled(&self) -> bool {
         ObjectExt::property(self, "wimax-hardware-enabled")
     }
 
+    /// Whether wireless is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     #[doc(alias = "wireless-enabled")]
     pub fn is_wireless_enabled(&self) -> bool {
         ObjectExt::property(self, "wireless-enabled")
     }
 
+    /// Whether wireless is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     #[doc(alias = "wireless-enabled")]
     pub fn set_wireless_enabled(&self, wireless_enabled: bool) {
         ObjectExt::set_property(self, "wireless-enabled", wireless_enabled)
     }
 
+    /// Whether the wireless hardware is enabled.
     #[doc(alias = "wireless-hardware-enabled")]
     pub fn is_wireless_hardware_enabled(&self) -> bool {
         ObjectExt::property(self, "wireless-hardware-enabled")
     }
 
+    /// Whether WWAN functionality is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     #[doc(alias = "wwan-enabled")]
     pub fn is_wwan_enabled(&self) -> bool {
         ObjectExt::property(self, "wwan-enabled")
     }
 
+    /// Whether WWAN functionality is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     #[doc(alias = "wwan-enabled")]
     pub fn set_wwan_enabled(&self, wwan_enabled: bool) {
         ObjectExt::set_property(self, "wwan-enabled", wwan_enabled)
     }
 
+    /// Whether the WWAN hardware is enabled.
     #[doc(alias = "wwan-hardware-enabled")]
     pub fn is_wwan_hardware_enabled(&self) -> bool {
         ObjectExt::property(self, "wwan-hardware-enabled")
     }
 
+    /// Creates a new #NMClient asynchronously.
+    /// @callback will be called when it is done. Use
+    /// nm_client_new_finish() to get the result.
+    ///
+    /// This does nothing beside calling g_async_initable_new_async(). You are free to
+    /// call g_async_initable_new_async() or g_object_new()/g_async_initable_init_async()
+    /// directly for more control, to set GObject properties or get access to the NMClient
+    /// instance while it is still initializing.
+    ///
+    /// Creating an #NMClient instance can only fail for two reasons. First, if you didn't
+    /// provide a [`CLIENT_DBUS_CONNECTION`][crate::CLIENT_DBUS_CONNECTION] and the call to g_bus_get()
+    /// fails. You can avoid that by using g_async_initable_new_async() directly and
+    /// set a D-Bus connection.
+    /// Second, if you cancelled the creation. If you do that, then note
+    /// that after the failure there might still be idle actions pending
+    /// which keep nm_client_get_main_context() alive. That means,
+    /// in that case you must continue iterating the context to avoid
+    /// leaks. See nm_client_get_context_busy_watcher().
+    ///
+    /// Creating an #NMClient instance when NetworkManager is not running
+    /// does not cause a failure.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to call when the client is created
     #[doc(alias = "nm_client_new_async")]
     pub fn new_async<P: FnOnce(Result<Client, glib::Error>) + 'static>(
         cancellable: Option<&impl IsA<gio::Cancellable>>,
@@ -1938,6 +3056,9 @@ impl Client {
         }))
     }
 
+    /// Notifies that a #NMActiveConnection has been added.
+    /// ## `active_connection`
+    /// the new active connection
     #[doc(alias = "active-connection-added")]
     pub fn connect_active_connection_added<F: Fn(&Self, &ActiveConnection) + 'static>(
         &self,
@@ -1969,6 +3090,9 @@ impl Client {
         }
     }
 
+    /// Notifies that a #NMActiveConnection has been removed.
+    /// ## `active_connection`
+    /// the removed active connection
     #[doc(alias = "active-connection-removed")]
     pub fn connect_active_connection_removed<F: Fn(&Self, &ActiveConnection) + 'static>(
         &self,
@@ -2000,6 +3124,10 @@ impl Client {
         }
     }
 
+    /// Notifies that a #NMDevice is added.  This signal is emitted for both
+    /// regular devices and placeholder devices.
+    /// ## `device`
+    /// the new device
     #[doc(alias = "any-device-added")]
     pub fn connect_any_device_added<F: Fn(&Self, &Device) + 'static>(
         &self,
@@ -2026,6 +3154,10 @@ impl Client {
         }
     }
 
+    /// Notifies that a #NMDevice is removed.  This signal is emitted for both
+    /// regular devices and placeholder devices.
+    /// ## `device`
+    /// the removed device
     #[doc(alias = "any-device-removed")]
     pub fn connect_any_device_removed<F: Fn(&Self, &Device) + 'static>(
         &self,
@@ -2052,6 +3184,9 @@ impl Client {
         }
     }
 
+    /// Notifies that a #NMConnection has been added.
+    /// ## `connection`
+    /// the new connection
     #[doc(alias = "connection-added")]
     pub fn connect_connection_added<F: Fn(&Self, &RemoteConnection) + 'static>(
         &self,
@@ -2080,6 +3215,9 @@ impl Client {
         }
     }
 
+    /// Notifies that a #NMConnection has been removed.
+    /// ## `connection`
+    /// the removed connection
     #[doc(alias = "connection-removed")]
     pub fn connect_connection_removed<F: Fn(&Self, &RemoteConnection) + 'static>(
         &self,
@@ -2108,6 +3246,10 @@ impl Client {
         }
     }
 
+    /// Notifies that a #NMDevice is added.  This signal is not emitted for
+    /// placeholder devices.
+    /// ## `device`
+    /// the new device
     #[doc(alias = "device-added")]
     pub fn connect_device_added<F: Fn(&Self, &Device) + 'static>(&self, f: F) -> SignalHandlerId {
         unsafe extern "C" fn device_added_trampoline<F: Fn(&Client, &Device) + 'static>(
@@ -2131,6 +3273,10 @@ impl Client {
         }
     }
 
+    /// Notifies that a #NMDevice is removed.  This signal is not emitted for
+    /// placeholder devices.
+    /// ## `device`
+    /// the removed device
     #[doc(alias = "device-removed")]
     pub fn connect_device_removed<F: Fn(&Self, &Device) + 'static>(&self, f: F) -> SignalHandlerId {
         unsafe extern "C" fn device_removed_trampoline<F: Fn(&Client, &Device) + 'static>(
@@ -2154,6 +3300,11 @@ impl Client {
         }
     }
 
+    /// Notifies that a permission has changed
+    /// ## `permission`
+    /// a permission from #NMClientPermission
+    /// ## `result`
+    /// the permission's result, one of #NMClientPermissionResult
     #[doc(alias = "permission-changed")]
     pub fn connect_permission_changed<F: Fn(&Self, u32, u32) + 'static>(
         &self,
@@ -3069,6 +4220,17 @@ impl ClientBuilder {
     //pub fn dbus_connection(self, dbus_connection: /*Ignored*/&gio::DBusConnection) -> Self {
     //    Self { builder: self.builder.property("dbus-connection", dbus_connection), }
     //}
+    /// #NMClientInstanceFlags for the instance. These affect behavior of #NMClient.
+    /// This is a construct property and you may only set most flags only during
+    /// construction.
+    ///
+    /// The flag [`ClientInstanceFlags::NO_AUTO_FETCH_PERMISSIONS`][crate::ClientInstanceFlags::NO_AUTO_FETCH_PERMISSIONS] can be toggled any time,
+    /// even after constructing the instance. Note that you may want to watch NMClient:permissions-state
+    /// property to know whether permissions are ready. Note that permissions are only fetched
+    /// when NMClient has a D-Bus name owner.
+    ///
+    /// The flags [`ClientInstanceFlags::INITIALIZED_GOOD`][crate::ClientInstanceFlags::INITIALIZED_GOOD] and [`ClientInstanceFlags::INITIALIZED_BAD`][crate::ClientInstanceFlags::INITIALIZED_BAD]
+    /// cannot be set, however they will be returned by the getter after initialization completes.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn instance_flags(self, instance_flags: u32) -> Self {
@@ -3077,6 +4239,9 @@ impl ClientBuilder {
         }
     }
 
+    /// Whether networking is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     pub fn networking_enabled(self, networking_enabled: bool) -> Self {
         Self {
             builder: self
@@ -3085,6 +4250,8 @@ impl ClientBuilder {
         }
     }
 
+    /// Whether WiMAX functionality is enabled.
+    /// WiMAX is no longer supported and this always returns FALSE. The setter has no effect.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     pub fn wimax_enabled(self, wimax_enabled: bool) -> Self {
         Self {
@@ -3092,12 +4259,18 @@ impl ClientBuilder {
         }
     }
 
+    /// Whether wireless is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     pub fn wireless_enabled(self, wireless_enabled: bool) -> Self {
         Self {
             builder: self.builder.property("wireless-enabled", wireless_enabled),
         }
     }
 
+    /// Whether WWAN functionality is enabled.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
     pub fn wwan_enabled(self, wwan_enabled: bool) -> Self {
         Self {
             builder: self.builder.property("wwan-enabled", wwan_enabled),

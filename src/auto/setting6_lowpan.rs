@@ -8,6 +8,30 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// 6LoWPAN Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `parent`
+    ///  If given, specifies the parent interface name or parent connection UUID
+    /// from which this 6LowPAN interface should be created.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSetting6Lowpan")]
     pub struct Setting6Lowpan(Object<ffi::NMSetting6Lowpan, ffi::NMSetting6LowpanClass>) @extends Setting;
 
@@ -17,6 +41,11 @@ glib::wrapper! {
 }
 
 impl Setting6Lowpan {
+    /// Creates a new #NMSetting6Lowpan object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSetting6Lowpan object
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_6lowpan_new")]
@@ -36,6 +65,10 @@ impl Setting6Lowpan {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSetting6Lowpan:parent property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_6lowpan_get_parent")]
@@ -52,6 +85,8 @@ impl Setting6Lowpan {
         ObjectExt::property(self, "parent")
     }
 
+    /// If given, specifies the parent interface name or parent connection UUID
+    /// from which this 6LowPAN interface should be created.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn set_parent(&self, parent: Option<&str>) {
@@ -96,6 +131,8 @@ pub struct Setting6LowpanBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// If given, specifies the parent interface name or parent connection UUID
+                            /// from which this 6LowPAN interface should be created.
                             #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn parent(self, parent: impl Into<glib::GString>) -> Self {

@@ -16,6 +16,69 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Tunnel Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `group`
+    ///  The group ID which will own the device. If set to [`None`] everyone
+    /// will be able to use the device.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mode`
+    ///  The operating mode of the virtual device. Allowed values are
+    /// [`SettingTunMode::Tun`][crate::SettingTunMode::Tun] to create a layer 3 device and
+    /// [`SettingTunMode::Tap`][crate::SettingTunMode::Tap] to create an Ethernet-like layer 2
+    /// one.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multi-queue`
+    ///  If the property is set to [`true`], the interface will support
+    /// multiple file descriptors (queues) to parallelize packet
+    /// sending or receiving. Otherwise, the interface will only
+    /// support a single queue.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `owner`
+    ///  The user ID which will own the device. If set to [`None`] everyone
+    /// will be able to use the device.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `pi`
+    ///  If [`true`] the interface will prepend a 4 byte header describing the
+    /// physical interface to the packets.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vnet-hdr`
+    ///  If [`true`] the IFF_VNET_HDR the tunnel packets will include a virtio
+    /// network header.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingTun")]
     pub struct SettingTun(Object<ffi::NMSettingTun, ffi::NMSettingTunClass>) @extends Setting;
 
@@ -25,6 +88,11 @@ glib::wrapper! {
 }
 
 impl SettingTun {
+    /// Creates a new #NMSettingTun object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingTun object
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_tun_new")]
@@ -44,6 +112,10 @@ impl SettingTun {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTun:group property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_tun_get_group")]
@@ -54,6 +126,10 @@ impl SettingTun {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTun:mode property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_tun_get_mode")]
@@ -64,6 +140,10 @@ impl SettingTun {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTun:multi-queue property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_tun_get_multi_queue")]
@@ -75,6 +155,10 @@ impl SettingTun {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTun:owner property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_tun_get_owner")]
@@ -85,6 +169,10 @@ impl SettingTun {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTun:pi property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_tun_get_pi")]
@@ -96,6 +184,10 @@ impl SettingTun {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingTun:vnet_hdr property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_tun_get_vnet_hdr")]
@@ -107,18 +199,28 @@ impl SettingTun {
         }
     }
 
+    /// The group ID which will own the device. If set to [`None`] everyone
+    /// will be able to use the device.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_group(&self, group: Option<&str>) {
         ObjectExt::set_property(self,"group", group)
     }
 
+    /// The operating mode of the virtual device. Allowed values are
+    /// [`SettingTunMode::Tun`][crate::SettingTunMode::Tun] to create a layer 3 device and
+    /// [`SettingTunMode::Tap`][crate::SettingTunMode::Tap] to create an Ethernet-like layer 2
+    /// one.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_mode(&self, mode: u32) {
         ObjectExt::set_property(self,"mode", mode)
     }
 
+    /// If the property is set to [`true`], the interface will support
+    /// multiple file descriptors (queues) to parallelize packet
+    /// sending or receiving. Otherwise, the interface will only
+    /// support a single queue.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "multi-queue")]
@@ -126,18 +228,24 @@ impl SettingTun {
         ObjectExt::set_property(self,"multi-queue", multi_queue)
     }
 
+    /// The user ID which will own the device. If set to [`None`] everyone
+    /// will be able to use the device.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_owner(&self, owner: Option<&str>) {
         ObjectExt::set_property(self,"owner", owner)
     }
 
+    /// If [`true`] the interface will prepend a 4 byte header describing the
+    /// physical interface to the packets.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_pi(&self, pi: bool) {
         ObjectExt::set_property(self,"pi", pi)
     }
 
+    /// If [`true`] the IFF_VNET_HDR the tunnel packets will include a virtio
+    /// network header.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "vnet-hdr")]
@@ -258,36 +366,52 @@ pub struct SettingTunBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The group ID which will own the device. If set to [`None`] everyone
+                            /// will be able to use the device.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn group(self, group: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("group", group.into()), }
                         }
 
+                            /// The operating mode of the virtual device. Allowed values are
+                            /// [`SettingTunMode::Tun`][crate::SettingTunMode::Tun] to create a layer 3 device and
+                            /// [`SettingTunMode::Tap`][crate::SettingTunMode::Tap] to create an Ethernet-like layer 2
+                            /// one.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn mode(self, mode: u32) -> Self {
                             Self { builder: self.builder.property("mode", mode), }
                         }
 
+                            /// If the property is set to [`true`], the interface will support
+                            /// multiple file descriptors (queues) to parallelize packet
+                            /// sending or receiving. Otherwise, the interface will only
+                            /// support a single queue.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn multi_queue(self, multi_queue: bool) -> Self {
                             Self { builder: self.builder.property("multi-queue", multi_queue), }
                         }
 
+                            /// The user ID which will own the device. If set to [`None`] everyone
+                            /// will be able to use the device.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn owner(self, owner: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("owner", owner.into()), }
                         }
 
+                            /// If [`true`] the interface will prepend a 4 byte header describing the
+                            /// physical interface to the packets.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn pi(self, pi: bool) -> Self {
                             Self { builder: self.builder.property("pi", pi), }
                         }
 
+                            /// If [`true`] the IFF_VNET_HDR the tunnel packets will include a virtio
+                            /// network header.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn vnet_hdr(self, vnet_hdr: bool) -> Self {

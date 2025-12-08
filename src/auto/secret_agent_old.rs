@@ -11,6 +11,72 @@ use std::{boxed::Box as Box_,pin::Pin};
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `auto-register`
+    ///  If [`true`] (the default), the agent will always be registered when
+    /// NetworkManager is running; if NetworkManager exits and restarts, the
+    /// agent will re-register itself automatically.
+    ///
+    /// In particular, if this property is [`true`] at construct time, then the
+    /// agent will register itself with NetworkManager during
+    /// construction/initialization and initialization will only complete
+    /// after registration is completed (either successfully or unsuccessfully).
+    /// Since 1.24, a failure to register will no longer cause initialization
+    /// of #NMSecretAgentOld to fail.
+    ///
+    /// If the property is [`false`], the agent will not automatically register with
+    /// NetworkManager, and nm_secret_agent_old_enable() or
+    /// nm_secret_agent_old_register_async() must be called to register it.
+    ///
+    /// Calling nm_secret_agent_old_enable() has the same effect as setting this
+    /// property.
+    ///
+    /// Readable | Writeable | Construct
+    ///
+    ///
+    /// #### `capabilities`
+    ///  A bitfield of `NMSecretAgentCapabilities`.
+    ///
+    /// Changing this property is possible at any time. In case the secret
+    /// agent is currently registered, this will cause a re-registration.
+    ///
+    /// Readable | Writeable | Construct
+    ///
+    ///
+    /// #### `dbus-connection`
+    ///  The #GDBusConnection used by the instance. You may either set this
+    /// as construct-only property, or otherwise #NMSecretAgentOld will choose
+    /// a connection via g_bus_get() during initialization.
+    ///
+    /// Readable | Writeable | Construct Only
+    ///
+    ///
+    /// #### `identifier`
+    ///  Identifies this agent; only one agent in each user session may use the
+    /// same identifier.  Identifier formatting follows the same rules as
+    /// D-Bus bus names with the exception that the ':' character is not
+    /// allowed.  The valid set of characters is "[A-Z][a-z][0-9]_-." and the
+    /// identifier is limited in length to 255 characters with a minimum
+    /// of 3 characters.  An example valid identifier is 'org.gnome.nm-applet'
+    /// (without quotes).
+    ///
+    /// Readable | Writeable | Construct Only
+    ///
+    ///
+    /// #### `registered`
+    ///  [`true`] if the agent is registered with NetworkManager, [`false`] if not.
+    ///
+    /// Readable
+    ///
+    /// # Implements
+    ///
+    /// [`SecretAgentOldExt`][trait@crate::prelude::SecretAgentOldExt], [`trait@gio::prelude::AsyncInitableExt`], [`trait@gio::prelude::InitableExt`]
     #[doc(alias = "NMSecretAgentOld")]
     pub struct SecretAgentOld(Object<ffi::NMSecretAgentOld, ffi::NMSecretAgentOldClass>) @implements gio::AsyncInitable, gio::Initable;
 
@@ -45,7 +111,18 @@ impl SecretAgentOld {
     
 }
 
+/// Trait containing all [`struct@SecretAgentOld`] methods.
+///
+/// # Implementors
+///
+/// [`SecretAgentOld`][struct@crate::SecretAgentOld]
 pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
+    /// Asynchronously asks the agent to delete all saved secrets belonging to
+    /// @connection.
+    /// ## `connection`
+    /// a #NMConnection
+    /// ## `callback`
+    /// a callback, to be invoked when the operation is done
     #[doc(alias = "nm_secret_agent_old_delete_secrets")]
     fn delete_secrets<P: FnOnce(&SecretAgentOld, &Connection, Option<&glib::Error>) + 'static>(&self, connection: &impl IsA<Connection>, callback: P) {
         let callback_data: Box_<P> = Box_::new(callback);
@@ -72,6 +149,13 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
         }
     }
 
+    /// This has the same effect as setting [`SECRET_AGENT_OLD_AUTO_REGISTER`][crate::SECRET_AGENT_OLD_AUTO_REGISTER]
+    /// property.
+    ///
+    /// Unlike most other functions, you may already call this function before
+    /// initialization completes.
+    /// ## `enable`
+    /// whether to enable or disable the listener.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_secret_agent_old_enable")]
@@ -98,6 +182,13 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
     //    unsafe { TODO: call ffi:nm_secret_agent_old_get_dbus_connection() }
     //}
 
+    ///
+    /// # Returns
+    ///
+    /// the current D-Bus name owner. While this property
+    ///   is set while registering, it really only makes sense when
+    ///   the nm_secret_agent_old_get_registered() indicates that
+    ///   registration is successful.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_secret_agent_old_get_dbus_name_owner")]
@@ -116,6 +207,18 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
     //    unsafe { TODO: call ffi:nm_secret_agent_old_get_main_context() }
     //}
 
+    /// Note that the secret agent transparently registers and re-registers
+    /// as the D-Bus name owner appears. Hence, this property is not really
+    /// useful. Also, to be graceful against races during registration, the
+    /// instance will already accept requests while being in the process of
+    /// registering.
+    /// If you need to avoid races and want to wait until @self is registered,
+    /// call nm_secret_agent_old_register_async(). If that function completes
+    /// with success, you know the instance is registered.
+    ///
+    /// # Returns
+    ///
+    /// a [`true`] if the agent is registered, [`false`] if it is not.
     #[doc(alias = "nm_secret_agent_old_get_registered")]
     #[doc(alias = "get_registered")]
     #[doc(alias = "registered")]
@@ -131,6 +234,27 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
     //    unsafe { TODO: call ffi:nm_secret_agent_old_get_secrets() }
     //}
 
+    /// Registers the #NMSecretAgentOld with the NetworkManager secret manager,
+    /// indicating to NetworkManager that the agent is able to provide and save
+    /// secrets for connections on behalf of its user.
+    ///
+    /// # Deprecated since 1.24
+    ///
+    /// Use nm_secret_agent_old_enable() or nm_secret_agent_old_register_async().
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if registration was successful, [`false`] on error.
+    ///
+    /// Since 1.24, this can no longer fail unless the @cancellable gets
+    /// cancelled. Contrary to nm_secret_agent_old_register_async(), this also
+    /// does not wait for the registration to succeed. You cannot synchronously
+    /// (without iterating the caller's GMainContext) wait for registration.
+    ///
+    /// Since 1.24, registration is idempotent. It has the same effect as setting
+    /// [`SECRET_AGENT_OLD_AUTO_REGISTER`][crate::SECRET_AGENT_OLD_AUTO_REGISTER] to [`true`] or nm_secret_agent_old_enable().
     #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
     #[allow(deprecated)]
     #[doc(alias = "nm_secret_agent_old_register")]
@@ -143,6 +267,24 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
         }
     }
 
+    /// Asynchronously registers the #NMSecretAgentOld with the NetworkManager secret
+    /// manager, indicating to NetworkManager that the agent is able to provide and
+    /// save secrets for connections on behalf of its user.
+    ///
+    /// Since 1.24, registration cannot fail and is idempotent. It has
+    /// the same effect as setting [`SECRET_AGENT_OLD_AUTO_REGISTER`][crate::SECRET_AGENT_OLD_AUTO_REGISTER] to [`true`]
+    /// or nm_secret_agent_old_enable().
+    ///
+    /// Since 1.24, the asynchronous result indicates whether the instance is successfully
+    /// registered. In any case, this call enables the agent and it will automatically
+    /// try to register and handle secret requests. A failure of this function only indicates
+    /// that currently the instance might not be ready (but since it will automatically
+    /// try to recover, it might be ready in a moment afterwards). Use this function if
+    /// you want to check and ensure that the agent is registered.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to call when the agent is registered
     #[doc(alias = "nm_secret_agent_old_register_async")]
     fn register_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
         
@@ -184,6 +326,12 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
         }))
     }
 
+    /// Asynchronously ensures that all secrets inside @connection are stored to
+    /// disk.
+    /// ## `connection`
+    /// a #NMConnection
+    /// ## `callback`
+    /// a callback, to be invoked when the operation is done
     #[doc(alias = "nm_secret_agent_old_save_secrets")]
     fn save_secrets<P: FnOnce(&SecretAgentOld, &Connection, Option<&glib::Error>) + 'static>(&self, connection: &impl IsA<Connection>, callback: P) {
         let callback_data: Box_<P> = Box_::new(callback);
@@ -201,6 +349,23 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
         }
     }
 
+    /// Unregisters the #NMSecretAgentOld with the NetworkManager secret manager,
+    /// indicating to NetworkManager that the agent will no longer provide or
+    /// store secrets on behalf of this user.
+    ///
+    /// # Deprecated since 1.24
+    ///
+    /// Use nm_secret_agent_old_enable().
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if unregistration was successful, [`false`] on error
+    ///
+    /// Since 1.24, registration cannot fail and is idempotent. It has
+    /// the same effect as setting [`SECRET_AGENT_OLD_AUTO_REGISTER`][crate::SECRET_AGENT_OLD_AUTO_REGISTER] to [`false`]
+    /// or nm_secret_agent_old_enable().
     #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
     #[allow(deprecated)]
     #[doc(alias = "nm_secret_agent_old_unregister")]
@@ -213,6 +378,21 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
         }
     }
 
+    /// Asynchronously unregisters the #NMSecretAgentOld with the NetworkManager secret
+    /// manager, indicating to NetworkManager that the agent will no longer provide
+    /// or store secrets on behalf of this user.
+    ///
+    /// Since 1.24, registration cannot fail and is idempotent. It has
+    /// the same effect as setting [`SECRET_AGENT_OLD_AUTO_REGISTER`][crate::SECRET_AGENT_OLD_AUTO_REGISTER] to [`false`]
+    /// or nm_secret_agent_old_enable().
+    ///
+    /// # Deprecated since 1.24
+    ///
+    /// Use nm_secret_agent_old_enable().
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to call when the agent is unregistered
     #[cfg_attr(feature = "v1_24", deprecated = "Since 1.24")]
     #[allow(deprecated)]
     #[doc(alias = "nm_secret_agent_old_unregister_async")]
@@ -257,24 +437,73 @@ pub trait SecretAgentOldExt: IsA<SecretAgentOld> + 'static {
         }))
     }
 
+    /// If [`true`] (the default), the agent will always be registered when
+    /// NetworkManager is running; if NetworkManager exits and restarts, the
+    /// agent will re-register itself automatically.
+    ///
+    /// In particular, if this property is [`true`] at construct time, then the
+    /// agent will register itself with NetworkManager during
+    /// construction/initialization and initialization will only complete
+    /// after registration is completed (either successfully or unsuccessfully).
+    /// Since 1.24, a failure to register will no longer cause initialization
+    /// of #NMSecretAgentOld to fail.
+    ///
+    /// If the property is [`false`], the agent will not automatically register with
+    /// NetworkManager, and nm_secret_agent_old_enable() or
+    /// nm_secret_agent_old_register_async() must be called to register it.
+    ///
+    /// Calling nm_secret_agent_old_enable() has the same effect as setting this
+    /// property.
     #[doc(alias = "auto-register")]
     fn is_auto_register(&self) -> bool {
         ObjectExt::property(self.as_ref(), "auto-register")
     }
 
+    /// If [`true`] (the default), the agent will always be registered when
+    /// NetworkManager is running; if NetworkManager exits and restarts, the
+    /// agent will re-register itself automatically.
+    ///
+    /// In particular, if this property is [`true`] at construct time, then the
+    /// agent will register itself with NetworkManager during
+    /// construction/initialization and initialization will only complete
+    /// after registration is completed (either successfully or unsuccessfully).
+    /// Since 1.24, a failure to register will no longer cause initialization
+    /// of #NMSecretAgentOld to fail.
+    ///
+    /// If the property is [`false`], the agent will not automatically register with
+    /// NetworkManager, and nm_secret_agent_old_enable() or
+    /// nm_secret_agent_old_register_async() must be called to register it.
+    ///
+    /// Calling nm_secret_agent_old_enable() has the same effect as setting this
+    /// property.
     #[doc(alias = "auto-register")]
     fn set_auto_register(&self, auto_register: bool) {
         ObjectExt::set_property(self.as_ref(),"auto-register", auto_register)
     }
 
+    /// A bitfield of `NMSecretAgentCapabilities`.
+    ///
+    /// Changing this property is possible at any time. In case the secret
+    /// agent is currently registered, this will cause a re-registration.
     fn capabilities(&self) -> SecretAgentCapabilities {
         ObjectExt::property(self.as_ref(), "capabilities")
     }
 
+    /// A bitfield of `NMSecretAgentCapabilities`.
+    ///
+    /// Changing this property is possible at any time. In case the secret
+    /// agent is currently registered, this will cause a re-registration.
     fn set_capabilities(&self, capabilities: SecretAgentCapabilities) {
         ObjectExt::set_property(self.as_ref(),"capabilities", capabilities)
     }
 
+    /// Identifies this agent; only one agent in each user session may use the
+    /// same identifier.  Identifier formatting follows the same rules as
+    /// D-Bus bus names with the exception that the ':' character is not
+    /// allowed.  The valid set of characters is "[A-Z][a-z][0-9]_-." and the
+    /// identifier is limited in length to 255 characters with a minimum
+    /// of 3 characters.  An example valid identifier is 'org.gnome.nm-applet'
+    /// (without quotes).
     fn identifier(&self) -> Option<glib::GString> {
         ObjectExt::property(self.as_ref(), "identifier")
     }

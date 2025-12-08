@@ -8,6 +8,29 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// VRF settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `table`
+    ///  The routing table for this VRF.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingVrf")]
     pub struct SettingVrf(Object<ffi::NMSettingVrf, ffi::NMSettingVrfClass>) @extends Setting;
 
@@ -17,6 +40,11 @@ glib::wrapper! {
 }
 
 impl SettingVrf {
+    /// Creates a new #NMSettingVrf object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingVrf object
     #[doc(alias = "nm_setting_vrf_new")]
     pub fn new() -> SettingVrf {
         assert_initialized_main_thread!();
@@ -34,6 +62,10 @@ impl SettingVrf {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the routing table for the VRF
     #[doc(alias = "nm_setting_vrf_get_table")]
     #[doc(alias = "get_table")]
     pub fn table(&self) -> u32 {
@@ -42,6 +74,7 @@ impl SettingVrf {
         }
     }
 
+    /// The routing table for this VRF.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn set_table(&self, table: u32) {
@@ -86,6 +119,7 @@ pub struct SettingVrfBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The routing table for this VRF.
                             #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn table(self, table: u32) -> Self {

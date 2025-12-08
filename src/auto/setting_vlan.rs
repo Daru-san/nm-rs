@@ -8,6 +8,80 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// VLAN Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `egress-priority-map`
+    ///  For outgoing packets, a list of mappings from Linux SKB priorities to
+    /// 802.1p priorities.  The mapping is given in the format "from:to" where
+    /// both "from" and "to" are unsigned integers, ie "7:3".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `flags`
+    ///  One or more flags which control the behavior and features of the VLAN
+    /// interface.  Flags include [`VlanFlags::REORDER_HEADERS`][crate::VlanFlags::REORDER_HEADERS] (reordering of
+    /// output packet headers), [`VlanFlags::GVRP`][crate::VlanFlags::GVRP] (use of the GVRP protocol),
+    /// and [`VlanFlags::LOOSE_BINDING`][crate::VlanFlags::LOOSE_BINDING] (loose binding of the interface to its
+    /// controller device's operating state). [`VlanFlags::MVRP`][crate::VlanFlags::MVRP] (use of the MVRP
+    /// protocol).
+    ///
+    /// The default value of this property is NM_VLAN_FLAG_REORDER_HEADERS,
+    /// but it used to be 0. To preserve backward compatibility, the default-value
+    /// in the D-Bus API continues to be 0 and a missing property on D-Bus
+    /// is still considered as 0.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `id`
+    ///  The VLAN identifier that the interface created by this connection should
+    /// be assigned. The valid range is from 0 to 4094, without the reserved id 4095.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ingress-priority-map`
+    ///  For incoming packets, a list of mappings from 802.1p priorities to Linux
+    /// SKB priorities.  The mapping is given in the format "from:to" where both
+    /// "from" and "to" are unsigned integers, ie "7:3".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `parent`
+    ///  If given, specifies the parent interface name or parent connection UUID
+    /// from which this VLAN interface should be created.  If this property is
+    /// not specified, the connection must contain an #NMSettingWired setting
+    /// with a #NMSettingWired:mac-address property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `protocol`
+    ///  Specifies the VLAN protocol to use for encapsulation.
+    ///
+    /// Supported values are: '802.1Q', '802.1ad'. If not specified the default
+    /// value is '802.1Q'.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingVlan")]
     pub struct SettingVlan(Object<ffi::NMSettingVlan, ffi::NMSettingVlanClass>) @extends Setting;
 
@@ -17,6 +91,11 @@ glib::wrapper! {
 }
 
 impl SettingVlan {
+    /// Creates a new #NMSettingVlan object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingVlan object
     #[doc(alias = "nm_setting_vlan_new")]
     pub fn new() -> SettingVlan {
         assert_initialized_main_thread!();
@@ -34,6 +113,26 @@ impl SettingVlan {
             }
         
 
+    /// Adds a priority mapping to the #NMSettingVlan:ingress_priority_map or
+    /// #NMSettingVlan:egress_priority_map properties of the setting. If @from is
+    /// already in the given priority map, this function will overwrite the
+    /// existing entry with the new @to.
+    ///
+    /// If @map is #NM_VLAN_INGRESS_MAP then @from is the incoming 802.1q VLAN
+    /// Priority Code Point (PCP) value, and @to is the Linux SKB priority value.
+    ///
+    /// If @map is #NM_VLAN_EGRESS_MAP then @from is the Linux SKB priority value and
+    /// @to is the outgoing 802.1q VLAN Priority Code Point (PCP) value.
+    /// ## `map`
+    /// the type of priority map
+    /// ## `from`
+    /// the priority to map to @to
+    /// ## `to`
+    /// the priority to map @from to
+    ///
+    /// # Returns
+    ///
+    /// [`true`].
     #[doc(alias = "nm_setting_vlan_add_priority")]
     pub fn add_priority(&self, map: VlanPriorityMap, from: u32, to: u32) -> bool {
         unsafe {
@@ -41,6 +140,18 @@ impl SettingVlan {
         }
     }
 
+    /// Adds a priority map entry into either the #NMSettingVlan:ingress_priority_map
+    /// or the #NMSettingVlan:egress_priority_map properties.  The priority map maps
+    /// the Linux SKB priorities to 802.1p priorities.
+    /// ## `map`
+    /// the type of priority map
+    /// ## `str`
+    /// the string which contains a priority map, like "3:7"
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the entry was successfully added to the list, or it
+    /// overwrote the old value, [`false`] if @str is not a valid mapping.
     #[doc(alias = "nm_setting_vlan_add_priority_str")]
     pub fn add_priority_str(&self, map: VlanPriorityMap, str: &str) -> bool {
         unsafe {
@@ -48,6 +159,10 @@ impl SettingVlan {
         }
     }
 
+    /// Clear all the entries from #NMSettingVlan:ingress_priority_map or
+    /// #NMSettingVlan:egress_priority_map properties.
+    /// ## `map`
+    /// the type of priority map
     #[doc(alias = "nm_setting_vlan_clear_priorities")]
     pub fn clear_priorities(&self, map: VlanPriorityMap) {
         unsafe {
@@ -55,6 +170,10 @@ impl SettingVlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVlan:flags property of the setting
     #[doc(alias = "nm_setting_vlan_get_flags")]
     #[doc(alias = "get_flags")]
     pub fn flags(&self) -> u32 {
@@ -63,6 +182,10 @@ impl SettingVlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVlan:id property of the setting
     #[doc(alias = "nm_setting_vlan_get_id")]
     #[doc(alias = "get_id")]
     pub fn id(&self) -> u32 {
@@ -71,6 +194,15 @@ impl SettingVlan {
         }
     }
 
+    /// Returns the number of entries in the
+    /// #NMSettingVlan:ingress_priority_map or #NMSettingVlan:egress_priority_map
+    /// properties of this setting.
+    /// ## `map`
+    /// the type of priority map
+    ///
+    /// # Returns
+    ///
+    /// return the number of ingress/egress priority entries.
     #[doc(alias = "nm_setting_vlan_get_num_priorities")]
     #[doc(alias = "get_num_priorities")]
     pub fn num_priorities(&self, map: VlanPriorityMap) -> i32 {
@@ -79,6 +211,10 @@ impl SettingVlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVlan:parent property of the setting
     #[doc(alias = "nm_setting_vlan_get_parent")]
     #[doc(alias = "get_parent")]
     pub fn parent(&self) -> glib::GString {
@@ -87,6 +223,22 @@ impl SettingVlan {
         }
     }
 
+    /// Retrieve one of the entries of the #NMSettingVlan:ingress_priority_map
+    /// or #NMSettingVlan:egress_priority_map properties of this setting.
+    /// ## `map`
+    /// the type of priority map
+    /// ## `idx`
+    /// the zero-based index of the ingress/egress priority map entry
+    ///
+    /// # Returns
+    ///
+    /// returns [`true`] if @idx is in range. Otherwise, [`false`].
+    ///
+    /// ## `out_from`
+    /// on return the value of the priority map's 'from' item
+    ///
+    /// ## `out_to`
+    /// on return the value of priority map's 'to' item
     #[doc(alias = "nm_setting_vlan_get_priority")]
     #[doc(alias = "get_priority")]
     pub fn priority(&self, map: VlanPriorityMap, idx: u32) -> Option<(u32, u32)> {
@@ -98,6 +250,10 @@ impl SettingVlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVlan:protocol property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_vlan_get_protocol")]
@@ -108,6 +264,13 @@ impl SettingVlan {
         }
     }
 
+    /// Removes the priority map at index @idx from the
+    /// #NMSettingVlan:ingress_priority_map or #NMSettingVlan:egress_priority_map
+    /// properties.
+    /// ## `map`
+    /// the type of priority map
+    /// ## `idx`
+    /// the zero-based index of the priority map to remove
     #[doc(alias = "nm_setting_vlan_remove_priority")]
     pub fn remove_priority(&self, map: VlanPriorityMap, idx: u32) {
         unsafe {
@@ -115,6 +278,19 @@ impl SettingVlan {
         }
     }
 
+    /// Removes the priority map @form:@to from the #NMSettingVlan:ingress_priority_map
+    /// or #NMSettingVlan:egress_priority_map (according to @map argument)
+    /// properties.
+    /// ## `map`
+    /// the type of priority map
+    /// ## `from`
+    /// the priority to map to @to
+    /// ## `to`
+    /// the priority to map @from to
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the priority mapping was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_vlan_remove_priority_by_value")]
     pub fn remove_priority_by_value(&self, map: VlanPriorityMap, from: u32, to: u32) -> bool {
         unsafe {
@@ -122,6 +298,17 @@ impl SettingVlan {
         }
     }
 
+    /// Removes the priority map @str from the #NMSettingVlan:ingress_priority_map
+    /// or #NMSettingVlan:egress_priority_map (according to @map argument)
+    /// properties.
+    /// ## `map`
+    /// the type of priority map
+    /// ## `str`
+    /// the string which contains a priority map, like "3:7"
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the priority mapping was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_vlan_remove_priority_str_by_value")]
     pub fn remove_priority_str_by_value(&self, map: VlanPriorityMap, str: &str) -> bool {
         unsafe {
@@ -129,38 +316,71 @@ impl SettingVlan {
         }
     }
 
+    /// For outgoing packets, a list of mappings from Linux SKB priorities to
+    /// 802.1p priorities.  The mapping is given in the format "from:to" where
+    /// both "from" and "to" are unsigned integers, ie "7:3".
     #[doc(alias = "egress-priority-map")]
     pub fn egress_priority_map(&self) -> Vec<glib::GString> {
         ObjectExt::property(self, "egress-priority-map")
     }
 
+    /// For outgoing packets, a list of mappings from Linux SKB priorities to
+    /// 802.1p priorities.  The mapping is given in the format "from:to" where
+    /// both "from" and "to" are unsigned integers, ie "7:3".
     #[doc(alias = "egress-priority-map")]
     pub fn set_egress_priority_map(&self, egress_priority_map: &[&str]) {
         ObjectExt::set_property(self,"egress-priority-map", egress_priority_map)
     }
 
+    /// One or more flags which control the behavior and features of the VLAN
+    /// interface.  Flags include [`VlanFlags::REORDER_HEADERS`][crate::VlanFlags::REORDER_HEADERS] (reordering of
+    /// output packet headers), [`VlanFlags::GVRP`][crate::VlanFlags::GVRP] (use of the GVRP protocol),
+    /// and [`VlanFlags::LOOSE_BINDING`][crate::VlanFlags::LOOSE_BINDING] (loose binding of the interface to its
+    /// controller device's operating state). [`VlanFlags::MVRP`][crate::VlanFlags::MVRP] (use of the MVRP
+    /// protocol).
+    ///
+    /// The default value of this property is NM_VLAN_FLAG_REORDER_HEADERS,
+    /// but it used to be 0. To preserve backward compatibility, the default-value
+    /// in the D-Bus API continues to be 0 and a missing property on D-Bus
+    /// is still considered as 0.
     pub fn set_flags(&self, flags: VlanFlags) {
         ObjectExt::set_property(self,"flags", flags)
     }
 
+    /// The VLAN identifier that the interface created by this connection should
+    /// be assigned. The valid range is from 0 to 4094, without the reserved id 4095.
     pub fn set_id(&self, id: u32) {
         ObjectExt::set_property(self,"id", id)
     }
 
+    /// For incoming packets, a list of mappings from 802.1p priorities to Linux
+    /// SKB priorities.  The mapping is given in the format "from:to" where both
+    /// "from" and "to" are unsigned integers, ie "7:3".
     #[doc(alias = "ingress-priority-map")]
     pub fn ingress_priority_map(&self) -> Vec<glib::GString> {
         ObjectExt::property(self, "ingress-priority-map")
     }
 
+    /// For incoming packets, a list of mappings from 802.1p priorities to Linux
+    /// SKB priorities.  The mapping is given in the format "from:to" where both
+    /// "from" and "to" are unsigned integers, ie "7:3".
     #[doc(alias = "ingress-priority-map")]
     pub fn set_ingress_priority_map(&self, ingress_priority_map: &[&str]) {
         ObjectExt::set_property(self,"ingress-priority-map", ingress_priority_map)
     }
 
+    /// If given, specifies the parent interface name or parent connection UUID
+    /// from which this VLAN interface should be created.  If this property is
+    /// not specified, the connection must contain an #NMSettingWired setting
+    /// with a #NMSettingWired:mac-address property.
     pub fn set_parent(&self, parent: Option<&str>) {
         ObjectExt::set_property(self,"parent", parent)
     }
 
+    /// Specifies the VLAN protocol to use for encapsulation.
+    ///
+    /// Supported values are: '802.1Q', '802.1ad'. If not specified the default
+    /// value is '802.1Q'.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn set_protocol(&self, protocol: Option<&str>) {
@@ -268,26 +488,53 @@ pub struct SettingVlanBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// For outgoing packets, a list of mappings from Linux SKB priorities to
+                            /// 802.1p priorities.  The mapping is given in the format "from:to" where
+                            /// both "from" and "to" are unsigned integers, ie "7:3".
                             pub fn egress_priority_map(self, egress_priority_map: impl Into<glib::StrV>) -> Self {
                             Self { builder: self.builder.property("egress-priority-map", egress_priority_map.into()), }
                         }
 
+                            /// One or more flags which control the behavior and features of the VLAN
+                            /// interface.  Flags include [`VlanFlags::REORDER_HEADERS`][crate::VlanFlags::REORDER_HEADERS] (reordering of
+                            /// output packet headers), [`VlanFlags::GVRP`][crate::VlanFlags::GVRP] (use of the GVRP protocol),
+                            /// and [`VlanFlags::LOOSE_BINDING`][crate::VlanFlags::LOOSE_BINDING] (loose binding of the interface to its
+                            /// controller device's operating state). [`VlanFlags::MVRP`][crate::VlanFlags::MVRP] (use of the MVRP
+                            /// protocol).
+                            ///
+                            /// The default value of this property is NM_VLAN_FLAG_REORDER_HEADERS,
+                            /// but it used to be 0. To preserve backward compatibility, the default-value
+                            /// in the D-Bus API continues to be 0 and a missing property on D-Bus
+                            /// is still considered as 0.
                             pub fn flags(self, flags: VlanFlags) -> Self {
                             Self { builder: self.builder.property("flags", flags), }
                         }
 
+                            /// The VLAN identifier that the interface created by this connection should
+                            /// be assigned. The valid range is from 0 to 4094, without the reserved id 4095.
                             pub fn id(self, id: u32) -> Self {
                             Self { builder: self.builder.property("id", id), }
                         }
 
+                            /// For incoming packets, a list of mappings from 802.1p priorities to Linux
+                            /// SKB priorities.  The mapping is given in the format "from:to" where both
+                            /// "from" and "to" are unsigned integers, ie "7:3".
                             pub fn ingress_priority_map(self, ingress_priority_map: impl Into<glib::StrV>) -> Self {
                             Self { builder: self.builder.property("ingress-priority-map", ingress_priority_map.into()), }
                         }
 
+                            /// If given, specifies the parent interface name or parent connection UUID
+                            /// from which this VLAN interface should be created.  If this property is
+                            /// not specified, the connection must contain an #NMSettingWired setting
+                            /// with a #NMSettingWired:mac-address property.
                             pub fn parent(self, parent: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("parent", parent.into()), }
                         }
 
+                            /// Specifies the VLAN protocol to use for encapsulation.
+                            ///
+                            /// Supported values are: '802.1Q', '802.1ad'. If not specified the default
+                            /// value is '802.1Q'.
                             #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn protocol(self, protocol: impl Into<glib::GString>) -> Self {

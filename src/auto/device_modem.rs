@@ -8,6 +8,282 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `apn`
+    ///  Readable
+    ///
+    ///
+    /// #### `current-capabilities`
+    ///  The generic family of access technologies the modem currently supports
+    /// without a firmware reload or reinitialization.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `device-id`
+    ///  Readable
+    ///
+    ///
+    /// #### `modem-capabilities`
+    ///  The generic family of access technologies the modem supports.  Not all
+    /// capabilities are available at the same time however; some modems require
+    /// a firmware reload or other reinitialization to switch between eg
+    /// CDMA/EVDO and GSM/UMTS.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `operator-code`
+    ///  Readable
+    /// <details><summary><h4>Device</h4></summary>
+    ///
+    ///
+    /// #### `active-connection`
+    ///  The #NMActiveConnection object that "owns" this device during activation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `autoconnect`
+    ///  Whether the device can auto-activate a connection.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `available-connections`
+    ///  The available connections of the device
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `capabilities`
+    ///  The capabilities of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `device-type`
+    ///  The numeric type of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp4-config`
+    ///  The IPv4 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp6-config`
+    ///  The IPv6 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver`
+    ///  The driver of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver-version`
+    ///  The version of the device driver.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-missing`
+    ///  When [`true`] indicates the device is likely missing firmware required
+    /// for its operation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-version`
+    ///  The firmware version of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `hw-address`
+    ///  The hardware address of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface`
+    ///  The interface of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface-flags`
+    ///  The interface flags.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip-interface`
+    ///  The IP interface of the device which should be used for all IP-related
+    /// operations like addressing and routing.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-config`
+    ///  The #NMIP4Config of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-connectivity`
+    ///  The IPv4 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-config`
+    ///  The IPv6 #NMIPConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-connectivity`
+    ///  The IPv6 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `lldp-neighbors`
+    ///  The LLDP neighbors.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `managed`
+    ///  Whether the device is managed by NetworkManager.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `metered`
+    ///  Whether the device is metered.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `mtu`
+    ///  The MTU of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `nm-plugin-missing`
+    ///  When [`true`] indicates that the NetworkManager plugin for the device
+    /// is not installed.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The device path as exposed by the udev property ID_PATH.
+    ///
+    /// The string is backslash escaped (C escaping) for invalid
+    /// characters. The escaping can be reverted with g_strcompress(),
+    /// however the result may not be valid UTF-8.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `physical-port-id`
+    ///  The physical port ID of the device. (See
+    /// nm_device_get_physical_port_id().)
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ports`
+    ///  The port devices of the controller device. For devices that cannot be
+    /// controllers this is likely to be always empty.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `product`
+    ///  The product string of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `real`
+    ///  Whether the device is real or is a placeholder device that could
+    /// be created automatically by NetworkManager if one of its
+    /// #NMDevice:available-connections was activated.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state-reason`
+    ///  The reason for the device state.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `udi`
+    ///  An operating-system specific device hardware identifier; this is not
+    /// unique to a specific hardware device across reboots or hotplugs.  It
+    /// is an opaque string which for some device types (Bluetooth, Modem)
+    /// contains an identifier provided by the underlying hardware service daemon
+    /// such as Bluez or ModemManager, and clients can use this property to
+    /// request more information about the device from those services.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `vendor`
+    ///  The vendor string of the device.
+    ///
+    /// Readable
+    /// </details>
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`DeviceExt`][trait@crate::prelude::DeviceExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMDeviceModem")]
     pub struct DeviceModem(Object<ffi::NMDeviceModem, ffi::NMDeviceModemClass>) @extends Device, Object;
 
@@ -26,6 +302,11 @@ impl DeviceModem {
             }
         
 
+    /// The access point name the modem is connected to.
+    ///
+    /// # Returns
+    ///
+    /// the APN name or [`None`] if disconnected
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_device_modem_get_apn")]
@@ -36,6 +317,14 @@ impl DeviceModem {
         }
     }
 
+    /// Returns a bitfield of the generic access technology families the modem
+    /// supports without a firmware reload or reinitialization.  This value
+    /// represents the network types the modem can immediately connect to.
+    ///
+    /// # Returns
+    ///
+    /// the generic access technology families the modem supports without
+    /// a firmware reload or other reinitialization
     #[doc(alias = "nm_device_modem_get_current_capabilities")]
     #[doc(alias = "get_current_capabilities")]
     #[doc(alias = "current-capabilities")]
@@ -45,6 +334,13 @@ impl DeviceModem {
         }
     }
 
+    /// An identifier used by the modem backend (ModemManager) that aims to
+    /// uniquely identify the a device. Can be used to match a connection to a
+    /// particular device.
+    ///
+    /// # Returns
+    ///
+    /// a device-id string
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_device_modem_get_device_id")]
@@ -56,6 +352,13 @@ impl DeviceModem {
         }
     }
 
+    /// Returns a bitfield of the generic access technology families the modem
+    /// supports.  Not all capabilities are available concurrently however; some
+    /// may require a firmware reload or reinitialization.
+    ///
+    /// # Returns
+    ///
+    /// the generic access technology families the modem supports
     #[doc(alias = "nm_device_modem_get_modem_capabilities")]
     #[doc(alias = "get_modem_capabilities")]
     #[doc(alias = "modem-capabilities")]
@@ -65,6 +368,11 @@ impl DeviceModem {
         }
     }
 
+    /// The MCC and MNC (concatenated) of the network the modem is connected to.
+    ///
+    /// # Returns
+    ///
+    /// the operator code or [`None`] if disconnected or not a 3GPP modem.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_device_modem_get_operator_code")]
@@ -162,6 +470,9 @@ pub struct DeviceModemBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Whether the device can auto-activate a connection.
+                            ///
+                            /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
                             pub fn autoconnect(self, autoconnect: bool) -> Self {
                             Self { builder: self.builder.property("autoconnect", autoconnect), }
                         }

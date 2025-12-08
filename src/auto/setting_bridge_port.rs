@@ -15,6 +15,60 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// Bridge Port Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `hairpin-mode`
+    ///  Enables or disables "hairpin mode" for the port, which allows frames to
+    /// be sent back out through the port the frame was received on.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `path-cost`
+    ///  The Spanning Tree Protocol (STP) port cost for destinations via this
+    /// port.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority`
+    ///  The Spanning Tree Protocol (STP) priority of this bridge port.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `vlans`
+    ///  Array of bridge VLAN objects. In addition to the VLANs
+    /// specified here, the port will also have the default-pvid
+    /// VLAN configured on the bridge by the bridge.vlan-default-pvid
+    /// property.
+    ///
+    /// In nmcli the VLAN list can be specified with the following
+    /// syntax:
+    ///
+    ///  $vid [pvid] [untagged] [, $vid [pvid] [untagged]]...
+    ///
+    /// where $vid is either a single id between 1 and 4094 or a
+    /// range, represented as a couple of ids separated by a dash.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingBridgePort")]
     pub struct SettingBridgePort(Object<ffi::NMSettingBridgePort, ffi::NMSettingBridgePortClass>) @extends Setting;
 
@@ -24,6 +78,11 @@ glib::wrapper! {
 }
 
 impl SettingBridgePort {
+    /// Creates a new #NMSettingBridgePort object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingBridgePort object
     #[doc(alias = "nm_setting_bridge_port_new")]
     pub fn new() -> SettingBridgePort {
         assert_initialized_main_thread!();
@@ -38,6 +97,10 @@ impl SettingBridgePort {
         SettingBridgePortBuilder::new()
     }
 
+    /// Appends a new vlan and associated information to the setting.  The
+    /// given vlan gets sealed and a reference to it is added.
+    /// ## `vlan`
+    /// the vlan to add
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_port_add_vlan")]
@@ -47,6 +110,7 @@ impl SettingBridgePort {
         }
     }
 
+    /// Removes all configured VLANs.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_port_clear_vlans")]
@@ -56,6 +120,10 @@ impl SettingBridgePort {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridgePort:hairpin-mode property of the setting
     #[doc(alias = "nm_setting_bridge_port_get_hairpin_mode")]
     #[doc(alias = "get_hairpin_mode")]
     #[doc(alias = "hairpin-mode")]
@@ -67,6 +135,10 @@ impl SettingBridgePort {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of VLANs
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_port_get_num_vlans")]
@@ -75,6 +147,10 @@ impl SettingBridgePort {
         unsafe { ffi::nm_setting_bridge_port_get_num_vlans(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridgePort:path-cost property of the setting
     #[doc(alias = "nm_setting_bridge_port_get_path_cost")]
     #[doc(alias = "get_path_cost")]
     #[doc(alias = "path-cost")]
@@ -82,12 +158,22 @@ impl SettingBridgePort {
         unsafe { ffi::nm_setting_bridge_port_get_path_cost(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBridgePort:priority property of the setting
     #[doc(alias = "nm_setting_bridge_port_get_priority")]
     #[doc(alias = "get_priority")]
     pub fn priority(&self) -> u16 {
         unsafe { ffi::nm_setting_bridge_port_get_priority(self.to_glib_none().0) }
     }
 
+    /// ## `idx`
+    /// index number of the VLAN to return
+    ///
+    /// # Returns
+    ///
+    /// the VLAN at index @idx
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_port_get_vlan")]
@@ -101,6 +187,9 @@ impl SettingBridgePort {
         }
     }
 
+    /// Removes the vlan at index @idx.
+    /// ## `idx`
+    /// index number of the VLAN.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_port_remove_vlan")]
@@ -110,6 +199,17 @@ impl SettingBridgePort {
         }
     }
 
+    /// Remove the VLAN with range @vid_start to @vid_end.
+    /// If @vid_end is zero, it is assumed to be equal to @vid_start
+    /// and so the single-id VLAN with id @vid_start is removed.
+    /// ## `vid_start`
+    /// the vlan start index
+    /// ## `vid_end`
+    /// the vlan end index
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the vlan was found and removed; [`false`] otherwise
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_bridge_port_remove_vlan_by_vid")]
@@ -123,20 +223,37 @@ impl SettingBridgePort {
         }
     }
 
+    /// Enables or disables "hairpin mode" for the port, which allows frames to
+    /// be sent back out through the port the frame was received on.
     #[doc(alias = "hairpin-mode")]
     pub fn set_hairpin_mode(&self, hairpin_mode: bool) {
         ObjectExt::set_property(self, "hairpin-mode", hairpin_mode)
     }
 
+    /// The Spanning Tree Protocol (STP) port cost for destinations via this
+    /// port.
     #[doc(alias = "path-cost")]
     pub fn set_path_cost(&self, path_cost: u32) {
         ObjectExt::set_property(self, "path-cost", path_cost)
     }
 
+    /// The Spanning Tree Protocol (STP) priority of this bridge port.
     pub fn set_priority(&self, priority: u32) {
         ObjectExt::set_property(self, "priority", priority)
     }
 
+    /// Array of bridge VLAN objects. In addition to the VLANs
+    /// specified here, the port will also have the default-pvid
+    /// VLAN configured on the bridge by the bridge.vlan-default-pvid
+    /// property.
+    ///
+    /// In nmcli the VLAN list can be specified with the following
+    /// syntax:
+    ///
+    ///  $vid [pvid] [untagged] [, $vid [pvid] [untagged]]...
+    ///
+    /// where $vid is either a single id between 1 and 4094 or a
+    /// range, represented as a couple of ids separated by a dash.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlans(&self) -> Vec<BridgeVlan> {
@@ -147,6 +264,18 @@ impl SettingBridgePort {
             .collect()
     }
 
+    /// Array of bridge VLAN objects. In addition to the VLANs
+    /// specified here, the port will also have the default-pvid
+    /// VLAN configured on the bridge by the bridge.vlan-default-pvid
+    /// property.
+    ///
+    /// In nmcli the VLAN list can be specified with the following
+    /// syntax:
+    ///
+    ///  $vid [pvid] [untagged] [, $vid [pvid] [untagged]]...
+    ///
+    /// where $vid is either a single id between 1 and 4094 or a
+    /// range, represented as a couple of ids separated by a dash.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn set_vlans(&self, vlans: &[&BridgeVlan]) {
@@ -277,24 +406,41 @@ impl SettingBridgePortBuilder {
         }
     }
 
+    /// Enables or disables "hairpin mode" for the port, which allows frames to
+    /// be sent back out through the port the frame was received on.
     pub fn hairpin_mode(self, hairpin_mode: bool) -> Self {
         Self {
             builder: self.builder.property("hairpin-mode", hairpin_mode),
         }
     }
 
+    /// The Spanning Tree Protocol (STP) port cost for destinations via this
+    /// port.
     pub fn path_cost(self, path_cost: u32) -> Self {
         Self {
             builder: self.builder.property("path-cost", path_cost),
         }
     }
 
+    /// The Spanning Tree Protocol (STP) priority of this bridge port.
     pub fn priority(self, priority: u32) -> Self {
         Self {
             builder: self.builder.property("priority", priority),
         }
     }
 
+    /// Array of bridge VLAN objects. In addition to the VLANs
+    /// specified here, the port will also have the default-pvid
+    /// VLAN configured on the bridge by the bridge.vlan-default-pvid
+    /// property.
+    ///
+    /// In nmcli the VLAN list can be specified with the following
+    /// syntax:
+    ///
+    ///  $vid [pvid] [untagged] [, $vid [pvid] [untagged]]...
+    ///
+    /// where $vid is either a single id between 1 and 4094 or a
+    /// range, represented as a couple of ids separated by a dash.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlans(self, vlans: &[&BridgeVlan]) -> Self {

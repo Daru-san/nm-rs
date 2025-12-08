@@ -16,6 +16,48 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// WWW Proxy Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `browser-only`
+    ///  Whether the proxy configuration is for browser only.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `method`
+    ///  Method for proxy configuration, Default is [`SettingProxyMethod::None`][crate::SettingProxyMethod::None]
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `pac-script`
+    ///  PAC script for the connection. This is an UTF-8 encoded javascript code
+    /// that defines a FindProxyForURL() function.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `pac-url`
+    ///  PAC URL for obtaining PAC file.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingProxy")]
     pub struct SettingProxy(Object<ffi::NMSettingProxy, ffi::NMSettingProxyClass>) @extends Setting;
 
@@ -25,6 +67,11 @@ glib::wrapper! {
 }
 
 impl SettingProxy {
+    /// Creates a new #NMSettingProxy object.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingProxy object
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_proxy_new")]
@@ -44,6 +91,11 @@ impl SettingProxy {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if this proxy configuration is only for browser
+    /// clients/schemes, [`false`] otherwise.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_proxy_get_browser_only")]
@@ -55,6 +107,13 @@ impl SettingProxy {
         }
     }
 
+    /// Returns the proxy configuration method. By default the value is [`SettingProxyMethod::None`][crate::SettingProxyMethod::None].
+    /// [`SettingProxyMethod::None`][crate::SettingProxyMethod::None] should be selected for a connection intended for direct network
+    /// access.
+    ///
+    /// # Returns
+    ///
+    /// the proxy configuration method
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_proxy_get_method")]
@@ -65,6 +124,10 @@ impl SettingProxy {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the PAC script.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_proxy_get_pac_script")]
@@ -76,6 +139,10 @@ impl SettingProxy {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the PAC URL for obtaining PAC file
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_proxy_get_pac_url")]
@@ -87,6 +154,7 @@ impl SettingProxy {
         }
     }
 
+    /// Whether the proxy configuration is for browser only.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "browser-only")]
@@ -94,12 +162,15 @@ impl SettingProxy {
         ObjectExt::set_property(self,"browser-only", browser_only)
     }
 
+    /// Method for proxy configuration, Default is [`SettingProxyMethod::None`][crate::SettingProxyMethod::None]
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn set_method(&self, method: i32) {
         ObjectExt::set_property(self,"method", method)
     }
 
+    /// PAC script for the connection. This is an UTF-8 encoded javascript code
+    /// that defines a FindProxyForURL() function.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "pac-script")]
@@ -107,6 +178,7 @@ impl SettingProxy {
         ObjectExt::set_property(self,"pac-script", pac_script)
     }
 
+    /// PAC URL for obtaining PAC file.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "pac-url")]
@@ -197,24 +269,29 @@ pub struct SettingProxyBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Whether the proxy configuration is for browser only.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn browser_only(self, browser_only: bool) -> Self {
                             Self { builder: self.builder.property("browser-only", browser_only), }
                         }
 
+                            /// Method for proxy configuration, Default is [`SettingProxyMethod::None`][crate::SettingProxyMethod::None]
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn method(self, method: i32) -> Self {
                             Self { builder: self.builder.property("method", method), }
                         }
 
+                            /// PAC script for the connection. This is an UTF-8 encoded javascript code
+                            /// that defines a FindProxyForURL() function.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn pac_script(self, pac_script: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("pac-script", pac_script.into()), }
                         }
 
+                            /// PAC URL for obtaining PAC file.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn pac_url(self, pac_url: impl Into<glib::GString>) -> Self {

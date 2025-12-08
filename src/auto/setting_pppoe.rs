@@ -8,6 +8,59 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// PPP-over-Ethernet Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `parent`
+    ///  If given, specifies the parent interface name on which this PPPoE
+    /// connection should be created.  If this property is not specified,
+    /// the connection is activated on the interface specified in
+    /// #NMSettingConnection:interface-name of #NMSettingConnection.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `password`
+    ///  Password used to authenticate with the PPPoE service.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `password-flags`
+    ///  Flags indicating how to handle the #NMSettingPppoe:password property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `service`
+    ///  If specified, instruct PPPoE to only initiate sessions with access
+    /// concentrators that provide the specified service.  For most providers,
+    /// this should be left blank.  It is only required if there are multiple
+    /// access concentrators or a specific service is known to be required.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `username`
+    ///  Username used to authenticate with the PPPoE service.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingPppoe")]
     pub struct SettingPppoe(Object<ffi::NMSettingPppoe, ffi::NMSettingPppoeClass>) @extends Setting;
 
@@ -17,6 +70,11 @@ glib::wrapper! {
 }
 
 impl SettingPppoe {
+    /// Creates a new #NMSettingPppoe object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingPppoe object
     #[doc(alias = "nm_setting_pppoe_new")]
     pub fn new() -> SettingPppoe {
         assert_initialized_main_thread!();
@@ -34,6 +92,10 @@ impl SettingPppoe {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPppoe:parent property of the setting
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_pppoe_get_parent")]
@@ -44,6 +106,10 @@ impl SettingPppoe {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPppoe:password property of the setting
     #[doc(alias = "nm_setting_pppoe_get_password")]
     #[doc(alias = "get_password")]
     pub fn password(&self) -> glib::GString {
@@ -52,6 +118,10 @@ impl SettingPppoe {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSecretFlags pertaining to the #NMSettingPppoe:password
     #[doc(alias = "nm_setting_pppoe_get_password_flags")]
     #[doc(alias = "get_password_flags")]
     #[doc(alias = "password-flags")]
@@ -61,6 +131,10 @@ impl SettingPppoe {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPppoe:service property of the setting
     #[doc(alias = "nm_setting_pppoe_get_service")]
     #[doc(alias = "get_service")]
     pub fn service(&self) -> glib::GString {
@@ -69,6 +143,10 @@ impl SettingPppoe {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingPppoe:username property of the setting
     #[doc(alias = "nm_setting_pppoe_get_username")]
     #[doc(alias = "get_username")]
     pub fn username(&self) -> glib::GString {
@@ -77,25 +155,36 @@ impl SettingPppoe {
         }
     }
 
+    /// If given, specifies the parent interface name on which this PPPoE
+    /// connection should be created.  If this property is not specified,
+    /// the connection is activated on the interface specified in
+    /// #NMSettingConnection:interface-name of #NMSettingConnection.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn set_parent(&self, parent: Option<&str>) {
         ObjectExt::set_property(self,"parent", parent)
     }
 
+    /// Password used to authenticate with the PPPoE service.
     pub fn set_password(&self, password: Option<&str>) {
         ObjectExt::set_property(self,"password", password)
     }
 
+    /// Flags indicating how to handle the #NMSettingPppoe:password property.
     #[doc(alias = "password-flags")]
     pub fn set_password_flags(&self, password_flags: SettingSecretFlags) {
         ObjectExt::set_property(self,"password-flags", password_flags)
     }
 
+    /// If specified, instruct PPPoE to only initiate sessions with access
+    /// concentrators that provide the specified service.  For most providers,
+    /// this should be left blank.  It is only required if there are multiple
+    /// access concentrators or a specific service is known to be required.
     pub fn set_service(&self, service: Option<&str>) {
         ObjectExt::set_property(self,"service", service)
     }
 
+    /// Username used to authenticate with the PPPoE service.
     pub fn set_username(&self, username: Option<&str>) {
         ObjectExt::set_property(self,"username", username)
     }
@@ -188,24 +277,35 @@ pub struct SettingPppoeBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// If given, specifies the parent interface name on which this PPPoE
+                            /// connection should be created.  If this property is not specified,
+                            /// the connection is activated on the interface specified in
+                            /// #NMSettingConnection:interface-name of #NMSettingConnection.
                             #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn parent(self, parent: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("parent", parent.into()), }
                         }
 
+                            /// Password used to authenticate with the PPPoE service.
                             pub fn password(self, password: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("password", password.into()), }
                         }
 
+                            /// Flags indicating how to handle the #NMSettingPppoe:password property.
                             pub fn password_flags(self, password_flags: SettingSecretFlags) -> Self {
                             Self { builder: self.builder.property("password-flags", password_flags), }
                         }
 
+                            /// If specified, instruct PPPoE to only initiate sessions with access
+                            /// concentrators that provide the specified service.  For most providers,
+                            /// this should be left blank.  It is only required if there are multiple
+                            /// access concentrators or a specific service is known to be required.
                             pub fn service(self, service: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("service", service.into()), }
                         }
 
+                            /// Username used to authenticate with the PPPoE service.
                             pub fn username(self, username: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("username", username.into()), }
                         }

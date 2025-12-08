@@ -9,6 +9,62 @@ use crate::{ffi};
 use glib::{translate::*};
 
 glib::wrapper! {
+    /// Supported attributes are:
+    ///
+    /// - #NM_LLDP_ATTR_CHASSIS_ID_TYPE (type: 'u')
+    /// - #NM_LLDP_ATTR_CHASSIS_ID (type: 's')
+    /// - #NM_LLDP_ATTR_DESTINATION (type: 's')
+    /// - #NM_LLDP_ATTR_IEEE_802_1_PPVID (type: 'u'). This attribute only reports the first PPVID
+    ///   and therefore it is deprecated in favor of NM_LLDP_ATTR_IEEE_802_1_PPVIDS which reports
+    ///   all the PPVID.
+    /// - #NM_LLDP_ATTR_IEEE_802_1_PPVID_FLAGS (type: 'u'). This attribute only reports the first PPVID
+    ///   and therefore it is deprecated in favor of NM_LLDP_ATTR_IEEE_802_1_PPVIDS which reports
+    ///   all the PPVID.
+    /// - #NM_LLDP_ATTR_IEEE_802_1_PPVIDS (type: 'aa{sv}')
+    ///
+    ///   An array of dictionaries where each element has keys:
+    ///   - flags (type: 'u')
+    ///   - ppvid (type: 'u')
+    /// - #NM_LLDP_ATTR_IEEE_802_1_PVID (type: 'u')
+    /// - #NM_LLDP_ATTR_IEEE_802_1_VID (type: 'u'). This attribute only reports the first VLAN
+    ///   and therefore it is deprecated in favor of NM_LLDP_ATTR_IEEE_802_1_VLANS which reports
+    ///   all the VLANs.
+    /// - #NM_LLDP_ATTR_IEEE_802_1_VLAN_NAME (type: 's'). This attribute only reports the first VLAN
+    ///   and therefore it is deprecated in favor of NM_LLDP_ATTR_IEEE_802_1_VLANS which reports
+    ///   all the VLANs.
+    /// - #NM_LLDP_ATTR_IEEE_802_1_VLANS (type: 'aa{sv}')
+    ///
+    ///   An array of dictionaries where each element has keys:
+    ///   - name (type: 's')
+    ///   - vid (type: 'u')
+    /// - #NM_LLDP_ATTR_IEEE_802_3_MAC_PHY_CONF (type: 'a{sv}')
+    ///
+    ///   Dictionary where each element has keys:
+    ///   - autoneg (type: 'u')
+    ///   - operational-mau-type (type: 'u')
+    ///   - pmd-autoneg-cap (type: 'u')
+    /// - #NM_LLDP_ATTR_IEEE_802_3_MAX_FRAME_SIZE (type: 'u')
+    /// - #NM_LLDP_ATTR_IEEE_802_3_POWER_VIA_MDI (type: 'a{sv}')
+    ///
+    ///   Dictionary where each element has keys:
+    ///   - mdi-power-support (type: 'u')
+    ///   - power-class (type: 'u')
+    ///   - pse-power-pair (type: 'u')
+    /// - #NM_LLDP_ATTR_MANAGEMENT_ADDRESSES (type: 'aa{sv}')
+    ///
+    ///   An array of dictionaries where each element has keys:
+    ///   - address (type: 'ay')
+    ///   - address-subtype (type: 'u')
+    ///   - interface-number (type: 'u')
+    ///   - interface-number-subtype (type: 'u')
+    ///   - object-id (type: 'ay')
+    /// - #NM_LLDP_ATTR_PORT_DESCRIPTION (type: 's')
+    /// - #NM_LLDP_ATTR_PORT_ID_TYPE (type: 'u')
+    /// - #NM_LLDP_ATTR_PORT_ID (type: 's')
+    /// - #NM_LLDP_ATTR_RAW (type: 'ay')
+    /// - #NM_LLDP_ATTR_SYSTEM_CAPABILITIES (type: 'u')
+    /// - #NM_LLDP_ATTR_SYSTEM_DESCRIPTION (type: 's')
+    /// - #NM_LLDP_ATTR_SYSTEM_NAME (type: 's')
     #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct LldpNeighbor(Shared<ffi::NMLldpNeighbor>);
 
@@ -20,6 +76,20 @@ glib::wrapper! {
 }
 
 impl LldpNeighbor {
+    /// Creates a new #NMLldpNeighbor object.
+    ///
+    /// Note that #NMLldpNeighbor has no public API for mutating
+    /// an instance. Also, libnm will not internally mutate a
+    /// once exposed object. They are guaranteed to be immutable.
+    ///
+    /// Since 1.32, ref-counting of #NMLldpNeighbor is thread-safe.
+    ///
+    /// This function is not useful, as there is no public API to
+    /// actually modify the (empty) instance.
+    ///
+    /// # Returns
+    ///
+    /// the new #NMLldpNeighbor object.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_lldp_neighbor_new")]
@@ -30,6 +100,11 @@ impl LldpNeighbor {
         }
     }
 
+    /// Gets an array of attribute names available for @self.
+    ///
+    /// # Returns
+    ///
+    /// a [`None`]-terminated array of attribute names.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_lldp_neighbor_get_attr_names")]
@@ -40,6 +115,17 @@ impl LldpNeighbor {
         }
     }
 
+    /// Gets the string value of attribute with name @name on @self
+    /// ## `name`
+    /// the attribute name
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if a string attribute with name @name was found, [`false`] otherwise
+    ///
+    /// ## `out_value`
+    /// on return, the
+    ///   attribute value
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_lldp_neighbor_get_attr_string_value")]
@@ -60,6 +146,16 @@ impl LldpNeighbor {
     //    unsafe { TODO: call ffi:nm_lldp_neighbor_get_attr_type() }
     //}
 
+    /// Gets the uint32 value of attribute with name @name on @self
+    /// ## `name`
+    /// the attribute name
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if a uint32 attribute with name @name was found, [`false`] otherwise
+    ///
+    /// ## `out_value`
+    /// on return, the attribute value
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_lldp_neighbor_get_attr_uint_value")]

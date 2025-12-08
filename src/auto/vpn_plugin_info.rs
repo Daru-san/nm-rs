@@ -21,6 +21,36 @@ use std::boxed::Box as Box_;
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `filename`
+    ///  The filename from which the info was loaded.
+    /// Can be [`None`] if the instance was not loaded from
+    /// a file (i.e. the keyfile instance was passed to the
+    /// constructor).
+    ///
+    /// Readable | Writeable | Construct Only
+    ///
+    ///
+    /// #### `keyfile`
+    ///  Initialize the instance with a different keyfile instance.
+    /// When passing a keyfile instance, the constructor will not
+    /// try to read from filename.
+    ///
+    /// Writeable | Construct Only
+    ///
+    ///
+    /// #### `name`
+    ///  The name of the VPN plugin.
+    ///
+    /// Readable
+    ///
+    /// # Implements
+    ///
+    /// [`trait@gio::prelude::InitableExt`]
     #[doc(alias = "NMVpnPluginInfo")]
     pub struct VpnPluginInfo(Object<ffi::NMVpnPluginInfo, ffi::NMVpnPluginInfoClass>) @implements gio::Initable;
 
@@ -40,6 +70,16 @@ glib::wrapper! {
 }
 
 impl VpnPluginInfo {
+    /// Read the plugin info from file @filename. Does not do
+    /// any further verification on the file. You might want to check
+    /// file permissions and ownership of the file.
+    /// ## `filename`
+    /// filename to read.
+    ///
+    /// # Returns
+    ///
+    /// [`None`] if there is any error or a newly created
+    /// #NMVpnPluginInfo instance.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_new_from_file")]
@@ -57,6 +97,20 @@ impl VpnPluginInfo {
         }
     }
 
+    /// This has the same effect as doing a full nm_vpn_plugin_info_list_load()
+    /// followed by a search for the first matching VPN plugin info that has the
+    /// given @name and/or @service.
+    /// ## `name`
+    /// the name to search for. Either @name or @service
+    ///   must be present.
+    /// ## `service`
+    /// the service to search for. Either @name  or
+    ///   @service must be present.
+    ///
+    /// # Returns
+    ///
+    /// a newly created instance of plugin info
+    ///   or [`None`] if no matching value was found.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_plugin_info_new_search_file")]
@@ -86,6 +140,11 @@ impl VpnPluginInfo {
         VpnPluginInfoBuilder::new()
     }
 
+    ///
+    /// # Returns
+    ///
+    ///
+    ///   the aliases from the name-file.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_plugin_info_get_aliases")]
@@ -98,6 +157,10 @@ impl VpnPluginInfo {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the absolute path to the auth-dialog helper or [`None`].
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_plugin_info_get_auth_dialog")]
@@ -110,6 +173,10 @@ impl VpnPluginInfo {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the cached #NMVpnEditorPlugin instance.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_get_editor_plugin")]
@@ -122,6 +189,10 @@ impl VpnPluginInfo {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the filename. Can be [`None`].
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_get_filename")]
@@ -130,6 +201,10 @@ impl VpnPluginInfo {
         unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_filename(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the name. Cannot be [`None`].
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_get_name")]
@@ -138,6 +213,10 @@ impl VpnPluginInfo {
         unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_name(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the plugin. Can be [`None`].
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_get_plugin")]
@@ -146,6 +225,10 @@ impl VpnPluginInfo {
         unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_plugin(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the program. Can be [`None`].
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_get_program")]
@@ -154,6 +237,10 @@ impl VpnPluginInfo {
         unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_program(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the service. Cannot be [`None`].
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_plugin_info_get_service")]
@@ -162,6 +249,14 @@ impl VpnPluginInfo {
         unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_service(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// loads the plugin and returns the newly created
+    ///   instance. The plugin is owned by @self and can be later retrieved again
+    ///   via nm_vpn_plugin_info_get_editor_plugin(). You can load the
+    ///   plugin only once, unless you reset the state via
+    ///   nm_vpn_plugin_info_set_editor_plugin().
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_load_editor_plugin")]
@@ -177,6 +272,15 @@ impl VpnPluginInfo {
         }
     }
 
+    /// ## `group`
+    /// group name
+    /// ## `key`
+    /// name of the property
+    ///
+    /// # Returns
+    ///
+    /// #NMVpnPluginInfo is internally a #GKeyFile. Returns the matching
+    /// property.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_lookup_property")]
@@ -190,6 +294,9 @@ impl VpnPluginInfo {
         }
     }
 
+    /// Set the internal plugin instance. If [`None`], only clear the previous instance.
+    /// ## `plugin`
+    /// plugin instance
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_set_editor_plugin")]
@@ -202,6 +309,10 @@ impl VpnPluginInfo {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the supports hints for secret requests, otherwise [`false`]
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_plugin_info_supports_hints")]
@@ -213,6 +324,10 @@ impl VpnPluginInfo {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the service supports multiple instances with different bus names, otherwise [`false`]
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_vpn_plugin_info_supports_multiple")]
@@ -224,6 +339,15 @@ impl VpnPluginInfo {
         }
     }
 
+    /// ## `list`
+    /// list of plugins
+    /// ## `plugin_info`
+    /// instance to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the plugin was added to @list. This will fail
+    /// to add duplicate plugins.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_list_add")]
@@ -253,6 +377,14 @@ impl VpnPluginInfo {
         }
     }
 
+    /// ## `list`
+    /// list of plugins
+    /// ## `filename`
+    /// filename to search
+    ///
+    /// # Returns
+    ///
+    /// the first plugin with a matching @filename (or [`None`]).
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_list_find_by_filename")]
@@ -270,6 +402,14 @@ impl VpnPluginInfo {
         }
     }
 
+    /// ## `list`
+    /// list of plugins
+    /// ## `name`
+    /// name to search
+    ///
+    /// # Returns
+    ///
+    /// the first plugin with a matching @name (or [`None`]).
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_list_find_by_name")]
@@ -287,6 +427,15 @@ impl VpnPluginInfo {
         }
     }
 
+    /// ## `list`
+    /// list of plugins
+    /// ## `service`
+    /// service to search. This can be the main service-type
+    ///   or one of the provided aliases.
+    ///
+    /// # Returns
+    ///
+    /// the first plugin with a matching @service (or [`None`]).
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_list_find_by_service")]
@@ -304,6 +453,25 @@ impl VpnPluginInfo {
         }
     }
 
+    /// A VPN plugin provides one or several service-types, like org.freedesktop.NetworkManager.libreswan
+    /// Certain plugins provide more then one service type, via aliases (org.freedesktop.NetworkManager.openswan).
+    /// This function looks up a service-type (or an alias) based on a name.
+    ///
+    /// Preferably, the name can be a full service-type/alias of an installed
+    /// plugin. Otherwise, it can be the name of a VPN plugin (in which case, the
+    /// primary, non-aliased service-type is returned). Otherwise, it can be
+    /// one of several well known short-names (which is a hard-coded list of
+    /// types in libnm). On success, this returns a full qualified service-type
+    /// (or an alias). It doesn't say, that such an plugin is actually available,
+    /// but it could be retrieved via nm_vpn_plugin_info_list_find_by_service().
+    /// ## `list`
+    /// a possibly empty #GSList of #NMVpnPluginInfo instances
+    /// ## `name`
+    /// a name to lookup the service-type.
+    ///
+    /// # Returns
+    ///
+    /// the resolved service-type or [`None`] on failure.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_plugin_info_list_find_service_type")]
@@ -321,6 +489,21 @@ impl VpnPluginInfo {
         }
     }
 
+    /// ## `list`
+    /// a possibly empty #GSList of #NMVpnPluginInfo
+    /// ## `only_existing`
+    /// only include results that are actually in @list.
+    ///   Otherwise, the result is extended with a hard-code list or
+    ///   well-known plugins
+    /// ## `with_abbreviations`
+    /// if [`false`], only full service types are returned.
+    ///   Otherwise, this also includes abbreviated names that can be used
+    ///   with nm_vpn_plugin_info_list_find_service_type().
+    ///
+    /// # Returns
+    ///
+    /// a [`None`] terminated strv list of strings.
+    ///   The list itself and the values must be freed with g_strfreev().
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_plugin_info_list_get_service_types")]
@@ -343,6 +526,11 @@ impl VpnPluginInfo {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// list of plugins
+    /// loaded from the default directories rejecting duplicates.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_list_load")]
@@ -351,6 +539,15 @@ impl VpnPluginInfo {
         unsafe { FromGlibPtrContainer::from_glib_full(ffi::nm_vpn_plugin_info_list_load()) }
     }
 
+    /// Remove @plugin_info from @list.
+    /// ## `list`
+    /// list of plugins
+    /// ## `plugin_info`
+    /// instance
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @plugin_info was in @list and successfully removed.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_list_remove")]
@@ -369,6 +566,11 @@ impl VpnPluginInfo {
         }
     }
 
+    /// Regular name files have a certain pattern. That basically means
+    /// they have the file extension "name". Check if @filename
+    /// is valid according to that pattern.
+    /// ## `filename`
+    /// the filename to check
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_validate_filename")]
@@ -432,6 +634,10 @@ impl VpnPluginInfoBuilder {
         }
     }
 
+    /// The filename from which the info was loaded.
+    /// Can be [`None`] if the instance was not loaded from
+    /// a file (i.e. the keyfile instance was passed to the
+    /// constructor).
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn filename(self, filename: impl Into<glib::GString>) -> Self {
@@ -440,6 +646,9 @@ impl VpnPluginInfoBuilder {
         }
     }
 
+    /// Initialize the instance with a different keyfile instance.
+    /// When passing a keyfile instance, the constructor will not
+    /// try to read from filename.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn keyfile(self, keyfile: /*Ignored*/ &glib::KeyFile) -> Self {

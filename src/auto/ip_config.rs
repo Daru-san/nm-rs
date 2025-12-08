@@ -8,6 +8,88 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `addresses`
+    ///  A #GPtrArray containing the addresses (#NMIPAddress) of the configuration.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `domains`
+    ///  The array containing domain strings of the configuration.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `family`
+    ///  The IP address family of the configuration; either
+    /// <literal>AF_INET</literal> or <literal>AF_INET6</literal>.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `gateway`
+    ///  The IP gateway address of the configuration as string.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `nameservers`
+    ///  The array containing name server IP addresses of the configuration.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `routes`
+    ///  A #GPtrArray containing the routes (#NMIPRoute) of the configuration.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `searches`
+    ///  The array containing DNS search strings of the configuration.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `wins-servers`
+    ///  The array containing WINS server IP addresses of the configuration.
+    /// (This will always be empty for IPv6 configurations.)
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMIPConfig")]
     pub struct IPConfig(Object<ffi::NMIPConfig, ffi::NMIPConfigClass>) @extends Object;
 
@@ -17,6 +99,14 @@ glib::wrapper! {
 }
 
 impl IPConfig {
+    /// Gets the IP addresses (containing the address, prefix, and gateway).
+    ///
+    /// # Returns
+    ///
+    /// the #GPtrArray
+    /// containing #NMIPAddress<!-- -->es.  This is the internal copy used by the
+    /// configuration and must not be modified. The library never modifies the
+    /// returned array and thus it is safe for callers to reference and keep using it.
     #[doc(alias = "nm_ip_config_get_addresses")]
     #[doc(alias = "get_addresses")]
     pub fn addresses(&self) -> Vec<IPAddress> {
@@ -25,6 +115,12 @@ impl IPConfig {
         }
     }
 
+    /// Gets the domain names.
+    ///
+    /// # Returns
+    ///
+    /// the array of domains.
+    /// (This is never [`None`], though it may be 0-length).
     #[doc(alias = "nm_ip_config_get_domains")]
     #[doc(alias = "get_domains")]
     pub fn domains(&self) -> Vec<glib::GString> {
@@ -33,6 +129,12 @@ impl IPConfig {
         }
     }
 
+    /// Gets the IP address family
+    ///
+    /// # Returns
+    ///
+    /// the IP address family; either <literal>AF_INET</literal> or
+    /// <literal>AF_INET6</literal>
     #[doc(alias = "nm_ip_config_get_family")]
     #[doc(alias = "get_family")]
     pub fn family(&self) -> i32 {
@@ -41,6 +143,11 @@ impl IPConfig {
         }
     }
 
+    /// Gets the IP gateway address.
+    ///
+    /// # Returns
+    ///
+    /// the IP address of the gateway.
     #[doc(alias = "nm_ip_config_get_gateway")]
     #[doc(alias = "get_gateway")]
     pub fn gateway(&self) -> glib::GString {
@@ -49,6 +156,11 @@ impl IPConfig {
         }
     }
 
+    /// Gets the domain name servers (DNS).
+    ///
+    /// # Returns
+    ///
+    /// the array of nameserver IP addresses
     #[doc(alias = "nm_ip_config_get_nameservers")]
     #[doc(alias = "get_nameservers")]
     pub fn nameservers(&self) -> Vec<glib::GString> {
@@ -57,6 +169,14 @@ impl IPConfig {
         }
     }
 
+    /// Gets the routes.
+    ///
+    /// # Returns
+    ///
+    /// the #GPtrArray containing
+    /// #NMIPRoute<!-- -->s. This is the internal copy used by the configuration, and must
+    /// not be modified. The library never modifies the returned array and thus it is
+    /// safe for callers to reference and keep using it.
     #[doc(alias = "nm_ip_config_get_routes")]
     #[doc(alias = "get_routes")]
     pub fn routes(&self) -> Vec<IPRoute> {
@@ -65,6 +185,12 @@ impl IPConfig {
         }
     }
 
+    /// Gets the DNS searches.
+    ///
+    /// # Returns
+    ///
+    /// the array of DNS search strings.
+    /// (This is never [`None`], though it may be 0-length).
     #[doc(alias = "nm_ip_config_get_searches")]
     #[doc(alias = "get_searches")]
     pub fn searches(&self) -> Vec<glib::GString> {
@@ -73,6 +199,12 @@ impl IPConfig {
         }
     }
 
+    /// Gets the Windows Internet Name Service servers (WINS).
+    ///
+    /// # Returns
+    ///
+    /// the arry of WINS server IP address strings.
+    /// (This is never [`None`], though it may be 0-length.)
     #[doc(alias = "nm_ip_config_get_wins_servers")]
     #[doc(alias = "get_wins_servers")]
     #[doc(alias = "wins-servers")]

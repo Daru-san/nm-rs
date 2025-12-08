@@ -210,26 +210,41 @@ impl From<NM80211ApSecurityFlags> for glib::Value {
 
 #[cfg(feature = "v1_10")]
 bitflags! {
+    /// Flags describing the current activation state.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMActivationStateFlags")]
     pub struct ActivationStateFlags: u32 {
+        /// an alias for numeric zero, no flags set.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_NONE")]
         const NONE = ffi::NM_ACTIVATION_STATE_FLAG_NONE as _;
+        /// the device is a controller.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_IS_CONTROLLER")]
         const IS_CONTROLLER = ffi::NM_ACTIVATION_STATE_FLAG_IS_CONTROLLER as _;
+        /// the device is a port.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_IS_PORT")]
         const IS_PORT = ffi::NM_ACTIVATION_STATE_FLAG_IS_PORT as _;
+        /// layer2 is activated and ready.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_LAYER2_READY")]
         const LAYER2_READY = ffi::NM_ACTIVATION_STATE_FLAG_LAYER2_READY as _;
+        /// IPv4 setting is completed.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_IP4_READY")]
         const IP4_READY = ffi::NM_ACTIVATION_STATE_FLAG_IP4_READY as _;
+        /// IPv6 setting is completed.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_IP6_READY")]
         const IP6_READY = ffi::NM_ACTIVATION_STATE_FLAG_IP6_READY as _;
+        /// The controller has any port devices attached.
+        ///   This only makes sense if the device is a controller.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_CONTROLLER_HAS_PORTS")]
         const CONTROLLER_HAS_PORTS = ffi::NM_ACTIVATION_STATE_FLAG_CONTROLLER_HAS_PORTS as _;
+        /// the lifetime
+        ///   of the activation is bound to the visibility of the connection profile,
+        ///   which in turn depends on "connection.permissions" and whether a session
+        ///   for the user exists. Since: 1.16.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_LIFETIME_BOUND_TO_PROFILE_VISIBILITY")]
         const LIFETIME_BOUND_TO_PROFILE_VISIBILITY = ffi::NM_ACTIVATION_STATE_FLAG_LIFETIME_BOUND_TO_PROFILE_VISIBILITY as _;
+        /// the active connection was generated to
+        ///  represent an external configuration of a networking device. Since: 1.26.
         #[doc(alias = "NM_ACTIVATION_STATE_FLAG_EXTERNAL")]
         const EXTERNAL = ffi::NM_ACTIVATION_STATE_FLAG_EXTERNAL as _;
     }
@@ -327,13 +342,18 @@ impl From<ActivationStateFlags> for glib::Value {
 }
 
 bitflags! {
+    /// #NMBluetoothCapabilities values indicate the usable capabilities of a
+    /// Bluetooth device.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMBluetoothCapabilities")]
     pub struct BluetoothCapabilities: u32 {
+        /// device has no usable capabilities
         #[doc(alias = "NM_BT_CAPABILITY_NONE")]
         const NONE = ffi::NM_BT_CAPABILITY_NONE as _;
+        /// device provides Dial-Up Networking capability
         #[doc(alias = "NM_BT_CAPABILITY_DUN")]
         const DUN = ffi::NM_BT_CAPABILITY_DUN as _;
+        /// device provides Network Access Point capability
         #[doc(alias = "NM_BT_CAPABILITY_NAP")]
         const NAP = ffi::NM_BT_CAPABILITY_NAP as _;
     }
@@ -416,22 +436,52 @@ impl From<BluetoothCapabilities> for glib::Value {
 
 #[cfg(feature = "v1_12")]
 bitflags! {
+    /// The flags for CheckpointCreate call
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMCheckpointCreateFlags")]
     pub struct CheckpointCreateFlags: u32 {
+        /// no flags
         #[doc(alias = "NM_CHECKPOINT_CREATE_FLAG_NONE")]
         const NONE = ffi::NM_CHECKPOINT_CREATE_FLAG_NONE as _;
+        /// when creating
+        ///   a new checkpoint, destroy all existing ones.
         #[doc(alias = "NM_CHECKPOINT_CREATE_FLAG_DESTROY_ALL")]
         const DESTROY_ALL = ffi::NM_CHECKPOINT_CREATE_FLAG_DESTROY_ALL as _;
+        /// upon rollback,
+        ///   delete any new connection added after the checkpoint. Since: 1.6.
         #[doc(alias = "NM_CHECKPOINT_CREATE_FLAG_DELETE_NEW_CONNECTIONS")]
         const DELETE_NEW_CONNECTIONS = ffi::NM_CHECKPOINT_CREATE_FLAG_DELETE_NEW_CONNECTIONS as _;
+        /// upon rollback,
+        ///   disconnect any new device appeared after the checkpoint. Since: 1.6.
         #[doc(alias = "NM_CHECKPOINT_CREATE_FLAG_DISCONNECT_NEW_DEVICES")]
         const DISCONNECT_NEW_DEVICES = ffi::NM_CHECKPOINT_CREATE_FLAG_DISCONNECT_NEW_DEVICES as _;
+        /// by default, creating
+        ///   a checkpoint fails if there are already existing checkpoints that
+        ///   reference the same devices. With this flag, creation of such
+        ///   checkpoints is allowed, however, if an older checkpoint
+        ///   that references overlapping devices gets rolled back, it will
+        ///   automatically destroy this checkpoint during rollback. This
+        ///   allows one to create several overlapping checkpoints in parallel,
+        ///   and rollback to them at will. With the special case that
+        ///   rolling back to an older checkpoint will invalidate all
+        ///   overlapping younger checkpoints. This opts-in that the
+        ///   checkpoint can be automatically destroyed by the rollback
+        ///   of an older checkpoint. Since: 1.12.
         #[doc(alias = "NM_CHECKPOINT_CREATE_FLAG_ALLOW_OVERLAPPING")]
         const ALLOW_OVERLAPPING = ffi::NM_CHECKPOINT_CREATE_FLAG_ALLOW_OVERLAPPING as _;
+        /// during rollback,
+        ///   by default externally added ports attached to bridge devices are preserved.
+        ///   With this flag, the rollback detaches all external ports.
+        ///   This only has an effect for bridge ports. Before 1.38, this was the default
+        ///   behavior. Since: 1.38.
         #[doc(alias = "NM_CHECKPOINT_CREATE_FLAG_NO_PRESERVE_EXTERNAL_PORTS")]
         const NO_PRESERVE_EXTERNAL_PORTS = ffi::NM_CHECKPOINT_CREATE_FLAG_NO_PRESERVE_EXTERNAL_PORTS as _;
+        /// during rollback,
+        ///   by default changes to global DNS via D-BUS interface are preserved.
+        ///   With this flag, the rollback reverts the global DNS changes made via D-Bus
+        ///   interface. Global DNS defined in [global-dns] section of
+        ///   NetworkManager.conf is not impacted by this flag. Since: 1.48.
         #[doc(alias = "NM_CHECKPOINT_CREATE_FLAG_TRACK_INTERNAL_GLOBAL_DNS")]
         const TRACK_INTERNAL_GLOBAL_DNS = ffi::NM_CHECKPOINT_CREATE_FLAG_TRACK_INTERNAL_GLOBAL_DNS as _;
     }
@@ -534,12 +584,26 @@ bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMClientInstanceFlags")]
     pub struct ClientInstanceFlags: u32 {
+        /// special value to indicate no flags.
         #[doc(alias = "NM_CLIENT_INSTANCE_FLAGS_NONE")]
         const NONE = ffi::NM_CLIENT_INSTANCE_FLAGS_NONE as _;
+        /// by default, NMClient
+        ///   will fetch the permissions via "GetPermissions" and refetch them when
+        ///   "CheckPermissions" signal gets received. By setting this flag, this behavior
+        ///   can be disabled. You can toggle this flag to enable and disable automatic
+        ///   fetching of the permissions. Watch also nm_client_get_permissions_state()
+        ///   to know whether the permissions are up to date.
         #[doc(alias = "NM_CLIENT_INSTANCE_FLAGS_NO_AUTO_FETCH_PERMISSIONS")]
         const NO_AUTO_FETCH_PERMISSIONS = ffi::NM_CLIENT_INSTANCE_FLAGS_NO_AUTO_FETCH_PERMISSIONS as _;
+        /// as #NMClient is an GInitable
+        ///   and GAsyncInitable, nm_client_get_instance_flags() returns this flag
+        ///   once initialization completed with success. This flag cannot be set
+        ///   as NM_CLIENT_INSTANCE_FLAGS property. Since: 1.42.
         #[doc(alias = "NM_CLIENT_INSTANCE_FLAGS_INITIALIZED_GOOD")]
         const INITIALIZED_GOOD = ffi::NM_CLIENT_INSTANCE_FLAGS_INITIALIZED_GOOD as _;
+        /// like @NM_CLIENT_INSTANCE_FLAGS_INITIALIZED_GOOD
+        ///   indicates that the instance completed initialization with failure. In that
+        ///   case the instance is unusable. Since: 1.42.
         #[doc(alias = "NM_CLIENT_INSTANCE_FLAGS_INITIALIZED_BAD")]
         const INITIALIZED_BAD = ffi::NM_CLIENT_INSTANCE_FLAGS_INITIALIZED_BAD as _;
     }
@@ -637,23 +701,42 @@ impl From<ClientInstanceFlags> for glib::Value {
 }
 
 bitflags! {
+    /// These flags determine which properties are serialized when calling
+    /// nm_connection_to_dbus().
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMConnectionSerializationFlags")]
     pub struct ConnectionSerializationFlags: u32 {
+        /// serialize all properties (including secrets)
         #[doc(alias = "NM_CONNECTION_SERIALIZE_ALL")]
         const ALL = ffi::NM_CONNECTION_SERIALIZE_ALL as _;
+        /// serialize properties that are
+        ///   not secrets. Since 1.32.
         #[doc(alias = "NM_CONNECTION_SERIALIZE_WITH_NON_SECRET")]
         const WITH_NON_SECRET = ffi::NM_CONNECTION_SERIALIZE_WITH_NON_SECRET as _;
+        /// this is a deprecated alias for
+        ///   @NM_CONNECTION_SERIALIZE_WITH_NON_SECRET.
         #[doc(alias = "NM_CONNECTION_SERIALIZE_NO_SECRETS")]
         const NO_SECRETS = ffi::NM_CONNECTION_SERIALIZE_NO_SECRETS as _;
+        /// serialize all secrets. This flag is
+        ///   ignored if any of @NM_CONNECTION_SERIALIZE_WITH_SECRETS_AGENT_OWNED,
+        ///   @NM_CONNECTION_SERIALIZE_WITH_SECRETS_SYSTEM_OWNED or
+        ///   @NM_CONNECTION_SERIALIZE_WITH_SECRETS_NOT_SAVED is set. Since 1.32.
         #[doc(alias = "NM_CONNECTION_SERIALIZE_WITH_SECRETS")]
         const WITH_SECRETS = ffi::NM_CONNECTION_SERIALIZE_WITH_SECRETS as _;
+        /// a deprecated alias for
+        ///   @NM_CONNECTION_SERIALIZE_WITH_SECRETS.
         #[doc(alias = "NM_CONNECTION_SERIALIZE_ONLY_SECRETS")]
         const ONLY_SECRETS = ffi::NM_CONNECTION_SERIALIZE_ONLY_SECRETS as _;
+        /// serialize agent-owned
+        ///   secrets. Since: 1.20.
         #[doc(alias = "NM_CONNECTION_SERIALIZE_WITH_SECRETS_AGENT_OWNED")]
         const WITH_SECRETS_AGENT_OWNED = ffi::NM_CONNECTION_SERIALIZE_WITH_SECRETS_AGENT_OWNED as _;
+        /// serialize system-owned
+        ///   secrets. Since: 1.32.
         #[doc(alias = "NM_CONNECTION_SERIALIZE_WITH_SECRETS_SYSTEM_OWNED")]
         const WITH_SECRETS_SYSTEM_OWNED = ffi::NM_CONNECTION_SERIALIZE_WITH_SECRETS_SYSTEM_OWNED as _;
+        /// serialize secrets that
+        ///   are marked as never saved. Since: 1.32.
         #[doc(alias = "NM_CONNECTION_SERIALIZE_WITH_SECRETS_NOT_SAVED")]
         const WITH_SECRETS_NOT_SAVED = ffi::NM_CONNECTION_SERIALIZE_WITH_SECRETS_NOT_SAVED as _;
     }
@@ -735,17 +818,23 @@ impl From<ConnectionSerializationFlags> for glib::Value {
 }
 
 bitflags! {
+    /// General device capability flags.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMDeviceCapabilities")]
     pub struct DeviceCapabilities: u32 {
+        /// device has no special capabilities
         #[doc(alias = "NM_DEVICE_CAP_NONE")]
         const NONE = ffi::NM_DEVICE_CAP_NONE as _;
+        /// NetworkManager supports this device
         #[doc(alias = "NM_DEVICE_CAP_NM_SUPPORTED")]
         const NM_SUPPORTED = ffi::NM_DEVICE_CAP_NM_SUPPORTED as _;
+        /// this device can indicate carrier status
         #[doc(alias = "NM_DEVICE_CAP_CARRIER_DETECT")]
         const CARRIER_DETECT = ffi::NM_DEVICE_CAP_CARRIER_DETECT as _;
+        /// this device is a software device
         #[doc(alias = "NM_DEVICE_CAP_IS_SOFTWARE")]
         const IS_SOFTWARE = ffi::NM_DEVICE_CAP_IS_SOFTWARE as _;
+        /// this device supports single-root I/O virtualization
         #[doc(alias = "NM_DEVICE_CAP_SRIOV")]
         const SRIOV = ffi::NM_DEVICE_CAP_SRIOV as _;
     }
@@ -828,18 +917,30 @@ impl From<DeviceCapabilities> for glib::Value {
 
 #[cfg(feature = "v1_22")]
 bitflags! {
+    /// Flags for a network interface.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMDeviceInterfaceFlags")]
     pub struct DeviceInterfaceFlags: u32 {
+        /// the interface is enabled from the
+        ///   administrative point of view. Corresponds to kernel IFF_UP.
         #[doc(alias = "NM_DEVICE_INTERFACE_FLAG_UP")]
         const UP = ffi::NM_DEVICE_INTERFACE_FLAG_UP as _;
+        /// the physical link is up. Corresponds
+        ///   to kernel IFF_LOWER_UP.
         #[doc(alias = "NM_DEVICE_INTERFACE_FLAG_LOWER_UP")]
         const LOWER_UP = ffi::NM_DEVICE_INTERFACE_FLAG_LOWER_UP as _;
+        /// receive all packets. Corresponds to
+        ///   kernel IFF_PROMISC. Since: 1.32.
         #[doc(alias = "NM_DEVICE_INTERFACE_FLAG_PROMISC")]
         const PROMISC = ffi::NM_DEVICE_INTERFACE_FLAG_PROMISC as _;
+        /// the interface has carrier. In most
+        ///   cases this is equal to the value of @NM_DEVICE_INTERFACE_FLAG_LOWER_UP.
+        ///   However some devices have a non-standard carrier detection mechanism.
         #[doc(alias = "NM_DEVICE_INTERFACE_FLAG_CARRIER")]
         const CARRIER = ffi::NM_DEVICE_INTERFACE_FLAG_CARRIER as _;
+        /// the flag to indicate device
+        ///   LLDP status. Since: 1.32.
         #[doc(alias = "NM_DEVICE_INTERFACE_FLAG_LLDP_CLIENT_ENABLED")]
         const LLDP_CLIENT_ENABLED = ffi::NM_DEVICE_INTERFACE_FLAG_LLDP_CLIENT_ENABLED as _;
     }
@@ -937,19 +1038,32 @@ impl From<DeviceInterfaceFlags> for glib::Value {
 }
 
 bitflags! {
+    /// #NMDeviceModemCapabilities values indicate the generic radio access
+    /// technology families a modem device supports.  For more information on the
+    /// specific access technologies the device supports use the ModemManager D-Bus
+    /// API.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMDeviceModemCapabilities")]
     pub struct DeviceModemCapabilities: u32 {
+        /// modem has no usable capabilities
         #[doc(alias = "NM_DEVICE_MODEM_CAPABILITY_NONE")]
         const NONE = ffi::NM_DEVICE_MODEM_CAPABILITY_NONE as _;
+        /// modem uses the analog wired telephone
+        /// network and is not a wireless/cellular device
         #[doc(alias = "NM_DEVICE_MODEM_CAPABILITY_POTS")]
         const POTS = ffi::NM_DEVICE_MODEM_CAPABILITY_POTS as _;
+        /// modem supports at least one of CDMA
+        /// 1xRTT, EVDO revision 0, EVDO revision A, or EVDO revision B
         #[doc(alias = "NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO")]
         const CDMA_EVDO = ffi::NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO as _;
+        /// modem supports at least one of GSM,
+        /// GPRS, EDGE, UMTS, HSDPA, HSUPA, or HSPA+ packet switched data capability
         #[doc(alias = "NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS")]
         const GSM_UMTS = ffi::NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS as _;
+        /// modem has LTE data capability
         #[doc(alias = "NM_DEVICE_MODEM_CAPABILITY_LTE")]
         const LTE = ffi::NM_DEVICE_MODEM_CAPABILITY_LTE as _;
+        /// modem has 5GNR data capability. Since: 1.36.
         #[doc(alias = "NM_DEVICE_MODEM_CAPABILITY_5GNR")]
         const _5GNR = ffi::NM_DEVICE_MODEM_CAPABILITY_5GNR as _;
     }
@@ -1032,12 +1146,17 @@ impl From<DeviceModemCapabilities> for glib::Value {
 
 #[cfg(feature = "v1_42")]
 bitflags! {
+    /// Flags for the Reapply() D-Bus call of a device and
+    /// nm_device_reapply_async().
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMDeviceReapplyFlags")]
     pub struct DeviceReapplyFlags: u32 {
+        /// no flag set.
         #[doc(alias = "NM_DEVICE_REAPPLY_FLAGS_NONE")]
         const NONE = ffi::NM_DEVICE_REAPPLY_FLAGS_NONE as _;
+        /// during reapply,
+        ///   preserve external IP addresses and routes.
         #[doc(alias = "NM_DEVICE_REAPPLY_FLAGS_PRESERVE_EXTERNAL_IP")]
         const PRESERVE_EXTERNAL_IP = ffi::NM_DEVICE_REAPPLY_FLAGS_PRESERVE_EXTERNAL_IP as _;
     }
@@ -1135,37 +1254,53 @@ impl From<DeviceReapplyFlags> for glib::Value {
 }
 
 bitflags! {
+    /// 802.11 specific device encryption and authentication capabilities.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMDeviceWifiCapabilities")]
     pub struct DeviceWifiCapabilities: u32 {
+        /// device has no encryption/authentication capabilities
         #[doc(alias = "NM_WIFI_DEVICE_CAP_NONE")]
         const NONE = ffi::NM_WIFI_DEVICE_CAP_NONE as _;
+        /// device supports 40/64-bit WEP encryption
         #[doc(alias = "NM_WIFI_DEVICE_CAP_CIPHER_WEP40")]
         const CIPHER_WEP40 = ffi::NM_WIFI_DEVICE_CAP_CIPHER_WEP40 as _;
+        /// device supports 104/128-bit WEP encryption
         #[doc(alias = "NM_WIFI_DEVICE_CAP_CIPHER_WEP104")]
         const CIPHER_WEP104 = ffi::NM_WIFI_DEVICE_CAP_CIPHER_WEP104 as _;
+        /// device supports TKIP encryption
         #[doc(alias = "NM_WIFI_DEVICE_CAP_CIPHER_TKIP")]
         const CIPHER_TKIP = ffi::NM_WIFI_DEVICE_CAP_CIPHER_TKIP as _;
+        /// device supports AES/CCMP encryption
         #[doc(alias = "NM_WIFI_DEVICE_CAP_CIPHER_CCMP")]
         const CIPHER_CCMP = ffi::NM_WIFI_DEVICE_CAP_CIPHER_CCMP as _;
+        /// device supports WPA1 authentication
         #[doc(alias = "NM_WIFI_DEVICE_CAP_WPA")]
         const WPA = ffi::NM_WIFI_DEVICE_CAP_WPA as _;
+        /// device supports WPA2/RSN authentication
         #[doc(alias = "NM_WIFI_DEVICE_CAP_RSN")]
         const RSN = ffi::NM_WIFI_DEVICE_CAP_RSN as _;
+        /// device supports Access Point mode
         #[doc(alias = "NM_WIFI_DEVICE_CAP_AP")]
         const AP = ffi::NM_WIFI_DEVICE_CAP_AP as _;
+        /// device supports Ad-Hoc mode
         #[doc(alias = "NM_WIFI_DEVICE_CAP_ADHOC")]
         const ADHOC = ffi::NM_WIFI_DEVICE_CAP_ADHOC as _;
+        /// device reports frequency capabilities
         #[doc(alias = "NM_WIFI_DEVICE_CAP_FREQ_VALID")]
         const FREQ_VALID = ffi::NM_WIFI_DEVICE_CAP_FREQ_VALID as _;
+        /// device supports 2.4GHz frequencies
         #[doc(alias = "NM_WIFI_DEVICE_CAP_FREQ_2GHZ")]
         const FREQ_2GHZ = ffi::NM_WIFI_DEVICE_CAP_FREQ_2GHZ as _;
+        /// device supports 5GHz frequencies
         #[doc(alias = "NM_WIFI_DEVICE_CAP_FREQ_5GHZ")]
         const FREQ_5GHZ = ffi::NM_WIFI_DEVICE_CAP_FREQ_5GHZ as _;
+        /// device supports 6GHz frequencies. Since: 1.46.
         #[doc(alias = "NM_WIFI_DEVICE_CAP_FREQ_6GHZ")]
         const FREQ_6GHZ = ffi::NM_WIFI_DEVICE_CAP_FREQ_6GHZ as _;
+        /// device supports acting as a mesh point. Since: 1.20.
         #[doc(alias = "NM_WIFI_DEVICE_CAP_MESH")]
         const MESH = ffi::NM_WIFI_DEVICE_CAP_MESH as _;
+        /// device supports WPA2/RSN in an IBSS network. Since: 1.22.
         #[doc(alias = "NM_WIFI_DEVICE_CAP_IBSS_RSN")]
         const IBSS_RSN = ffi::NM_WIFI_DEVICE_CAP_IBSS_RSN as _;
     }
@@ -1248,18 +1383,40 @@ impl From<DeviceWifiCapabilities> for glib::Value {
 
 #[cfg(feature = "v1_22")]
 bitflags! {
+    /// #NMDhcpHostnameFlags describe flags related to the DHCP hostname and
+    /// FQDN.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMDhcpHostnameFlags")]
     pub struct DhcpHostnameFlags: u32 {
+        /// no flag set. The default value from
+        ///   Networkmanager global configuration is used. If such value is unset
+        ///   or still zero, the DHCP request will use standard FQDN flags, i.e.
+        ///   [`FQDN_SERV_UPDATE`][Self::FQDN_SERV_UPDATE] and
+        ///   [`FQDN_ENCODED`][Self::FQDN_ENCODED] for IPv4 and
+        ///   [`FQDN_SERV_UPDATE`][Self::FQDN_SERV_UPDATE] for IPv6.
         #[doc(alias = "NM_DHCP_HOSTNAME_FLAG_NONE")]
         const NONE = ffi::NM_DHCP_HOSTNAME_FLAG_NONE as _;
+        /// whether the server should
+        ///   do the A RR (FQDN-to-address) DNS updates.
         #[doc(alias = "NM_DHCP_HOSTNAME_FLAG_FQDN_SERV_UPDATE")]
         const FQDN_SERV_UPDATE = ffi::NM_DHCP_HOSTNAME_FLAG_FQDN_SERV_UPDATE as _;
+        /// if set, the FQDN is encoded
+        ///   using canonical wire format. Otherwise it uses the deprecated
+        ///   ASCII encoding. This flag is allowed only for DHCPv4.
         #[doc(alias = "NM_DHCP_HOSTNAME_FLAG_FQDN_ENCODED")]
         const FQDN_ENCODED = ffi::NM_DHCP_HOSTNAME_FLAG_FQDN_ENCODED as _;
+        /// when not set, request the
+        ///   server to perform updates (the PTR RR and possibly the A RR
+        ///   based on the [`FQDN_SERV_UPDATE`][Self::FQDN_SERV_UPDATE] flag). If
+        ///   this is set, the [`FQDN_SERV_UPDATE`][Self::FQDN_SERV_UPDATE] flag
+        ///   should be cleared.
         #[doc(alias = "NM_DHCP_HOSTNAME_FLAG_FQDN_NO_UPDATE")]
         const FQDN_NO_UPDATE = ffi::NM_DHCP_HOSTNAME_FLAG_FQDN_NO_UPDATE as _;
+        /// when set, no FQDN flags are
+        ///   sent in the DHCP FQDN option. When cleared and all other FQDN
+        ///   flags are zero, standard FQDN flags are sent. This flag is
+        ///   incompatible with any other FQDN flag.
         #[doc(alias = "NM_DHCP_HOSTNAME_FLAG_FQDN_CLEAR_FLAGS")]
         const FQDN_CLEAR_FLAGS = ffi::NM_DHCP_HOSTNAME_FLAG_FQDN_CLEAR_FLAGS as _;
     }
@@ -1358,12 +1515,19 @@ impl From<DhcpHostnameFlags> for glib::Value {
 
 #[cfg(feature = "v1_22")]
 bitflags! {
+    /// Compare flags for nm_ip_address_cmp_full().
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMIPAddressCmpFlags")]
     pub struct IPAddressCmpFlags: u32 {
+        /// no flags.
         #[doc(alias = "NM_IP_ADDRESS_CMP_FLAGS_NONE")]
         const NONE = ffi::NM_IP_ADDRESS_CMP_FLAGS_NONE as _;
+        /// when comparing two addresses,
+        ///   also consider their attributes. Warning: note that attributes are GVariants
+        ///   and they don't have a total order. In other words, if the address differs only
+        ///   by their attributes, the returned compare order is not total. In that case,
+        ///   the return value merely indicates equality (zero) or inequality.
         #[doc(alias = "NM_IP_ADDRESS_CMP_FLAGS_WITH_ATTRS")]
         const WITH_ATTRS = ffi::NM_IP_ADDRESS_CMP_FLAGS_WITH_ATTRS as _;
     }
@@ -1466,12 +1630,21 @@ bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMIPRoutingRuleAsStringFlags")]
     pub struct IPRoutingRuleAsStringFlags: u32 {
+        /// no flags selected.
         #[doc(alias = "NM_IP_ROUTING_RULE_AS_STRING_FLAGS_NONE")]
         const NONE = ffi::NM_IP_ROUTING_RULE_AS_STRING_FLAGS_NONE as _;
+        /// whether to allow parsing
+        ///   IPv4 addresses.
         #[doc(alias = "NM_IP_ROUTING_RULE_AS_STRING_FLAGS_AF_INET")]
         const AF_INET = ffi::NM_IP_ROUTING_RULE_AS_STRING_FLAGS_AF_INET as _;
+        /// whether to allow parsing
+        ///   IPv6 addresses. If both @NM_IP_ROUTING_RULE_AS_STRING_FLAGS_AF_INET and
+        ///   @NM_IP_ROUTING_RULE_AS_STRING_FLAGS_AF_INET6 are unset, it's the same
+        ///   as setting them both.
         #[doc(alias = "NM_IP_ROUTING_RULE_AS_STRING_FLAGS_AF_INET6")]
         const AF_INET6 = ffi::NM_IP_ROUTING_RULE_AS_STRING_FLAGS_AF_INET6 as _;
+        /// if set, ensure that the
+        ///   rule verfies or fail.
         #[doc(alias = "NM_IP_ROUTING_RULE_AS_STRING_FLAGS_VALIDATE")]
         const VALIDATE = ffi::NM_IP_ROUTING_RULE_AS_STRING_FLAGS_VALIDATE as _;
     }
@@ -1570,22 +1743,33 @@ impl From<IPRoutingRuleAsStringFlags> for glib::Value {
 
 #[cfg(feature = "v1_12")]
 bitflags! {
+    /// IP tunnel flags.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMIPTunnelFlags")]
     pub struct IPTunnelFlags: u32 {
+        /// no flag
         #[doc(alias = "NM_IP_TUNNEL_FLAG_NONE")]
         const NONE = ffi::NM_IP_TUNNEL_FLAG_NONE as _;
+        /// don't add encapsulation limit
+        ///     if one isn't present in inner packet
         #[doc(alias = "NM_IP_TUNNEL_FLAG_IP6_IGN_ENCAP_LIMIT")]
         const IP6_IGN_ENCAP_LIMIT = ffi::NM_IP_TUNNEL_FLAG_IP6_IGN_ENCAP_LIMIT as _;
+        /// copy the traffic class field
+        ///     from the inner packet
         #[doc(alias = "NM_IP_TUNNEL_FLAG_IP6_USE_ORIG_TCLASS")]
         const IP6_USE_ORIG_TCLASS = ffi::NM_IP_TUNNEL_FLAG_IP6_USE_ORIG_TCLASS as _;
+        /// copy the flowlabel from the
+        ///     inner packet
         #[doc(alias = "NM_IP_TUNNEL_FLAG_IP6_USE_ORIG_FLOWLABEL")]
         const IP6_USE_ORIG_FLOWLABEL = ffi::NM_IP_TUNNEL_FLAG_IP6_USE_ORIG_FLOWLABEL as _;
+        /// used for Mobile IPv6
         #[doc(alias = "NM_IP_TUNNEL_FLAG_IP6_MIP6_DEV")]
         const IP6_MIP6_DEV = ffi::NM_IP_TUNNEL_FLAG_IP6_MIP6_DEV as _;
+        /// copy DSCP from the outer packet
         #[doc(alias = "NM_IP_TUNNEL_FLAG_IP6_RCV_DSCP_COPY")]
         const IP6_RCV_DSCP_COPY = ffi::NM_IP_TUNNEL_FLAG_IP6_RCV_DSCP_COPY as _;
+        /// copy fwmark from inner packet
         #[doc(alias = "NM_IP_TUNNEL_FLAG_IP6_USE_ORIG_FWMARK")]
         const IP6_USE_ORIG_FWMARK = ffi::NM_IP_TUNNEL_FLAG_IP6_USE_ORIG_FWMARK as _;
     }
@@ -1684,10 +1868,14 @@ impl From<IPTunnelFlags> for glib::Value {
 
 #[cfg(feature = "v1_30")]
 bitflags! {
+    /// Flags for customizing nm_keyfile_read() and nm_keyfile_write().
+    ///
+    /// Currently no flags are implemented.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMKeyfileHandlerFlags")]
     pub struct KeyfileHandlerFlags: u32 {
+        /// no flags set.
         #[doc(alias = "NM_KEYFILE_HANDLER_FLAGS_NONE")]
         const NONE = ffi::NM_KEYFILE_HANDLER_FLAGS_NONE as _;
     }
@@ -1786,14 +1974,25 @@ impl From<KeyfileHandlerFlags> for glib::Value {
 
 #[cfg(feature = "v1_22")]
 bitflags! {
+    /// Flags for the manager Reload() call.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMManagerReloadFlags")]
     pub struct ManagerReloadFlags: u32 {
+        /// reload the NetworkManager.conf configuration
+        ///   from disk. Note that this does not include connections, which can be
+        ///   reloaded via Setting's ReloadConnections().
         #[doc(alias = "NM_MANAGER_RELOAD_FLAG_CONF")]
         const CONF = ffi::NM_MANAGER_RELOAD_FLAG_CONF as _;
+        /// update DNS configuration, which usually
+        ///   involves writing /etc/resolv.conf anew.
         #[doc(alias = "NM_MANAGER_RELOAD_FLAG_DNS_RC")]
         const DNS_RC = ffi::NM_MANAGER_RELOAD_FLAG_DNS_RC as _;
+        /// means to restart the DNS plugin. This
+        ///   is for example useful when using dnsmasq plugin, which uses additional
+        ///   configuration in /etc/NetworkManager/dnsmasq.d. If you edit those files,
+        ///   you can restart the DNS plugin. This action shortly interrupts name
+        ///   resolution.
         #[doc(alias = "NM_MANAGER_RELOAD_FLAG_DNS_FULL")]
         const DNS_FULL = ffi::NM_MANAGER_RELOAD_FLAG_DNS_FULL as _;
     }
@@ -1896,22 +2095,62 @@ bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMMptcpFlags")]
     pub struct MptcpFlags: u32 {
+        /// The default, meaning that no MPTCP flags are set.
         #[doc(alias = "NM_MPTCP_FLAGS_NONE")]
         const NONE = ffi::NM_MPTCP_FLAGS_NONE as _;
+        /// don't configure MPTCP endpoints on the device.
         #[doc(alias = "NM_MPTCP_FLAGS_DISABLED")]
         const DISABLED = ffi::NM_MPTCP_FLAGS_DISABLED as _;
+        /// MPTCP is enabled and endpoints will be configured.
+        ///   This flag is implied if any of the other flags indicate that
+        ///   MPTCP is enabled and therefore in most cases unnecessary.
+        ///   Note that if "/proc/sys/net/mptcp/enabled" sysctl is disabled, MPTCP
+        ///   handling is disabled despite this flag. This can be overruled with the
+        ///   "also-without-sysctl" flag.
+        ///   Note that by default interfaces that don't have a default route are
+        ///   excluded from having MPTCP endpoints configured. This can be overruled
+        ///   with the "also-without-default-route" and this affects endpoints
+        ///   per address family.
         #[doc(alias = "NM_MPTCP_FLAGS_ENABLED")]
         const ENABLED = ffi::NM_MPTCP_FLAGS_ENABLED as _;
+        /// even if MPTCP handling is enabled
+        ///   via the "enabled" flag, it is ignored unless "/proc/sys/net/mptcp/enabled"
+        ///   is on. With this flag, MPTCP endpoints will be configured regardless
+        ///   of the sysctl setting.
         #[doc(alias = "NM_MPTCP_FLAGS_ALSO_WITHOUT_SYSCTL")]
         const ALSO_WITHOUT_SYSCTL = ffi::NM_MPTCP_FLAGS_ALSO_WITHOUT_SYSCTL as _;
+        /// even if MPTCP handling is enabled
+        ///   via the "enabled" flag, it is ignored per-address family unless NetworkManager
+        ///   configures a default route. With this flag, NetworkManager will also configure
+        ///   MPTCP endpoints if there is no default route. This takes effect per-address
+        ///   family.
         #[doc(alias = "NM_MPTCP_FLAGS_ALSO_WITHOUT_DEFAULT_ROUTE")]
         const ALSO_WITHOUT_DEFAULT_ROUTE = ffi::NM_MPTCP_FLAGS_ALSO_WITHOUT_DEFAULT_ROUTE as _;
+        /// Flag for the MPTCP endpoint. The endpoint will be
+        ///   announced/signaled to each peer via an MPTCP ADD_ADDR sub-option.
         #[doc(alias = "NM_MPTCP_FLAGS_SIGNAL")]
         const SIGNAL = ffi::NM_MPTCP_FLAGS_SIGNAL as _;
+        /// Flag for the MPTCP endpoint. If additional subflow creation
+        ///   is allowed by the MPTCP limits, the MPTCP path manager will try to create an
+        ///   additional subflow using this endpoint as the source address after the MPTCP connection
+        ///   is established.
         #[doc(alias = "NM_MPTCP_FLAGS_SUBFLOW")]
         const SUBFLOW = ffi::NM_MPTCP_FLAGS_SUBFLOW as _;
+        /// Flag for the MPTCP endpoint. If this is a subflow endpoint, the
+        ///   subflows created using this endpoint will have the backup flag set during the connection
+        ///   process. This flag instructs the peer to only send data on a given subflow when all
+        ///   non-backup subflows are unavailable. This does not affect outgoing data,
+        ///   where subflow priority is determined by the backup/non-backup flag received
+        ///   from the peer
         #[doc(alias = "NM_MPTCP_FLAGS_BACKUP")]
         const BACKUP = ffi::NM_MPTCP_FLAGS_BACKUP as _;
+        /// Flag for the MPTCP endpoint. If this is a subflow endpoint and additional
+        ///   subflow creation is allowed by the MPTCP limits, the MPTCP path manager will try to create an
+        ///   additional subflow for each known peer address, using this endpoint as the source address.
+        ///   This will occur after the MPTCP connection is established. If the peer did not announce
+        ///   any additional addresses using the MPTCP ADD_ADDR sub-option, this will behave the same
+        ///   as a plain subflow endpoint. When the peer does announce addresses, each received ADD_ADDR
+        ///   sub-option will trigger creation of an additional subflow to generate a full mesh topology.
         #[doc(alias = "NM_MPTCP_FLAGS_FULLMESH")]
         const FULLMESH = ffi::NM_MPTCP_FLAGS_FULLMESH as _;
     }
@@ -2010,14 +2249,20 @@ impl From<MptcpFlags> for glib::Value {
 
 #[cfg(feature = "v1_38")]
 bitflags! {
+    /// Flags related to radio interfaces.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_38")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMRadioFlags")]
     pub struct RadioFlags: u32 {
+        /// an alias for numeric zero, no flags set.
         #[doc(alias = "NM_RADIO_FLAG_NONE")]
         const NONE = ffi::NM_RADIO_FLAG_NONE as _;
+        /// A Wireless LAN device or rfkill switch
+        ///   is detected in the system.
         #[doc(alias = "NM_RADIO_FLAG_WLAN_AVAILABLE")]
         const WLAN_AVAILABLE = ffi::NM_RADIO_FLAG_WLAN_AVAILABLE as _;
+        /// A Wireless WAN device or rfkill switch
+        ///   is detected in the system.
         #[doc(alias = "NM_RADIO_FLAG_WWAN_AVAILABLE")]
         const WWAN_AVAILABLE = ffi::NM_RADIO_FLAG_WWAN_AVAILABLE as _;
     }
@@ -2115,13 +2360,18 @@ impl From<RadioFlags> for glib::Value {
 }
 
 bitflags! {
+    /// #NMSecretAgentCapabilities indicate various capabilities of the agent.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSecretAgentCapabilities")]
     pub struct SecretAgentCapabilities: u32 {
+        /// the agent supports no special capabilities
         #[doc(alias = "NM_SECRET_AGENT_CAPABILITY_NONE")]
         const NONE = ffi::NM_SECRET_AGENT_CAPABILITY_NONE as _;
+        /// the agent supports passing hints to
+        /// VPN plugin authentication dialogs.
         #[doc(alias = "NM_SECRET_AGENT_CAPABILITY_VPN_HINTS")]
         const VPN_HINTS = ffi::NM_SECRET_AGENT_CAPABILITY_VPN_HINTS as _;
+        /// bounds checking value; should not be used.
         #[doc(alias = "NM_SECRET_AGENT_CAPABILITY_LAST")]
         const LAST = ffi::NM_SECRET_AGENT_CAPABILITY_LAST as _;
     }
@@ -2203,21 +2453,43 @@ impl From<SecretAgentCapabilities> for glib::Value {
 }
 
 bitflags! {
+    /// #NMSecretAgentGetSecretsFlags values modify the behavior of a GetSecrets request.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSecretAgentGetSecretsFlags")]
     pub struct SecretAgentGetSecretsFlags: u32 {
+        /// no special behavior; by default no
+        ///   user interaction is allowed and requests for secrets are fulfilled from
+        ///   persistent storage, or if no secrets are available an error is returned.
         #[doc(alias = "NM_SECRET_AGENT_GET_SECRETS_FLAG_NONE")]
         const NONE = ffi::NM_SECRET_AGENT_GET_SECRETS_FLAG_NONE as _;
+        /// allows the request to
+        ///   interact with the user, possibly prompting via UI for secrets if any are
+        ///   required, or if none are found in persistent storage.
         #[doc(alias = "NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION")]
         const ALLOW_INTERACTION = ffi::NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION as _;
+        /// explicitly prompt for new
+        ///   secrets from the user.  This flag signals that NetworkManager thinks any
+        ///   existing secrets are invalid or wrong.  This flag implies that interaction
+        ///   is allowed.
         #[doc(alias = "NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW")]
         const REQUEST_NEW = ffi::NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW as _;
+        /// set if the request was
+        ///   initiated by user-requested action via the D-Bus interface, as opposed to
+        ///   automatically initiated by NetworkManager in response to (for example) scan
+        ///   results or carrier changes.
         #[doc(alias = "NM_SECRET_AGENT_GET_SECRETS_FLAG_USER_REQUESTED")]
         const USER_REQUESTED = ffi::NM_SECRET_AGENT_GET_SECRETS_FLAG_USER_REQUESTED as _;
+        /// indicates that WPS enrollment
+        ///   is active with PBC method. The agent may suggest that the user pushes a button
+        ///   on the router instead of supplying a PSK.
         #[doc(alias = "NM_SECRET_AGENT_GET_SECRETS_FLAG_WPS_PBC_ACTIVE")]
         const WPS_PBC_ACTIVE = ffi::NM_SECRET_AGENT_GET_SECRETS_FLAG_WPS_PBC_ACTIVE as _;
+        /// Internal flag, not part of
+        ///   the D-Bus API.
         #[doc(alias = "NM_SECRET_AGENT_GET_SECRETS_FLAG_ONLY_SYSTEM")]
         const ONLY_SYSTEM = ffi::NM_SECRET_AGENT_GET_SECRETS_FLAG_ONLY_SYSTEM as _;
+        /// Internal flag, not part of
+        ///   the D-Bus API.
         #[doc(alias = "NM_SECRET_AGENT_GET_SECRETS_FLAG_NO_ERRORS")]
         const NO_ERRORS = ffi::NM_SECRET_AGENT_GET_SECRETS_FLAG_NO_ERRORS as _;
     }
@@ -2300,30 +2572,46 @@ impl From<SecretAgentGetSecretsFlags> for glib::Value {
 
 #[cfg(feature = "v1_8")]
 bitflags! {
+    /// #NMSetting8021xAuthFlags values indicate which authentication settings
+    /// should be used.
+    ///
+    /// Before 1.22, this was wrongly marked as a enum and not as a flags
+    /// type.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSetting8021xAuthFlags")]
     pub struct Setting8021xAuthFlags: u32 {
+        /// No flags
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_NONE")]
         const NONE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_NONE as _;
+        /// Disable TLSv1.0
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_0_DISABLE")]
         const TLS_1_0_DISABLE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_0_DISABLE as _;
+        /// Disable TLSv1.1
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_1_DISABLE")]
         const TLS_1_1_DISABLE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_1_DISABLE as _;
+        /// Disable TLSv1.2
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_2_DISABLE")]
         const TLS_1_2_DISABLE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_2_DISABLE as _;
+        /// Disable TLS time checks. Since 1.42.
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_DISABLE_TIME_CHECKS")]
         const TLS_DISABLE_TIME_CHECKS = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_DISABLE_TIME_CHECKS as _;
+        /// Disable TLSv1.3. Since 1.42.
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_3_DISABLE")]
         const TLS_1_3_DISABLE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_3_DISABLE as _;
+        /// Enable TLSv1.0. Since 1.42.
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_0_ENABLE")]
         const TLS_1_0_ENABLE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_0_ENABLE as _;
+        /// Enable TLSv1.1. Since 1.42.
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_1_ENABLE")]
         const TLS_1_1_ENABLE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_1_ENABLE as _;
+        /// Enable TLSv1.2. Since 1.42.
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_2_ENABLE")]
         const TLS_1_2_ENABLE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_2_ENABLE as _;
+        /// Enable TLSv1.3. Since 1.42.
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_3_ENABLE")]
         const TLS_1_3_ENABLE = ffi::NM_SETTING_802_1X_AUTH_FLAGS_TLS_1_3_ENABLE as _;
+        /// All supported flags
         #[doc(alias = "NM_SETTING_802_1X_AUTH_FLAGS_ALL")]
         const ALL = ffi::NM_SETTING_802_1X_AUTH_FLAGS_ALL as _;
     }
@@ -2421,15 +2709,21 @@ impl From<Setting8021xAuthFlags> for glib::Value {
 }
 
 bitflags! {
+    /// DCB feature flags.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingDcbFlags")]
     pub struct SettingDcbFlags: u32 {
+        /// no flag
         #[doc(alias = "NM_SETTING_DCB_FLAG_NONE")]
         const NONE = ffi::NM_SETTING_DCB_FLAG_NONE as _;
+        /// the feature is enabled
         #[doc(alias = "NM_SETTING_DCB_FLAG_ENABLE")]
         const ENABLE = ffi::NM_SETTING_DCB_FLAG_ENABLE as _;
+        /// the feature is advertised
         #[doc(alias = "NM_SETTING_DCB_FLAG_ADVERTISE")]
         const ADVERTISE = ffi::NM_SETTING_DCB_FLAG_ADVERTISE as _;
+        /// the feature is willing to change based on
+        /// peer configuration advertisements
         #[doc(alias = "NM_SETTING_DCB_FLAG_WILLING")]
         const WILLING = ffi::NM_SETTING_DCB_FLAG_WILLING as _;
     }
@@ -2512,18 +2806,24 @@ impl From<SettingDcbFlags> for glib::Value {
 
 #[cfg(feature = "v1_52")]
 bitflags! {
+    /// These flags modify the ethtool FEC(Forward Error Correction) mode.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingEthtoolFecMode")]
     pub struct SettingEthtoolFecMode: u32 {
+        /// Select default/best FEC mode automatically.
         #[doc(alias = "NM_SETTING_ETHTOOL_FEC_MODE_AUTO")]
         const AUTO = ffi::NM_SETTING_ETHTOOL_FEC_MODE_AUTO as _;
+        /// No FEC mode.
         #[doc(alias = "NM_SETTING_ETHTOOL_FEC_MODE_OFF")]
         const OFF = ffi::NM_SETTING_ETHTOOL_FEC_MODE_OFF as _;
+        /// Reed-Solomon FEC Mode.
         #[doc(alias = "NM_SETTING_ETHTOOL_FEC_MODE_RS")]
         const RS = ffi::NM_SETTING_ETHTOOL_FEC_MODE_RS as _;
+        /// Base-R/Reed-Solomon FEC Mode.
         #[doc(alias = "NM_SETTING_ETHTOOL_FEC_MODE_BASER")]
         const BASER = ffi::NM_SETTING_ETHTOOL_FEC_MODE_BASER as _;
+        /// Low Latency Reed Solomon FEC Mode.
         #[doc(alias = "NM_SETTING_ETHTOOL_FEC_MODE_LLRS")]
         const LLRS = ffi::NM_SETTING_ETHTOOL_FEC_MODE_LLRS as _;
     }
@@ -2621,15 +2921,29 @@ impl From<SettingEthtoolFecMode> for glib::Value {
 }
 
 bitflags! {
+    /// These flags indicate specific behavior related to handling of a secret.  Each
+    /// secret has a corresponding set of these flags which indicate how the secret
+    /// is to be stored and/or requested when it is needed.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingSecretFlags")]
     pub struct SettingSecretFlags: u32 {
+        /// the system is responsible for providing and
+        /// storing this secret (default)
         #[doc(alias = "NM_SETTING_SECRET_FLAG_NONE")]
         const NONE = ffi::NM_SETTING_SECRET_FLAG_NONE as _;
+        /// a user secret agent is responsible
+        /// for providing and storing this secret; when it is required agents will be
+        /// asked to retrieve it
         #[doc(alias = "NM_SETTING_SECRET_FLAG_AGENT_OWNED")]
         const AGENT_OWNED = ffi::NM_SETTING_SECRET_FLAG_AGENT_OWNED as _;
+        /// this secret should not be saved, but
+        /// should be requested from the user each time it is needed
         #[doc(alias = "NM_SETTING_SECRET_FLAG_NOT_SAVED")]
         const NOT_SAVED = ffi::NM_SETTING_SECRET_FLAG_NOT_SAVED as _;
+        /// in situations where it cannot be
+        /// automatically determined that the secret is required (some VPNs and PPP
+        /// providers don't require all secrets) this flag indicates that the specific
+        /// secret is not required
         #[doc(alias = "NM_SETTING_SECRET_FLAG_NOT_REQUIRED")]
         const NOT_REQUIRED = ffi::NM_SETTING_SECRET_FLAG_NOT_REQUIRED as _;
     }
@@ -2712,24 +3026,34 @@ impl From<SettingSecretFlags> for glib::Value {
 
 #[cfg(feature = "v1_2")]
 bitflags! {
+    /// Options for #NMSettingWired:wake-on-lan. Note that not all options
+    /// are supported by all devices.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingWiredWakeOnLan")]
     pub struct SettingWiredWakeOnLan: u32 {
+        /// Wake on PHY activity
         #[doc(alias = "NM_SETTING_WIRED_WAKE_ON_LAN_PHY")]
         const PHY = ffi::NM_SETTING_WIRED_WAKE_ON_LAN_PHY as _;
+        /// Wake on unicast messages
         #[doc(alias = "NM_SETTING_WIRED_WAKE_ON_LAN_UNICAST")]
         const UNICAST = ffi::NM_SETTING_WIRED_WAKE_ON_LAN_UNICAST as _;
+        /// Wake on multicast messages
         #[doc(alias = "NM_SETTING_WIRED_WAKE_ON_LAN_MULTICAST")]
         const MULTICAST = ffi::NM_SETTING_WIRED_WAKE_ON_LAN_MULTICAST as _;
+        /// Wake on broadcast messages
         #[doc(alias = "NM_SETTING_WIRED_WAKE_ON_LAN_BROADCAST")]
         const BROADCAST = ffi::NM_SETTING_WIRED_WAKE_ON_LAN_BROADCAST as _;
+        /// Wake on ARP
         #[doc(alias = "NM_SETTING_WIRED_WAKE_ON_LAN_ARP")]
         const ARP = ffi::NM_SETTING_WIRED_WAKE_ON_LAN_ARP as _;
+        /// Wake on magic packet
         #[doc(alias = "NM_SETTING_WIRED_WAKE_ON_LAN_MAGIC")]
         const MAGIC = ffi::NM_SETTING_WIRED_WAKE_ON_LAN_MAGIC as _;
+        /// Use the default value
         #[doc(alias = "NM_SETTING_WIRED_WAKE_ON_LAN_DEFAULT")]
         const DEFAULT = ffi::NM_SETTING_WIRED_WAKE_ON_LAN_DEFAULT as _;
+        /// Don't change configured settings
         #[doc(alias = "NM_SETTING_WIRED_WAKE_ON_LAN_IGNORE")]
         const IGNORE = ffi::NM_SETTING_WIRED_WAKE_ON_LAN_IGNORE as _;
     }
@@ -2828,18 +3152,27 @@ impl From<SettingWiredWakeOnLan> for glib::Value {
 
 #[cfg(feature = "v1_10")]
 bitflags! {
+    /// Configure the use of WPS by a connection while it activates.
+    ///
+    /// Note: prior to 1.16, this was a GEnum type instead of a GFlags type
+    /// although, with the same numeric values.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingWirelessSecurityWpsMethod")]
     pub struct SettingWirelessSecurityWpsMethod: u32 {
+        /// Attempt whichever method AP supports
         #[doc(alias = "NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_DEFAULT")]
         const DEFAULT = ffi::NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_DEFAULT as _;
+        /// WPS can not be used.
         #[doc(alias = "NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_DISABLED")]
         const DISABLED = ffi::NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_DISABLED as _;
+        /// Use WPS, any method
         #[doc(alias = "NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_AUTO")]
         const AUTO = ffi::NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_AUTO as _;
+        /// use WPS push-button method
         #[doc(alias = "NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_PBC")]
         const PBC = ffi::NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_PBC as _;
+        /// use PIN method
         #[doc(alias = "NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_PIN")]
         const PIN = ffi::NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_PIN as _;
     }
@@ -2938,30 +3271,44 @@ impl From<SettingWirelessSecurityWpsMethod> for glib::Value {
 
 #[cfg(feature = "v1_12")]
 bitflags! {
+    /// Options for #NMSettingWireless:wake-on-wlan. Note that not all options
+    /// are supported by all devices.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingWirelessWakeOnWLan")]
     pub struct SettingWirelessWakeOnWLan: u32 {
+        /// Wake on any activity
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_ANY")]
         const ANY = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_ANY as _;
+        /// Wake on disconnect
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_DISCONNECT")]
         const DISCONNECT = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_DISCONNECT as _;
+        /// Wake on magic packet
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_MAGIC")]
         const MAGIC = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_MAGIC as _;
+        /// Wake on GTK rekey failure
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_GTK_REKEY_FAILURE")]
         const GTK_REKEY_FAILURE = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_GTK_REKEY_FAILURE as _;
+        /// Wake on EAP identity request
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_EAP_IDENTITY_REQUEST")]
         const EAP_IDENTITY_REQUEST = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_EAP_IDENTITY_REQUEST as _;
+        /// Wake on 4way handshake
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_4WAY_HANDSHAKE")]
         const _4WAY_HANDSHAKE = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_4WAY_HANDSHAKE as _;
+        /// Wake on rfkill release
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_RFKILL_RELEASE")]
         const RFKILL_RELEASE = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_RFKILL_RELEASE as _;
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_TCP")]
         const TCP = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_TCP as _;
+        /// Wake on all events. This does not
+        ///   include the exclusive flags @NM_SETTING_WIRELESS_WAKE_ON_WLAN_DEFAULT or
+        ///   @NM_SETTING_WIRELESS_WAKE_ON_WLAN_IGNORE.
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_ALL")]
         const ALL = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_ALL as _;
+        /// Use the default value
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_DEFAULT")]
         const DEFAULT = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_DEFAULT as _;
+        /// Don't change configured settings
         #[doc(alias = "NM_SETTING_WIRELESS_WAKE_ON_WLAN_IGNORE")]
         const IGNORE = ffi::NM_SETTING_WIRELESS_WAKE_ON_WLAN_IGNORE as _;
     }
@@ -3060,16 +3407,24 @@ impl From<SettingWirelessWakeOnWLan> for glib::Value {
 
 #[cfg(feature = "v1_20")]
 bitflags! {
+    /// Numeric flags for the "flags" argument of AddConnection2() D-Bus API.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingsAddConnection2Flags")]
     pub struct SettingsAddConnection2Flags: u32 {
+        /// an alias for numeric zero, no flags set.
         #[doc(alias = "NM_SETTINGS_ADD_CONNECTION2_FLAG_NONE")]
         const NONE = ffi::NM_SETTINGS_ADD_CONNECTION2_FLAG_NONE as _;
+        /// to persist the connection to disk.
         #[doc(alias = "NM_SETTINGS_ADD_CONNECTION2_FLAG_TO_DISK")]
         const TO_DISK = ffi::NM_SETTINGS_ADD_CONNECTION2_FLAG_TO_DISK as _;
+        /// to make the connection in-memory only.
         #[doc(alias = "NM_SETTINGS_ADD_CONNECTION2_FLAG_IN_MEMORY")]
         const IN_MEMORY = ffi::NM_SETTINGS_ADD_CONNECTION2_FLAG_IN_MEMORY as _;
+        /// usually, when the connection
+        ///   has autoconnect enabled and gets added, it becomes eligible to autoconnect
+        ///   right away. Setting this flag, disables autoconnect until the connection
+        ///   is manually activated.
         #[doc(alias = "NM_SETTINGS_ADD_CONNECTION2_FLAG_BLOCK_AUTOCONNECT")]
         const BLOCK_AUTOCONNECT = ffi::NM_SETTINGS_ADD_CONNECTION2_FLAG_BLOCK_AUTOCONNECT as _;
     }
@@ -3168,18 +3523,35 @@ impl From<SettingsAddConnection2Flags> for glib::Value {
 
 #[cfg(feature = "v1_12")]
 bitflags! {
+    /// Flags describing the current activation state.
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingsConnectionFlags")]
     pub struct SettingsConnectionFlags: u32 {
+        /// an alias for numeric zero, no flags set.
         #[doc(alias = "NM_SETTINGS_CONNECTION_FLAG_NONE")]
         const NONE = ffi::NM_SETTINGS_CONNECTION_FLAG_NONE as _;
+        /// the connection is not saved to disk.
+        ///   That either means, that the connection is in-memory only and currently
+        ///   is not backed by a file. Or, that the connection is backed by a file,
+        ///   but has modifications in-memory that were not persisted to disk.
         #[doc(alias = "NM_SETTINGS_CONNECTION_FLAG_UNSAVED")]
         const UNSAVED = ffi::NM_SETTINGS_CONNECTION_FLAG_UNSAVED as _;
+        /// A connection is "nm-generated" if
+        ///  it was generated by NetworkManger. If the connection gets modified or saved
+        ///  by the user, the flag gets cleared. A nm-generated is also unsaved
+        ///  and has no backing file as it is in-memory only.
         #[doc(alias = "NM_SETTINGS_CONNECTION_FLAG_NM_GENERATED")]
         const NM_GENERATED = ffi::NM_SETTINGS_CONNECTION_FLAG_NM_GENERATED as _;
+        /// The connection will be deleted
+        ///  when it disconnects. That is for in-memory connections (unsaved), which are
+        ///  currently active but deleted on disconnect. Volatile connections are
+        ///  always unsaved, but they are also no backing file on disk and are entirely
+        ///  in-memory only.
         #[doc(alias = "NM_SETTINGS_CONNECTION_FLAG_VOLATILE")]
         const VOLATILE = ffi::NM_SETTINGS_CONNECTION_FLAG_VOLATILE as _;
+        /// the profile was generated to represent
+        ///  an external configuration of a networking device. Since: 1.26.
         #[doc(alias = "NM_SETTINGS_CONNECTION_FLAG_EXTERNAL")]
         const EXTERNAL = ffi::NM_SETTINGS_CONNECTION_FLAG_EXTERNAL as _;
     }
@@ -3282,20 +3654,64 @@ bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMSettingsUpdate2Flags")]
     pub struct SettingsUpdate2Flags: u32 {
+        /// an alias for numeric zero, no flags set.
         #[doc(alias = "NM_SETTINGS_UPDATE2_FLAG_NONE")]
         const NONE = ffi::NM_SETTINGS_UPDATE2_FLAG_NONE as _;
+        /// to persist the connection to disk.
         #[doc(alias = "NM_SETTINGS_UPDATE2_FLAG_TO_DISK")]
         const TO_DISK = ffi::NM_SETTINGS_UPDATE2_FLAG_TO_DISK as _;
+        /// makes the profile in-memory.
+        ///   Note that such profiles are stored in keyfile format under /run.
+        ///   If the file is already in-memory, the file in /run is updated in-place.
+        ///   Otherwise, the previous storage for the profile is left unchanged
+        ///   on disk, and the in-memory copy shadows it.
+        ///   Note that the original filename of the previous persistent storage (if any)
+        ///   is remembered. That means, when later persisting the profile again to disk,
+        ///   the file on disk will be overwritten again.
+        ///   Likewise, when finally deleting the profile, both the storage from /run
+        ///   and persistent storage are deleted (or if the persistent storage does not
+        ///   allow deletion, and nmmeta file is written to mark the UUID as deleted).
         #[doc(alias = "NM_SETTINGS_UPDATE2_FLAG_IN_MEMORY")]
         const IN_MEMORY = ffi::NM_SETTINGS_UPDATE2_FLAG_IN_MEMORY as _;
+        /// this is almost the same
+        ///   as [`IN_MEMORY`][Self::IN_MEMORY], with one difference: when later deleting
+        ///   the profile, the original profile will not be deleted. Instead a nmmeta
+        ///   file is written to /run to indicate that the profile is gone.
+        ///   Note that if such a nmmeta tombstone file exists and hides a file in persistent
+        ///   storage, then when re-adding the profile with the same UUID, then the original
+        ///   storage is taken over again.
         #[doc(alias = "NM_SETTINGS_UPDATE2_FLAG_IN_MEMORY_DETACHED")]
         const IN_MEMORY_DETACHED = ffi::NM_SETTINGS_UPDATE2_FLAG_IN_MEMORY_DETACHED as _;
+        /// this is like [`IN_MEMORY`][Self::IN_MEMORY],
+        ///   but if the connection has a corresponding file on persistent storage, the file
+        ///   will be deleted right away. If the profile is later again persisted to disk,
+        ///   a new, unused filename will be chosen.
         #[doc(alias = "NM_SETTINGS_UPDATE2_FLAG_IN_MEMORY_ONLY")]
         const IN_MEMORY_ONLY = ffi::NM_SETTINGS_UPDATE2_FLAG_IN_MEMORY_ONLY as _;
+        /// This can be specified with either
+        ///   [`IN_MEMORY`][Self::IN_MEMORY], [`IN_MEMORY_DETACHED`][Self::IN_MEMORY_DETACHED]
+        ///   or [`IN_MEMORY_ONLY`][Self::IN_MEMORY_ONLY].
+        ///   After making the connection in-memory only, the connection is marked
+        ///   as volatile. That means, if the connection is currently not active
+        ///   it will be deleted right away. Otherwise, it is marked to for deletion
+        ///   once the connection deactivates. A volatile connection cannot autoactivate
+        ///   again (because it's about to be deleted), but a manual activation will
+        ///   clear the volatile flag.
         #[doc(alias = "NM_SETTINGS_UPDATE2_FLAG_VOLATILE")]
         const VOLATILE = ffi::NM_SETTINGS_UPDATE2_FLAG_VOLATILE as _;
+        /// usually, when the connection
+        ///   has autoconnect enabled and is modified, it becomes eligible to autoconnect
+        ///   right away. Setting this flag, disables autoconnect until the connection
+        ///   is manually activated.
         #[doc(alias = "NM_SETTINGS_UPDATE2_FLAG_BLOCK_AUTOCONNECT")]
         const BLOCK_AUTOCONNECT = ffi::NM_SETTINGS_UPDATE2_FLAG_BLOCK_AUTOCONNECT as _;
+        /// when a profile gets modified that is
+        ///   currently active, then these changes don't take effect for the active
+        ///   device unless the profile gets reactivated or the configuration reapplied.
+        ///   There are two exceptions: by default "connection.zone" and "connection.metered"
+        ///   properties take effect immediately. Specify this flag to prevent these
+        ///   properties to take effect, so that the change is restricted to modify
+        ///   the profile. Since: 1.20.
         #[doc(alias = "NM_SETTINGS_UPDATE2_FLAG_NO_REAPPLY")]
         const NO_REAPPLY = ffi::NM_SETTINGS_UPDATE2_FLAG_NO_REAPPLY as _;
     }
@@ -3398,10 +3814,16 @@ bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMTeamLinkWatcherArpPingFlags")]
     pub struct TeamLinkWatcherArpPingFlags: u32 {
+        /// the arp_ping link watcher
+        ///    option 'validate_active' is enabled (set to true).
         #[doc(alias = "NM_TEAM_LINK_WATCHER_ARP_PING_FLAG_VALIDATE_ACTIVE")]
         const VALIDATE_ACTIVE = ffi::NM_TEAM_LINK_WATCHER_ARP_PING_FLAG_VALIDATE_ACTIVE as _;
+        /// the arp_ping link watcher
+        ///    option 'validate_inactive' is enabled (set to true).
         #[doc(alias = "NM_TEAM_LINK_WATCHER_ARP_PING_FLAG_VALIDATE_INACTIVE")]
         const VALIDATE_INACTIVE = ffi::NM_TEAM_LINK_WATCHER_ARP_PING_FLAG_VALIDATE_INACTIVE as _;
+        /// the arp_ping link watcher option
+        ///    'send_always' is enabled (set to true).
         #[doc(alias = "NM_TEAM_LINK_WATCHER_ARP_PING_FLAG_SEND_ALWAYS")]
         const SEND_ALWAYS = ffi::NM_TEAM_LINK_WATCHER_ARP_PING_FLAG_SEND_ALWAYS as _;
     }
@@ -3499,15 +3921,25 @@ impl From<TeamLinkWatcherArpPingFlags> for glib::Value {
 }
 
 bitflags! {
+    /// #NMVlanFlags values control the behavior of the VLAN interface.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMVlanFlags")]
     pub struct VlanFlags: u32 {
+        /// indicates that this interface should reorder
+        ///  outgoing packet headers to look more like a non-VLAN Ethernet interface
         #[doc(alias = "NM_VLAN_FLAG_REORDER_HEADERS")]
         const REORDER_HEADERS = ffi::NM_VLAN_FLAG_REORDER_HEADERS as _;
+        /// indicates that this interface should use GVRP to register
+        ///  itself with its switch
         #[doc(alias = "NM_VLAN_FLAG_GVRP")]
         const GVRP = ffi::NM_VLAN_FLAG_GVRP as _;
+        /// indicates that this interface's operating
+        ///  state is tied to the underlying network interface but other details
+        ///  (like routing) are not.
         #[doc(alias = "NM_VLAN_FLAG_LOOSE_BINDING")]
         const LOOSE_BINDING = ffi::NM_VLAN_FLAG_LOOSE_BINDING as _;
+        /// indicates that this interface should use MVRP to register
+        ///  itself with its switch
         #[doc(alias = "NM_VLAN_FLAG_MVRP")]
         const MVRP = ffi::NM_VLAN_FLAG_MVRP as _;
     }
@@ -3589,17 +4021,23 @@ impl From<VlanFlags> for glib::Value {
 }
 
 bitflags! {
+    /// Flags that indicate certain capabilities of the plugin to editor programs.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     #[doc(alias = "NMVpnEditorPluginCapability")]
     pub struct VpnEditorPluginCapability: u32 {
+        /// Unknown or no capability.
         #[doc(alias = "NM_VPN_EDITOR_PLUGIN_CAPABILITY_NONE")]
         const NONE = ffi::NM_VPN_EDITOR_PLUGIN_CAPABILITY_NONE as _;
+        /// The plugin can import new connections.
         #[doc(alias = "NM_VPN_EDITOR_PLUGIN_CAPABILITY_IMPORT")]
         const IMPORT = ffi::NM_VPN_EDITOR_PLUGIN_CAPABILITY_IMPORT as _;
+        /// The plugin can export connections.
         #[doc(alias = "NM_VPN_EDITOR_PLUGIN_CAPABILITY_EXPORT")]
         const EXPORT = ffi::NM_VPN_EDITOR_PLUGIN_CAPABILITY_EXPORT as _;
+        /// The plugin supports IPv6 addressing.
         #[doc(alias = "NM_VPN_EDITOR_PLUGIN_CAPABILITY_IPV6")]
         const IPV6 = ffi::NM_VPN_EDITOR_PLUGIN_CAPABILITY_IPV6 as _;
+        /// The GUI editor plugin is not available. Since: 1.52.
         #[doc(alias = "NM_VPN_EDITOR_PLUGIN_CAPABILITY_NO_EDITOR")]
         const NO_EDITOR = ffi::NM_VPN_EDITOR_PLUGIN_CAPABILITY_NO_EDITOR as _;
     }

@@ -8,6 +8,17 @@ use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandle
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `changed`
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`VpnEditorExt`][trait@crate::prelude::VpnEditorExt]
     #[doc(alias = "NMVpnEditor")]
     pub struct VpnEditor(Interface<ffi::NMVpnEditor, ffi::NMVpnEditorInterface>);
 
@@ -21,6 +32,11 @@ impl VpnEditor {
     
 }
 
+/// Trait containing all [`struct@VpnEditor`] methods.
+///
+/// # Implementors
+///
+/// [`VpnEditor`][struct@crate::VpnEditor]
 pub trait VpnEditorExt: IsA<VpnEditor> + 'static {
     //#[doc(alias = "nm_vpn_editor_get_widget")]
     //#[doc(alias = "get_widget")]

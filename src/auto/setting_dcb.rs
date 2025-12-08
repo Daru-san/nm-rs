@@ -8,6 +8,148 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Data Center Bridging Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `app-fcoe-flags`
+    ///  Specifies the #NMSettingDcbFlags for the DCB FCoE application.  Flags may
+    /// be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `app-fcoe-mode`
+    ///  The FCoE controller mode; either [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC]
+    /// or [`SETTING_DCB_FCOE_MODE_VN2VN`][crate::SETTING_DCB_FCOE_MODE_VN2VN].
+    ///
+    /// Since 1.34, [`None`] is the default and means [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC].
+    /// Before 1.34, [`None`] was rejected as invalid and the default was [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `app-fcoe-priority`
+    ///  The highest User Priority (0 - 7) which FCoE frames should use, or -1 for
+    /// default priority.  Only used when the #NMSettingDcb:app-fcoe-flags
+    /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `app-fip-flags`
+    ///  Specifies the #NMSettingDcbFlags for the DCB FIP application.  Flags may
+    /// be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `app-fip-priority`
+    ///  The highest User Priority (0 - 7) which FIP frames should use, or -1 for
+    /// default priority.  Only used when the #NMSettingDcb:app-fip-flags
+    /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `app-iscsi-flags`
+    ///  Specifies the #NMSettingDcbFlags for the DCB iSCSI application.  Flags
+    /// may be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `app-iscsi-priority`
+    ///  The highest User Priority (0 - 7) which iSCSI frames should use, or -1
+    /// for default priority. Only used when the #NMSettingDcb:app-iscsi-flags
+    /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority-bandwidth`
+    ///  An array of 8 uint values, where the array index corresponds to the User
+    /// Priority (0 - 7) and the value indicates the percentage of bandwidth of
+    /// the priority's assigned group that the priority may use.  The sum of all
+    /// percentages for priorities which belong to the same group must total 100
+    /// percents.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority-flow-control`
+    ///  An array of 8 boolean values, where the array index corresponds to the User
+    /// Priority (0 - 7) and the value indicates whether or not the corresponding
+    /// priority should transmit priority pause.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority-flow-control-flags`
+    ///  Specifies the #NMSettingDcbFlags for DCB Priority Flow Control (PFC).
+    /// Flags may be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority-group-bandwidth`
+    ///  An array of 8 uint values, where the array index corresponds to the
+    /// Priority Group ID (0 - 7) and the value indicates the percentage of link
+    /// bandwidth allocated to that group.  Allowed values are 0 - 100, and the
+    /// sum of all values must total 100 percents.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority-group-flags`
+    ///  Specifies the #NMSettingDcbFlags for DCB Priority Groups.  Flags may be
+    /// any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority-group-id`
+    ///  An array of 8 uint values, where the array index corresponds to the User
+    /// Priority (0 - 7) and the value indicates the Priority Group ID.  Allowed
+    /// Priority Group ID values are 0 - 7 or 15 for the unrestricted group.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority-strict-bandwidth`
+    ///  An array of 8 boolean values, where the array index corresponds to the User
+    /// Priority (0 - 7) and the value indicates whether or not the priority may
+    /// use all of the bandwidth allocated to its assigned group.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `priority-traffic-class`
+    ///  An array of 8 uint values, where the array index corresponds to the User
+    /// Priority (0 - 7) and the value indicates the traffic class (0 - 7) to
+    /// which the priority is mapped.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingDcb")]
     pub struct SettingDcb(Object<ffi::NMSettingDcb, ffi::NMSettingDcbClass>) @extends Setting;
 
@@ -17,6 +159,11 @@ glib::wrapper! {
 }
 
 impl SettingDcb {
+    /// Creates a new #NMSettingDcb object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingDcb object
     #[doc(alias = "nm_setting_dcb_new")]
     pub fn new() -> SettingDcb {
         assert_initialized_main_thread!();
@@ -34,6 +181,10 @@ impl SettingDcb {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:app-fcoe-flags property of the setting
     #[doc(alias = "nm_setting_dcb_get_app_fcoe_flags")]
     #[doc(alias = "get_app_fcoe_flags")]
     #[doc(alias = "app-fcoe-flags")]
@@ -43,6 +194,10 @@ impl SettingDcb {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:app-fcoe-mode property of the setting
     #[doc(alias = "nm_setting_dcb_get_app_fcoe_mode")]
     #[doc(alias = "get_app_fcoe_mode")]
     #[doc(alias = "app-fcoe-mode")]
@@ -52,6 +207,10 @@ impl SettingDcb {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:app-fcoe-priority property of the setting
     #[doc(alias = "nm_setting_dcb_get_app_fcoe_priority")]
     #[doc(alias = "get_app_fcoe_priority")]
     #[doc(alias = "app-fcoe-priority")]
@@ -61,6 +220,10 @@ impl SettingDcb {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:app-fip-flags property of the setting
     #[doc(alias = "nm_setting_dcb_get_app_fip_flags")]
     #[doc(alias = "get_app_fip_flags")]
     #[doc(alias = "app-fip-flags")]
@@ -70,6 +233,10 @@ impl SettingDcb {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:app-fip-priority property of the setting
     #[doc(alias = "nm_setting_dcb_get_app_fip_priority")]
     #[doc(alias = "get_app_fip_priority")]
     #[doc(alias = "app-fip-priority")]
@@ -79,6 +246,10 @@ impl SettingDcb {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:app-iscsi-flags property of the setting
     #[doc(alias = "nm_setting_dcb_get_app_iscsi_flags")]
     #[doc(alias = "get_app_iscsi_flags")]
     #[doc(alias = "app-iscsi-flags")]
@@ -88,6 +259,10 @@ impl SettingDcb {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:app-iscsi-priority property of the setting
     #[doc(alias = "nm_setting_dcb_get_app_iscsi_priority")]
     #[doc(alias = "get_app_iscsi_priority")]
     #[doc(alias = "app-iscsi-priority")]
@@ -97,6 +272,14 @@ impl SettingDcb {
         }
     }
 
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to retrieve the group bandwidth percentage for
+    ///
+    /// # Returns
+    ///
+    /// the allowed bandwidth percentage of @user_priority in its priority group.
+    /// These values are only valid when #NMSettingDcb:priority-group-flags includes the
+    /// [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
     #[doc(alias = "nm_setting_dcb_get_priority_bandwidth")]
     #[doc(alias = "get_priority_bandwidth")]
     #[doc(alias = "priority-bandwidth")]
@@ -106,6 +289,13 @@ impl SettingDcb {
         }
     }
 
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to retrieve flow control for
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if flow control is enabled for the given @user_priority,
+    /// [`false`] if not enabled
     #[doc(alias = "nm_setting_dcb_get_priority_flow_control")]
     #[doc(alias = "get_priority_flow_control")]
     #[doc(alias = "priority-flow-control")]
@@ -115,6 +305,10 @@ impl SettingDcb {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:priority-flow-control-flags property of the setting
     #[doc(alias = "nm_setting_dcb_get_priority_flow_control_flags")]
     #[doc(alias = "get_priority_flow_control_flags")]
     #[doc(alias = "priority-flow-control-flags")]
@@ -124,6 +318,14 @@ impl SettingDcb {
         }
     }
 
+    /// ## `group_id`
+    /// the priority group (0 - 7) to retrieve the bandwidth percentage for
+    ///
+    /// # Returns
+    ///
+    /// the bandwidth percentage assigned to @group_id.  These values are
+    /// only valid when #NMSettingDcb:priority-group-flags includes the
+    /// [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
     #[doc(alias = "nm_setting_dcb_get_priority_group_bandwidth")]
     #[doc(alias = "get_priority_group_bandwidth")]
     #[doc(alias = "priority-group-bandwidth")]
@@ -133,6 +335,10 @@ impl SettingDcb {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingDcb:priority-group-flags property of the setting
     #[doc(alias = "nm_setting_dcb_get_priority_group_flags")]
     #[doc(alias = "get_priority_group_flags")]
     #[doc(alias = "priority-group-flags")]
@@ -142,6 +348,14 @@ impl SettingDcb {
         }
     }
 
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to retrieve the group ID for
+    ///
+    /// # Returns
+    ///
+    /// the group number @user_priority is assigned to.  These values are
+    /// only valid when #NMSettingDcb:priority-group-flags includes the
+    /// [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
     #[doc(alias = "nm_setting_dcb_get_priority_group_id")]
     #[doc(alias = "get_priority_group_id")]
     #[doc(alias = "priority-group-id")]
@@ -151,6 +365,14 @@ impl SettingDcb {
         }
     }
 
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to retrieve strict bandwidth for
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @user_priority may use all of the bandwidth allocated to its
+    /// assigned group, or [`false`] if not. These values are only valid when
+    /// #NMSettingDcb:priority-group-flags includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
     #[doc(alias = "nm_setting_dcb_get_priority_strict_bandwidth")]
     #[doc(alias = "get_priority_strict_bandwidth")]
     #[doc(alias = "priority-strict-bandwidth")]
@@ -160,6 +382,14 @@ impl SettingDcb {
         }
     }
 
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to retrieve the traffic class for
+    ///
+    /// # Returns
+    ///
+    /// the traffic class assigned to @user_priority. These values are only
+    /// valid when #NMSettingDcb:priority-group-flags includes the
+    /// [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
     #[doc(alias = "nm_setting_dcb_get_priority_traffic_class")]
     #[doc(alias = "get_priority_traffic_class")]
     #[doc(alias = "priority-traffic-class")]
@@ -169,6 +399,13 @@ impl SettingDcb {
         }
     }
 
+    /// These values are only valid when #NMSettingDcb:priority-group-flags includes
+    /// the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to set the bandwidth percentage for
+    /// ## `bandwidth_percent`
+    /// the bandwidth percentage (0 - 100) that @user_priority is
+    /// allowed to use within its priority group
     #[doc(alias = "nm_setting_dcb_set_priority_bandwidth")]
     #[doc(alias = "priority-bandwidth")]
     pub fn set_priority_bandwidth(&self, user_priority: u32, bandwidth_percent: u32) {
@@ -177,6 +414,12 @@ impl SettingDcb {
         }
     }
 
+    /// These values are only valid when #NMSettingDcb:priority-flow-control includes
+    /// the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to set flow control for
+    /// ## `enabled`
+    /// [`true`] to enable flow control for this priority, [`false`] to disable it
     #[doc(alias = "nm_setting_dcb_set_priority_flow_control")]
     #[doc(alias = "priority-flow-control")]
     pub fn set_priority_flow_control(&self, user_priority: u32, enabled: bool) {
@@ -185,6 +428,12 @@ impl SettingDcb {
         }
     }
 
+    /// These values are only valid when #NMSettingDcb:priority-group-flags includes
+    /// the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
+    /// ## `group_id`
+    /// the priority group (0 - 7) to set the bandwidth percentage for
+    /// ## `bandwidth_percent`
+    /// the bandwidth percentage (0 - 100) to assign to @group_id to
     #[doc(alias = "nm_setting_dcb_set_priority_group_bandwidth")]
     #[doc(alias = "priority-group-bandwidth")]
     pub fn set_priority_group_bandwidth(&self, group_id: u32, bandwidth_percent: u32) {
@@ -193,6 +442,13 @@ impl SettingDcb {
         }
     }
 
+    /// These values are only valid when #NMSettingDcb:priority-group-flags includes
+    /// the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to set flow control for
+    /// ## `group_id`
+    /// the group (0 - 7) to assign @user_priority to, or 15 for the
+    /// unrestricted group.
     #[doc(alias = "nm_setting_dcb_set_priority_group_id")]
     #[doc(alias = "priority-group-id")]
     pub fn set_priority_group_id(&self, user_priority: u32, group_id: u32) {
@@ -201,6 +457,13 @@ impl SettingDcb {
         }
     }
 
+    /// These values are only valid when #NMSettingDcb:priority-group-flags includes
+    /// the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
+    /// ## `user_priority`
+    /// the User Priority (0 - 7) to set strict bandwidth for
+    /// ## `strict`
+    /// [`true`] to allow @user_priority to use all the bandwidth allocated to
+    /// its priority group, or [`false`] if not
     #[doc(alias = "nm_setting_dcb_set_priority_strict_bandwidth")]
     #[doc(alias = "priority-strict-bandwidth")]
     pub fn set_priority_strict_bandwidth(&self, user_priority: u32, strict: bool) {
@@ -217,46 +480,75 @@ impl SettingDcb {
         }
     }
 
+    /// Specifies the #NMSettingDcbFlags for the DCB FCoE application.  Flags may
+    /// be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
     #[doc(alias = "app-fcoe-flags")]
     pub fn set_app_fcoe_flags(&self, app_fcoe_flags: SettingDcbFlags) {
         ObjectExt::set_property(self,"app-fcoe-flags", app_fcoe_flags)
     }
 
+    /// The FCoE controller mode; either [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC]
+    /// or [`SETTING_DCB_FCOE_MODE_VN2VN`][crate::SETTING_DCB_FCOE_MODE_VN2VN].
+    ///
+    /// Since 1.34, [`None`] is the default and means [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC].
+    /// Before 1.34, [`None`] was rejected as invalid and the default was [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC].
     #[doc(alias = "app-fcoe-mode")]
     pub fn set_app_fcoe_mode(&self, app_fcoe_mode: Option<&str>) {
         ObjectExt::set_property(self,"app-fcoe-mode", app_fcoe_mode)
     }
 
+    /// The highest User Priority (0 - 7) which FCoE frames should use, or -1 for
+    /// default priority.  Only used when the #NMSettingDcb:app-fcoe-flags
+    /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
     #[doc(alias = "app-fcoe-priority")]
     pub fn set_app_fcoe_priority(&self, app_fcoe_priority: i32) {
         ObjectExt::set_property(self,"app-fcoe-priority", app_fcoe_priority)
     }
 
+    /// Specifies the #NMSettingDcbFlags for the DCB FIP application.  Flags may
+    /// be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
     #[doc(alias = "app-fip-flags")]
     pub fn set_app_fip_flags(&self, app_fip_flags: SettingDcbFlags) {
         ObjectExt::set_property(self,"app-fip-flags", app_fip_flags)
     }
 
+    /// The highest User Priority (0 - 7) which FIP frames should use, or -1 for
+    /// default priority.  Only used when the #NMSettingDcb:app-fip-flags
+    /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
     #[doc(alias = "app-fip-priority")]
     pub fn set_app_fip_priority(&self, app_fip_priority: i32) {
         ObjectExt::set_property(self,"app-fip-priority", app_fip_priority)
     }
 
+    /// Specifies the #NMSettingDcbFlags for the DCB iSCSI application.  Flags
+    /// may be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
     #[doc(alias = "app-iscsi-flags")]
     pub fn set_app_iscsi_flags(&self, app_iscsi_flags: SettingDcbFlags) {
         ObjectExt::set_property(self,"app-iscsi-flags", app_iscsi_flags)
     }
 
+    /// The highest User Priority (0 - 7) which iSCSI frames should use, or -1
+    /// for default priority. Only used when the #NMSettingDcb:app-iscsi-flags
+    /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
     #[doc(alias = "app-iscsi-priority")]
     pub fn set_app_iscsi_priority(&self, app_iscsi_priority: i32) {
         ObjectExt::set_property(self,"app-iscsi-priority", app_iscsi_priority)
     }
 
+    /// Specifies the #NMSettingDcbFlags for DCB Priority Flow Control (PFC).
+    /// Flags may be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
     #[doc(alias = "priority-flow-control-flags")]
     pub fn set_priority_flow_control_flags(&self, priority_flow_control_flags: SettingDcbFlags) {
         ObjectExt::set_property(self,"priority-flow-control-flags", priority_flow_control_flags)
     }
 
+    /// Specifies the #NMSettingDcbFlags for DCB Priority Groups.  Flags may be
+    /// any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+    /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
     #[doc(alias = "priority-group-flags")]
     pub fn set_priority_group_flags(&self, priority_group_flags: SettingDcbFlags) {
         ObjectExt::set_property(self,"priority-group-flags", priority_group_flags)
@@ -478,30 +770,53 @@ pub struct SettingDcbBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Specifies the #NMSettingDcbFlags for the DCB FCoE application.  Flags may
+                            /// be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+                            /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
                             pub fn app_fcoe_flags(self, app_fcoe_flags: SettingDcbFlags) -> Self {
                             Self { builder: self.builder.property("app-fcoe-flags", app_fcoe_flags), }
                         }
 
+                            /// The FCoE controller mode; either [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC]
+                            /// or [`SETTING_DCB_FCOE_MODE_VN2VN`][crate::SETTING_DCB_FCOE_MODE_VN2VN].
+                            ///
+                            /// Since 1.34, [`None`] is the default and means [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC].
+                            /// Before 1.34, [`None`] was rejected as invalid and the default was [`SETTING_DCB_FCOE_MODE_FABRIC`][crate::SETTING_DCB_FCOE_MODE_FABRIC].
                             pub fn app_fcoe_mode(self, app_fcoe_mode: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("app-fcoe-mode", app_fcoe_mode.into()), }
                         }
 
+                            /// The highest User Priority (0 - 7) which FCoE frames should use, or -1 for
+                            /// default priority.  Only used when the #NMSettingDcb:app-fcoe-flags
+                            /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
                             pub fn app_fcoe_priority(self, app_fcoe_priority: i32) -> Self {
                             Self { builder: self.builder.property("app-fcoe-priority", app_fcoe_priority), }
                         }
 
+                            /// Specifies the #NMSettingDcbFlags for the DCB FIP application.  Flags may
+                            /// be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+                            /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
                             pub fn app_fip_flags(self, app_fip_flags: SettingDcbFlags) -> Self {
                             Self { builder: self.builder.property("app-fip-flags", app_fip_flags), }
                         }
 
+                            /// The highest User Priority (0 - 7) which FIP frames should use, or -1 for
+                            /// default priority.  Only used when the #NMSettingDcb:app-fip-flags
+                            /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
                             pub fn app_fip_priority(self, app_fip_priority: i32) -> Self {
                             Self { builder: self.builder.property("app-fip-priority", app_fip_priority), }
                         }
 
+                            /// Specifies the #NMSettingDcbFlags for the DCB iSCSI application.  Flags
+                            /// may be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+                            /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
                             pub fn app_iscsi_flags(self, app_iscsi_flags: SettingDcbFlags) -> Self {
                             Self { builder: self.builder.property("app-iscsi-flags", app_iscsi_flags), }
                         }
 
+                            /// The highest User Priority (0 - 7) which iSCSI frames should use, or -1
+                            /// for default priority. Only used when the #NMSettingDcb:app-iscsi-flags
+                            /// property includes the [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE] flag.
                             pub fn app_iscsi_priority(self, app_iscsi_priority: i32) -> Self {
                             Self { builder: self.builder.property("app-iscsi-priority", app_iscsi_priority), }
                         }
@@ -514,6 +829,9 @@ pub struct SettingDcbBuilder {
                         //    Self { builder: self.builder.property("priority-flow-control", priority_flow_control), }
                         //}
 
+                            /// Specifies the #NMSettingDcbFlags for DCB Priority Flow Control (PFC).
+                            /// Flags may be any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+                            /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
                             pub fn priority_flow_control_flags(self, priority_flow_control_flags: SettingDcbFlags) -> Self {
                             Self { builder: self.builder.property("priority-flow-control-flags", priority_flow_control_flags), }
                         }
@@ -522,6 +840,9 @@ pub struct SettingDcbBuilder {
                         //    Self { builder: self.builder.property("priority-group-bandwidth", priority_group_bandwidth), }
                         //}
 
+                            /// Specifies the #NMSettingDcbFlags for DCB Priority Groups.  Flags may be
+                            /// any combination of [`SettingDcbFlags::ENABLE`][crate::SettingDcbFlags::ENABLE],
+                            /// [`SettingDcbFlags::ADVERTISE`][crate::SettingDcbFlags::ADVERTISE], and [`SettingDcbFlags::WILLING`][crate::SettingDcbFlags::WILLING].
                             pub fn priority_group_flags(self, priority_group_flags: SettingDcbFlags) -> Self {
                             Self { builder: self.builder.property("priority-group-flags", priority_group_flags), }
                         }

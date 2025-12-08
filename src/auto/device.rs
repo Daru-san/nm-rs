@@ -18,6 +18,262 @@ use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandle
 use std::{boxed::Box as Box_,pin::Pin};
 
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `active-connection`
+    ///  The #NMActiveConnection object that "owns" this device during activation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `autoconnect`
+    ///  Whether the device can auto-activate a connection.
+    ///
+    /// The property setter is a synchronous D-Bus call. This is deprecated since 1.22.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `available-connections`
+    ///  The available connections of the device
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `capabilities`
+    ///  The capabilities of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `device-type`
+    ///  The numeric type of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp4-config`
+    ///  The IPv4 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp6-config`
+    ///  The IPv6 #NMDhcpConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver`
+    ///  The driver of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `driver-version`
+    ///  The version of the device driver.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-missing`
+    ///  When [`true`] indicates the device is likely missing firmware required
+    /// for its operation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `firmware-version`
+    ///  The firmware version of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `hw-address`
+    ///  The hardware address of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface`
+    ///  The interface of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `interface-flags`
+    ///  The interface flags.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip-interface`
+    ///  The IP interface of the device which should be used for all IP-related
+    /// operations like addressing and routing.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-config`
+    ///  The #NMIP4Config of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-connectivity`
+    ///  The IPv4 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-config`
+    ///  The IPv6 #NMIPConfig of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-connectivity`
+    ///  The IPv6 connectivity state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `lldp-neighbors`
+    ///  The LLDP neighbors.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `managed`
+    ///  Whether the device is managed by NetworkManager.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `metered`
+    ///  Whether the device is metered.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `mtu`
+    ///  The MTU of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `nm-plugin-missing`
+    ///  When [`true`] indicates that the NetworkManager plugin for the device
+    /// is not installed.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The device path as exposed by the udev property ID_PATH.
+    ///
+    /// The string is backslash escaped (C escaping) for invalid
+    /// characters. The escaping can be reverted with g_strcompress(),
+    /// however the result may not be valid UTF-8.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `physical-port-id`
+    ///  The physical port ID of the device. (See
+    /// nm_device_get_physical_port_id().)
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ports`
+    ///  The port devices of the controller device. For devices that cannot be
+    /// controllers this is likely to be always empty.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `product`
+    ///  The product string of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `real`
+    ///  Whether the device is real or is a placeholder device that could
+    /// be created automatically by NetworkManager if one of its
+    /// #NMDevice:available-connections was activated.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the device.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state-reason`
+    ///  The reason for the device state.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `udi`
+    ///  An operating-system specific device hardware identifier; this is not
+    /// unique to a specific hardware device across reboots or hotplugs.  It
+    /// is an opaque string which for some device types (Bluetooth, Modem)
+    /// contains an identifier provided by the underlying hardware service daemon
+    /// such as Bluez or ModemManager, and clients can use this property to
+    /// request more information about the device from those services.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `vendor`
+    ///  The vendor string of the device.
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `state-changed`
+    ///  Notifies the state change of a #NMDevice.
+    ///
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`DeviceExt`][trait@crate::prelude::DeviceExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMDevice")]
     pub struct Device(Object<ffi::NMDevice, ffi::NMDeviceClass>) @extends Object;
 
@@ -30,6 +286,14 @@ impl Device {
         pub const NONE: Option<&'static Device> = None;
     
 
+    /// Generates a list of short-ish unique presentation names for the
+    /// devices in @devices.
+    /// ## `devices`
+    /// an array of #NMDevice
+    ///
+    /// # Returns
+    ///
+    /// the device names
     #[doc(alias = "nm_device_disambiguate_names")]
     pub fn disambiguate_names(devices: &[Device]) -> Vec<glib::GString> {
         assert_initialized_main_thread!();
@@ -40,7 +304,30 @@ impl Device {
     }
 }
 
+/// Trait containing all [`struct@Device`] methods.
+///
+/// # Implementors
+///
+/// [`Device6Lowpan`][struct@crate::Device6Lowpan], [`DeviceAdsl`][struct@crate::DeviceAdsl], [`DeviceBond`][struct@crate::DeviceBond], [`DeviceBridge`][struct@crate::DeviceBridge], [`DeviceBt`][struct@crate::DeviceBt], [`DeviceDummy`][struct@crate::DeviceDummy], [`DeviceEthernet`][struct@crate::DeviceEthernet], [`DeviceGeneric`][struct@crate::DeviceGeneric], [`DeviceHsr`][struct@crate::DeviceHsr], [`DeviceIPTunnel`][struct@crate::DeviceIPTunnel], [`DeviceInfiniband`][struct@crate::DeviceInfiniband], [`DeviceIpvlan`][struct@crate::DeviceIpvlan], [`DeviceLoopback`][struct@crate::DeviceLoopback], [`DeviceMacsec`][struct@crate::DeviceMacsec], [`DeviceMacvlan`][struct@crate::DeviceMacvlan], [`DeviceModem`][struct@crate::DeviceModem], [`DeviceOlpcMesh`][struct@crate::DeviceOlpcMesh], [`DeviceOvsBridge`][struct@crate::DeviceOvsBridge], [`DeviceOvsPort`][struct@crate::DeviceOvsPort], [`DevicePpp`][struct@crate::DevicePpp], [`DeviceTeam`][struct@crate::DeviceTeam], [`DeviceTun`][struct@crate::DeviceTun], [`DeviceVlan`][struct@crate::DeviceVlan], [`DeviceVrf`][struct@crate::DeviceVrf], [`DeviceVxlan`][struct@crate::DeviceVxlan], [`DeviceWifiP2P`][struct@crate::DeviceWifiP2P], [`DeviceWifi`][struct@crate::DeviceWifi], [`DeviceWimax`][struct@crate::DeviceWimax], [`DeviceWireGuard`][struct@crate::DeviceWireGuard], [`DeviceWpan`][struct@crate::DeviceWpan], [`Device`][struct@crate::Device]
 pub trait DeviceExt: IsA<Device> + 'static {
+    /// Validates a given connection for a given #NMDevice object and returns
+    /// whether the connection may be activated with the device. For example if
+    /// @self is a Wi-Fi device that supports only WEP encryption, the connection
+    /// will only be valid if it is a Wi-Fi connection which describes a WEP or open
+    /// network, and will not be valid if it describes a WPA network, or if it is
+    /// an Ethernet, Bluetooth, WWAN, etc connection that is incompatible with the
+    /// device.
+    ///
+    /// This function does the same as nm_device_connection_valid(), i.e. checking
+    /// compatibility of the given device and connection. But, in addition, it sets
+    /// GError when FALSE is returned.
+    /// ## `connection`
+    /// an #NMConnection to validate against @self
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the connection may be activated with this device, [`false`]
+    /// if is incompatible with the device's capabilities and characteristics.
     #[doc(alias = "nm_device_connection_compatible")]
     fn connection_compatible(&self, connection: &impl IsA<Connection>) -> Result<(), glib::Error> {
         unsafe {
@@ -51,6 +338,20 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Validates a given connection for a given #NMDevice object and returns
+    /// whether the connection may be activated with the device. For example if
+    /// @self is a Wi-Fi device that supports only WEP encryption, the connection
+    /// will only be valid if it is a Wi-Fi connection which describes a WEP or open
+    /// network, and will not be valid if it describes a WPA network, or if it is
+    /// an Ethernet, Bluetooth, WWAN, etc connection that is incompatible with the
+    /// device.
+    /// ## `connection`
+    /// an #NMConnection to validate against @self
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the connection may be activated with this device, [`false`]
+    /// if is incompatible with the device's capabilities and characteristics.
     #[doc(alias = "nm_device_connection_valid")]
     fn connection_valid(&self, connection: &impl IsA<Connection>) -> bool {
         unsafe {
@@ -58,6 +359,18 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Deletes the software device. Hardware devices can't be deleted.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_device_delete_async() or GDBusConnection.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] on error, in which case @error
+    /// will be set.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_device_delete")]
@@ -70,6 +383,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Asynchronously begins deleting the software device. Hardware devices can't
+    /// be deleted.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when delete operation completes
     #[doc(alias = "nm_device_delete_async")]
     fn delete_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
         
@@ -111,6 +430,19 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }))
     }
 
+    /// Disconnects the device if currently connected, and prevents the device from
+    /// automatically connecting to networks until the next manual network connection
+    /// request.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_device_disconnect_async() or GDBusConnection.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] on error, in which case @error will be set.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_device_disconnect")]
@@ -123,6 +455,13 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Asynchronously begins disconnecting the device if currently connected, and
+    /// prevents the device from automatically connecting to networks until the next
+    /// manual network connection request.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the disconnect operation completes
     #[doc(alias = "nm_device_disconnect_async")]
     fn disconnect_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
         
@@ -164,6 +503,26 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }))
     }
 
+    /// Filters a given array of connections for a given #NMDevice object and returns
+    /// connections which may be activated with the device. For example if @self
+    /// is a Wi-Fi device that supports only WEP encryption, the returned array will
+    /// contain any Wi-Fi connections in @connections that allow connection to
+    /// unencrypted or WEP-enabled SSIDs.  The returned array will not contain
+    /// Ethernet, Bluetooth, Wi-Fi WPA connections, or any other connection that is
+    /// incompatible with the device. To get the full list of connections see
+    /// nm_client_get_connections().
+    /// ## `connections`
+    /// an array of #NMConnections to filter
+    ///
+    /// # Returns
+    ///
+    /// an array of
+    /// #NMConnections that could be activated with the given @self.  The array
+    /// should be freed with g_ptr_array_unref() when it is no longer required.
+    ///
+    /// WARNING: the transfer annotation for this function may not work correctly
+    ///   with bindings. See https://gitlab.gnome.org/GNOME/gobject-introspection/-/issues/305.
+    ///   You can filter the list yourself with nm_device_connection_valid().
     #[doc(alias = "nm_device_filter_connections")]
     fn filter_connections(&self, connections: &[Connection]) -> Vec<Connection> {
         unsafe {
@@ -171,6 +530,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the #NMActiveConnection object which owns this device during activation.
+    ///
+    /// # Returns
+    ///
+    /// the #NMActiveConnection or [`None`] if the device is
+    /// not part of an active connection
     #[doc(alias = "nm_device_get_active_connection")]
     #[doc(alias = "get_active_connection")]
     #[doc(alias = "active-connection")]
@@ -180,6 +545,27 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Fetch the currently applied connection on the device.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_device_get_applied_connection_async() or GDBusConnection.
+    /// ## `flags`
+    /// the flags argument. See #NMDeviceReapplyFlags.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// a `NMConnection` with the currently applied settings
+    ///   or [`None`] on error.
+    ///
+    /// The connection is as received from D-Bus and might not validate according
+    /// to nm_connection_verify().
+    ///
+    /// ## `version_id`
+    /// returns the current version id of
+    ///   the applied connection
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -195,6 +581,13 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Asynchronously begins and gets the currently applied connection.
+    /// ## `flags`
+    /// the flags argument. See #NMDeviceReapplyFlags.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the reapply operation completes
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_device_get_applied_connection_async")]
@@ -243,6 +636,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }))
     }
 
+    /// Whether the #NMDevice can be autoconnected.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the device is allowed to be autoconnected
     #[doc(alias = "nm_device_get_autoconnect")]
     #[doc(alias = "get_autoconnect")]
     #[doc(alias = "autoconnect")]
@@ -252,6 +650,14 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the #NMRemoteConnections currently known to the daemon that could
+    /// be activated on @self.
+    ///
+    /// # Returns
+    ///
+    /// the #GPtrArray
+    /// containing #NMRemoteConnections. This is the internal copy used by
+    /// the connection, and must not be modified.
     #[doc(alias = "nm_device_get_available_connections")]
     #[doc(alias = "get_available_connections")]
     #[doc(alias = "available-connections")]
@@ -261,6 +667,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the device' capabilities.
+    ///
+    /// # Returns
+    ///
+    /// the capabilities
     #[doc(alias = "nm_device_get_capabilities")]
     #[doc(alias = "get_capabilities")]
     fn capabilities(&self) -> DeviceCapabilities {
@@ -269,6 +680,15 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// The connectivity state of the device for given address family.
+    /// Supported address families are `AF_INET` for IPv4, `AF_INET6`
+    /// for IPv6 or `AF_UNSPEC` for any.
+    /// ## `addr_family`
+    /// network address family
+    ///
+    /// # Returns
+    ///
+    /// the current connectivity state
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "nm_device_get_connectivity")]
@@ -279,6 +699,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets a description of @self, based on its vendor and product names.
+    ///
+    /// # Returns
+    ///
+    /// a description of @self. If either the vendor or the
+    ///   product name is unknown, this returns the interface name.
     #[doc(alias = "nm_device_get_description")]
     #[doc(alias = "get_description")]
     fn description(&self) -> glib::GString {
@@ -287,6 +713,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Returns the numeric type of the #NMDevice, ie Ethernet, Wi-Fi, etc.
+    ///
+    /// # Returns
+    ///
+    /// the device type
     #[doc(alias = "nm_device_get_device_type")]
     #[doc(alias = "get_device_type")]
     #[doc(alias = "device-type")]
@@ -296,6 +727,15 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the current IPv4 #NMDhcpConfig associated with the #NMDevice.
+    ///
+    /// You can alternatively use nm_active_connection_get_dhcp4_config(), which also
+    /// works with VPN connections.
+    ///
+    /// # Returns
+    ///
+    /// the IPv4 #NMDhcpConfig, or [`None`] if the device is
+    /// not activated or not using DHCP.
     #[doc(alias = "nm_device_get_dhcp4_config")]
     #[doc(alias = "get_dhcp4_config")]
     #[doc(alias = "dhcp4-config")]
@@ -305,6 +745,15 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the current IPv6 #NMDhcpConfig associated with the #NMDevice.
+    ///
+    /// You can alternatively use nm_active_connection_get_dhcp6_config(), which also
+    /// works with VPN connections.
+    ///
+    /// # Returns
+    ///
+    /// the IPv6 #NMDhcpConfig, or [`None`] if the device is
+    /// not activated or not using DHCPv6.
     #[doc(alias = "nm_device_get_dhcp6_config")]
     #[doc(alias = "get_dhcp6_config")]
     #[doc(alias = "dhcp6-config")]
@@ -314,6 +763,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the driver of the #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the driver of the device. This is the internal string used by the
+    /// device, and must not be modified.
     #[doc(alias = "nm_device_get_driver")]
     #[doc(alias = "get_driver")]
     fn driver(&self) -> glib::GString {
@@ -322,6 +777,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the driver version of the #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the version of the device driver. This is the internal string used by the
+    /// device, and must not be modified.
     #[doc(alias = "nm_device_get_driver_version")]
     #[doc(alias = "get_driver_version")]
     #[doc(alias = "driver-version")]
@@ -331,6 +792,13 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Indicates that firmware required for the device's operation is likely
+    /// to be missing.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if firmware required for the device's operation is likely
+    /// to be missing.
     #[doc(alias = "nm_device_get_firmware_missing")]
     #[doc(alias = "get_firmware_missing")]
     #[doc(alias = "firmware-missing")]
@@ -340,6 +808,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the firmware version of the #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the firmware version of the device. This is the internal string used by the
+    /// device, and must not be modified.
     #[doc(alias = "nm_device_get_firmware_version")]
     #[doc(alias = "get_firmware_version")]
     #[doc(alias = "firmware-version")]
@@ -349,6 +823,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the current a hardware address (MAC) for the @self.
+    ///
+    /// # Returns
+    ///
+    /// the current MAC of the device, or [`None`].
+    /// This is the internal string used by the device, and must not be modified.
     #[doc(alias = "nm_device_get_hw_address")]
     #[doc(alias = "get_hw_address")]
     #[doc(alias = "hw-address")]
@@ -358,6 +838,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the interface name of the #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the interface of the device. This is the internal string used by the
+    /// device, and must not be modified.
     #[doc(alias = "nm_device_get_iface")]
     #[doc(alias = "get_iface")]
     fn iface(&self) -> glib::GString {
@@ -366,6 +852,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the interface flags of the device.
+    ///
+    /// # Returns
+    ///
+    /// the flags
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "nm_device_get_interface_flags")]
@@ -377,6 +868,15 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the current IPv4 #NMIPConfig associated with the #NMDevice.
+    ///
+    /// You can alternatively use nm_active_connection_get_ip4_config(), which also
+    /// works with VPN connections.
+    ///
+    /// # Returns
+    ///
+    /// the IPv4 #NMIPConfig, or [`None`] if the device is not
+    /// activated.
     #[doc(alias = "nm_device_get_ip4_config")]
     #[doc(alias = "get_ip4_config")]
     #[doc(alias = "ip4-config")]
@@ -386,6 +886,14 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the current IPv6 #NMIPConfig associated with the #NMDevice.
+    ///
+    /// You can alternatively use nm_active_connection_get_ip6_config(), which also
+    /// works with VPN connections.
+    ///
+    /// # Returns
+    ///
+    /// the IPv6 #NMIPConfig or [`None`] if the device is not activated.
     #[doc(alias = "nm_device_get_ip6_config")]
     #[doc(alias = "get_ip6_config")]
     #[doc(alias = "ip6-config")]
@@ -395,6 +903,13 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the IP interface name of the #NMDevice over which IP traffic flows
+    /// when the device is in the ACTIVATED state.
+    ///
+    /// # Returns
+    ///
+    /// the IP traffic interface of the device. This is the internal string
+    /// used by the device, and must not be modified.
     #[doc(alias = "nm_device_get_ip_iface")]
     #[doc(alias = "get_ip_iface")]
     fn ip_iface(&self) -> glib::GString {
@@ -403,6 +918,14 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the list of neighbors discovered through LLDP.
+    ///
+    /// # Returns
+    ///
+    /// the #GPtrArray
+    /// containing #NMLldpNeighbor<!-- -->s. This is the internal copy used by the
+    /// device and must not be modified. The library never modifies the returned
+    /// array and thus it is safe for callers to reference and keep using it.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_device_get_lldp_neighbors")]
@@ -414,6 +937,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Whether the #NMDevice is managed by NetworkManager.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the device is managed by NetworkManager
     #[doc(alias = "nm_device_get_managed")]
     #[doc(alias = "get_managed")]
     #[doc(alias = "managed")]
@@ -423,6 +951,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the metered setting of a #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the metered setting.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_device_get_metered")]
@@ -433,6 +966,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the  MTU of the #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the MTU of the device in bytes.
     #[doc(alias = "nm_device_get_mtu")]
     #[doc(alias = "get_mtu")]
     fn mtu(&self) -> u32 {
@@ -441,6 +979,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Indicates that the NetworkManager plugin for the device is not installed.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the device plugin not installed.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_device_get_nm_plugin_missing")]
@@ -452,6 +995,14 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the path of the #NMDevice as exposed by the udev property ID_PATH.
+    ///
+    /// # Returns
+    ///
+    /// the path of the device.
+    ///
+    /// The string is backslash escaped (C escaping) for invalid characters. The escaping
+    /// can be reverted with g_strcompress(), however the result may not be valid UTF-8.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_device_get_path")]
@@ -462,6 +1013,16 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the physical port ID of the #NMDevice. If non-[`None`], this is
+    /// an opaque string that can be used to recognize when
+    /// seemingly-unrelated #NMDevices are actually just different virtual
+    /// ports on a single physical port. (Eg, NPAR / SR-IOV.)
+    ///
+    /// # Returns
+    ///
+    /// the physical port ID of the device, or [`None`] if the port
+    ///   ID is unknown. This is the internal string used by the device and
+    ///   must not be modified.
     #[doc(alias = "nm_device_get_physical_port_id")]
     #[doc(alias = "get_physical_port_id")]
     #[doc(alias = "physical-port-id")]
@@ -471,6 +1032,13 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the devices currently set as port of @self.
+    ///
+    /// # Returns
+    ///
+    /// the #GPtrArray containing #NMDevices that
+    /// are ports of @self. This is the internal copy used by the device and
+    /// must not be modified.
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "nm_device_get_ports")]
@@ -481,6 +1049,15 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the product string of the #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the product name of the device. This is the internal string used by the
+    /// device, and must not be modified.
+    ///
+    /// The string is backslash escaped (C escaping) for invalid characters. The escaping
+    /// can be reverted with g_strcompress(), however the result may not be valid UTF-8.
     #[doc(alias = "nm_device_get_product")]
     #[doc(alias = "get_product")]
     fn product(&self) -> glib::GString {
@@ -489,6 +1066,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the (primary) #NMSetting subtype associated with connections
+    /// that can be used on @self.
+    ///
+    /// # Returns
+    ///
+    /// @self's associated #NMSetting type
     #[doc(alias = "nm_device_get_setting_type")]
     #[doc(alias = "get_setting_type")]
     fn setting_type(&self) -> glib::types::Type {
@@ -497,6 +1080,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the current #NMDevice state.
+    ///
+    /// # Returns
+    ///
+    /// the current device state
     #[doc(alias = "nm_device_get_state")]
     #[doc(alias = "get_state")]
     fn state(&self) -> DeviceState {
@@ -505,6 +1093,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the reason for entering the current #NMDevice state.
+    ///
+    /// # Returns
+    ///
+    /// the reason for entering the current device state
     #[doc(alias = "nm_device_get_state_reason")]
     #[doc(alias = "get_state_reason")]
     #[doc(alias = "state-reason")]
@@ -514,6 +1107,13 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets a (non-localized) description of the type of device that
+    /// @self is.
+    ///
+    /// # Returns
+    ///
+    /// the type description of the device. This is the internal
+    /// string used by the device, and must not be modified.
     #[doc(alias = "nm_device_get_type_description")]
     #[doc(alias = "get_type_description")]
     fn type_description(&self) -> glib::GString {
@@ -522,6 +1122,13 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the Unique Device Identifier of the #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the Unique Device Identifier of the device.  This identifier may be
+    /// used to gather more information about the device from various operating
+    /// system services like udev or sysfs.
     #[doc(alias = "nm_device_get_udi")]
     #[doc(alias = "get_udi")]
     fn udi(&self) -> glib::GString {
@@ -530,6 +1137,15 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Gets the vendor string of the #NMDevice.
+    ///
+    /// # Returns
+    ///
+    /// the vendor name of the device. This is the internal string used by the
+    /// device, and must not be modified.
+    ///
+    /// The string is backslash escaped (C escaping) for invalid characters. The escaping
+    /// can be reverted with g_strcompress(), however the result may not be valid UTF-8.
     #[doc(alias = "nm_device_get_vendor")]
     #[doc(alias = "get_vendor")]
     fn vendor(&self) -> glib::GString {
@@ -538,6 +1154,12 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the device exists, or [`false`] if it is a placeholder device
+    /// that could be automatically created by NetworkManager if one of its
+    /// #NMDevice:available-connections was activated.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_device_is_real")]
@@ -548,6 +1170,11 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Whether the device is a software device.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @self is a software device, [`false`] if it is a hardware device.
     #[doc(alias = "nm_device_is_software")]
     fn is_software(&self) -> bool {
         unsafe {
@@ -555,6 +1182,27 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Attempts to update device with changes to the currently active connection
+    /// made since it was last applied.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_device_reapply_async() or GDBusConnection.
+    /// ## `connection`
+    /// the #NMConnection to replace the applied
+    ///   settings with or [`None`] to reuse existing
+    /// ## `version_id`
+    /// zero or the expected version id of the applied connection.
+    ///   If specified and the version id mismatches, the call fails without
+    ///   modification. This allows one to catch concurrent accesses.
+    /// ## `flags`
+    /// always set this to zero
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] on error, in which case @error will be set.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -569,6 +1217,22 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Asynchronously begins an attempt to update device with changes to the
+    /// currently active connection made since it was last applied.
+    /// ## `connection`
+    /// the #NMConnection to replace the applied
+    ///   settings with or [`None`] to reuse existing
+    /// ## `version_id`
+    /// zero or the expected version id of the applied
+    ///   connection. If specified and the version id mismatches, the call
+    ///   fails without modification. This allows one to catch concurrent
+    ///   accesses.
+    /// ## `flags`
+    /// always set this to zero
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the reapply operation completes
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_device_reapply_async")]
@@ -618,6 +1282,16 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }))
     }
 
+    /// Enables or disables automatic activation of the #NMDevice.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use the async command nm_client_dbus_set_property() on
+    /// nm_object_get_path(), `NM_DBUS_INTERFACE_DEVICE` to set "Autoconnect" property to a "(b)" value.
+    /// This function is deprecated because it calls a synchronous D-Bus method
+    /// and modifies the content of the NMClient cache client side.
+    /// ## `autoconnect`
+    /// [`true`] to enable autoconnecting
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_device_set_autoconnect")]
@@ -628,6 +1302,18 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// Enables or disables management of  #NMDevice by NetworkManager.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use the async command nm_client_dbus_set_property() on
+    /// nm_object_get_path(), interface `NM_DBUS_INTERFACE_DEVICE` to set the
+    /// "Managed" property to a "(b)" boolean value.
+    /// This function is deprecated because it calls a synchronous D-Bus method
+    /// and modifies the content of the NMClient cache client side. Also, it does
+    /// not emit a property changed signal.
+    /// ## `managed`
+    /// [`true`] to make the device managed by NetworkManager.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -639,15 +1325,19 @@ pub trait DeviceExt: IsA<Device> + 'static {
         }
     }
 
+    /// The interface of the device.
     fn interface(&self) -> Option<glib::GString> {
         ObjectExt::property(self.as_ref(), "interface")
     }
 
+    /// The IP interface of the device which should be used for all IP-related
+    /// operations like addressing and routing.
     #[doc(alias = "ip-interface")]
     fn ip_interface(&self) -> Option<glib::GString> {
         ObjectExt::property(self.as_ref(), "ip-interface")
     }
 
+    /// The IPv4 connectivity state of the device.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "ip4-connectivity")]
@@ -655,6 +1345,7 @@ pub trait DeviceExt: IsA<Device> + 'static {
         ObjectExt::property(self.as_ref(), "ip4-connectivity")
     }
 
+    /// The IPv6 connectivity state of the device.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "ip6-connectivity")]
@@ -669,6 +1360,13 @@ pub trait DeviceExt: IsA<Device> + 'static {
     //    ObjectExt::property(self.as_ref(), "lldp-neighbors")
     //}
 
+    /// Notifies the state change of a #NMDevice.
+    /// ## `new_state`
+    /// the new state of the device
+    /// ## `old_state`
+    /// the previous state of the device
+    /// ## `reason`
+    /// the reason describing the state change
     #[doc(alias = "state-changed")]
     fn connect_state_changed<F: Fn(&Self, u32, u32, u32) + 'static>(&self, f: F) -> SignalHandlerId {
         unsafe extern "C" fn state_changed_trampoline<P: IsA<Device>, F: Fn(&P, u32, u32, u32) + 'static>(this: *mut ffi::NMDevice, new_state: std::ffi::c_uint, old_state: std::ffi::c_uint, reason: std::ffi::c_uint, f: glib::ffi::gpointer) {

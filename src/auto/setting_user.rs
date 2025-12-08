@@ -8,6 +8,31 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// General User Profile Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `data`
+    ///  A dictionary of key/value pairs with user data. This data is ignored by NetworkManager
+    /// and can be used at the users discretion. The keys only support a strict ascii format,
+    /// but the values can be arbitrary UTF8 strings up to a certain length.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingUser")]
     pub struct SettingUser(Object<ffi::NMSettingUser, ffi::NMSettingUserClass>) @extends Setting;
 
@@ -17,6 +42,11 @@ glib::wrapper! {
 }
 
 impl SettingUser {
+    /// Creates a new #NMSettingUser object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingUser object
     #[doc(alias = "nm_setting_user_new")]
     pub fn new() -> SettingUser {
         assert_initialized_main_thread!();
@@ -34,6 +64,13 @@ impl SettingUser {
             }
         
 
+    /// ## `key`
+    /// the key to lookup
+    ///
+    /// # Returns
+    ///
+    /// the value associated with @key or [`None`] if no such
+    ///   value exists.
     #[doc(alias = "nm_setting_user_get_data")]
     #[doc(alias = "get_data")]
     pub fn data(&self, key: &str) -> glib::GString {
@@ -42,6 +79,11 @@ impl SettingUser {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// a
+    ///   [`None`]-terminated array containing each key from the table.
     #[doc(alias = "nm_setting_user_get_keys")]
     #[doc(alias = "get_keys")]
     pub fn keys(&self) -> Vec<glib::GString> {
@@ -52,6 +94,16 @@ impl SettingUser {
         }
     }
 
+    /// ## `key`
+    /// the key to set
+    /// ## `val`
+    /// the value to set or [`None`] to clear a key.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the operation was successful. The operation
+    ///   can fail if @key or @val are not valid strings according
+    ///   to nm_setting_user_check_key() and nm_setting_user_check_val().
     #[doc(alias = "nm_setting_user_set_data")]
     #[doc(alias = "data")]
     pub fn set_data(&self, key: &str, val: Option<&str>) -> Result<(), glib::Error> {
@@ -63,6 +115,17 @@ impl SettingUser {
         }
     }
 
+    /// Checks whether @key is a valid user data key. This means,
+    /// key is not [`None`], not too large and valid ASCII. Also,
+    /// only digits and numbers are allowed with a few special
+    /// characters. The key must contain at least one '.' and
+    /// look like a fully qualified DNS name.
+    /// ## `key`
+    /// the key to check
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @key is a valid user data key.
     #[doc(alias = "nm_setting_user_check_key")]
     pub fn check_key(key: &str) -> Result<(), glib::Error> {
         assert_initialized_main_thread!();
@@ -74,6 +137,14 @@ impl SettingUser {
         }
     }
 
+    /// Checks whether @val is a valid user data value. This means,
+    /// value is not [`None`], not too large and valid UTF-8.
+    /// ## `val`
+    /// the value to check
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if @val is a valid user data value.
     #[doc(alias = "nm_setting_user_check_val")]
     pub fn check_val(val: &str) -> Result<(), glib::Error> {
         assert_initialized_main_thread!();

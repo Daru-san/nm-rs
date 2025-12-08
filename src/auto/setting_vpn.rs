@@ -8,6 +8,74 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// VPN Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `data`
+    ///  Dictionary of key/value pairs of VPN plugin specific data.  Both keys and
+    /// values must be strings.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `persistent`
+    ///  If the VPN service supports persistence, and this property is [`true`],
+    /// the VPN will attempt to stay connected across link changes and outages,
+    /// until explicitly disconnected.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `secrets`
+    ///  Dictionary of key/value pairs of VPN plugin specific secrets like
+    /// passwords or private keys.  Both keys and values must be strings.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `service-type`
+    ///  D-Bus service name of the VPN plugin that this setting uses to connect to
+    /// its network.  i.e. org.freedesktop.NetworkManager.vpnc for the vpnc
+    /// plugin.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `timeout`
+    ///  Timeout for the VPN service to establish the connection. Some services
+    /// may take quite a long time to connect.
+    /// Value of 0 means a default timeout, which is 60 seconds (unless overridden
+    /// by vpn.timeout in configuration file). Values greater than zero mean
+    /// timeout in seconds.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `user-name`
+    ///  If the VPN connection requires a user name for authentication, that name
+    /// should be provided here.  If the connection is available to more than one
+    /// user, and the VPN requires each user to supply a different name, then
+    /// leave this property empty.  If this property is empty, NetworkManager
+    /// will automatically supply the username of the user which requested the
+    /// VPN connection.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingVpn")]
     pub struct SettingVpn(Object<ffi::NMSettingVpn, ffi::NMSettingVpnClass>) @extends Setting;
 
@@ -17,6 +85,11 @@ glib::wrapper! {
 }
 
 impl SettingVpn {
+    /// Creates a new #NMSettingVpn object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingVpn object
     #[doc(alias = "nm_setting_vpn_new")]
     pub fn new() -> SettingVpn {
         assert_initialized_main_thread!();
@@ -34,6 +107,17 @@ impl SettingVpn {
             }
         
 
+    /// Establishes a relationship between @key and @item internally in the
+    /// setting which may be retrieved later.  Should not be used to store passwords
+    /// or other secrets, which is what nm_setting_vpn_add_secret() is for.
+    ///
+    /// Before 1.24, @item must not be [`None`] and not an empty string. Since 1.24,
+    /// @item can be set to an empty string. It can also be set to [`None`] to unset
+    /// the key. In that case, the behavior is as if calling nm_setting_vpn_remove_data_item().
+    /// ## `key`
+    /// a name that uniquely identifies the given value @item
+    /// ## `item`
+    /// the value to be referenced by @key
     #[doc(alias = "nm_setting_vpn_add_data_item")]
     pub fn add_data_item(&self, key: &str, item: Option<&str>) {
         unsafe {
@@ -41,6 +125,16 @@ impl SettingVpn {
         }
     }
 
+    /// Establishes a relationship between @key and @secret internally in the
+    /// setting which may be retrieved later.
+    ///
+    /// Before 1.24, @secret must not be [`None`] and not an empty string. Since 1.24,
+    /// @secret can be set to an empty string. It can also be set to [`None`] to unset
+    /// the key. In that case, the behavior is as if calling nm_setting_vpn_remove_secret().
+    /// ## `key`
+    /// a name that uniquely identifies the given secret @secret
+    /// ## `secret`
+    /// the secret to be referenced by @key
     #[doc(alias = "nm_setting_vpn_add_secret")]
     pub fn add_secret(&self, key: &str, secret: Option<&str>) {
         unsafe {
@@ -48,6 +142,11 @@ impl SettingVpn {
         }
     }
 
+    /// Iterates all data items stored in this setting.  It is safe to add, remove,
+    /// and modify data items inside @func, though any additions or removals made
+    /// during iteration will not be part of the iteration.
+    /// ## `func`
+    /// an user provided function
     #[doc(alias = "nm_setting_vpn_foreach_data_item")]
     pub fn foreach_data_item<P: FnMut(&str, &str)>(&self, func: P) {
         let mut func_data: P = func;
@@ -64,6 +163,11 @@ impl SettingVpn {
         }
     }
 
+    /// Iterates all secrets stored in this setting.  It is safe to add, remove,
+    /// and modify secrets inside @func, though any additions or removals made during
+    /// iteration will not be part of the iteration.
+    /// ## `func`
+    /// an user provided function
     #[doc(alias = "nm_setting_vpn_foreach_secret")]
     pub fn foreach_secret<P: FnMut(&str, &str)>(&self, func: P) {
         let mut func_data: P = func;
@@ -80,6 +184,14 @@ impl SettingVpn {
         }
     }
 
+    /// Retrieves the data item of a key/value relationship previously established
+    /// by nm_setting_vpn_add_data_item().
+    /// ## `key`
+    /// the name of the data item to retrieve
+    ///
+    /// # Returns
+    ///
+    /// the data item, if any
     #[doc(alias = "nm_setting_vpn_get_data_item")]
     #[doc(alias = "get_data_item")]
     pub fn data_item(&self, key: &str) -> glib::GString {
@@ -88,6 +200,13 @@ impl SettingVpn {
         }
     }
 
+    /// Retrieves every data key inside @self, as an array.
+    ///
+    /// # Returns
+    ///
+    /// a
+    ///   [`None`]-terminated array containing each data key or [`None`] if
+    ///   there are no data items.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_vpn_get_data_keys")]
@@ -100,6 +219,11 @@ impl SettingVpn {
         }
     }
 
+    /// Gets number of key/value pairs of VPN configuration data.
+    ///
+    /// # Returns
+    ///
+    /// the number of VPN plugin specific configuration data items
     #[doc(alias = "nm_setting_vpn_get_num_data_items")]
     #[doc(alias = "get_num_data_items")]
     pub fn num_data_items(&self) -> u32 {
@@ -108,6 +232,11 @@ impl SettingVpn {
         }
     }
 
+    /// Gets number of VPN plugin specific secrets in the setting.
+    ///
+    /// # Returns
+    ///
+    /// the number of VPN plugin specific secrets
     #[doc(alias = "nm_setting_vpn_get_num_secrets")]
     #[doc(alias = "get_num_secrets")]
     pub fn num_secrets(&self) -> u32 {
@@ -116,6 +245,10 @@ impl SettingVpn {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVpn:persistent property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_vpn_get_persistent")]
@@ -127,6 +260,14 @@ impl SettingVpn {
         }
     }
 
+    /// Retrieves the secret of a key/value relationship previously established
+    /// by nm_setting_vpn_add_secret().
+    /// ## `key`
+    /// the name of the secret to retrieve
+    ///
+    /// # Returns
+    ///
+    /// the secret, if any
     #[doc(alias = "nm_setting_vpn_get_secret")]
     #[doc(alias = "get_secret")]
     pub fn secret(&self, key: &str) -> glib::GString {
@@ -135,6 +276,13 @@ impl SettingVpn {
         }
     }
 
+    /// Retrieves every secret key inside @self, as an array.
+    ///
+    /// # Returns
+    ///
+    /// a
+    ///   [`None`]-terminated array containing each secret key or [`None`] if
+    ///   there are no secrets.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_vpn_get_secret_keys")]
@@ -147,6 +295,12 @@ impl SettingVpn {
         }
     }
 
+    /// Returns the service name of the VPN, which identifies the specific VPN
+    /// plugin that should be used to connect to this VPN.
+    ///
+    /// # Returns
+    ///
+    /// the VPN plugin's service name
     #[doc(alias = "nm_setting_vpn_get_service_type")]
     #[doc(alias = "get_service_type")]
     #[doc(alias = "service-type")]
@@ -156,6 +310,10 @@ impl SettingVpn {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVpn:timeout property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_vpn_get_timeout")]
@@ -166,6 +324,10 @@ impl SettingVpn {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingVpn:user-name property of the setting
     #[doc(alias = "nm_setting_vpn_get_user_name")]
     #[doc(alias = "get_user_name")]
     #[doc(alias = "user-name")]
@@ -175,6 +337,15 @@ impl SettingVpn {
         }
     }
 
+    /// Deletes a key/value relationship previously established by
+    /// nm_setting_vpn_add_data_item().
+    /// ## `key`
+    /// the name of the data item to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the data item was found and removed from the internal list,
+    /// [`false`] if it was not.
     #[doc(alias = "nm_setting_vpn_remove_data_item")]
     pub fn remove_data_item(&self, key: &str) -> bool {
         unsafe {
@@ -182,6 +353,15 @@ impl SettingVpn {
         }
     }
 
+    /// Deletes a key/value relationship previously established by
+    /// nm_setting_vpn_add_secret().
+    /// ## `key`
+    /// the name of the secret to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the secret was found and removed from the internal list,
+    /// [`false`] if it was not.
     #[doc(alias = "nm_setting_vpn_remove_secret")]
     pub fn remove_secret(&self, key: &str) -> bool {
         unsafe {
@@ -203,6 +383,9 @@ impl SettingVpn {
         ObjectExt::property(self, "persistent")
     }
 
+    /// If the VPN service supports persistence, and this property is [`true`],
+    /// the VPN will attempt to stay connected across link changes and outages,
+    /// until explicitly disconnected.
     pub fn set_persistent(&self, persistent: bool) {
         ObjectExt::set_property(self,"persistent", persistent)
     }
@@ -215,17 +398,31 @@ impl SettingVpn {
     //    ObjectExt::set_property(self,"secrets", secrets)
     //}
 
+    /// D-Bus service name of the VPN plugin that this setting uses to connect to
+    /// its network.  i.e. org.freedesktop.NetworkManager.vpnc for the vpnc
+    /// plugin.
     #[doc(alias = "service-type")]
     pub fn set_service_type(&self, service_type: Option<&str>) {
         ObjectExt::set_property(self,"service-type", service_type)
     }
 
+    /// Timeout for the VPN service to establish the connection. Some services
+    /// may take quite a long time to connect.
+    /// Value of 0 means a default timeout, which is 60 seconds (unless overridden
+    /// by vpn.timeout in configuration file). Values greater than zero mean
+    /// timeout in seconds.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_timeout(&self, timeout: u32) {
         ObjectExt::set_property(self,"timeout", timeout)
     }
 
+    /// If the VPN connection requires a user name for authentication, that name
+    /// should be provided here.  If the connection is available to more than one
+    /// user, and the VPN requires each user to supply a different name, then
+    /// leave this property empty.  If this property is empty, NetworkManager
+    /// will automatically supply the username of the user which requested the
+    /// VPN connection.
     #[doc(alias = "user-name")]
     pub fn set_user_name(&self, user_name: Option<&str>) {
         ObjectExt::set_property(self,"user-name", user_name)
@@ -336,6 +533,9 @@ pub struct SettingVpnBuilder {
                         //    Self { builder: self.builder.property("data", data), }
                         //}
 
+                            /// If the VPN service supports persistence, and this property is [`true`],
+                            /// the VPN will attempt to stay connected across link changes and outages,
+                            /// until explicitly disconnected.
                             pub fn persistent(self, persistent: bool) -> Self {
                             Self { builder: self.builder.property("persistent", persistent), }
                         }
@@ -344,16 +544,30 @@ pub struct SettingVpnBuilder {
                         //    Self { builder: self.builder.property("secrets", secrets), }
                         //}
 
+                            /// D-Bus service name of the VPN plugin that this setting uses to connect to
+                            /// its network.  i.e. org.freedesktop.NetworkManager.vpnc for the vpnc
+                            /// plugin.
                             pub fn service_type(self, service_type: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("service-type", service_type.into()), }
                         }
 
+                            /// Timeout for the VPN service to establish the connection. Some services
+                            /// may take quite a long time to connect.
+                            /// Value of 0 means a default timeout, which is 60 seconds (unless overridden
+                            /// by vpn.timeout in configuration file). Values greater than zero mean
+                            /// timeout in seconds.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn timeout(self, timeout: u32) -> Self {
                             Self { builder: self.builder.property("timeout", timeout), }
                         }
 
+                            /// If the VPN connection requires a user name for authentication, that name
+                            /// should be provided here.  If the connection is available to more than one
+                            /// user, and the VPN requires each user to supply a different name, then
+                            /// leave this property empty.  If this property is empty, NetworkManager
+                            /// will automatically supply the username of the user which requested the
+                            /// VPN connection.
                             pub fn user_name(self, user_name: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("user-name", user_name.into()), }
                         }

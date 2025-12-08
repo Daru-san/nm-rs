@@ -13,6 +13,39 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Bond Port Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `prio`
+    ///  The port priority for bond active port re-selection during failover. A
+    /// higher number means a higher priority in selection. The primary port has
+    /// the highest priority. This option is only compatible with active-backup,
+    /// balance-tlb and balance-alb modes.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `queue-id`
+    ///  The queue ID of this bond port. The maximum value of queue ID is
+    /// the number of TX queues currently active in device.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingBondPort")]
     pub struct SettingBondPort(Object<ffi::NMSettingBondPort, ffi::NMSettingBondPortClass>) @extends Setting;
 
@@ -22,6 +55,11 @@ glib::wrapper! {
 }
 
 impl SettingBondPort {
+    /// Creates a new #NMSettingBondPort object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingBondPort object
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "nm_setting_bond_port_new")]
@@ -41,6 +79,10 @@ impl SettingBondPort {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBondPort:prio property of the setting
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "nm_setting_bond_port_get_prio")]
@@ -51,6 +93,10 @@ impl SettingBondPort {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingBondPort:queue_id property of the setting
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "nm_setting_bond_port_get_queue_id")]
@@ -62,12 +108,18 @@ impl SettingBondPort {
         }
     }
 
+    /// The port priority for bond active port re-selection during failover. A
+    /// higher number means a higher priority in selection. The primary port has
+    /// the highest priority. This option is only compatible with active-backup,
+    /// balance-tlb and balance-alb modes.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn set_prio(&self, prio: i32) {
         ObjectExt::set_property(self,"prio", prio)
     }
 
+    /// The queue ID of this bond port. The maximum value of queue ID is
+    /// the number of TX queues currently active in device.
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "queue-id")]
@@ -128,12 +180,18 @@ pub struct SettingBondPortBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The port priority for bond active port re-selection during failover. A
+                            /// higher number means a higher priority in selection. The primary port has
+                            /// the highest priority. This option is only compatible with active-backup,
+                            /// balance-tlb and balance-alb modes.
                             #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn prio(self, prio: i32) -> Self {
                             Self { builder: self.builder.property("prio", prio), }
                         }
 
+                            /// The queue ID of this bond port. The maximum value of queue ID is
+                            /// the number of TX queues currently active in device.
                             #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     pub fn queue_id(self, queue_id: u32) -> Self {

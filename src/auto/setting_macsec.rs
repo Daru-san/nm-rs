@@ -19,6 +19,102 @@ use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// MACSec Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `encrypt`
+    ///  Whether the transmitted traffic must be encrypted.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mka-cak`
+    ///  The pre-shared CAK (Connectivity Association Key) for MACsec
+    /// Key Agreement. Must be a string of 32 hexadecimal characters.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mka-cak-flags`
+    ///  Flags indicating how to handle the #NMSettingMacsec:mka-cak
+    /// property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mka-ckn`
+    ///  The pre-shared CKN (Connectivity-association Key Name) for
+    /// MACsec Key Agreement. Must be a string of hexadecimal characters
+    /// with a even length between 2 and 64.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mode`
+    ///  Specifies how the CAK (Connectivity Association Key) for MKA (MACsec Key
+    /// Agreement) is obtained.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `offload`
+    ///  Specifies the MACsec offload mode.
+    ///
+    /// [`SettingMacsecOffload::Off`][crate::SettingMacsecOffload::Off] disables MACsec offload.
+    ///
+    /// [`SettingMacsecOffload::Phy`][crate::SettingMacsecOffload::Phy] and [`SettingMacsecOffload::Mac`][crate::SettingMacsecOffload::Mac] request offload
+    /// respectively to the PHY or to the MAC; if the selected mode is not available, the
+    /// connection will fail.
+    ///
+    /// [`SettingMacsecOffload::Default`][crate::SettingMacsecOffload::Default] uses the global default value specified in
+    /// NetworkManager configuration; if no global default is defined, the built-in
+    /// default is [`SettingMacsecOffload::Off`][crate::SettingMacsecOffload::Off].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `parent`
+    ///  If given, specifies the parent interface name or parent connection UUID
+    /// from which this MACSEC interface should be created.  If this property is
+    /// not specified, the connection must contain an #NMSettingWired setting
+    /// with a #NMSettingWired:mac-address property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `port`
+    ///  The port component of the SCI (Secure Channel Identifier), between 1 and 65534.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `send-sci`
+    ///  Specifies whether the SCI (Secure Channel Identifier) is included
+    /// in every packet.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `validation`
+    ///  Specifies the validation mode for incoming frames.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingMacsec")]
     pub struct SettingMacsec(Object<ffi::NMSettingMacsec, ffi::NMSettingMacsecClass>) @extends Setting;
 
@@ -28,6 +124,11 @@ glib::wrapper! {
 }
 
 impl SettingMacsec {
+    /// Creates a new #NMSettingMacsec object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingMacsec object
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_new")]
@@ -47,6 +148,10 @@ impl SettingMacsec {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:encrypt property of the setting
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_get_encrypt")]
@@ -58,6 +163,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:mka-cak property of the setting
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_get_mka_cak")]
@@ -69,6 +178,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSecretFlags pertaining to the #NMSettingMacsec:mka-cak
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_get_mka_cak_flags")]
@@ -80,6 +193,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:mka-ckn property of the setting
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_get_mka_ckn")]
@@ -91,6 +208,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:mode property of the setting
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_get_mode")]
@@ -101,6 +222,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:offload property of the setting
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_macsec_get_offload")]
@@ -111,6 +236,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:parent property of the setting
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_get_parent")]
@@ -121,6 +250,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:port property of the setting
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_get_port")]
@@ -131,6 +264,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:send-sci property of the setting
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_macsec_get_send_sci")]
@@ -142,6 +279,10 @@ impl SettingMacsec {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingMacsec:validation property of the setting
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_macsec_get_validation")]
@@ -152,12 +293,15 @@ impl SettingMacsec {
         }
     }
 
+    /// Whether the transmitted traffic must be encrypted.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn set_encrypt(&self, encrypt: bool) {
         ObjectExt::set_property(self,"encrypt", encrypt)
     }
 
+    /// The pre-shared CAK (Connectivity Association Key) for MACsec
+    /// Key Agreement. Must be a string of 32 hexadecimal characters.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "mka-cak")]
@@ -165,6 +309,8 @@ impl SettingMacsec {
         ObjectExt::set_property(self,"mka-cak", mka_cak)
     }
 
+    /// Flags indicating how to handle the #NMSettingMacsec:mka-cak
+    /// property.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "mka-cak-flags")]
@@ -172,6 +318,9 @@ impl SettingMacsec {
         ObjectExt::set_property(self,"mka-cak-flags", mka_cak_flags)
     }
 
+    /// The pre-shared CKN (Connectivity-association Key Name) for
+    /// MACsec Key Agreement. Must be a string of hexadecimal characters
+    /// with a even length between 2 and 64.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "mka-ckn")]
@@ -179,30 +328,50 @@ impl SettingMacsec {
         ObjectExt::set_property(self,"mka-ckn", mka_ckn)
     }
 
+    /// Specifies how the CAK (Connectivity Association Key) for MKA (MACsec Key
+    /// Agreement) is obtained.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn set_mode(&self, mode: i32) {
         ObjectExt::set_property(self,"mode", mode)
     }
 
+    /// Specifies the MACsec offload mode.
+    ///
+    /// [`SettingMacsecOffload::Off`][crate::SettingMacsecOffload::Off] disables MACsec offload.
+    ///
+    /// [`SettingMacsecOffload::Phy`][crate::SettingMacsecOffload::Phy] and [`SettingMacsecOffload::Mac`][crate::SettingMacsecOffload::Mac] request offload
+    /// respectively to the PHY or to the MAC; if the selected mode is not available, the
+    /// connection will fail.
+    ///
+    /// [`SettingMacsecOffload::Default`][crate::SettingMacsecOffload::Default] uses the global default value specified in
+    /// NetworkManager configuration; if no global default is defined, the built-in
+    /// default is [`SettingMacsecOffload::Off`][crate::SettingMacsecOffload::Off].
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn set_offload(&self, offload: i32) {
         ObjectExt::set_property(self,"offload", offload)
     }
 
+    /// If given, specifies the parent interface name or parent connection UUID
+    /// from which this MACSEC interface should be created.  If this property is
+    /// not specified, the connection must contain an #NMSettingWired setting
+    /// with a #NMSettingWired:mac-address property.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn set_parent(&self, parent: Option<&str>) {
         ObjectExt::set_property(self,"parent", parent)
     }
 
+    /// The port component of the SCI (Secure Channel Identifier), between 1 and 65534.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn set_port(&self, port: i32) {
         ObjectExt::set_property(self,"port", port)
     }
 
+    /// Specifies whether the SCI (Secure Channel Identifier) is included
+    /// in every packet.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "send-sci")]
@@ -210,6 +379,7 @@ impl SettingMacsec {
         ObjectExt::set_property(self,"send-sci", send_sci)
     }
 
+    /// Specifies the validation mode for incoming frames.
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn set_validation(&self, validation: i32) {
@@ -389,60 +559,89 @@ pub struct SettingMacsecBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Whether the transmitted traffic must be encrypted.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn encrypt(self, encrypt: bool) -> Self {
                             Self { builder: self.builder.property("encrypt", encrypt), }
                         }
 
+                            /// The pre-shared CAK (Connectivity Association Key) for MACsec
+                            /// Key Agreement. Must be a string of 32 hexadecimal characters.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn mka_cak(self, mka_cak: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("mka-cak", mka_cak.into()), }
                         }
 
+                            /// Flags indicating how to handle the #NMSettingMacsec:mka-cak
+                            /// property.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn mka_cak_flags(self, mka_cak_flags: SettingSecretFlags) -> Self {
                             Self { builder: self.builder.property("mka-cak-flags", mka_cak_flags), }
                         }
 
+                            /// The pre-shared CKN (Connectivity-association Key Name) for
+                            /// MACsec Key Agreement. Must be a string of hexadecimal characters
+                            /// with a even length between 2 and 64.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn mka_ckn(self, mka_ckn: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("mka-ckn", mka_ckn.into()), }
                         }
 
+                            /// Specifies how the CAK (Connectivity Association Key) for MKA (MACsec Key
+                            /// Agreement) is obtained.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn mode(self, mode: i32) -> Self {
                             Self { builder: self.builder.property("mode", mode), }
                         }
 
+                            /// Specifies the MACsec offload mode.
+                            ///
+                            /// [`SettingMacsecOffload::Off`][crate::SettingMacsecOffload::Off] disables MACsec offload.
+                            ///
+                            /// [`SettingMacsecOffload::Phy`][crate::SettingMacsecOffload::Phy] and [`SettingMacsecOffload::Mac`][crate::SettingMacsecOffload::Mac] request offload
+                            /// respectively to the PHY or to the MAC; if the selected mode is not available, the
+                            /// connection will fail.
+                            ///
+                            /// [`SettingMacsecOffload::Default`][crate::SettingMacsecOffload::Default] uses the global default value specified in
+                            /// NetworkManager configuration; if no global default is defined, the built-in
+                            /// default is [`SettingMacsecOffload::Off`][crate::SettingMacsecOffload::Off].
                             #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn offload(self, offload: i32) -> Self {
                             Self { builder: self.builder.property("offload", offload), }
                         }
 
+                            /// If given, specifies the parent interface name or parent connection UUID
+                            /// from which this MACSEC interface should be created.  If this property is
+                            /// not specified, the connection must contain an #NMSettingWired setting
+                            /// with a #NMSettingWired:mac-address property.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn parent(self, parent: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("parent", parent.into()), }
                         }
 
+                            /// The port component of the SCI (Secure Channel Identifier), between 1 and 65534.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn port(self, port: i32) -> Self {
                             Self { builder: self.builder.property("port", port), }
                         }
 
+                            /// Specifies whether the SCI (Secure Channel Identifier) is included
+                            /// in every packet.
                             #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn send_sci(self, send_sci: bool) -> Self {
                             Self { builder: self.builder.property("send-sci", send_sci), }
                         }
 
+                            /// Specifies the validation mode for incoming frames.
                             #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     pub fn validation(self, validation: i32) -> Self {

@@ -34,6 +34,497 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// General Connection Profile Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `auth-retries`
+    ///  The number of retries for the authentication. Zero means to try indefinitely; -1 means
+    /// to use a global default. If the global default is not set, the authentication
+    /// retries for 3 times before failing the connection.
+    ///
+    /// Currently, this only applies to 802-1x authentication.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `autoconnect`
+    ///  Whether or not the connection should be automatically connected by
+    /// NetworkManager when the resources for the connection are available.
+    /// [`true`] to automatically activate the connection, [`false`] to require manual
+    /// intervention to activate the connection.
+    ///
+    /// Autoconnect happens when the circumstances are suitable. That means for
+    /// example that the device is currently managed and not active. Autoconnect
+    /// thus never replaces or competes with an already active profile.
+    ///
+    /// Note that autoconnect is not implemented for VPN profiles. See
+    /// #NMSettingConnection:secondaries as an alternative to automatically
+    /// connect VPN profiles.
+    ///
+    /// If multiple profiles are ready to autoconnect on the same device,
+    /// the one with the better "connection.autoconnect-priority" is chosen. If
+    /// the priorities are equal, then the most recently connected profile is activated.
+    /// If the profiles were not connected earlier or their
+    /// "connection.timestamp" is identical, the choice is undefined.
+    ///
+    /// Depending on "connection.multi-connect", a profile can (auto)connect only
+    /// once at a time or multiple times.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `autoconnect-ports`
+    ///  Whether or not ports of this connection should be automatically brought up
+    /// when NetworkManager activates this connection. This only has a real effect
+    /// for controller connections. The properties #NMSettingConnection:autoconnect,
+    /// #NMSettingConnection:autoconnect-priority and #NMSettingConnection:autoconnect-retries
+    /// are unrelated to this setting.
+    /// The permitted values are: 0: leave port connections untouched,
+    /// 1: activate all the port connections with this connection, -1: default.
+    /// If -1 (default) is set, global connection.autoconnect-ports is read to
+    /// determine the real value. If it is default as well, this fallbacks to 0.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `autoconnect-priority`
+    ///  The autoconnect priority in range -999 to 999. If the connection is set
+    /// to autoconnect, connections with higher priority will be preferred.
+    /// The higher number means higher priority. Defaults to 0.
+    /// Note that this property only matters if there are more than one candidate
+    /// profile to select for autoconnect. In case of equal priority, the profile
+    /// used most recently is chosen.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `autoconnect-retries`
+    ///  The number of times a connection should be tried when autoactivating before
+    /// giving up. Zero means forever, -1 means the global default (4 times if not
+    /// overridden). Setting this to 1 means to try activation only once before
+    /// blocking autoconnect. Note that after a timeout, NetworkManager will try
+    /// to autoconnect again.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `autoconnect-slaves`
+    ///  Whether or not ports of this connection should be automatically brought up
+    /// when NetworkManager activates this connection. This only has a real effect
+    /// for controller connections. The properties #NMSettingConnection:autoconnect,
+    /// #NMSettingConnection:autoconnect-priority and #NMSettingConnection:autoconnect-retries
+    /// are unrelated to this setting.
+    /// The permitted values are: 0: leave port connections untouched,
+    /// 1: activate all the port connections with this connection, -1: default.
+    /// If -1 (default) is set, global connection.autoconnect-slaves is read to
+    /// determine the real value. If it is default as well, this fallbacks to 0.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:autoconnect-ports instead, this is just an alias.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `controller`
+    ///  Interface name of the controller device or UUID of the controller connection.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns-over-tls`
+    ///  Whether DNSOverTls (dns-over-tls) is enabled for the connection.
+    /// DNSOverTls is a technology which uses TLS to encrypt dns traffic.
+    ///
+    /// The permitted values are: "yes" (2) use DNSOverTls and disabled fallback,
+    /// "opportunistic" (1) use DNSOverTls but allow fallback to unencrypted resolution,
+    /// "no" (0) don't ever use DNSOverTls.
+    /// If unspecified "default" depends on the plugin used. Systemd-resolved
+    /// uses global setting.
+    ///
+    /// This feature requires a plugin which supports DNSOverTls. Otherwise, the
+    /// setting has no effect. One such plugin is dns-systemd-resolved.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `down-on-poweroff`
+    ///  Whether the connection will be brought down before the system is powered
+    /// off.  The default value is [`SettingConnectionDownOnPoweroff::Default`][crate::SettingConnectionDownOnPoweroff::Default]. When
+    /// the default value is specified, then the global value from
+    /// NetworkManager configuration is looked up, if not set, it is considered
+    /// as [`SettingConnectionDownOnPoweroff::No`][crate::SettingConnectionDownOnPoweroff::No].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `gateway-ping-timeout`
+    ///  If greater than zero, delay success of IP addressing until either the
+    /// timeout is reached, or an IP gateway replies to a ping.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `id`
+    ///  A human readable unique identifier for the connection, like "Work Wi-Fi"
+    /// or "T-Mobile 3G".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `interface-name`
+    ///  The name of the network interface this connection is bound to. If not
+    /// set, then the connection can be attached to any interface of the
+    /// appropriate type (subject to restrictions imposed by other settings).
+    ///
+    /// For software devices this specifies the name of the created device.
+    ///
+    /// For connection types where interface names cannot easily be made
+    /// persistent (e.g. mobile broadband or USB Ethernet), this property should
+    /// not be used. Setting this property restricts the interfaces a connection
+    /// can be used with, and if interface names change or are reordered the
+    /// connection may be applied to the wrong interface.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ip-ping-addresses`
+    ///  The property specifies a list of target IP addresses for pinging.
+    /// When multiple targets are set, NetworkManager will start multiple ping processes
+    /// in parallel. This property can only be set if connection.ip-ping-timeout is
+    /// set. The ip-ping-timeout is used to delay the success of IP addressing until
+    /// either the specified timeout (in seconds) is reached, or an target IP address replies
+    /// to a ping. Configuring #NMSettingConnection:ip-ping-addresses may delay reaching the
+    /// systemd's network-online.target due to waiting for the ping operations to complete or timeout.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ip-ping-addresses-require-all`
+    ///  The property determines whether it is sufficient for any ping check
+    /// to succeed among #NMSettingConnection:ip-ping-addresses, or if all
+    /// ping checks must succeed for #NMSettingConnection:ip-ping-addresses.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ip-ping-timeout`
+    ///  If greater than zero, delay success of IP addressing until either the specified
+    /// timeout (in seconds) is reached, or a target IP address replies to a ping. The
+    /// property specifies the timeout for the #NMSettingConnection:ip-ping-addresses.
+    /// This property is incompatible with #NMSettingConnection:gateway-ping-timeout,
+    /// you cannot set these two properties at the same time.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `lldp`
+    ///  Whether LLDP is enabled for the connection.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `llmnr`
+    ///  Whether Link-Local Multicast Name Resolution (LLMNR) is enabled
+    /// for the connection. LLMNR is a protocol based on the Domain Name
+    /// System (DNS) packet format that allows both IPv4 and IPv6 hosts
+    /// to perform name resolution for hosts on the same local link.
+    ///
+    /// The permitted values are: "yes" (2) register hostname and resolving
+    /// for the connection, "no" (0) disable LLMNR for the interface, "resolve"
+    /// (1) do not register hostname but allow resolving of LLMNR host names
+    /// If unspecified, "default" ultimately depends on the DNS plugin (which
+    /// for systemd-resolved currently means "yes").
+    ///
+    /// This feature requires a plugin which supports LLMNR. Otherwise, the
+    /// setting has no effect. One such plugin is dns-systemd-resolved.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `master`
+    ///  Interface name of the controller device or UUID of the controller connection.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:controller instead, this is just an alias.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mdns`
+    ///  Whether mDNS is enabled for the connection.
+    ///
+    /// The permitted values are: "yes" (2) register hostname and resolving
+    /// for the connection, "no" (0) disable mDNS for the interface, "resolve"
+    /// (1) do not register hostname but allow resolving of mDNS host names
+    /// and "default" (-1) to allow lookup of a global default in NetworkManager.conf.
+    /// If unspecified, "default" ultimately depends on the DNS plugin.
+    ///
+    /// This feature requires a plugin which supports mDNS. Otherwise, the
+    /// setting has no effect. Currently the only supported DNS plugin is
+    /// systemd-resolved. For systemd-resolved, the default is configurable via
+    /// MulticastDNS= setting in resolved.conf.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `metered`
+    ///  Whether the connection is metered.
+    ///
+    /// When updating this property on a currently activated connection,
+    /// the change takes effect immediately.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mptcp-flags`
+    ///  Whether to configure MPTCP endpoints and the address flags.
+    /// If MPTCP is enabled in NetworkManager, it will configure the
+    /// addresses of the interface as MPTCP endpoints. Note that
+    /// IPv4 loopback addresses (127.0.0.0/8), IPv4 link local
+    /// addresses (169.254.0.0/16), the IPv6 loopback address (::1),
+    /// IPv6 link local addresses (fe80::/10), IPv6 unique
+    /// local addresses (ULA, fc00::/7) and IPv6 privacy extension addresses
+    /// (rfc3041, ipv6.ip6-privacy) will be excluded from being
+    /// configured as endpoints.
+    ///
+    /// If "disabled" (0x1), MPTCP handling for the interface is disabled and
+    /// no endpoints are registered.
+    ///
+    /// The "enabled" (0x2) flag means that MPTCP handling is enabled.
+    /// This flag can also be implied from the presence of other flags.
+    ///
+    /// Even when enabled, MPTCP handling will by default still be disabled
+    /// unless "/proc/sys/net/mptcp/enabled" sysctl is on. NetworkManager
+    /// does not change the sysctl and this is up to the administrator
+    /// or distribution. To configure endpoints even if the sysctl is
+    /// disabled, "also-without-sysctl" (0x4) flag can be used. In that case,
+    /// NetworkManager doesn't look at the sysctl and configures endpoints
+    /// regardless.
+    ///
+    /// Even when enabled, NetworkManager will only configure MPTCP endpoints
+    /// for a certain address family, if there is a unicast default route (0.0.0.0/0
+    /// or ::/0) in the main routing table. The flag "also-without-default-route"
+    /// (0x8) can override that.
+    ///
+    /// When MPTCP handling is enabled then endpoints are configured with
+    /// the specified address flags "signal" (0x10), "subflow" (0x20), "backup" (0x40),
+    /// "fullmesh" (0x80). See ip-mptcp(8) manual for additional information about the flags.
+    ///
+    /// If the flags are zero (0x0), the global connection default from NetworkManager.conf is
+    /// honored. If still unspecified, the fallback is "enabled,subflow".
+    /// Note that this means that MPTCP is by default done depending on the
+    /// "/proc/sys/net/mptcp/enabled" sysctl.
+    ///
+    /// NetworkManager does not change the MPTCP limits nor enable MPTCP via
+    /// "/proc/sys/net/mptcp/enabled". That is a host configuration which the
+    /// admin can change via sysctl and ip-mptcp.
+    ///
+    /// Strict reverse path filtering (rp_filter) breaks many MPTCP use cases, so when
+    /// MPTCP handling for IPv4 addresses on the interface is enabled, NetworkManager would
+    /// loosen the strict reverse path filtering (1) to the loose setting (2).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mud-url`
+    ///  If configured, set to a Manufacturer Usage Description (MUD) URL that points
+    /// to manufacturer-recommended network policies for IoT devices. It is transmitted
+    /// as a DHCPv4 or DHCPv6 option. The value must be a valid URL starting with "https://".
+    ///
+    /// The special value "none" is allowed to indicate that no MUD URL is used.
+    ///
+    /// If the per-profile value is unspecified (the default), a global connection default gets
+    /// consulted. If still unspecified, the ultimate default is "none".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `multi-connect`
+    ///  Specifies whether the profile can be active multiple times at a particular
+    /// moment. The value is of type #NMConnectionMultiConnect.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `permissions`
+    ///  An array of strings defining what access a given user has to this
+    /// connection.  If this is [`None`] or empty, all users are allowed to access
+    /// this connection; otherwise users are allowed if and only if they are in
+    /// this list.  When this is not empty, the connection can be active only when
+    /// one of the specified users is logged into an active session.  Each entry
+    /// is of the form "[type]:[id]:[reserved]"; for example, "user:dcbw:blah".
+    ///
+    /// At this time only the "user" [type] is allowed.  Any other values are
+    /// ignored and reserved for future use.  [id] is the username that this
+    /// permission refers to, which may not contain the ":" character. Any
+    /// [reserved] information present must be ignored and is reserved for future
+    /// use.  All of [type], [id], and [reserved] must be valid UTF-8.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `port-type`
+    ///  Setting name of the device type of this port's controller connection (eg,
+    /// [`SETTING_BOND_SETTING_NAME`][crate::SETTING_BOND_SETTING_NAME]), or [`None`] if this connection is not a
+    /// port.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `read-only`
+    ///  This property is deprecated and has no meaning.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `secondaries`
+    ///  List of connection UUIDs that should be activated when the base
+    /// connection itself is activated. Currently, only VPN connections are
+    /// supported.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `slave-type`
+    ///  Setting name of the device type of this port's controller connection (eg,
+    /// [`SETTING_BOND_SETTING_NAME`][crate::SETTING_BOND_SETTING_NAME]), or [`None`] if this connection is not a
+    /// port.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:port-type instead, this is just an alias.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `stable-id`
+    ///  This represents the identity of the connection used for various purposes.
+    /// It allows configuring multiple profiles to share the identity. Also,
+    /// the stable-id can contain placeholders that are substituted dynamically and
+    /// deterministically depending on the context.
+    ///
+    /// The stable-id is used for generating IPv6 stable private addresses with
+    /// ipv6.addr-gen-mode=stable-privacy. It is also used to seed the generated
+    /// cloned MAC address for ethernet.cloned-mac-address=stable and
+    /// wifi.cloned-mac-address=stable. It is also used to derive the DHCP
+    /// client identifier with ipv4.dhcp-client-id=stable, the DHCPv6 DUID with
+    /// ipv6.dhcp-duid=stable-[llt,ll,uuid] and the DHCP IAID with
+    /// ipv4.iaid=stable and ipv6.iaid=stable.
+    ///
+    /// Note that depending on the context where it is used, other parameters are
+    /// also seeded into the generation algorithm. For example, a per-host key
+    /// is commonly also included, so that different systems end up generating
+    /// different IDs. Or with ipv6.addr-gen-mode=stable-privacy, also the device's
+    /// name is included, so that different interfaces yield different addresses.
+    /// The per-host key is the identity of your machine and stored in /var/lib/NetworkManager/secret_key.
+    /// See NetworkManager(8) manual about the secret-key and the host identity.
+    ///
+    /// The '$' character is treated special to perform dynamic substitutions at
+    /// activation time. Currently, supported are "${CONNECTION}", "${DEVICE}",
+    /// "${MAC}", "${NETWORK_SSID}", "${BOOT}", "${RANDOM}".  These effectively
+    /// create unique IDs per-connection, per-device, per-SSID, per-boot, or
+    /// every time.  The "${CONNECTION}" uses the profile's connection.uuid, the
+    /// "${DEVICE}" uses the interface name of the device and "${MAC}" the
+    /// permanent MAC address of the device. "${NETWORK_SSID}" uses the SSID for
+    /// Wi-Fi networks and falls back to "${CONNECTION}" on other networks. Any
+    /// unrecognized patterns following '$' are treated verbatim, however are
+    /// reserved for future use. You are thus advised to avoid '$' or escape it
+    /// as "$$".  For example, set it to "${CONNECTION}-${BOOT}-${DEVICE}" to
+    /// create a unique id for this connection that changes with every reboot
+    /// and differs depending on the interface where the profile activates.
+    ///
+    /// If the value is unset, a global connection default is consulted. If the
+    /// value is still unset, the default is "default${CONNECTION}" go generate
+    /// an ID unique per connection profile.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `timestamp`
+    ///  The time, in seconds since the Unix Epoch, that the connection was last
+    /// _successfully_ fully activated.
+    ///
+    /// NetworkManager updates the connection timestamp periodically when the
+    /// connection is active to ensure that an active connection has the latest
+    /// timestamp. The property is only meant for reading (changes to this
+    /// property will not be preserved).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `type`
+    ///  Base type of the connection. For hardware-dependent connections, should
+    /// contain the setting name of the hardware-type specific setting (ie,
+    /// "802-3-ethernet" or "802-11-wireless" or "bluetooth", etc), and for
+    /// non-hardware dependent connections like VPN or otherwise, should contain
+    /// the setting name of that setting type (ie, "vpn" or "bridge", etc).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `uuid`
+    ///  A universally unique identifier for the connection, for example generated
+    /// with libuuid.  It should be assigned when the connection is created, and
+    /// never changed as long as the connection still applies to the same
+    /// network.  For example, it should not be changed when the
+    /// #NMSettingConnection:id property or #NMSettingIP4Config changes, but
+    /// might need to be re-created when the Wi-Fi SSID, mobile broadband network
+    /// provider, or #NMSettingConnection:type property changes.
+    ///
+    /// The UUID must be in the format "2815492f-7e56-435e-b2e9-246bd7cdc664"
+    /// (ie, contains only hexadecimal characters and "-").  A suitable UUID may
+    /// be generated by nm_utils_uuid_generate() or
+    /// nm_uuid_generate_from_string_str().
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `wait-activation-delay`
+    ///  Time in milliseconds to wait for connection to be considered activated.
+    /// The wait will start after the pre-up dispatcher event.
+    ///
+    /// The value 0 means no wait time. The default value is -1, which
+    /// currently has the same meaning as no wait time.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `wait-device-timeout`
+    ///  Timeout in milliseconds to wait for device at startup.
+    /// During boot, devices may take a while to be detected by the driver.
+    /// This property will cause to delay NetworkManager-wait-online.service
+    /// and nm-online to give the device a chance to appear. This works by
+    /// waiting for the given timeout until a compatible device for the
+    /// profile is available and managed.
+    ///
+    /// The value 0 means no wait time. The default value is -1, which
+    /// currently has the same meaning as no wait time.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `zone`
+    ///  The trust level of a the connection.  Free form case-insensitive string
+    /// (for example "Home", "Work", "Public").  [`None`] or unspecified zone means
+    /// the connection will be placed in the default zone as defined by the
+    /// firewall.
+    ///
+    /// When updating this property on a currently activated connection,
+    /// the change takes effect immediately.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingConnection")]
     pub struct SettingConnection(Object<ffi::NMSettingConnection, ffi::NMSettingConnectionClass>) @extends Setting;
 
@@ -43,6 +534,11 @@ glib::wrapper! {
 }
 
 impl SettingConnection {
+    /// Creates a new #NMSettingConnection object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingConnection object
     #[doc(alias = "nm_setting_connection_new")]
     pub fn new() -> SettingConnection {
         assert_initialized_main_thread!();
@@ -57,6 +553,14 @@ impl SettingConnection {
         SettingConnectionBuilder::new()
     }
 
+    /// Adds a new IP address string to the ip-ping-addresses.
+    /// ## `address`
+    /// the IP address string to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the new IP address was added; [`false`] if the IP address
+    /// was already present
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_connection_add_ip_ping_address")]
@@ -69,6 +573,23 @@ impl SettingConnection {
         }
     }
 
+    /// Adds a permission to the connection's permission list.  At this time, only
+    /// the "user" permission type is supported, and @pitem must be a username. See
+    /// #NMSettingConnection:permissions: for more details.
+    /// ## `ptype`
+    /// the permission type; at this time only "user" is supported
+    /// ## `pitem`
+    /// the permission item formatted as required for @ptype
+    /// ## `detail`
+    /// unused at this time; must be [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the permission was unique and was successfully added to the
+    /// list, [`false`] if @ptype or @pitem was invalid.
+    /// If the permission was already present in the list, it will not be added
+    /// a second time but [`true`] will be returned. Note that before 1.28, in this
+    /// case [`false`] would be returned.
     #[doc(alias = "nm_setting_connection_add_permission")]
     pub fn add_permission(&self, ptype: &str, pitem: &str, detail: Option<&str>) -> bool {
         unsafe {
@@ -81,6 +602,14 @@ impl SettingConnection {
         }
     }
 
+    /// Adds a new secondary connection UUID to the setting.
+    /// ## `sec_uuid`
+    /// the secondary connection UUID to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the secondary connection UUID was added; [`false`] if the UUID
+    /// was already present
     #[doc(alias = "nm_setting_connection_add_secondary")]
     pub fn add_secondary(&self, sec_uuid: &str) -> bool {
         unsafe {
@@ -91,6 +620,7 @@ impl SettingConnection {
         }
     }
 
+    /// Removes all configured ip-ping-addresses.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_connection_clear_ip_ping_addresses")]
@@ -100,6 +630,12 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the value contained in the #NMSettingConnection:auth-retries property.
+    ///
+    /// # Returns
+    ///
+    /// the configured authentication retries. Zero means
+    /// infinity and -1 means a global default value.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_connection_get_auth_retries")]
@@ -109,6 +645,11 @@ impl SettingConnection {
         unsafe { ffi::nm_setting_connection_get_auth_retries(self.to_glib_none().0) }
     }
 
+    /// Returns the #NMSettingConnection:autoconnect property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the connection's autoconnect behavior
     #[doc(alias = "nm_setting_connection_get_autoconnect")]
     #[doc(alias = "get_autoconnect")]
     #[doc(alias = "autoconnect")]
@@ -120,6 +661,12 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:autoconnect-ports property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// whether ports of the connection should be activated together
+    ///          with the connection.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_connection_get_autoconnect_ports")]
@@ -133,6 +680,12 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:autoconnect-priority property of the connection.
+    /// The higher number, the higher priority.
+    ///
+    /// # Returns
+    ///
+    /// the connection's autoconnect priority
     #[doc(alias = "nm_setting_connection_get_autoconnect_priority")]
     #[doc(alias = "get_autoconnect_priority")]
     #[doc(alias = "autoconnect-priority")]
@@ -140,6 +693,12 @@ impl SettingConnection {
         unsafe { ffi::nm_setting_connection_get_autoconnect_priority(self.to_glib_none().0) }
     }
 
+    /// Returns the #NMSettingConnection:autoconnect-retries property of the connection.
+    /// Zero means infinite, -1 means the global default value.
+    ///
+    /// # Returns
+    ///
+    /// the connection's autoconnect retries
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "nm_setting_connection_get_autoconnect_retries")]
@@ -149,6 +708,17 @@ impl SettingConnection {
         unsafe { ffi::nm_setting_connection_get_autoconnect_retries(self.to_glib_none().0) }
     }
 
+    /// Returns the #NMSettingConnection:autoconnect-slaves property of the connection.
+    ///
+    /// # Deprecated since 1.46
+    ///
+    /// Use nm_setting_connection_get_autoconnect_ports() instead, this
+    /// is just an alias.
+    ///
+    /// # Returns
+    ///
+    /// whether ports of the connection should be activated together
+    ///          with the connection.
     #[cfg_attr(feature = "v1_46", deprecated = "Since 1.46")]
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -164,6 +734,11 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:type property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the connection type
     #[doc(alias = "nm_setting_connection_get_connection_type")]
     #[doc(alias = "get_connection_type")]
     pub fn connection_type(&self) -> glib::GString {
@@ -174,6 +749,12 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:controller property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// interface name of the controller device or UUID of the controller
+    /// connection.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_connection_get_controller")]
@@ -186,6 +767,10 @@ impl SettingConnection {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingConnection:dns-over-tls property of the setting.
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "nm_setting_connection_get_dns_over_tls")]
@@ -199,6 +784,12 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the [`SETTING_CONNECTION_DOWN_ON_POWEROFF`][crate::SETTING_CONNECTION_DOWN_ON_POWEROFF] property.
+    ///
+    /// # Returns
+    ///
+    /// whether the connection will be brought down before the system
+    /// is powered off.
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_connection_get_down_on_poweroff")]
@@ -212,6 +803,11 @@ impl SettingConnection {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the value contained in the #NMSettingConnection:gateway-ping-timeout
+    /// property.
     #[doc(alias = "nm_setting_connection_get_gateway_ping_timeout")]
     #[doc(alias = "get_gateway_ping_timeout")]
     #[doc(alias = "gateway-ping-timeout")]
@@ -219,12 +815,22 @@ impl SettingConnection {
         unsafe { ffi::nm_setting_connection_get_gateway_ping_timeout(self.to_glib_none().0) }
     }
 
+    /// Returns the #NMSettingConnection:id property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the connection ID
     #[doc(alias = "nm_setting_connection_get_id")]
     #[doc(alias = "get_id")]
     pub fn id(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_connection_get_id(self.to_glib_none().0)) }
     }
 
+    /// Returns the #NMSettingConnection:interface-name property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the connection's interface name
     #[doc(alias = "nm_setting_connection_get_interface_name")]
     #[doc(alias = "get_interface_name")]
     #[doc(alias = "interface-name")]
@@ -236,6 +842,13 @@ impl SettingConnection {
         }
     }
 
+    /// ## `idx`
+    /// the zero-based index of the ip-ping-addresses entry.
+    ///
+    /// # Returns
+    ///
+    /// the ip address string at index @idx or
+    ///   [`None`] if @idx is the number of ip-ping-addresses.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_connection_get_ip_ping_address")]
@@ -249,6 +862,11 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:ip-ping-addresses-require-all property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// whether all the ip ping addresses pass the connectivity check.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_connection_get_ip_ping_addresses_require_all")]
@@ -262,6 +880,11 @@ impl SettingConnection {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the value contained in the #NMSettingConnection:ip-ping-timeout
+    /// property.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_connection_get_ip_ping_timeout")]
@@ -271,6 +894,12 @@ impl SettingConnection {
         unsafe { ffi::nm_setting_connection_get_ip_ping_timeout(self.to_glib_none().0) }
     }
 
+    /// Returns the #NMSettingConnection:lldp property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// a `NMSettingConnectionLldp` which indicates whether LLDP must be
+    /// enabled for the connection.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_connection_get_lldp")]
@@ -279,6 +908,10 @@ impl SettingConnection {
         unsafe { from_glib(ffi::nm_setting_connection_get_lldp(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingConnection:llmnr property of the setting.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_setting_connection_get_llmnr")]
@@ -287,6 +920,17 @@ impl SettingConnection {
         unsafe { from_glib(ffi::nm_setting_connection_get_llmnr(self.to_glib_none().0)) }
     }
 
+    /// Returns the #NMSettingConnection:master property of the connection.
+    ///
+    /// # Deprecated since 1.46
+    ///
+    /// Use nm_setting_connection_get_master() instead which
+    /// is just an alias.
+    ///
+    /// # Returns
+    ///
+    /// interface name of the controller device or UUID of the controller
+    /// connection.
     #[cfg_attr(feature = "v1_46", deprecated = "Since 1.46")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_connection_get_master")]
@@ -295,6 +939,10 @@ impl SettingConnection {
         unsafe { from_glib_none(ffi::nm_setting_connection_get_master(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingConnection:mdns property of the setting.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_connection_get_mdns")]
@@ -303,6 +951,10 @@ impl SettingConnection {
         unsafe { from_glib(ffi::nm_setting_connection_get_mdns(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingConnection:metered property of the setting.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_connection_get_metered")]
@@ -315,6 +967,10 @@ impl SettingConnection {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingConnection:mptcp-flags property of the setting.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_connection_get_mptcp_flags")]
@@ -328,6 +984,8 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the value contained in the #NMSettingConnection:mud-url
+    /// property.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_connection_get_mud_url")]
@@ -341,6 +999,10 @@ impl SettingConnection {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingConnection:multi-connect property of the connection.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "nm_setting_connection_get_multi_connect")]
@@ -354,18 +1016,44 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the number of entries in the #NMSettingConnection:permissions
+    /// property of this setting.
+    ///
+    /// # Returns
+    ///
+    /// the number of permissions entries
     #[doc(alias = "nm_setting_connection_get_num_permissions")]
     #[doc(alias = "get_num_permissions")]
     pub fn num_permissions(&self) -> u32 {
         unsafe { ffi::nm_setting_connection_get_num_permissions(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured secondary connection UUIDs
     #[doc(alias = "nm_setting_connection_get_num_secondaries")]
     #[doc(alias = "get_num_secondaries")]
     pub fn num_secondaries(&self) -> u32 {
         unsafe { ffi::nm_setting_connection_get_num_secondaries(self.to_glib_none().0) }
     }
 
+    /// Retrieve one of the entries of the #NMSettingConnection:permissions property
+    /// of this setting.
+    /// ## `idx`
+    /// the zero-based index of the permissions entry
+    /// ## `out_ptype`
+    /// on return, the permission type. This is currently always "user",
+    ///   unless the entry is invalid, in which case it returns "invalid".
+    /// ## `out_pitem`
+    /// on return, the permission item (formatted according to @ptype, see
+    /// #NMSettingConnection:permissions for more detail
+    /// ## `out_detail`
+    /// on return, the permission detail (at this time, always [`None`])
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if a permission was returned, [`false`] if @idx was invalid
     #[doc(alias = "nm_setting_connection_get_permission")]
     #[doc(alias = "get_permission")]
     pub fn is_permission(
@@ -386,6 +1074,11 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:port-type property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the type of port this connection is, if any.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_connection_get_port_type")]
@@ -399,6 +1092,15 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:read-only property of the connection.
+    ///
+    /// # Deprecated since 1.44
+    ///
+    /// This property is deprecated and has no meaning.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the connection is read-only, [`false`] if it is not
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_connection_get_read_only")]
@@ -412,6 +1114,15 @@ impl SettingConnection {
         }
     }
 
+    /// ## `idx`
+    /// the zero-based index of the secondary connection UUID entry.
+    ///   Access one past the length of secondaries is ok and will return
+    ///   [`None`]. Otherwise, it is a user error.
+    ///
+    /// # Returns
+    ///
+    /// the secondary connection UUID at index @idx or
+    ///   [`None`] if @idx is the number of secondaries.
     #[doc(alias = "nm_setting_connection_get_secondary")]
     #[doc(alias = "get_secondary")]
     pub fn secondary(&self, idx: u32) -> glib::GString {
@@ -423,6 +1134,16 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:slave-type property of the connection.
+    ///
+    /// # Deprecated since 1.46
+    ///
+    /// Use nm_setting_connection_get_port_type() instead which
+    /// is just an alias.
+    ///
+    /// # Returns
+    ///
+    /// the type of port this connection is, if any
     #[cfg_attr(feature = "v1_46", deprecated = "Since 1.46")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_connection_get_slave_type")]
@@ -436,6 +1157,11 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:stable_id property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the stable-id for the connection
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_setting_connection_get_stable_id")]
@@ -449,18 +1175,33 @@ impl SettingConnection {
         }
     }
 
+    /// Returns the #NMSettingConnection:timestamp property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the connection's timestamp
     #[doc(alias = "nm_setting_connection_get_timestamp")]
     #[doc(alias = "get_timestamp")]
     pub fn timestamp(&self) -> u64 {
         unsafe { ffi::nm_setting_connection_get_timestamp(self.to_glib_none().0) }
     }
 
+    /// Returns the #NMSettingConnection:uuid property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the connection UUID
     #[doc(alias = "nm_setting_connection_get_uuid")]
     #[doc(alias = "get_uuid")]
     pub fn uuid(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_connection_get_uuid(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the [`SETTING_CONNECTION_WAIT_ACTIVATION_DELAY`][crate::SETTING_CONNECTION_WAIT_ACTIVATION_DELAY] property with
+    ///   the delay in milliseconds. -1 is the default.
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     #[doc(alias = "nm_setting_connection_get_wait_activation_delay")]
@@ -470,6 +1211,11 @@ impl SettingConnection {
         unsafe { ffi::nm_setting_connection_get_wait_activation_delay(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the [`SETTING_CONNECTION_WAIT_DEVICE_TIMEOUT`][crate::SETTING_CONNECTION_WAIT_DEVICE_TIMEOUT] property with
+    ///   the timeout in milliseconds. -1 is the default.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_setting_connection_get_wait_device_timeout")]
@@ -479,12 +1225,27 @@ impl SettingConnection {
         unsafe { ffi::nm_setting_connection_get_wait_device_timeout(self.to_glib_none().0) }
     }
 
+    /// Returns the #NMSettingConnection:zone property of the connection.
+    ///
+    /// # Returns
+    ///
+    /// the trust level of a connection
     #[doc(alias = "nm_setting_connection_get_zone")]
     #[doc(alias = "get_zone")]
     pub fn zone(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_setting_connection_get_zone(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Deprecated since 1.46
+    ///
+    /// ## `type_`
+    /// the setting name (ie #NM_SETTING_BOND_SETTING_NAME) to be matched
+    /// against @self's port type
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if connection is of the given port @type_
     #[cfg_attr(feature = "v1_46", deprecated = "Since 1.46")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_connection_is_slave_type")]
@@ -497,6 +1258,14 @@ impl SettingConnection {
         }
     }
 
+    /// Checks whether the given username is allowed to view/access this connection.
+    /// ## `uname`
+    /// the user name to check permissions for
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the requested user is allowed to view this connection,
+    /// [`false`] if the given user is not allowed to view this connection
     #[doc(alias = "nm_setting_connection_permissions_user_allowed")]
     pub fn permissions_user_allowed(&self, uname: &str) -> bool {
         unsafe {
@@ -507,6 +1276,9 @@ impl SettingConnection {
         }
     }
 
+    /// Removes the IP address at index @idx.
+    /// ## `idx`
+    /// index number of the IP address
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_connection_remove_ip_ping_address")]
@@ -516,6 +1288,13 @@ impl SettingConnection {
         }
     }
 
+    /// Removes the IP address @address from ip-ping-addresses.
+    /// ## `address`
+    /// the IP address to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the IP address was found and removed; [`false`] if it was not.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_connection_remove_ip_ping_address_by_value")]
@@ -528,6 +1307,9 @@ impl SettingConnection {
         }
     }
 
+    /// Removes the permission at index @idx from the connection.
+    /// ## `idx`
+    /// the zero-based index of the permission to remove
     #[doc(alias = "nm_setting_connection_remove_permission")]
     pub fn remove_permission(&self, idx: u32) {
         unsafe {
@@ -535,6 +1317,19 @@ impl SettingConnection {
         }
     }
 
+    /// Removes the permission from the connection.
+    /// At this time, only the "user" permission type is supported, and @pitem must
+    /// be a username. See #NMSettingConnection:permissions: for more details.
+    /// ## `ptype`
+    /// the permission type; at this time only "user" is supported
+    /// ## `pitem`
+    /// the permission item formatted as required for @ptype
+    /// ## `detail`
+    /// unused at this time; must be [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the permission was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_connection_remove_permission_by_value")]
     pub fn remove_permission_by_value(
         &self,
@@ -552,6 +1347,9 @@ impl SettingConnection {
         }
     }
 
+    /// Removes the secondary connection UUID at index @idx.
+    /// ## `idx`
+    /// index number of the secondary connection UUID
     #[doc(alias = "nm_setting_connection_remove_secondary")]
     pub fn remove_secondary(&self, idx: u32) {
         unsafe {
@@ -559,6 +1357,13 @@ impl SettingConnection {
         }
     }
 
+    /// Removes the secondary connection UUID @sec_uuid.
+    /// ## `sec_uuid`
+    /// the secondary connection UUID to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the secondary connection UUID was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_connection_remove_secondary_by_value")]
     pub fn remove_secondary_by_value(&self, sec_uuid: &str) -> bool {
         unsafe {
@@ -569,6 +1374,11 @@ impl SettingConnection {
         }
     }
 
+    /// The number of retries for the authentication. Zero means to try indefinitely; -1 means
+    /// to use a global default. If the global default is not set, the authentication
+    /// retries for 3 times before failing the connection.
+    ///
+    /// Currently, this only applies to 802-1x authentication.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "auth-retries")]
@@ -576,10 +1386,40 @@ impl SettingConnection {
         ObjectExt::set_property(self, "auth-retries", auth_retries)
     }
 
+    /// Whether or not the connection should be automatically connected by
+    /// NetworkManager when the resources for the connection are available.
+    /// [`true`] to automatically activate the connection, [`false`] to require manual
+    /// intervention to activate the connection.
+    ///
+    /// Autoconnect happens when the circumstances are suitable. That means for
+    /// example that the device is currently managed and not active. Autoconnect
+    /// thus never replaces or competes with an already active profile.
+    ///
+    /// Note that autoconnect is not implemented for VPN profiles. See
+    /// #NMSettingConnection:secondaries as an alternative to automatically
+    /// connect VPN profiles.
+    ///
+    /// If multiple profiles are ready to autoconnect on the same device,
+    /// the one with the better "connection.autoconnect-priority" is chosen. If
+    /// the priorities are equal, then the most recently connected profile is activated.
+    /// If the profiles were not connected earlier or their
+    /// "connection.timestamp" is identical, the choice is undefined.
+    ///
+    /// Depending on "connection.multi-connect", a profile can (auto)connect only
+    /// once at a time or multiple times.
     pub fn set_autoconnect(&self, autoconnect: bool) {
         ObjectExt::set_property(self, "autoconnect", autoconnect)
     }
 
+    /// Whether or not ports of this connection should be automatically brought up
+    /// when NetworkManager activates this connection. This only has a real effect
+    /// for controller connections. The properties #NMSettingConnection:autoconnect,
+    /// #NMSettingConnection:autoconnect-priority and #NMSettingConnection:autoconnect-retries
+    /// are unrelated to this setting.
+    /// The permitted values are: 0: leave port connections untouched,
+    /// 1: activate all the port connections with this connection, -1: default.
+    /// If -1 (default) is set, global connection.autoconnect-ports is read to
+    /// determine the real value. If it is default as well, this fallbacks to 0.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "autoconnect-ports")]
@@ -587,6 +1427,12 @@ impl SettingConnection {
         ObjectExt::set_property(self, "autoconnect-ports", autoconnect_ports)
     }
 
+    /// The autoconnect priority in range -999 to 999. If the connection is set
+    /// to autoconnect, connections with higher priority will be preferred.
+    /// The higher number means higher priority. Defaults to 0.
+    /// Note that this property only matters if there are more than one candidate
+    /// profile to select for autoconnect. In case of equal priority, the profile
+    /// used most recently is chosen.
     #[doc(alias = "autoconnect-priority")]
     pub fn set_autoconnect_priority(&self, autoconnect_priority: i32) {
         ObjectExt::set_property(self, "autoconnect-priority", autoconnect_priority)
@@ -599,11 +1445,27 @@ impl SettingConnection {
         ObjectExt::property(self, "autoconnect-retries")
     }
 
+    /// The number of times a connection should be tried when autoactivating before
+    /// giving up. Zero means forever, -1 means the global default (4 times if not
+    /// overridden). Setting this to 1 means to try activation only once before
+    /// blocking autoconnect. Note that after a timeout, NetworkManager will try
+    /// to autoconnect again.
     #[doc(alias = "autoconnect-retries")]
     pub fn set_autoconnect_retries(&self, autoconnect_retries: i32) {
         ObjectExt::set_property(self, "autoconnect-retries", autoconnect_retries)
     }
 
+    /// Whether or not ports of this connection should be automatically brought up
+    /// when NetworkManager activates this connection. This only has a real effect
+    /// for controller connections. The properties #NMSettingConnection:autoconnect,
+    /// #NMSettingConnection:autoconnect-priority and #NMSettingConnection:autoconnect-retries
+    /// are unrelated to this setting.
+    /// The permitted values are: 0: leave port connections untouched,
+    /// 1: activate all the port connections with this connection, -1: default.
+    /// If -1 (default) is set, global connection.autoconnect-slaves is read to
+    /// determine the real value. If it is default as well, this fallbacks to 0.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:autoconnect-ports instead, this is just an alias.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "autoconnect-slaves")]
@@ -617,10 +1479,22 @@ impl SettingConnection {
         ObjectExt::property(self, "controller")
     }
 
+    /// Interface name of the controller device or UUID of the controller connection.
     pub fn set_controller(&self, controller: Option<&str>) {
         ObjectExt::set_property(self, "controller", controller)
     }
 
+    /// Whether DNSOverTls (dns-over-tls) is enabled for the connection.
+    /// DNSOverTls is a technology which uses TLS to encrypt dns traffic.
+    ///
+    /// The permitted values are: "yes" (2) use DNSOverTls and disabled fallback,
+    /// "opportunistic" (1) use DNSOverTls but allow fallback to unencrypted resolution,
+    /// "no" (0) don't ever use DNSOverTls.
+    /// If unspecified "default" depends on the plugin used. Systemd-resolved
+    /// uses global setting.
+    ///
+    /// This feature requires a plugin which supports DNSOverTls. Otherwise, the
+    /// setting has no effect. One such plugin is dns-systemd-resolved.
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "dns-over-tls")]
@@ -628,6 +1502,11 @@ impl SettingConnection {
         ObjectExt::set_property(self, "dns-over-tls", dns_over_tls)
     }
 
+    /// Whether the connection will be brought down before the system is powered
+    /// off.  The default value is [`SettingConnectionDownOnPoweroff::Default`][crate::SettingConnectionDownOnPoweroff::Default]. When
+    /// the default value is specified, then the global value from
+    /// NetworkManager configuration is looked up, if not set, it is considered
+    /// as [`SettingConnectionDownOnPoweroff::No`][crate::SettingConnectionDownOnPoweroff::No].
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "down-on-poweroff")]
@@ -635,20 +1514,42 @@ impl SettingConnection {
         ObjectExt::set_property(self, "down-on-poweroff", down_on_poweroff)
     }
 
+    /// If greater than zero, delay success of IP addressing until either the
+    /// timeout is reached, or an IP gateway replies to a ping.
     #[doc(alias = "gateway-ping-timeout")]
     pub fn set_gateway_ping_timeout(&self, gateway_ping_timeout: u32) {
         ObjectExt::set_property(self, "gateway-ping-timeout", gateway_ping_timeout)
     }
 
+    /// A human readable unique identifier for the connection, like "Work Wi-Fi"
+    /// or "T-Mobile 3G".
     pub fn set_id(&self, id: Option<&str>) {
         ObjectExt::set_property(self, "id", id)
     }
 
+    /// The name of the network interface this connection is bound to. If not
+    /// set, then the connection can be attached to any interface of the
+    /// appropriate type (subject to restrictions imposed by other settings).
+    ///
+    /// For software devices this specifies the name of the created device.
+    ///
+    /// For connection types where interface names cannot easily be made
+    /// persistent (e.g. mobile broadband or USB Ethernet), this property should
+    /// not be used. Setting this property restricts the interfaces a connection
+    /// can be used with, and if interface names change or are reordered the
+    /// connection may be applied to the wrong interface.
     #[doc(alias = "interface-name")]
     pub fn set_interface_name(&self, interface_name: Option<&str>) {
         ObjectExt::set_property(self, "interface-name", interface_name)
     }
 
+    /// The property specifies a list of target IP addresses for pinging.
+    /// When multiple targets are set, NetworkManager will start multiple ping processes
+    /// in parallel. This property can only be set if connection.ip-ping-timeout is
+    /// set. The ip-ping-timeout is used to delay the success of IP addressing until
+    /// either the specified timeout (in seconds) is reached, or an target IP address replies
+    /// to a ping. Configuring #NMSettingConnection:ip-ping-addresses may delay reaching the
+    /// systemd's network-online.target due to waiting for the ping operations to complete or timeout.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "ip-ping-addresses")]
@@ -656,6 +1557,13 @@ impl SettingConnection {
         ObjectExt::property(self, "ip-ping-addresses")
     }
 
+    /// The property specifies a list of target IP addresses for pinging.
+    /// When multiple targets are set, NetworkManager will start multiple ping processes
+    /// in parallel. This property can only be set if connection.ip-ping-timeout is
+    /// set. The ip-ping-timeout is used to delay the success of IP addressing until
+    /// either the specified timeout (in seconds) is reached, or an target IP address replies
+    /// to a ping. Configuring #NMSettingConnection:ip-ping-addresses may delay reaching the
+    /// systemd's network-online.target due to waiting for the ping operations to complete or timeout.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "ip-ping-addresses")]
@@ -663,6 +1571,9 @@ impl SettingConnection {
         ObjectExt::set_property(self, "ip-ping-addresses", ip_ping_addresses)
     }
 
+    /// The property determines whether it is sufficient for any ping check
+    /// to succeed among #NMSettingConnection:ip-ping-addresses, or if all
+    /// ping checks must succeed for #NMSettingConnection:ip-ping-addresses.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "ip-ping-addresses-require-all")]
@@ -674,6 +1585,11 @@ impl SettingConnection {
         )
     }
 
+    /// If greater than zero, delay success of IP addressing until either the specified
+    /// timeout (in seconds) is reached, or a target IP address replies to a ping. The
+    /// property specifies the timeout for the #NMSettingConnection:ip-ping-addresses.
+    /// This property is incompatible with #NMSettingConnection:gateway-ping-timeout,
+    /// you cannot set these two properties at the same time.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "ip-ping-timeout")]
@@ -681,28 +1597,61 @@ impl SettingConnection {
         ObjectExt::set_property(self, "ip-ping-timeout", ip_ping_timeout)
     }
 
+    /// Whether LLDP is enabled for the connection.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_lldp(&self, lldp: i32) {
         ObjectExt::set_property(self, "lldp", lldp)
     }
 
+    /// Whether Link-Local Multicast Name Resolution (LLMNR) is enabled
+    /// for the connection. LLMNR is a protocol based on the Domain Name
+    /// System (DNS) packet format that allows both IPv4 and IPv6 hosts
+    /// to perform name resolution for hosts on the same local link.
+    ///
+    /// The permitted values are: "yes" (2) register hostname and resolving
+    /// for the connection, "no" (0) disable LLMNR for the interface, "resolve"
+    /// (1) do not register hostname but allow resolving of LLMNR host names
+    /// If unspecified, "default" ultimately depends on the DNS plugin (which
+    /// for systemd-resolved currently means "yes").
+    ///
+    /// This feature requires a plugin which supports LLMNR. Otherwise, the
+    /// setting has no effect. One such plugin is dns-systemd-resolved.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn set_llmnr(&self, llmnr: i32) {
         ObjectExt::set_property(self, "llmnr", llmnr)
     }
 
+    /// Interface name of the controller device or UUID of the controller connection.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:controller instead, this is just an alias.
     pub fn set_master(&self, master: Option<&str>) {
         ObjectExt::set_property(self, "master", master)
     }
 
+    /// Whether mDNS is enabled for the connection.
+    ///
+    /// The permitted values are: "yes" (2) register hostname and resolving
+    /// for the connection, "no" (0) disable mDNS for the interface, "resolve"
+    /// (1) do not register hostname but allow resolving of mDNS host names
+    /// and "default" (-1) to allow lookup of a global default in NetworkManager.conf.
+    /// If unspecified, "default" ultimately depends on the DNS plugin.
+    ///
+    /// This feature requires a plugin which supports mDNS. Otherwise, the
+    /// setting has no effect. Currently the only supported DNS plugin is
+    /// systemd-resolved. For systemd-resolved, the default is configurable via
+    /// MulticastDNS= setting in resolved.conf.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn set_mdns(&self, mdns: i32) {
         ObjectExt::set_property(self, "mdns", mdns)
     }
 
+    /// Whether the connection is metered.
+    ///
+    /// When updating this property on a currently activated connection,
+    /// the change takes effect immediately.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn set_metered(&self, metered: Metered) {
@@ -716,6 +1665,51 @@ impl SettingConnection {
         ObjectExt::property(self, "mptcp-flags")
     }
 
+    /// Whether to configure MPTCP endpoints and the address flags.
+    /// If MPTCP is enabled in NetworkManager, it will configure the
+    /// addresses of the interface as MPTCP endpoints. Note that
+    /// IPv4 loopback addresses (127.0.0.0/8), IPv4 link local
+    /// addresses (169.254.0.0/16), the IPv6 loopback address (::1),
+    /// IPv6 link local addresses (fe80::/10), IPv6 unique
+    /// local addresses (ULA, fc00::/7) and IPv6 privacy extension addresses
+    /// (rfc3041, ipv6.ip6-privacy) will be excluded from being
+    /// configured as endpoints.
+    ///
+    /// If "disabled" (0x1), MPTCP handling for the interface is disabled and
+    /// no endpoints are registered.
+    ///
+    /// The "enabled" (0x2) flag means that MPTCP handling is enabled.
+    /// This flag can also be implied from the presence of other flags.
+    ///
+    /// Even when enabled, MPTCP handling will by default still be disabled
+    /// unless "/proc/sys/net/mptcp/enabled" sysctl is on. NetworkManager
+    /// does not change the sysctl and this is up to the administrator
+    /// or distribution. To configure endpoints even if the sysctl is
+    /// disabled, "also-without-sysctl" (0x4) flag can be used. In that case,
+    /// NetworkManager doesn't look at the sysctl and configures endpoints
+    /// regardless.
+    ///
+    /// Even when enabled, NetworkManager will only configure MPTCP endpoints
+    /// for a certain address family, if there is a unicast default route (0.0.0.0/0
+    /// or ::/0) in the main routing table. The flag "also-without-default-route"
+    /// (0x8) can override that.
+    ///
+    /// When MPTCP handling is enabled then endpoints are configured with
+    /// the specified address flags "signal" (0x10), "subflow" (0x20), "backup" (0x40),
+    /// "fullmesh" (0x80). See ip-mptcp(8) manual for additional information about the flags.
+    ///
+    /// If the flags are zero (0x0), the global connection default from NetworkManager.conf is
+    /// honored. If still unspecified, the fallback is "enabled,subflow".
+    /// Note that this means that MPTCP is by default done depending on the
+    /// "/proc/sys/net/mptcp/enabled" sysctl.
+    ///
+    /// NetworkManager does not change the MPTCP limits nor enable MPTCP via
+    /// "/proc/sys/net/mptcp/enabled". That is a host configuration which the
+    /// admin can change via sysctl and ip-mptcp.
+    ///
+    /// Strict reverse path filtering (rp_filter) breaks many MPTCP use cases, so when
+    /// MPTCP handling for IPv4 addresses on the interface is enabled, NetworkManager would
+    /// loosen the strict reverse path filtering (1) to the loose setting (2).
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     #[doc(alias = "mptcp-flags")]
@@ -723,6 +1717,14 @@ impl SettingConnection {
         ObjectExt::set_property(self, "mptcp-flags", mptcp_flags)
     }
 
+    /// If configured, set to a Manufacturer Usage Description (MUD) URL that points
+    /// to manufacturer-recommended network policies for IoT devices. It is transmitted
+    /// as a DHCPv4 or DHCPv6 option. The value must be a valid URL starting with "https://".
+    ///
+    /// The special value "none" is allowed to indicate that no MUD URL is used.
+    ///
+    /// If the per-profile value is unspecified (the default), a global connection default gets
+    /// consulted. If still unspecified, the ultimate default is "none".
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "mud-url")]
@@ -730,6 +1732,8 @@ impl SettingConnection {
         ObjectExt::set_property(self, "mud-url", mud_url)
     }
 
+    /// Specifies whether the profile can be active multiple times at a particular
+    /// moment. The value is of type #NMConnectionMultiConnect.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "multi-connect")]
@@ -737,14 +1741,41 @@ impl SettingConnection {
         ObjectExt::set_property(self, "multi-connect", multi_connect)
     }
 
+    /// An array of strings defining what access a given user has to this
+    /// connection.  If this is [`None`] or empty, all users are allowed to access
+    /// this connection; otherwise users are allowed if and only if they are in
+    /// this list.  When this is not empty, the connection can be active only when
+    /// one of the specified users is logged into an active session.  Each entry
+    /// is of the form "[type]:[id]:[reserved]"; for example, "user:dcbw:blah".
+    ///
+    /// At this time only the "user" [type] is allowed.  Any other values are
+    /// ignored and reserved for future use.  [id] is the username that this
+    /// permission refers to, which may not contain the ":" character. Any
+    /// [reserved] information present must be ignored and is reserved for future
+    /// use.  All of [type], [id], and [reserved] must be valid UTF-8.
     pub fn permissions(&self) -> Vec<glib::GString> {
         ObjectExt::property(self, "permissions")
     }
 
+    /// An array of strings defining what access a given user has to this
+    /// connection.  If this is [`None`] or empty, all users are allowed to access
+    /// this connection; otherwise users are allowed if and only if they are in
+    /// this list.  When this is not empty, the connection can be active only when
+    /// one of the specified users is logged into an active session.  Each entry
+    /// is of the form "[type]:[id]:[reserved]"; for example, "user:dcbw:blah".
+    ///
+    /// At this time only the "user" [type] is allowed.  Any other values are
+    /// ignored and reserved for future use.  [id] is the username that this
+    /// permission refers to, which may not contain the ":" character. Any
+    /// [reserved] information present must be ignored and is reserved for future
+    /// use.  All of [type], [id], and [reserved] must be valid UTF-8.
     pub fn set_permissions(&self, permissions: &[&str]) {
         ObjectExt::set_property(self, "permissions", permissions)
     }
 
+    /// Setting name of the device type of this port's controller connection (eg,
+    /// [`SETTING_BOND_SETTING_NAME`][crate::SETTING_BOND_SETTING_NAME]), or [`None`] if this connection is not a
+    /// port.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "port-type")]
@@ -752,25 +1783,79 @@ impl SettingConnection {
         ObjectExt::set_property(self, "port-type", port_type)
     }
 
+    /// This property is deprecated and has no meaning.
+    ///
+    /// # Deprecated since 1.44
+    ///
+    /// This property is deprecated and has no meaning.
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     #[doc(alias = "read-only")]
     pub fn set_read_only(&self, read_only: bool) {
         ObjectExt::set_property(self, "read-only", read_only)
     }
 
+    /// List of connection UUIDs that should be activated when the base
+    /// connection itself is activated. Currently, only VPN connections are
+    /// supported.
     pub fn secondaries(&self) -> Vec<glib::GString> {
         ObjectExt::property(self, "secondaries")
     }
 
+    /// List of connection UUIDs that should be activated when the base
+    /// connection itself is activated. Currently, only VPN connections are
+    /// supported.
     pub fn set_secondaries(&self, secondaries: &[&str]) {
         ObjectExt::set_property(self, "secondaries", secondaries)
     }
 
+    /// Setting name of the device type of this port's controller connection (eg,
+    /// [`SETTING_BOND_SETTING_NAME`][crate::SETTING_BOND_SETTING_NAME]), or [`None`] if this connection is not a
+    /// port.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:port-type instead, this is just an alias.
     #[doc(alias = "slave-type")]
     pub fn set_slave_type(&self, slave_type: Option<&str>) {
         ObjectExt::set_property(self, "slave-type", slave_type)
     }
 
+    /// This represents the identity of the connection used for various purposes.
+    /// It allows configuring multiple profiles to share the identity. Also,
+    /// the stable-id can contain placeholders that are substituted dynamically and
+    /// deterministically depending on the context.
+    ///
+    /// The stable-id is used for generating IPv6 stable private addresses with
+    /// ipv6.addr-gen-mode=stable-privacy. It is also used to seed the generated
+    /// cloned MAC address for ethernet.cloned-mac-address=stable and
+    /// wifi.cloned-mac-address=stable. It is also used to derive the DHCP
+    /// client identifier with ipv4.dhcp-client-id=stable, the DHCPv6 DUID with
+    /// ipv6.dhcp-duid=stable-[llt,ll,uuid] and the DHCP IAID with
+    /// ipv4.iaid=stable and ipv6.iaid=stable.
+    ///
+    /// Note that depending on the context where it is used, other parameters are
+    /// also seeded into the generation algorithm. For example, a per-host key
+    /// is commonly also included, so that different systems end up generating
+    /// different IDs. Or with ipv6.addr-gen-mode=stable-privacy, also the device's
+    /// name is included, so that different interfaces yield different addresses.
+    /// The per-host key is the identity of your machine and stored in /var/lib/NetworkManager/secret_key.
+    /// See NetworkManager(8) manual about the secret-key and the host identity.
+    ///
+    /// The '$' character is treated special to perform dynamic substitutions at
+    /// activation time. Currently, supported are "${CONNECTION}", "${DEVICE}",
+    /// "${MAC}", "${NETWORK_SSID}", "${BOOT}", "${RANDOM}".  These effectively
+    /// create unique IDs per-connection, per-device, per-SSID, per-boot, or
+    /// every time.  The "${CONNECTION}" uses the profile's connection.uuid, the
+    /// "${DEVICE}" uses the interface name of the device and "${MAC}" the
+    /// permanent MAC address of the device. "${NETWORK_SSID}" uses the SSID for
+    /// Wi-Fi networks and falls back to "${CONNECTION}" on other networks. Any
+    /// unrecognized patterns following '$' are treated verbatim, however are
+    /// reserved for future use. You are thus advised to avoid '$' or escape it
+    /// as "$$".  For example, set it to "${CONNECTION}-${BOOT}-${DEVICE}" to
+    /// create a unique id for this connection that changes with every reboot
+    /// and differs depending on the interface where the profile activates.
+    ///
+    /// If the value is unset, a global connection default is consulted. If the
+    /// value is still unset, the default is "default${CONNECTION}" go generate
+    /// an ID unique per connection profile.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "stable-id")]
@@ -778,24 +1863,58 @@ impl SettingConnection {
         ObjectExt::set_property(self, "stable-id", stable_id)
     }
 
+    /// The time, in seconds since the Unix Epoch, that the connection was last
+    /// _successfully_ fully activated.
+    ///
+    /// NetworkManager updates the connection timestamp periodically when the
+    /// connection is active to ensure that an active connection has the latest
+    /// timestamp. The property is only meant for reading (changes to this
+    /// property will not be preserved).
     pub fn set_timestamp(&self, timestamp: u64) {
         ObjectExt::set_property(self, "timestamp", timestamp)
     }
 
+    /// Base type of the connection. For hardware-dependent connections, should
+    /// contain the setting name of the hardware-type specific setting (ie,
+    /// "802-3-ethernet" or "802-11-wireless" or "bluetooth", etc), and for
+    /// non-hardware dependent connections like VPN or otherwise, should contain
+    /// the setting name of that setting type (ie, "vpn" or "bridge", etc).
     #[doc(alias = "type")]
     pub fn type_(&self) -> Option<glib::GString> {
         ObjectExt::property(self, "type")
     }
 
+    /// Base type of the connection. For hardware-dependent connections, should
+    /// contain the setting name of the hardware-type specific setting (ie,
+    /// "802-3-ethernet" or "802-11-wireless" or "bluetooth", etc), and for
+    /// non-hardware dependent connections like VPN or otherwise, should contain
+    /// the setting name of that setting type (ie, "vpn" or "bridge", etc).
     #[doc(alias = "type")]
     pub fn set_type(&self, type_: Option<&str>) {
         ObjectExt::set_property(self, "type", type_)
     }
 
+    /// A universally unique identifier for the connection, for example generated
+    /// with libuuid.  It should be assigned when the connection is created, and
+    /// never changed as long as the connection still applies to the same
+    /// network.  For example, it should not be changed when the
+    /// #NMSettingConnection:id property or #NMSettingIP4Config changes, but
+    /// might need to be re-created when the Wi-Fi SSID, mobile broadband network
+    /// provider, or #NMSettingConnection:type property changes.
+    ///
+    /// The UUID must be in the format "2815492f-7e56-435e-b2e9-246bd7cdc664"
+    /// (ie, contains only hexadecimal characters and "-").  A suitable UUID may
+    /// be generated by nm_utils_uuid_generate() or
+    /// nm_uuid_generate_from_string_str().
     pub fn set_uuid(&self, uuid: Option<&str>) {
         ObjectExt::set_property(self, "uuid", uuid)
     }
 
+    /// Time in milliseconds to wait for connection to be considered activated.
+    /// The wait will start after the pre-up dispatcher event.
+    ///
+    /// The value 0 means no wait time. The default value is -1, which
+    /// currently has the same meaning as no wait time.
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     #[doc(alias = "wait-activation-delay")]
@@ -803,6 +1922,15 @@ impl SettingConnection {
         ObjectExt::set_property(self, "wait-activation-delay", wait_activation_delay)
     }
 
+    /// Timeout in milliseconds to wait for device at startup.
+    /// During boot, devices may take a while to be detected by the driver.
+    /// This property will cause to delay NetworkManager-wait-online.service
+    /// and nm-online to give the device a chance to appear. This works by
+    /// waiting for the given timeout until a compatible device for the
+    /// profile is available and managed.
+    ///
+    /// The value 0 means no wait time. The default value is -1, which
+    /// currently has the same meaning as no wait time.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "wait-device-timeout")]
@@ -810,6 +1938,13 @@ impl SettingConnection {
         ObjectExt::set_property(self, "wait-device-timeout", wait_device_timeout)
     }
 
+    /// The trust level of a the connection.  Free form case-insensitive string
+    /// (for example "Home", "Work", "Public").  [`None`] or unspecified zone means
+    /// the connection will be placed in the default zone as defined by the
+    /// firewall.
+    ///
+    /// When updating this property on a currently activated connection,
+    /// the change takes effect immediately.
     pub fn set_zone(&self, zone: Option<&str>) {
         ObjectExt::set_property(self, "zone", zone)
     }
@@ -1734,6 +2869,11 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// The number of retries for the authentication. Zero means to try indefinitely; -1 means
+    /// to use a global default. If the global default is not set, the authentication
+    /// retries for 3 times before failing the connection.
+    ///
+    /// Currently, this only applies to 802-1x authentication.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn auth_retries(self, auth_retries: i32) -> Self {
@@ -1742,12 +2882,42 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Whether or not the connection should be automatically connected by
+    /// NetworkManager when the resources for the connection are available.
+    /// [`true`] to automatically activate the connection, [`false`] to require manual
+    /// intervention to activate the connection.
+    ///
+    /// Autoconnect happens when the circumstances are suitable. That means for
+    /// example that the device is currently managed and not active. Autoconnect
+    /// thus never replaces or competes with an already active profile.
+    ///
+    /// Note that autoconnect is not implemented for VPN profiles. See
+    /// #NMSettingConnection:secondaries as an alternative to automatically
+    /// connect VPN profiles.
+    ///
+    /// If multiple profiles are ready to autoconnect on the same device,
+    /// the one with the better "connection.autoconnect-priority" is chosen. If
+    /// the priorities are equal, then the most recently connected profile is activated.
+    /// If the profiles were not connected earlier or their
+    /// "connection.timestamp" is identical, the choice is undefined.
+    ///
+    /// Depending on "connection.multi-connect", a profile can (auto)connect only
+    /// once at a time or multiple times.
     pub fn autoconnect(self, autoconnect: bool) -> Self {
         Self {
             builder: self.builder.property("autoconnect", autoconnect),
         }
     }
 
+    /// Whether or not ports of this connection should be automatically brought up
+    /// when NetworkManager activates this connection. This only has a real effect
+    /// for controller connections. The properties #NMSettingConnection:autoconnect,
+    /// #NMSettingConnection:autoconnect-priority and #NMSettingConnection:autoconnect-retries
+    /// are unrelated to this setting.
+    /// The permitted values are: 0: leave port connections untouched,
+    /// 1: activate all the port connections with this connection, -1: default.
+    /// If -1 (default) is set, global connection.autoconnect-ports is read to
+    /// determine the real value. If it is default as well, this fallbacks to 0.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn autoconnect_ports(self, autoconnect_ports: i32) -> Self {
@@ -1758,6 +2928,12 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// The autoconnect priority in range -999 to 999. If the connection is set
+    /// to autoconnect, connections with higher priority will be preferred.
+    /// The higher number means higher priority. Defaults to 0.
+    /// Note that this property only matters if there are more than one candidate
+    /// profile to select for autoconnect. In case of equal priority, the profile
+    /// used most recently is chosen.
     pub fn autoconnect_priority(self, autoconnect_priority: i32) -> Self {
         Self {
             builder: self
@@ -1766,6 +2942,11 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// The number of times a connection should be tried when autoactivating before
+    /// giving up. Zero means forever, -1 means the global default (4 times if not
+    /// overridden). Setting this to 1 means to try activation only once before
+    /// blocking autoconnect. Note that after a timeout, NetworkManager will try
+    /// to autoconnect again.
     pub fn autoconnect_retries(self, autoconnect_retries: i32) -> Self {
         Self {
             builder: self
@@ -1774,6 +2955,17 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Whether or not ports of this connection should be automatically brought up
+    /// when NetworkManager activates this connection. This only has a real effect
+    /// for controller connections. The properties #NMSettingConnection:autoconnect,
+    /// #NMSettingConnection:autoconnect-priority and #NMSettingConnection:autoconnect-retries
+    /// are unrelated to this setting.
+    /// The permitted values are: 0: leave port connections untouched,
+    /// 1: activate all the port connections with this connection, -1: default.
+    /// If -1 (default) is set, global connection.autoconnect-slaves is read to
+    /// determine the real value. If it is default as well, this fallbacks to 0.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:autoconnect-ports instead, this is just an alias.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn autoconnect_slaves(
@@ -1787,12 +2979,24 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Interface name of the controller device or UUID of the controller connection.
     pub fn controller(self, controller: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("controller", controller.into()),
         }
     }
 
+    /// Whether DNSOverTls (dns-over-tls) is enabled for the connection.
+    /// DNSOverTls is a technology which uses TLS to encrypt dns traffic.
+    ///
+    /// The permitted values are: "yes" (2) use DNSOverTls and disabled fallback,
+    /// "opportunistic" (1) use DNSOverTls but allow fallback to unencrypted resolution,
+    /// "no" (0) don't ever use DNSOverTls.
+    /// If unspecified "default" depends on the plugin used. Systemd-resolved
+    /// uses global setting.
+    ///
+    /// This feature requires a plugin which supports DNSOverTls. Otherwise, the
+    /// setting has no effect. One such plugin is dns-systemd-resolved.
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     pub fn dns_over_tls(self, dns_over_tls: i32) -> Self {
@@ -1801,6 +3005,11 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Whether the connection will be brought down before the system is powered
+    /// off.  The default value is [`SettingConnectionDownOnPoweroff::Default`][crate::SettingConnectionDownOnPoweroff::Default]. When
+    /// the default value is specified, then the global value from
+    /// NetworkManager configuration is looked up, if not set, it is considered
+    /// as [`SettingConnectionDownOnPoweroff::No`][crate::SettingConnectionDownOnPoweroff::No].
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn down_on_poweroff(self, down_on_poweroff: i32) -> Self {
@@ -1809,6 +3018,8 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// If greater than zero, delay success of IP addressing until either the
+    /// timeout is reached, or an IP gateway replies to a ping.
     pub fn gateway_ping_timeout(self, gateway_ping_timeout: u32) -> Self {
         Self {
             builder: self
@@ -1817,12 +3028,25 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// A human readable unique identifier for the connection, like "Work Wi-Fi"
+    /// or "T-Mobile 3G".
     pub fn id(self, id: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("id", id.into()),
         }
     }
 
+    /// The name of the network interface this connection is bound to. If not
+    /// set, then the connection can be attached to any interface of the
+    /// appropriate type (subject to restrictions imposed by other settings).
+    ///
+    /// For software devices this specifies the name of the created device.
+    ///
+    /// For connection types where interface names cannot easily be made
+    /// persistent (e.g. mobile broadband or USB Ethernet), this property should
+    /// not be used. Setting this property restricts the interfaces a connection
+    /// can be used with, and if interface names change or are reordered the
+    /// connection may be applied to the wrong interface.
     pub fn interface_name(self, interface_name: impl Into<glib::GString>) -> Self {
         Self {
             builder: self
@@ -1831,6 +3055,13 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// The property specifies a list of target IP addresses for pinging.
+    /// When multiple targets are set, NetworkManager will start multiple ping processes
+    /// in parallel. This property can only be set if connection.ip-ping-timeout is
+    /// set. The ip-ping-timeout is used to delay the success of IP addressing until
+    /// either the specified timeout (in seconds) is reached, or an target IP address replies
+    /// to a ping. Configuring #NMSettingConnection:ip-ping-addresses may delay reaching the
+    /// systemd's network-online.target due to waiting for the ping operations to complete or timeout.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn ip_ping_addresses(self, ip_ping_addresses: impl Into<glib::StrV>) -> Self {
@@ -1841,6 +3072,9 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// The property determines whether it is sufficient for any ping check
+    /// to succeed among #NMSettingConnection:ip-ping-addresses, or if all
+    /// ping checks must succeed for #NMSettingConnection:ip-ping-addresses.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn ip_ping_addresses_require_all(self, ip_ping_addresses_require_all: i32) -> Self {
@@ -1852,6 +3086,11 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// If greater than zero, delay success of IP addressing until either the specified
+    /// timeout (in seconds) is reached, or a target IP address replies to a ping. The
+    /// property specifies the timeout for the #NMSettingConnection:ip-ping-addresses.
+    /// This property is incompatible with #NMSettingConnection:gateway-ping-timeout,
+    /// you cannot set these two properties at the same time.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn ip_ping_timeout(self, ip_ping_timeout: u32) -> Self {
@@ -1860,6 +3099,7 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Whether LLDP is enabled for the connection.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn lldp(self, lldp: i32) -> Self {
@@ -1868,6 +3108,19 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Whether Link-Local Multicast Name Resolution (LLMNR) is enabled
+    /// for the connection. LLMNR is a protocol based on the Domain Name
+    /// System (DNS) packet format that allows both IPv4 and IPv6 hosts
+    /// to perform name resolution for hosts on the same local link.
+    ///
+    /// The permitted values are: "yes" (2) register hostname and resolving
+    /// for the connection, "no" (0) disable LLMNR for the interface, "resolve"
+    /// (1) do not register hostname but allow resolving of LLMNR host names
+    /// If unspecified, "default" ultimately depends on the DNS plugin (which
+    /// for systemd-resolved currently means "yes").
+    ///
+    /// This feature requires a plugin which supports LLMNR. Otherwise, the
+    /// setting has no effect. One such plugin is dns-systemd-resolved.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn llmnr(self, llmnr: i32) -> Self {
@@ -1876,12 +3129,27 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Interface name of the controller device or UUID of the controller connection.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:controller instead, this is just an alias.
     pub fn master(self, master: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("master", master.into()),
         }
     }
 
+    /// Whether mDNS is enabled for the connection.
+    ///
+    /// The permitted values are: "yes" (2) register hostname and resolving
+    /// for the connection, "no" (0) disable mDNS for the interface, "resolve"
+    /// (1) do not register hostname but allow resolving of mDNS host names
+    /// and "default" (-1) to allow lookup of a global default in NetworkManager.conf.
+    /// If unspecified, "default" ultimately depends on the DNS plugin.
+    ///
+    /// This feature requires a plugin which supports mDNS. Otherwise, the
+    /// setting has no effect. Currently the only supported DNS plugin is
+    /// systemd-resolved. For systemd-resolved, the default is configurable via
+    /// MulticastDNS= setting in resolved.conf.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn mdns(self, mdns: i32) -> Self {
@@ -1890,6 +3158,10 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Whether the connection is metered.
+    ///
+    /// When updating this property on a currently activated connection,
+    /// the change takes effect immediately.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn metered(self, metered: Metered) -> Self {
@@ -1898,6 +3170,51 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Whether to configure MPTCP endpoints and the address flags.
+    /// If MPTCP is enabled in NetworkManager, it will configure the
+    /// addresses of the interface as MPTCP endpoints. Note that
+    /// IPv4 loopback addresses (127.0.0.0/8), IPv4 link local
+    /// addresses (169.254.0.0/16), the IPv6 loopback address (::1),
+    /// IPv6 link local addresses (fe80::/10), IPv6 unique
+    /// local addresses (ULA, fc00::/7) and IPv6 privacy extension addresses
+    /// (rfc3041, ipv6.ip6-privacy) will be excluded from being
+    /// configured as endpoints.
+    ///
+    /// If "disabled" (0x1), MPTCP handling for the interface is disabled and
+    /// no endpoints are registered.
+    ///
+    /// The "enabled" (0x2) flag means that MPTCP handling is enabled.
+    /// This flag can also be implied from the presence of other flags.
+    ///
+    /// Even when enabled, MPTCP handling will by default still be disabled
+    /// unless "/proc/sys/net/mptcp/enabled" sysctl is on. NetworkManager
+    /// does not change the sysctl and this is up to the administrator
+    /// or distribution. To configure endpoints even if the sysctl is
+    /// disabled, "also-without-sysctl" (0x4) flag can be used. In that case,
+    /// NetworkManager doesn't look at the sysctl and configures endpoints
+    /// regardless.
+    ///
+    /// Even when enabled, NetworkManager will only configure MPTCP endpoints
+    /// for a certain address family, if there is a unicast default route (0.0.0.0/0
+    /// or ::/0) in the main routing table. The flag "also-without-default-route"
+    /// (0x8) can override that.
+    ///
+    /// When MPTCP handling is enabled then endpoints are configured with
+    /// the specified address flags "signal" (0x10), "subflow" (0x20), "backup" (0x40),
+    /// "fullmesh" (0x80). See ip-mptcp(8) manual for additional information about the flags.
+    ///
+    /// If the flags are zero (0x0), the global connection default from NetworkManager.conf is
+    /// honored. If still unspecified, the fallback is "enabled,subflow".
+    /// Note that this means that MPTCP is by default done depending on the
+    /// "/proc/sys/net/mptcp/enabled" sysctl.
+    ///
+    /// NetworkManager does not change the MPTCP limits nor enable MPTCP via
+    /// "/proc/sys/net/mptcp/enabled". That is a host configuration which the
+    /// admin can change via sysctl and ip-mptcp.
+    ///
+    /// Strict reverse path filtering (rp_filter) breaks many MPTCP use cases, so when
+    /// MPTCP handling for IPv4 addresses on the interface is enabled, NetworkManager would
+    /// loosen the strict reverse path filtering (1) to the loose setting (2).
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     pub fn mptcp_flags(self, mptcp_flags: u32) -> Self {
@@ -1906,6 +3223,14 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// If configured, set to a Manufacturer Usage Description (MUD) URL that points
+    /// to manufacturer-recommended network policies for IoT devices. It is transmitted
+    /// as a DHCPv4 or DHCPv6 option. The value must be a valid URL starting with "https://".
+    ///
+    /// The special value "none" is allowed to indicate that no MUD URL is used.
+    ///
+    /// If the per-profile value is unspecified (the default), a global connection default gets
+    /// consulted. If still unspecified, the ultimate default is "none".
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn mud_url(self, mud_url: impl Into<glib::GString>) -> Self {
@@ -1914,6 +3239,8 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Specifies whether the profile can be active multiple times at a particular
+    /// moment. The value is of type #NMConnectionMultiConnect.
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn multi_connect(self, multi_connect: i32) -> Self {
@@ -1922,12 +3249,27 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// An array of strings defining what access a given user has to this
+    /// connection.  If this is [`None`] or empty, all users are allowed to access
+    /// this connection; otherwise users are allowed if and only if they are in
+    /// this list.  When this is not empty, the connection can be active only when
+    /// one of the specified users is logged into an active session.  Each entry
+    /// is of the form "[type]:[id]:[reserved]"; for example, "user:dcbw:blah".
+    ///
+    /// At this time only the "user" [type] is allowed.  Any other values are
+    /// ignored and reserved for future use.  [id] is the username that this
+    /// permission refers to, which may not contain the ":" character. Any
+    /// [reserved] information present must be ignored and is reserved for future
+    /// use.  All of [type], [id], and [reserved] must be valid UTF-8.
     pub fn permissions(self, permissions: impl Into<glib::StrV>) -> Self {
         Self {
             builder: self.builder.property("permissions", permissions.into()),
         }
     }
 
+    /// Setting name of the device type of this port's controller connection (eg,
+    /// [`SETTING_BOND_SETTING_NAME`][crate::SETTING_BOND_SETTING_NAME]), or [`None`] if this connection is not a
+    /// port.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn port_type(self, port_type: impl Into<glib::GString>) -> Self {
@@ -1936,6 +3278,8 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// This property is deprecated and has no meaning.
+    /// This property is deprecated and has no meaning.
     #[cfg_attr(feature = "v1_44", deprecated = "Since 1.44")]
     pub fn read_only(self, read_only: bool) -> Self {
         Self {
@@ -1943,18 +3287,64 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// List of connection UUIDs that should be activated when the base
+    /// connection itself is activated. Currently, only VPN connections are
+    /// supported.
     pub fn secondaries(self, secondaries: impl Into<glib::StrV>) -> Self {
         Self {
             builder: self.builder.property("secondaries", secondaries.into()),
         }
     }
 
+    /// Setting name of the device type of this port's controller connection (eg,
+    /// [`SETTING_BOND_SETTING_NAME`][crate::SETTING_BOND_SETTING_NAME]), or [`None`] if this connection is not a
+    /// port.
+    ///
+    /// Deprecated 1.46. Use #NMSettingConnection:port-type instead, this is just an alias.
     pub fn slave_type(self, slave_type: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("slave-type", slave_type.into()),
         }
     }
 
+    /// This represents the identity of the connection used for various purposes.
+    /// It allows configuring multiple profiles to share the identity. Also,
+    /// the stable-id can contain placeholders that are substituted dynamically and
+    /// deterministically depending on the context.
+    ///
+    /// The stable-id is used for generating IPv6 stable private addresses with
+    /// ipv6.addr-gen-mode=stable-privacy. It is also used to seed the generated
+    /// cloned MAC address for ethernet.cloned-mac-address=stable and
+    /// wifi.cloned-mac-address=stable. It is also used to derive the DHCP
+    /// client identifier with ipv4.dhcp-client-id=stable, the DHCPv6 DUID with
+    /// ipv6.dhcp-duid=stable-[llt,ll,uuid] and the DHCP IAID with
+    /// ipv4.iaid=stable and ipv6.iaid=stable.
+    ///
+    /// Note that depending on the context where it is used, other parameters are
+    /// also seeded into the generation algorithm. For example, a per-host key
+    /// is commonly also included, so that different systems end up generating
+    /// different IDs. Or with ipv6.addr-gen-mode=stable-privacy, also the device's
+    /// name is included, so that different interfaces yield different addresses.
+    /// The per-host key is the identity of your machine and stored in /var/lib/NetworkManager/secret_key.
+    /// See NetworkManager(8) manual about the secret-key and the host identity.
+    ///
+    /// The '$' character is treated special to perform dynamic substitutions at
+    /// activation time. Currently, supported are "${CONNECTION}", "${DEVICE}",
+    /// "${MAC}", "${NETWORK_SSID}", "${BOOT}", "${RANDOM}".  These effectively
+    /// create unique IDs per-connection, per-device, per-SSID, per-boot, or
+    /// every time.  The "${CONNECTION}" uses the profile's connection.uuid, the
+    /// "${DEVICE}" uses the interface name of the device and "${MAC}" the
+    /// permanent MAC address of the device. "${NETWORK_SSID}" uses the SSID for
+    /// Wi-Fi networks and falls back to "${CONNECTION}" on other networks. Any
+    /// unrecognized patterns following '$' are treated verbatim, however are
+    /// reserved for future use. You are thus advised to avoid '$' or escape it
+    /// as "$$".  For example, set it to "${CONNECTION}-${BOOT}-${DEVICE}" to
+    /// create a unique id for this connection that changes with every reboot
+    /// and differs depending on the interface where the profile activates.
+    ///
+    /// If the value is unset, a global connection default is consulted. If the
+    /// value is still unset, the default is "default${CONNECTION}" go generate
+    /// an ID unique per connection profile.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn stable_id(self, stable_id: impl Into<glib::GString>) -> Self {
@@ -1963,6 +3353,13 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// The time, in seconds since the Unix Epoch, that the connection was last
+    /// _successfully_ fully activated.
+    ///
+    /// NetworkManager updates the connection timestamp periodically when the
+    /// connection is active to ensure that an active connection has the latest
+    /// timestamp. The property is only meant for reading (changes to this
+    /// property will not be preserved).
     pub fn timestamp(self, timestamp: u64) -> Self {
         Self {
             builder: self.builder.property("timestamp", timestamp),
@@ -1975,12 +3372,29 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// A universally unique identifier for the connection, for example generated
+    /// with libuuid.  It should be assigned when the connection is created, and
+    /// never changed as long as the connection still applies to the same
+    /// network.  For example, it should not be changed when the
+    /// #NMSettingConnection:id property or #NMSettingIP4Config changes, but
+    /// might need to be re-created when the Wi-Fi SSID, mobile broadband network
+    /// provider, or #NMSettingConnection:type property changes.
+    ///
+    /// The UUID must be in the format "2815492f-7e56-435e-b2e9-246bd7cdc664"
+    /// (ie, contains only hexadecimal characters and "-").  A suitable UUID may
+    /// be generated by nm_utils_uuid_generate() or
+    /// nm_uuid_generate_from_string_str().
     pub fn uuid(self, uuid: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("uuid", uuid.into()),
         }
     }
 
+    /// Time in milliseconds to wait for connection to be considered activated.
+    /// The wait will start after the pre-up dispatcher event.
+    ///
+    /// The value 0 means no wait time. The default value is -1, which
+    /// currently has the same meaning as no wait time.
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     pub fn wait_activation_delay(self, wait_activation_delay: i32) -> Self {
@@ -1991,6 +3405,15 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// Timeout in milliseconds to wait for device at startup.
+    /// During boot, devices may take a while to be detected by the driver.
+    /// This property will cause to delay NetworkManager-wait-online.service
+    /// and nm-online to give the device a chance to appear. This works by
+    /// waiting for the given timeout until a compatible device for the
+    /// profile is available and managed.
+    ///
+    /// The value 0 means no wait time. The default value is -1, which
+    /// currently has the same meaning as no wait time.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     pub fn wait_device_timeout(self, wait_device_timeout: i32) -> Self {
@@ -2001,6 +3424,13 @@ impl SettingConnectionBuilder {
         }
     }
 
+    /// The trust level of a the connection.  Free form case-insensitive string
+    /// (for example "Home", "Work", "Public").  [`None`] or unspecified zone means
+    /// the connection will be placed in the default zone as defined by the
+    /// firewall.
+    ///
+    /// When updating this property on a currently activated connection,
+    /// the change takes effect immediately.
     pub fn zone(self, zone: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("zone", zone.into()),

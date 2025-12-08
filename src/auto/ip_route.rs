@@ -21,6 +21,22 @@ glib::wrapper! {
 }
 
 impl IPRoute {
+    /// Creates a new #NMIPRoute object.
+    /// ## `family`
+    /// the IP address family (<literal>AF_INET</literal> or
+    ///   <literal>AF_INET6</literal>)
+    /// ## `dest`
+    /// the IP address of the route's destination
+    /// ## `prefix`
+    /// the address prefix length
+    /// ## `next_hop`
+    /// the IP address of the next hop (or [`None`])
+    /// ## `metric`
+    /// the route metric (or -1 for "default")
+    ///
+    /// # Returns
+    ///
+    /// the new #NMIPRoute object, or [`None`] on error
     #[doc(alias = "nm_ip_route_new")]
     pub fn new(family: i32, dest: &str, prefix: u32, next_hop: Option<&str>, metric: i64) -> Result<IPRoute, glib::Error> {
         assert_initialized_main_thread!();
@@ -36,6 +52,15 @@ impl IPRoute {
     //    unsafe { TODO: call ffi:nm_ip_route_new_binary() }
     //}
 
+    /// Creates a copy of @self
+    ///
+    /// # Returns
+    ///
+    /// a copy of @self
+    ///
+    /// This API was part of public headers before 1.32.0 but
+    /// was erroneously not exported in the ABI. It is thus only
+    /// usable since 1.32.0.
     #[cfg(feature = "v1_32")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_32")))]
     #[doc(alias = "nm_ip_route_dup")]
@@ -53,6 +78,18 @@ impl IPRoute {
         }
     }
 
+    /// Determines if two #NMIPRoute objects contain the same destination, prefix,
+    /// next hop, and metric.
+    /// ## `other`
+    /// the #NMIPRoute to compare @self to.
+    /// ## `cmp_flags`
+    /// tune how to compare attributes. Currently, only
+    ///   NM_IP_ROUTE_EQUAL_CMP_FLAGS_NONE (0) and NM_IP_ROUTE_EQUAL_CMP_FLAGS_WITH_ATTRS (1)
+    ///   is supported.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the objects contain the same values, [`false`] if they do not.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_ip_route_equal_full")]
@@ -68,6 +105,11 @@ impl IPRoute {
     //    unsafe { TODO: call ffi:nm_ip_route_get_attribute() }
     //}
 
+    /// Gets an array of attribute names defined on @self.
+    ///
+    /// # Returns
+    ///
+    /// a [`None`]-terminated array of attribute names
     #[doc(alias = "nm_ip_route_get_attribute_names")]
     #[doc(alias = "get_attribute_names")]
     pub fn attribute_names(&self) -> Vec<glib::GString> {
@@ -76,6 +118,11 @@ impl IPRoute {
         }
     }
 
+    /// Gets the IP destination address property of this route object.
+    ///
+    /// # Returns
+    ///
+    /// the IP address of the route's destination
     #[doc(alias = "nm_ip_route_get_dest")]
     #[doc(alias = "get_dest")]
     pub fn dest(&self) -> glib::GString {
@@ -90,6 +137,12 @@ impl IPRoute {
     //    unsafe { TODO: call ffi:nm_ip_route_get_dest_binary() }
     //}
 
+    /// Gets the IP address family (eg, AF_INET) property of this route
+    /// object.
+    ///
+    /// # Returns
+    ///
+    /// the IP address family
     #[doc(alias = "nm_ip_route_get_family")]
     #[doc(alias = "get_family")]
     pub fn family(&self) -> i32 {
@@ -98,6 +151,13 @@ impl IPRoute {
         }
     }
 
+    /// Gets the route metric property of this route object; lower values
+    /// indicate "better" or more preferred routes; -1 indicates "default"
+    /// (meaning NetworkManager will set it appropriately).
+    ///
+    /// # Returns
+    ///
+    /// the route metric
     #[doc(alias = "nm_ip_route_get_metric")]
     #[doc(alias = "get_metric")]
     pub fn metric(&self) -> i64 {
@@ -106,6 +166,12 @@ impl IPRoute {
         }
     }
 
+    /// Gets the IP address of the next hop of this route; this will be [`None`] if the
+    /// route has no next hop.
+    ///
+    /// # Returns
+    ///
+    /// the IP address of the next hop, or [`None`] if this is a device route.
     #[doc(alias = "nm_ip_route_get_next_hop")]
     #[doc(alias = "get_next_hop")]
     pub fn next_hop(&self) -> glib::GString {
@@ -120,6 +186,11 @@ impl IPRoute {
     //    unsafe { TODO: call ffi:nm_ip_route_get_next_hop_binary() }
     //}
 
+    /// Gets the IP prefix (ie "24" or "30" etc) of this route.
+    ///
+    /// # Returns
+    ///
+    /// the IP prefix
     #[doc(alias = "nm_ip_route_get_prefix")]
     #[doc(alias = "get_prefix")]
     pub fn prefix(&self) -> u32 {
@@ -133,6 +204,12 @@ impl IPRoute {
     //    unsafe { TODO: call ffi:nm_ip_route_set_attribute() }
     //}
 
+    /// Sets the destination property of this route object.
+    ///
+    /// @dest must be a valid address of @self's family. If you aren't sure you
+    /// have a valid address, use nm_inet_is_valid() to check it.
+    /// ## `dest`
+    /// the route's destination, as a string
     #[doc(alias = "nm_ip_route_set_dest")]
     pub fn set_dest(&self, dest: &str) {
         unsafe {
@@ -145,6 +222,9 @@ impl IPRoute {
     //    unsafe { TODO: call ffi:nm_ip_route_set_dest_binary() }
     //}
 
+    /// Sets the metric property of this route object.
+    /// ## `metric`
+    /// the route metric (or -1 for "default")
     #[doc(alias = "nm_ip_route_set_metric")]
     pub fn set_metric(&self, metric: i64) {
         unsafe {
@@ -152,6 +232,13 @@ impl IPRoute {
         }
     }
 
+    /// Sets the next-hop property of this route object.
+    ///
+    /// @next_hop (if non-[`None`]) must be a valid address of @self's family. If you
+    /// aren't sure you have a valid address, use nm_utils_ipaddr_valid() to check
+    /// it.
+    /// ## `next_hop`
+    /// the route's next hop, as a string
     #[doc(alias = "nm_ip_route_set_next_hop")]
     pub fn set_next_hop(&self, next_hop: Option<&str>) {
         unsafe {
@@ -164,6 +251,9 @@ impl IPRoute {
     //    unsafe { TODO: call ffi:nm_ip_route_set_next_hop_binary() }
     //}
 
+    /// Sets the prefix property of this route object.
+    /// ## `prefix`
+    /// the route prefix
     #[doc(alias = "nm_ip_route_set_prefix")]
     pub fn set_prefix(&self, prefix: u32) {
         unsafe {
@@ -178,6 +268,10 @@ impl IPRoute {
     //    unsafe { TODO: call ffi:nm_ip_route_attribute_validate() }
     //}
 
+    ///
+    /// # Returns
+    ///
+    /// the specifiers for route attributes
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     #[doc(alias = "nm_ip_route_get_variant_attribute_spec")]

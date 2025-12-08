@@ -8,6 +8,70 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Infiniband Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `mac-address`
+    ///  If specified, this connection will only apply to the IPoIB device whose
+    /// permanent MAC address matches. This property does not change the MAC
+    /// address of the device (i.e. MAC spoofing).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mtu`
+    ///  If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple frames.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `p-key`
+    ///  The InfiniBand p-key to use for this device. A value of -1 means to use
+    /// the default p-key (aka "the p-key at index 0"). Otherwise, it is a
+    /// 16-bit unsigned integer, whose high bit 0x8000 is set if it is a "full
+    /// membership" p-key. The values 0 and 0x8000 are not allowed.
+    ///
+    /// With the p-key set, the interface name is always "$parent.$p_key".
+    /// Setting "connection.interface-name" to another name is not supported.
+    ///
+    /// Note that kernel will internally always set the full membership bit,
+    /// although the interface name does not reflect that. Usually the user
+    /// would want to configure a full membership p-key with 0x8000 flag set.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `parent`
+    ///  The interface name of the parent device of this device. Normally [`None`],
+    /// but if the #NMSettingInfiniband:p_key property is set, then you must
+    /// specify the base device by setting either this property or
+    /// #NMSettingInfiniband:mac-address.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `transport-mode`
+    ///  The IP-over-InfiniBand transport mode. Either "datagram" or
+    /// "connected".
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingInfiniband")]
     pub struct SettingInfiniband(Object<ffi::NMSettingInfiniband, ffi::NMSettingInfinibandClass>) @extends Setting;
 
@@ -17,6 +81,11 @@ glib::wrapper! {
 }
 
 impl SettingInfiniband {
+    /// Creates a new #NMSettingInfiniband object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingInfiniband object
     #[doc(alias = "nm_setting_infiniband_new")]
     pub fn new() -> SettingInfiniband {
         assert_initialized_main_thread!();
@@ -34,6 +103,10 @@ impl SettingInfiniband {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingInfiniband:mac-address property of the setting
     #[doc(alias = "nm_setting_infiniband_get_mac_address")]
     #[doc(alias = "get_mac_address")]
     #[doc(alias = "mac-address")]
@@ -43,6 +116,10 @@ impl SettingInfiniband {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingInfiniband:mtu property of the setting
     #[doc(alias = "nm_setting_infiniband_get_mtu")]
     #[doc(alias = "get_mtu")]
     pub fn mtu(&self) -> u32 {
@@ -51,6 +128,13 @@ impl SettingInfiniband {
         }
     }
 
+    /// Returns the P_Key to use for this device. A value of -1 means to
+    /// use the default P_Key (aka "the P_Key at index 0"). Otherwise, it is
+    /// a 16-bit unsigned integer.
+    ///
+    /// # Returns
+    ///
+    /// the IPoIB P_Key
     #[doc(alias = "nm_setting_infiniband_get_p_key")]
     #[doc(alias = "get_p_key")]
     #[doc(alias = "p-key")]
@@ -60,6 +144,11 @@ impl SettingInfiniband {
         }
     }
 
+    /// Returns the parent interface name for this device, if set.
+    ///
+    /// # Returns
+    ///
+    /// the parent interface name
     #[doc(alias = "nm_setting_infiniband_get_parent")]
     #[doc(alias = "get_parent")]
     pub fn parent(&self) -> glib::GString {
@@ -68,6 +157,12 @@ impl SettingInfiniband {
         }
     }
 
+    /// Returns the transport mode for this device. Either 'datagram' or
+    /// 'connected'.
+    ///
+    /// # Returns
+    ///
+    /// the IPoIB transport mode
     #[doc(alias = "nm_setting_infiniband_get_transport_mode")]
     #[doc(alias = "get_transport_mode")]
     #[doc(alias = "transport-mode")]
@@ -77,6 +172,13 @@ impl SettingInfiniband {
         }
     }
 
+    /// Returns the interface name created by combining #NMSettingInfiniband:parent
+    /// and #NMSettingInfiniband:p-key. (If either property is unset, this will
+    /// return [`None`].)
+    ///
+    /// # Returns
+    ///
+    /// the interface name, or [`None`]
     #[doc(alias = "nm_setting_infiniband_get_virtual_interface_name")]
     #[doc(alias = "get_virtual_interface_name")]
     pub fn virtual_interface_name(&self) -> glib::GString {
@@ -85,24 +187,46 @@ impl SettingInfiniband {
         }
     }
 
+    /// If specified, this connection will only apply to the IPoIB device whose
+    /// permanent MAC address matches. This property does not change the MAC
+    /// address of the device (i.e. MAC spoofing).
     #[doc(alias = "mac-address")]
     pub fn set_mac_address(&self, mac_address: Option<&str>) {
         ObjectExt::set_property(self,"mac-address", mac_address)
     }
 
+    /// If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple frames.
     pub fn set_mtu(&self, mtu: u32) {
         ObjectExt::set_property(self,"mtu", mtu)
     }
 
+    /// The InfiniBand p-key to use for this device. A value of -1 means to use
+    /// the default p-key (aka "the p-key at index 0"). Otherwise, it is a
+    /// 16-bit unsigned integer, whose high bit 0x8000 is set if it is a "full
+    /// membership" p-key. The values 0 and 0x8000 are not allowed.
+    ///
+    /// With the p-key set, the interface name is always "$parent.$p_key".
+    /// Setting "connection.interface-name" to another name is not supported.
+    ///
+    /// Note that kernel will internally always set the full membership bit,
+    /// although the interface name does not reflect that. Usually the user
+    /// would want to configure a full membership p-key with 0x8000 flag set.
     #[doc(alias = "p-key")]
     pub fn set_p_key(&self, p_key: i32) {
         ObjectExt::set_property(self,"p-key", p_key)
     }
 
+    /// The interface name of the parent device of this device. Normally [`None`],
+    /// but if the #NMSettingInfiniband:p_key property is set, then you must
+    /// specify the base device by setting either this property or
+    /// #NMSettingInfiniband:mac-address.
     pub fn set_parent(&self, parent: Option<&str>) {
         ObjectExt::set_property(self,"parent", parent)
     }
 
+    /// The IP-over-InfiniBand transport mode. Either "datagram" or
+    /// "connected".
     #[doc(alias = "transport-mode")]
     pub fn set_transport_mode(&self, transport_mode: Option<&str>) {
         ObjectExt::set_property(self,"transport-mode", transport_mode)
@@ -194,22 +318,44 @@ pub struct SettingInfinibandBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// If specified, this connection will only apply to the IPoIB device whose
+                            /// permanent MAC address matches. This property does not change the MAC
+                            /// address of the device (i.e. MAC spoofing).
                             pub fn mac_address(self, mac_address: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("mac-address", mac_address.into()), }
                         }
 
+                            /// If non-zero, only transmit packets of the specified size or smaller,
+                            /// breaking larger packets up into multiple frames.
                             pub fn mtu(self, mtu: u32) -> Self {
                             Self { builder: self.builder.property("mtu", mtu), }
                         }
 
+                            /// The InfiniBand p-key to use for this device. A value of -1 means to use
+                            /// the default p-key (aka "the p-key at index 0"). Otherwise, it is a
+                            /// 16-bit unsigned integer, whose high bit 0x8000 is set if it is a "full
+                            /// membership" p-key. The values 0 and 0x8000 are not allowed.
+                            ///
+                            /// With the p-key set, the interface name is always "$parent.$p_key".
+                            /// Setting "connection.interface-name" to another name is not supported.
+                            ///
+                            /// Note that kernel will internally always set the full membership bit,
+                            /// although the interface name does not reflect that. Usually the user
+                            /// would want to configure a full membership p-key with 0x8000 flag set.
                             pub fn p_key(self, p_key: i32) -> Self {
                             Self { builder: self.builder.property("p-key", p_key), }
                         }
 
+                            /// The interface name of the parent device of this device. Normally [`None`],
+                            /// but if the #NMSettingInfiniband:p_key property is set, then you must
+                            /// specify the base device by setting either this property or
+                            /// #NMSettingInfiniband:mac-address.
                             pub fn parent(self, parent: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("parent", parent.into()), }
                         }
 
+                            /// The IP-over-InfiniBand transport mode. Either "datagram" or
+                            /// "connected".
                             pub fn transport_mode(self, transport_mode: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("transport-mode", transport_mode.into()), }
                         }

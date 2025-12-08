@@ -9,6 +9,38 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// WiMax Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `mac-address`
+    ///  If specified, this connection will only apply to the WiMAX device whose
+    /// MAC address matches. This property does not change the MAC address of the
+    /// device (known as MAC spoofing).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `network-name`
+    ///  Network Service Provider (NSP) name of the WiMAX network this connection
+    /// should use.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingWimax")]
     pub struct SettingWimax(Object<ffi::NMSettingWimax, ffi::NMSettingWimaxClass>) @extends Setting;
 
@@ -18,6 +50,15 @@ glib::wrapper! {
 }
 
 impl SettingWimax {
+    /// Creates a new #NMSettingWimax object with default values.
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// WiMAX is no longer supported.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingWimax object
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wimax_new")]
@@ -37,6 +78,16 @@ impl SettingWimax {
             }
         
 
+    /// Returns the MAC address of a WiMAX device which this connection is locked
+    /// to.
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// WiMAX is no longer supported.
+    ///
+    /// # Returns
+    ///
+    /// the MAC address
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wimax_get_mac_address")]
@@ -48,6 +99,16 @@ impl SettingWimax {
         }
     }
 
+    /// Returns the WiMAX NSP name (ex "Sprint" or "CLEAR") which identifies the
+    /// specific WiMAX network this setting describes a connection to.
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// WiMAX is no longer supported.
+    ///
+    /// # Returns
+    ///
+    /// the WiMAX NSP name
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_wimax_get_network_name")]
@@ -59,12 +120,25 @@ impl SettingWimax {
         }
     }
 
+    /// If specified, this connection will only apply to the WiMAX device whose
+    /// MAC address matches. This property does not change the MAC address of the
+    /// device (known as MAC spoofing).
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// WiMAX is no longer supported.
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[doc(alias = "mac-address")]
     pub fn set_mac_address(&self, mac_address: Option<&str>) {
         ObjectExt::set_property(self,"mac-address", mac_address)
     }
 
+    /// Network Service Provider (NSP) name of the WiMAX network this connection
+    /// should use.
+    ///
+    /// # Deprecated since 1.2
+    ///
+    /// WiMAX is no longer supported.
     #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     #[doc(alias = "network-name")]
     pub fn set_network_name(&self, network_name: Option<&str>) {
@@ -120,11 +194,18 @@ pub struct SettingWimaxBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// If specified, this connection will only apply to the WiMAX device whose
+                            /// MAC address matches. This property does not change the MAC address of the
+                            /// device (known as MAC spoofing).
+                            /// WiMAX is no longer supported.
                             #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     pub fn mac_address(self, mac_address: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("mac-address", mac_address.into()), }
                         }
 
+                            /// Network Service Provider (NSP) name of the WiMAX network this connection
+                            /// should use.
+                            /// WiMAX is no longer supported.
                             #[cfg_attr(feature = "v1_2", deprecated = "Since 1.2")]
     pub fn network_name(self, network_name: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("network-name", network_name.into()), }

@@ -9,6 +9,11 @@ use crate::{ffi,Setting};
 use glib::{prelude::*,translate::*};
 
 glib::wrapper! {
+    /// Dummy Link Settings
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingDummy")]
     pub struct SettingDummy(Object<ffi::NMSettingDummy, ffi::NMSettingDummyClass>) @extends Setting;
 
@@ -18,6 +23,11 @@ glib::wrapper! {
 }
 
 impl SettingDummy {
+    /// Creates a new #NMSettingDummy object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingDummy object
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     #[doc(alias = "nm_setting_dummy_new")]

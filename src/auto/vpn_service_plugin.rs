@@ -15,6 +15,67 @@ use std::boxed::Box as Box_;
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `service-name`
+    ///  The D-Bus service name of this plugin.
+    ///
+    /// Readable | Writeable | Construct Only
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the plugin.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `watch-peer`
+    ///  Whether to watch for D-Bus peer's changes.
+    ///
+    /// Readable | Writeable | Construct Only
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `config`
+    ///
+    ///
+    ///
+    /// #### `failure`
+    ///
+    ///
+    ///
+    /// #### `ip4-config`
+    ///
+    ///
+    ///
+    /// #### `ip6-config`
+    ///
+    ///
+    ///
+    /// #### `login-banner`
+    ///
+    ///
+    ///
+    /// #### `quit`
+    ///
+    ///
+    ///
+    /// #### `secrets-required`
+    ///
+    ///
+    ///
+    /// #### `state-changed`
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`VpnServicePluginExt`][trait@crate::prelude::VpnServicePluginExt], [`trait@gio::prelude::InitableExt`]
     #[doc(alias = "NMVpnServicePlugin")]
     pub struct VpnServicePlugin(Object<ffi::NMVpnServicePlugin, ffi::NMVpnServicePluginClass>) @implements gio::Initable;
 
@@ -48,6 +109,11 @@ impl VpnServicePlugin {
     //}
 }
 
+/// Trait containing all [`struct@VpnServicePlugin`] methods.
+///
+/// # Implementors
+///
+/// [`VpnServicePlugin`][struct@crate::VpnServicePlugin]
 pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
     #[doc(alias = "nm_vpn_service_plugin_disconnect")]
     fn disconnect(&self) -> Result<(), glib::Error> {
@@ -77,6 +143,15 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
     //    unsafe { TODO: call ffi:nm_vpn_service_plugin_get_connection() }
     //}
 
+    /// Called by VPN plugin implementations to signal to NetworkManager that secrets
+    /// are required during the connection process.  This signal may be used to
+    /// request new secrets when the secrets originally provided by NetworkManager
+    /// are insufficient, or the VPN process indicates that it needs additional
+    /// information to complete the request.
+    /// ## `message`
+    /// an information message about why secrets are required, if any
+    /// ## `hints`
+    /// VPN specific secret names for required new secrets
     #[doc(alias = "nm_vpn_service_plugin_secrets_required")]
     fn secrets_required(&self, message: &str, hints: &str) {
         unsafe {
@@ -113,6 +188,12 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
         }
     }
 
+    /// Shutdown the @self and disconnect from D-Bus. After this,
+    /// the plugin instance is dead and should no longer be used.
+    /// It ensures to get no more requests from D-Bus. In principle,
+    /// you don't need to shutdown the plugin, disposing the instance
+    /// has the same effect. However, this gives a way to deactivate
+    /// the plugin before giving up the last reference.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_vpn_service_plugin_shutdown")]
@@ -122,6 +203,7 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
         }
     }
 
+    /// The D-Bus service name of this plugin.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "service-name")]
@@ -129,18 +211,21 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
         ObjectExt::property(self.as_ref(), "service-name")
     }
 
+    /// The state of the plugin.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     fn state(&self) -> VpnServiceState {
         ObjectExt::property(self.as_ref(), "state")
     }
 
+    /// The state of the plugin.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     fn set_state(&self, state: VpnServiceState) {
         ObjectExt::set_property(self.as_ref(), "state", state)
     }
 
+    /// Whether to watch for D-Bus peer's changes.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "watch-peer")]

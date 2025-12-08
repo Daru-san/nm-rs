@@ -9,6 +9,224 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// GSM-based Mobile Broadband Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `apn`
+    ///  The GPRS Access Point Name specifying the APN used when establishing a
+    /// data session with the GSM-based network.  The APN often determines how
+    /// the user will be billed for their network usage and whether the user has
+    /// access to the Internet or just a provider-specific walled-garden, so it
+    /// is important to use the correct APN for the user's mobile broadband plan.
+    /// The APN may only be composed of the characters a-z, 0-9, ., and - per GSM
+    /// 03.60 Section 14.9.
+    ///
+    /// If the APN is unset (the default) then it may be detected based on
+    /// "auto-config" setting. The property can be explicitly set to the
+    /// empty string to prevent that and use no APN.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `auto-config`
+    ///  When [`true`], the settings such as APN, username, or password will
+    /// default to values that match the network the modem will register
+    /// to in the Mobile Broadband Provider database.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `device-id`
+    ///  The device unique identifier (as given by the WWAN management service)
+    /// which this connection applies to.  If given, the connection will only
+    /// apply to the specified device.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `home-only`
+    ///  When [`true`], only connections to the home network will be allowed.
+    /// Connections to roaming networks will not be made.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-apn`
+    ///  For LTE modems, this sets the APN for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-configure`
+    ///  For LTE modems, this setting determines whether the initial EPS bearer
+    /// shall be configured when bringing up the connection.  It is inferred TRUE
+    /// if initial-eps-bearer-apn is set.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-noauth`
+    ///  For LTE modems, this sets NOAUTH authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
+    /// If [`true`], do not require the other side to authenticate itself to the client.
+    /// If [`false`], require authentication from the remote side.  In almost all cases,
+    /// this should be [`true`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-password`
+    ///  For LTE modems, this sets the password for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-password-flags`
+    ///  Flags indicating how to handle the #NMSettingGsm:initial-eps-bearer-password property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-refuse-chap`
+    ///  For LTE modems, this disables CHAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-refuse-eap`
+    ///  For LTE modems, this disables EAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-refuse-mschap`
+    ///  For LTE modems, this disables MSCHAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-refuse-mschapv2`
+    ///  For LTE modems, this disables MSCHAPV2 authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-refuse-pap`
+    ///  For LTE modems, this disables PAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `initial-eps-bearer-username`
+    ///  For LTE modems, this sets the username for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mtu`
+    ///  If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple frames.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `network-id`
+    ///  The Network ID (GSM LAI format, ie MCC-MNC) to force specific network
+    /// registration.  If the Network ID is specified, NetworkManager will
+    /// attempt to force the device to register only on the specified network.
+    /// This can be used to ensure that the device does not roam when direct
+    /// roaming control of the device is not otherwise possible.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `number`
+    ///  Legacy setting that used to help establishing PPP data sessions for
+    /// GSM-based modems.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `password`
+    ///  The password used to authenticate with the network, if required.  Many
+    /// providers do not require a password, or accept any password.  But if a
+    /// password is required, it is specified here.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `password-flags`
+    ///  Flags indicating how to handle the #NMSettingGsm:password property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `pin`
+    ///  If the SIM is locked with a PIN it must be unlocked before any other
+    /// operations are requested.  Specify the PIN here to allow operation of the
+    /// device.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `pin-flags`
+    ///  Flags indicating how to handle the #NMSettingGsm:pin property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `sim-id`
+    ///  The SIM card unique identifier (as given by the WWAN management service)
+    /// which this connection applies to.  If given, the connection will apply
+    /// to any device also allowed by #NMSettingGsm:device-id which contains a
+    /// SIM card matching the given identifier.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `sim-operator-id`
+    ///  A MCC/MNC string like "310260" or "21601" identifying the specific
+    /// mobile network operator which this connection applies to.  If given,
+    /// the connection will apply to any device also allowed by
+    /// #NMSettingGsm:device-id and #NMSettingGsm:sim-id which contains a SIM
+    /// card provisioned by the given operator.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `username`
+    ///  The username used to authenticate with the network, if required.  Many
+    /// providers do not require a username, or accept any username.  But if a
+    /// username is required, it is specified here.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingGsm")]
     pub struct SettingGsm(Object<ffi::NMSettingGsm, ffi::NMSettingGsmClass>) @extends Setting;
 
@@ -18,6 +236,11 @@ glib::wrapper! {
 }
 
 impl SettingGsm {
+    /// Creates a new #NMSettingGsm object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingGsm object
     #[doc(alias = "nm_setting_gsm_new")]
     pub fn new() -> SettingGsm {
         assert_initialized_main_thread!();
@@ -35,6 +258,10 @@ impl SettingGsm {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:apn property of the setting
     #[doc(alias = "nm_setting_gsm_get_apn")]
     #[doc(alias = "get_apn")]
     pub fn apn(&self) -> glib::GString {
@@ -43,6 +270,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:auto-config property of the setting
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "nm_setting_gsm_get_auto_config")]
@@ -54,6 +285,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:device-id property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_gsm_get_device_id")]
@@ -65,6 +300,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:home-only property of the setting
     #[doc(alias = "nm_setting_gsm_get_home_only")]
     #[doc(alias = "get_home_only")]
     #[doc(alias = "home-only")]
@@ -74,6 +313,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:initial-eps-bearer-apn property of the setting
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_apn")]
@@ -84,6 +327,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:initial-eps-bearer-configure property of the setting
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_config")]
@@ -94,6 +341,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// For LTE modems, the #NMSettingGsm:initial-eps-noauth property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_noauth")]
@@ -104,6 +355,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:initial-eps-bearer-password property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_password")]
@@ -114,6 +369,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// For LTE modems, the #NMSettingGsm:initial-eps-refuse-chap property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_refuse_chap")]
@@ -124,6 +383,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// For LTE modems, the #NMSettingGsm:initial-eps-refuse-eap property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_refuse_eap")]
@@ -134,6 +397,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// For LTE modems, the #NMSettingGsm:initial-eps-refuse-mschap property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_refuse_mschap")]
@@ -144,6 +411,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// For LTE modems, the #NMSettingGsm:initial-eps-refuse-mschapv2 property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_refuse_mschapv2")]
@@ -154,6 +425,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// For LTE modems, the #NMSettingGsm:initial-eps-refuse-pap property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_refuse_pap")]
@@ -164,6 +439,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:initial-eps-bearer-username property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_gsm_get_initial_eps_username")]
@@ -174,6 +453,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:mtu property of the setting
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     #[doc(alias = "nm_setting_gsm_get_mtu")]
@@ -184,6 +467,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:network-id property of the setting
     #[doc(alias = "nm_setting_gsm_get_network_id")]
     #[doc(alias = "get_network_id")]
     #[doc(alias = "network-id")]
@@ -193,6 +480,14 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Deprecated since 1.16
+    ///
+    /// User-provided values for this setting are no longer used.
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:number property of the setting
     #[cfg_attr(feature = "v1_16", deprecated = "Since 1.16")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_gsm_get_number")]
@@ -203,6 +498,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:password property of the setting
     #[doc(alias = "nm_setting_gsm_get_password")]
     #[doc(alias = "get_password")]
     pub fn password(&self) -> glib::GString {
@@ -211,6 +510,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSecretFlags pertaining to the #NMSettingGsm:password
     #[doc(alias = "nm_setting_gsm_get_password_flags")]
     #[doc(alias = "get_password_flags")]
     #[doc(alias = "password-flags")]
@@ -220,6 +523,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:pin property of the setting
     #[doc(alias = "nm_setting_gsm_get_pin")]
     #[doc(alias = "get_pin")]
     pub fn pin(&self) -> glib::GString {
@@ -228,6 +535,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSecretFlags pertaining to the #NMSettingGsm:pin
     #[doc(alias = "nm_setting_gsm_get_pin_flags")]
     #[doc(alias = "get_pin_flags")]
     #[doc(alias = "pin-flags")]
@@ -237,6 +548,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:sim-id property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_gsm_get_sim_id")]
@@ -248,6 +563,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:sim-operator-id property of the setting
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_gsm_get_sim_operator_id")]
@@ -259,6 +578,10 @@ impl SettingGsm {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingGsm:username property of the setting
     #[doc(alias = "nm_setting_gsm_get_username")]
     #[doc(alias = "get_username")]
     pub fn username(&self) -> glib::GString {
@@ -267,10 +590,24 @@ impl SettingGsm {
         }
     }
 
+    /// The GPRS Access Point Name specifying the APN used when establishing a
+    /// data session with the GSM-based network.  The APN often determines how
+    /// the user will be billed for their network usage and whether the user has
+    /// access to the Internet or just a provider-specific walled-garden, so it
+    /// is important to use the correct APN for the user's mobile broadband plan.
+    /// The APN may only be composed of the characters a-z, 0-9, ., and - per GSM
+    /// 03.60 Section 14.9.
+    ///
+    /// If the APN is unset (the default) then it may be detected based on
+    /// "auto-config" setting. The property can be explicitly set to the
+    /// empty string to prevent that and use no APN.
     pub fn set_apn(&self, apn: Option<&str>) {
         ObjectExt::set_property(self,"apn", apn)
     }
 
+    /// When [`true`], the settings such as APN, username, or password will
+    /// default to values that match the network the modem will register
+    /// to in the Mobile Broadband Provider database.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "auto-config")]
@@ -278,6 +615,9 @@ impl SettingGsm {
         ObjectExt::set_property(self,"auto-config", auto_config)
     }
 
+    /// The device unique identifier (as given by the WWAN management service)
+    /// which this connection applies to.  If given, the connection will only
+    /// apply to the specified device.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "device-id")]
@@ -285,11 +625,16 @@ impl SettingGsm {
         ObjectExt::set_property(self,"device-id", device_id)
     }
 
+    /// When [`true`], only connections to the home network will be allowed.
+    /// Connections to roaming networks will not be made.
     #[doc(alias = "home-only")]
     pub fn set_home_only(&self, home_only: bool) {
         ObjectExt::set_property(self,"home-only", home_only)
     }
 
+    /// For LTE modems, this sets the APN for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "initial-eps-bearer-apn")]
@@ -297,6 +642,9 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-apn")
     }
 
+    /// For LTE modems, this sets the APN for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "initial-eps-bearer-apn")]
@@ -304,6 +652,9 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-apn", initial_eps_bearer_apn)
     }
 
+    /// For LTE modems, this setting determines whether the initial EPS bearer
+    /// shall be configured when bringing up the connection.  It is inferred TRUE
+    /// if initial-eps-bearer-apn is set.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "initial-eps-bearer-configure")]
@@ -311,6 +662,9 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-configure")
     }
 
+    /// For LTE modems, this setting determines whether the initial EPS bearer
+    /// shall be configured when bringing up the connection.  It is inferred TRUE
+    /// if initial-eps-bearer-apn is set.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "initial-eps-bearer-configure")]
@@ -318,6 +672,11 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-configure", initial_eps_bearer_configure)
     }
 
+    /// For LTE modems, this sets NOAUTH authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
+    /// If [`true`], do not require the other side to authenticate itself to the client.
+    /// If [`false`], require authentication from the remote side.  In almost all cases,
+    /// this should be [`true`].
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-noauth")]
@@ -325,6 +684,11 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-noauth")
     }
 
+    /// For LTE modems, this sets NOAUTH authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
+    /// If [`true`], do not require the other side to authenticate itself to the client.
+    /// If [`false`], require authentication from the remote side.  In almost all cases,
+    /// this should be [`true`].
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-noauth")]
@@ -332,6 +696,9 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-noauth", initial_eps_bearer_noauth)
     }
 
+    /// For LTE modems, this sets the password for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-password")]
@@ -339,6 +706,9 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-password")
     }
 
+    /// For LTE modems, this sets the password for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-password")]
@@ -346,6 +716,7 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-password", initial_eps_bearer_password)
     }
 
+    /// Flags indicating how to handle the #NMSettingGsm:initial-eps-bearer-password property.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-password-flags")]
@@ -353,6 +724,7 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-password-flags")
     }
 
+    /// Flags indicating how to handle the #NMSettingGsm:initial-eps-bearer-password property.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-password-flags")]
@@ -360,6 +732,8 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-password-flags", initial_eps_bearer_password_flags)
     }
 
+    /// For LTE modems, this disables CHAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-chap")]
@@ -367,6 +741,8 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-refuse-chap")
     }
 
+    /// For LTE modems, this disables CHAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-chap")]
@@ -374,6 +750,8 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-refuse-chap", initial_eps_bearer_refuse_chap)
     }
 
+    /// For LTE modems, this disables EAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-eap")]
@@ -381,6 +759,8 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-refuse-eap")
     }
 
+    /// For LTE modems, this disables EAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-eap")]
@@ -388,6 +768,8 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-refuse-eap", initial_eps_bearer_refuse_eap)
     }
 
+    /// For LTE modems, this disables MSCHAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-mschap")]
@@ -395,6 +777,8 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-refuse-mschap")
     }
 
+    /// For LTE modems, this disables MSCHAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-mschap")]
@@ -402,6 +786,8 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-refuse-mschap", initial_eps_bearer_refuse_mschap)
     }
 
+    /// For LTE modems, this disables MSCHAPV2 authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-mschapv2")]
@@ -409,6 +795,8 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-refuse-mschapv2")
     }
 
+    /// For LTE modems, this disables MSCHAPV2 authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-mschapv2")]
@@ -416,6 +804,8 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-refuse-mschapv2", initial_eps_bearer_refuse_mschapv2)
     }
 
+    /// For LTE modems, this disables PAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-pap")]
@@ -423,6 +813,8 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-refuse-pap")
     }
 
+    /// For LTE modems, this disables PAP authentication method for the initial EPS bearer that is set
+    /// up when attaching to the network.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-refuse-pap")]
@@ -430,6 +822,9 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-refuse-pap", initial_eps_bearer_refuse_pap)
     }
 
+    /// For LTE modems, this sets the username for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-username")]
@@ -437,6 +832,9 @@ impl SettingGsm {
         ObjectExt::property(self, "initial-eps-bearer-username")
     }
 
+    /// For LTE modems, this sets the username for the initial EPS bearer that is set
+    /// up when attaching to the network.  Setting this parameter implies
+    /// initial-eps-bearer-configure to be TRUE.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "initial-eps-bearer-username")]
@@ -444,40 +842,65 @@ impl SettingGsm {
         ObjectExt::set_property(self,"initial-eps-bearer-username", initial_eps_bearer_username)
     }
 
+    /// If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple frames.
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     pub fn set_mtu(&self, mtu: u32) {
         ObjectExt::set_property(self,"mtu", mtu)
     }
 
+    /// The Network ID (GSM LAI format, ie MCC-MNC) to force specific network
+    /// registration.  If the Network ID is specified, NetworkManager will
+    /// attempt to force the device to register only on the specified network.
+    /// This can be used to ensure that the device does not roam when direct
+    /// roaming control of the device is not otherwise possible.
     #[doc(alias = "network-id")]
     pub fn set_network_id(&self, network_id: Option<&str>) {
         ObjectExt::set_property(self,"network-id", network_id)
     }
 
+    /// Legacy setting that used to help establishing PPP data sessions for
+    /// GSM-based modems.
+    ///
+    /// # Deprecated since 1.16
+    ///
+    /// User-provided values for this setting are no longer used.
     #[cfg_attr(feature = "v1_16", deprecated = "Since 1.16")]
     pub fn set_number(&self, number: Option<&str>) {
         ObjectExt::set_property(self,"number", number)
     }
 
+    /// The password used to authenticate with the network, if required.  Many
+    /// providers do not require a password, or accept any password.  But if a
+    /// password is required, it is specified here.
     pub fn set_password(&self, password: Option<&str>) {
         ObjectExt::set_property(self,"password", password)
     }
 
+    /// Flags indicating how to handle the #NMSettingGsm:password property.
     #[doc(alias = "password-flags")]
     pub fn set_password_flags(&self, password_flags: SettingSecretFlags) {
         ObjectExt::set_property(self,"password-flags", password_flags)
     }
 
+    /// If the SIM is locked with a PIN it must be unlocked before any other
+    /// operations are requested.  Specify the PIN here to allow operation of the
+    /// device.
     pub fn set_pin(&self, pin: Option<&str>) {
         ObjectExt::set_property(self,"pin", pin)
     }
 
+    /// Flags indicating how to handle the #NMSettingGsm:pin property.
     #[doc(alias = "pin-flags")]
     pub fn set_pin_flags(&self, pin_flags: SettingSecretFlags) {
         ObjectExt::set_property(self,"pin-flags", pin_flags)
     }
 
+    /// The SIM card unique identifier (as given by the WWAN management service)
+    /// which this connection applies to.  If given, the connection will apply
+    /// to any device also allowed by #NMSettingGsm:device-id which contains a
+    /// SIM card matching the given identifier.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "sim-id")]
@@ -485,6 +908,11 @@ impl SettingGsm {
         ObjectExt::set_property(self,"sim-id", sim_id)
     }
 
+    /// A MCC/MNC string like "310260" or "21601" identifying the specific
+    /// mobile network operator which this connection applies to.  If given,
+    /// the connection will apply to any device also allowed by
+    /// #NMSettingGsm:device-id and #NMSettingGsm:sim-id which contains a SIM
+    /// card provisioned by the given operator.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "sim-operator-id")]
@@ -492,6 +920,9 @@ impl SettingGsm {
         ObjectExt::set_property(self,"sim-operator-id", sim_operator_id)
     }
 
+    /// The username used to authenticate with the network, if required.  Many
+    /// providers do not require a username, or accept any username.  But if a
+    /// username is required, it is specified here.
     pub fn set_username(&self, username: Option<&str>) {
         ObjectExt::set_property(self,"username", username)
     }
@@ -875,135 +1306,212 @@ pub struct SettingGsmBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The GPRS Access Point Name specifying the APN used when establishing a
+                            /// data session with the GSM-based network.  The APN often determines how
+                            /// the user will be billed for their network usage and whether the user has
+                            /// access to the Internet or just a provider-specific walled-garden, so it
+                            /// is important to use the correct APN for the user's mobile broadband plan.
+                            /// The APN may only be composed of the characters a-z, 0-9, ., and - per GSM
+                            /// 03.60 Section 14.9.
+                            ///
+                            /// If the APN is unset (the default) then it may be detected based on
+                            /// "auto-config" setting. The property can be explicitly set to the
+                            /// empty string to prevent that and use no APN.
                             pub fn apn(self, apn: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("apn", apn.into()), }
                         }
 
+                            /// When [`true`], the settings such as APN, username, or password will
+                            /// default to values that match the network the modem will register
+                            /// to in the Mobile Broadband Provider database.
                             #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     pub fn auto_config(self, auto_config: bool) -> Self {
                             Self { builder: self.builder.property("auto-config", auto_config), }
                         }
 
+                            /// The device unique identifier (as given by the WWAN management service)
+                            /// which this connection applies to.  If given, the connection will only
+                            /// apply to the specified device.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn device_id(self, device_id: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("device-id", device_id.into()), }
                         }
 
+                            /// When [`true`], only connections to the home network will be allowed.
+                            /// Connections to roaming networks will not be made.
                             pub fn home_only(self, home_only: bool) -> Self {
                             Self { builder: self.builder.property("home-only", home_only), }
                         }
 
+                            /// For LTE modems, this sets the APN for the initial EPS bearer that is set
+                            /// up when attaching to the network.  Setting this parameter implies
+                            /// initial-eps-bearer-configure to be TRUE.
                             #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn initial_eps_bearer_apn(self, initial_eps_bearer_apn: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-apn", initial_eps_bearer_apn.into()), }
                         }
 
+                            /// For LTE modems, this setting determines whether the initial EPS bearer
+                            /// shall be configured when bringing up the connection.  It is inferred TRUE
+                            /// if initial-eps-bearer-apn is set.
                             #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn initial_eps_bearer_configure(self, initial_eps_bearer_configure: bool) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-configure", initial_eps_bearer_configure), }
                         }
 
+                            /// For LTE modems, this sets NOAUTH authentication method for the initial EPS bearer that is set
+                            /// up when attaching to the network.
+                            /// If [`true`], do not require the other side to authenticate itself to the client.
+                            /// If [`false`], require authentication from the remote side.  In almost all cases,
+                            /// this should be [`true`].
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_noauth(self, initial_eps_bearer_noauth: bool) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-noauth", initial_eps_bearer_noauth), }
                         }
 
+                            /// For LTE modems, this sets the password for the initial EPS bearer that is set
+                            /// up when attaching to the network.  Setting this parameter implies
+                            /// initial-eps-bearer-configure to be TRUE.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_password(self, initial_eps_bearer_password: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-password", initial_eps_bearer_password.into()), }
                         }
 
+                            /// Flags indicating how to handle the #NMSettingGsm:initial-eps-bearer-password property.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_password_flags(self, initial_eps_bearer_password_flags: SettingSecretFlags) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-password-flags", initial_eps_bearer_password_flags), }
                         }
 
+                            /// For LTE modems, this disables CHAP authentication method for the initial EPS bearer that is set
+                            /// up when attaching to the network.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_refuse_chap(self, initial_eps_bearer_refuse_chap: bool) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-refuse-chap", initial_eps_bearer_refuse_chap), }
                         }
 
+                            /// For LTE modems, this disables EAP authentication method for the initial EPS bearer that is set
+                            /// up when attaching to the network.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_refuse_eap(self, initial_eps_bearer_refuse_eap: bool) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-refuse-eap", initial_eps_bearer_refuse_eap), }
                         }
 
+                            /// For LTE modems, this disables MSCHAP authentication method for the initial EPS bearer that is set
+                            /// up when attaching to the network.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_refuse_mschap(self, initial_eps_bearer_refuse_mschap: bool) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-refuse-mschap", initial_eps_bearer_refuse_mschap), }
                         }
 
+                            /// For LTE modems, this disables MSCHAPV2 authentication method for the initial EPS bearer that is set
+                            /// up when attaching to the network.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_refuse_mschapv2(self, initial_eps_bearer_refuse_mschapv2: bool) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-refuse-mschapv2", initial_eps_bearer_refuse_mschapv2), }
                         }
 
+                            /// For LTE modems, this disables PAP authentication method for the initial EPS bearer that is set
+                            /// up when attaching to the network.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_refuse_pap(self, initial_eps_bearer_refuse_pap: bool) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-refuse-pap", initial_eps_bearer_refuse_pap), }
                         }
 
+                            /// For LTE modems, this sets the username for the initial EPS bearer that is set
+                            /// up when attaching to the network.  Setting this parameter implies
+                            /// initial-eps-bearer-configure to be TRUE.
                             #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn initial_eps_bearer_username(self, initial_eps_bearer_username: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("initial-eps-bearer-username", initial_eps_bearer_username.into()), }
                         }
 
+                            /// If non-zero, only transmit packets of the specified size or smaller,
+                            /// breaking larger packets up into multiple frames.
                             #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     pub fn mtu(self, mtu: u32) -> Self {
                             Self { builder: self.builder.property("mtu", mtu), }
                         }
 
+                            /// The Network ID (GSM LAI format, ie MCC-MNC) to force specific network
+                            /// registration.  If the Network ID is specified, NetworkManager will
+                            /// attempt to force the device to register only on the specified network.
+                            /// This can be used to ensure that the device does not roam when direct
+                            /// roaming control of the device is not otherwise possible.
                             pub fn network_id(self, network_id: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("network-id", network_id.into()), }
                         }
 
+                            /// Legacy setting that used to help establishing PPP data sessions for
+                            /// GSM-based modems.
+                            /// User-provided values for this setting are no longer used.
                             #[cfg_attr(feature = "v1_16", deprecated = "Since 1.16")]
     pub fn number(self, number: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("number", number.into()), }
                         }
 
+                            /// The password used to authenticate with the network, if required.  Many
+                            /// providers do not require a password, or accept any password.  But if a
+                            /// password is required, it is specified here.
                             pub fn password(self, password: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("password", password.into()), }
                         }
 
+                            /// Flags indicating how to handle the #NMSettingGsm:password property.
                             pub fn password_flags(self, password_flags: SettingSecretFlags) -> Self {
                             Self { builder: self.builder.property("password-flags", password_flags), }
                         }
 
+                            /// If the SIM is locked with a PIN it must be unlocked before any other
+                            /// operations are requested.  Specify the PIN here to allow operation of the
+                            /// device.
                             pub fn pin(self, pin: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("pin", pin.into()), }
                         }
 
+                            /// Flags indicating how to handle the #NMSettingGsm:pin property.
                             pub fn pin_flags(self, pin_flags: SettingSecretFlags) -> Self {
                             Self { builder: self.builder.property("pin-flags", pin_flags), }
                         }
 
+                            /// The SIM card unique identifier (as given by the WWAN management service)
+                            /// which this connection applies to.  If given, the connection will apply
+                            /// to any device also allowed by #NMSettingGsm:device-id which contains a
+                            /// SIM card matching the given identifier.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn sim_id(self, sim_id: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("sim-id", sim_id.into()), }
                         }
 
+                            /// A MCC/MNC string like "310260" or "21601" identifying the specific
+                            /// mobile network operator which this connection applies to.  If given,
+                            /// the connection will apply to any device also allowed by
+                            /// #NMSettingGsm:device-id and #NMSettingGsm:sim-id which contains a SIM
+                            /// card provisioned by the given operator.
                             #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn sim_operator_id(self, sim_operator_id: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("sim-operator-id", sim_operator_id.into()), }
                         }
 
+                            /// The username used to authenticate with the network, if required.  Many
+                            /// providers do not require a username, or accept any username.  But if a
+                            /// username is required, it is specified here.
                             pub fn username(self, username: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("username", username.into()), }
                         }

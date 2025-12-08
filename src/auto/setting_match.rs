@@ -8,6 +8,92 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Match settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `driver`
+    ///  A list of driver names to match. Each element is a shell wildcard pattern.
+    ///
+    /// See NMSettingMatch:interface-name for how special characters '|', '&',
+    /// '!' and '\\' are used for optional and mandatory matches and inverting the
+    /// pattern.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `interface-name`
+    ///  A list of interface names to match. Each element is a shell wildcard
+    /// pattern.
+    ///
+    /// An element can be prefixed with a pipe symbol (|) or an ampersand (&).
+    /// The former means that the element is optional and the latter means that
+    /// it is mandatory. If there are any optional elements, than the match
+    /// evaluates to true if at least one of the optional element matches
+    /// (logical OR). If there are any mandatory elements, then they all
+    /// must match (logical AND). By default, an element is optional. This means
+    /// that an element "foo" behaves the same as "|foo". An element can also be inverted
+    /// with exclamation mark (!) between the pipe symbol (or the ampersand) and before
+    /// the pattern. Note that "!foo" is a shortcut for the mandatory match "&!foo". Finally,
+    /// a backslash can be used at the beginning of the element (after the optional special characters)
+    /// to escape the start of the pattern. For example, "&\\!a" is an mandatory match for literally "!a".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `kernel-command-line`
+    ///  A list of kernel command line arguments to match. This may be used to check
+    /// whether a specific kernel command line option is set (or unset, if prefixed with
+    /// the exclamation mark). The argument must either be a single word, or
+    /// an assignment (i.e. two words, joined by "="). In the former case the kernel
+    /// command line is searched for the word appearing as is, or as left hand side
+    /// of an assignment. In the latter case, the exact assignment is looked for
+    /// with right and left hand side matching. Wildcard patterns are not supported.
+    ///
+    /// See NMSettingMatch:interface-name for how special characters '|', '&',
+    /// '!' and '\\' are used for optional and mandatory matches and inverting the
+    /// match.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `path`
+    ///  A list of paths to match against the ID_PATH udev property of
+    /// devices. ID_PATH represents the topological persistent path of a
+    /// device. It typically contains a subsystem string (pci, usb, platform,
+    /// etc.) and a subsystem-specific identifier.
+    ///
+    /// For PCI devices the path has the form
+    /// "pci-$domain:$bus:$device.$function", where each variable is an
+    /// hexadecimal value; for example "pci-0000:0a:00.0".
+    ///
+    /// The path of a device can be obtained with "udevadm info
+    /// /sys/class/net/$dev | grep ID_PATH=" or by looking at the "path"
+    /// property exported by NetworkManager ("nmcli -f general.path device
+    /// show $dev").
+    ///
+    /// Each element of the list is a shell wildcard pattern.
+    ///
+    /// See NMSettingMatch:interface-name for how special characters '|', '&',
+    /// '!' and '\\' are used for optional and mandatory matches and inverting the
+    /// pattern.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingMatch")]
     pub struct SettingMatch(Object<ffi::NMSettingMatch, ffi::NMSettingMatchClass>) @extends Setting;
 
@@ -17,6 +103,16 @@ glib::wrapper! {
 }
 
 impl SettingMatch {
+    /// Creates a new #NMSettingMatch object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingMatch object
+    ///
+    /// Note that this function was present in header files since version 1.14.
+    /// But due to a bug the symbol is only exposed and usable since version 1.32.
+    /// As workaround, use g_object_new(NM_TYPE_SETTING_MATCH) which works with all
+    /// versions since 1.14.
     #[cfg(feature = "v1_32")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_32")))]
     #[doc(alias = "nm_setting_match_new")]
@@ -36,6 +132,9 @@ impl SettingMatch {
             }
         
 
+    /// Adds a new driver to the setting.
+    /// ## `driver`
+    /// the driver to add
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_add_driver")]
@@ -45,6 +144,9 @@ impl SettingMatch {
         }
     }
 
+    /// Adds a new interface name to the setting.
+    /// ## `interface_name`
+    /// the interface name to add
     #[doc(alias = "nm_setting_match_add_interface_name")]
     pub fn add_interface_name(&self, interface_name: &str) {
         unsafe {
@@ -52,6 +154,9 @@ impl SettingMatch {
         }
     }
 
+    /// Adds a new kernel command line argument to the setting.
+    /// ## `kernel_command_line`
+    /// the kernel command line argument to add
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_add_kernel_command_line")]
@@ -61,6 +166,9 @@ impl SettingMatch {
         }
     }
 
+    /// Adds a new path to the setting.
+    /// ## `path`
+    /// the path to add
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_add_path")]
@@ -70,6 +178,7 @@ impl SettingMatch {
         }
     }
 
+    /// Removes all configured drivers.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_clear_drivers")]
@@ -79,6 +188,7 @@ impl SettingMatch {
         }
     }
 
+    /// Removes all configured interface names.
     #[doc(alias = "nm_setting_match_clear_interface_names")]
     pub fn clear_interface_names(&self) {
         unsafe {
@@ -86,6 +196,7 @@ impl SettingMatch {
         }
     }
 
+    /// Removes all configured kernel command line arguments.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_clear_kernel_command_lines")]
@@ -95,6 +206,7 @@ impl SettingMatch {
         }
     }
 
+    /// Removes all configured paths.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_clear_paths")]
@@ -104,6 +216,13 @@ impl SettingMatch {
         }
     }
 
+    /// Since 1.46, access at index "len" is allowed and returns NULL.
+    /// ## `idx`
+    /// index number of the driver to return
+    ///
+    /// # Returns
+    ///
+    /// the driver at index @idx
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_driver")]
@@ -114,6 +233,11 @@ impl SettingMatch {
         }
     }
 
+    /// Returns all the drivers.
+    ///
+    /// # Returns
+    ///
+    /// the configured drivers.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_drivers")]
@@ -126,6 +250,13 @@ impl SettingMatch {
         }
     }
 
+    /// Since 1.46, access at index "len" is allowed and returns NULL.
+    /// ## `idx`
+    /// index number of the DNS search domain to return
+    ///
+    /// # Returns
+    ///
+    /// the interface name at index @idx
     #[doc(alias = "nm_setting_match_get_interface_name")]
     #[doc(alias = "get_interface_name")]
     #[doc(alias = "interface-name")]
@@ -135,6 +266,14 @@ impl SettingMatch {
         }
     }
 
+    /// Returns all the interface names.
+    ///
+    /// # Returns
+    ///
+    /// the NULL terminated list of
+    ///   configured interface names.
+    ///
+    /// Before 1.26, the returned array was not [`None`] terminated and you MUST provide a length.
     #[doc(alias = "nm_setting_match_get_interface_names")]
     #[doc(alias = "get_interface_names")]
     pub fn interface_names(&self) -> Vec<glib::GString> {
@@ -145,6 +284,13 @@ impl SettingMatch {
         }
     }
 
+    /// Since 1.46, access at index "len" is allowed and returns NULL.
+    /// ## `idx`
+    /// index number of the kernel command line argument to return
+    ///
+    /// # Returns
+    ///
+    /// the kernel command line argument at index @idx
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_kernel_command_line")]
@@ -156,6 +302,12 @@ impl SettingMatch {
         }
     }
 
+    /// Returns all the kernel command line arguments.
+    ///
+    /// # Returns
+    ///
+    /// the configured kernel command
+    ///    line arguments.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_kernel_command_lines")]
@@ -168,6 +320,10 @@ impl SettingMatch {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured drivers
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_num_drivers")]
@@ -178,6 +334,10 @@ impl SettingMatch {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured interface names
     #[doc(alias = "nm_setting_match_get_num_interface_names")]
     #[doc(alias = "get_num_interface_names")]
     pub fn num_interface_names(&self) -> u32 {
@@ -186,6 +346,10 @@ impl SettingMatch {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured kernel command line arguments
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_num_kernel_command_lines")]
@@ -196,6 +360,10 @@ impl SettingMatch {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured paths
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_num_paths")]
@@ -206,6 +374,13 @@ impl SettingMatch {
         }
     }
 
+    /// Since 1.46, access at index "len" is allowed and returns NULL.
+    /// ## `idx`
+    /// index number of the path to return
+    ///
+    /// # Returns
+    ///
+    /// the path at index @idx
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_path")]
@@ -216,6 +391,11 @@ impl SettingMatch {
         }
     }
 
+    /// Returns all the paths.
+    ///
+    /// # Returns
+    ///
+    /// the configured paths.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_get_paths")]
@@ -228,6 +408,9 @@ impl SettingMatch {
         }
     }
 
+    /// Removes the driver at index @idx.
+    /// ## `idx`
+    /// index number of the driver
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_remove_driver")]
@@ -237,6 +420,13 @@ impl SettingMatch {
         }
     }
 
+    /// Removes @driver.
+    /// ## `driver`
+    /// the driver to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the driver was found and removed; [`false`] if it was not.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_remove_driver_by_value")]
@@ -246,6 +436,9 @@ impl SettingMatch {
         }
     }
 
+    /// Removes the interface name at index @idx.
+    /// ## `idx`
+    /// index number of the interface name
     #[doc(alias = "nm_setting_match_remove_interface_name")]
     pub fn remove_interface_name(&self, idx: i32) {
         unsafe {
@@ -253,6 +446,13 @@ impl SettingMatch {
         }
     }
 
+    /// Removes @interface_name.
+    /// ## `interface_name`
+    /// the interface name to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the interface name was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_match_remove_interface_name_by_value")]
     pub fn remove_interface_name_by_value(&self, interface_name: &str) -> bool {
         unsafe {
@@ -260,6 +460,9 @@ impl SettingMatch {
         }
     }
 
+    /// Removes the kernel command line argument at index @idx.
+    /// ## `idx`
+    /// index number of the kernel command line argument
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_remove_kernel_command_line")]
@@ -269,6 +472,13 @@ impl SettingMatch {
         }
     }
 
+    /// Removes @kernel_command_line.
+    /// ## `kernel_command_line`
+    /// the kernel command line argument name to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the kernel command line argument was found and removed; [`false`] if it was not.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_remove_kernel_command_line_by_value")]
@@ -278,6 +488,9 @@ impl SettingMatch {
         }
     }
 
+    /// Removes the path at index @idx.
+    /// ## `idx`
+    /// index number of the path
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_remove_path")]
@@ -287,6 +500,13 @@ impl SettingMatch {
         }
     }
 
+    /// Removes @path.
+    /// ## `path`
+    /// the path to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the path was found and removed; [`false`] if it was not.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_match_remove_path_by_value")]
@@ -296,12 +516,31 @@ impl SettingMatch {
         }
     }
 
+    /// A list of driver names to match. Each element is a shell wildcard pattern.
+    ///
+    /// See NMSettingMatch:interface-name for how special characters '|', '&',
+    /// '!' and '\\' are used for optional and mandatory matches and inverting the
+    /// pattern.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn set_driver(&self, driver: &[&str]) {
         ObjectExt::set_property(self,"driver", driver)
     }
 
+    /// A list of interface names to match. Each element is a shell wildcard
+    /// pattern.
+    ///
+    /// An element can be prefixed with a pipe symbol (|) or an ampersand (&).
+    /// The former means that the element is optional and the latter means that
+    /// it is mandatory. If there are any optional elements, than the match
+    /// evaluates to true if at least one of the optional element matches
+    /// (logical OR). If there are any mandatory elements, then they all
+    /// must match (logical AND). By default, an element is optional. This means
+    /// that an element "foo" behaves the same as "|foo". An element can also be inverted
+    /// with exclamation mark (!) between the pipe symbol (or the ampersand) and before
+    /// the pattern. Note that "!foo" is a shortcut for the mandatory match "&!foo". Finally,
+    /// a backslash can be used at the beginning of the element (after the optional special characters)
+    /// to escape the start of the pattern. For example, "&\\!a" is an mandatory match for literally "!a".
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "interface-name")]
@@ -309,6 +548,17 @@ impl SettingMatch {
         ObjectExt::set_property(self,"interface-name", interface_name)
     }
 
+    /// A list of kernel command line arguments to match. This may be used to check
+    /// whether a specific kernel command line option is set (or unset, if prefixed with
+    /// the exclamation mark). The argument must either be a single word, or
+    /// an assignment (i.e. two words, joined by "="). In the former case the kernel
+    /// command line is searched for the word appearing as is, or as left hand side
+    /// of an assignment. In the latter case, the exact assignment is looked for
+    /// with right and left hand side matching. Wildcard patterns are not supported.
+    ///
+    /// See NMSettingMatch:interface-name for how special characters '|', '&',
+    /// '!' and '\\' are used for optional and mandatory matches and inverting the
+    /// match.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "kernel-command-line")]
@@ -316,6 +566,25 @@ impl SettingMatch {
         ObjectExt::set_property(self,"kernel-command-line", kernel_command_line)
     }
 
+    /// A list of paths to match against the ID_PATH udev property of
+    /// devices. ID_PATH represents the topological persistent path of a
+    /// device. It typically contains a subsystem string (pci, usb, platform,
+    /// etc.) and a subsystem-specific identifier.
+    ///
+    /// For PCI devices the path has the form
+    /// "pci-$domain:$bus:$device.$function", where each variable is an
+    /// hexadecimal value; for example "pci-0000:0a:00.0".
+    ///
+    /// The path of a device can be obtained with "udevadm info
+    /// /sys/class/net/$dev | grep ID_PATH=" or by looking at the "path"
+    /// property exported by NetworkManager ("nmcli -f general.path device
+    /// show $dev").
+    ///
+    /// Each element of the list is a shell wildcard pattern.
+    ///
+    /// See NMSettingMatch:interface-name for how special characters '|', '&',
+    /// '!' and '\\' are used for optional and mandatory matches and inverting the
+    /// pattern.
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn set_path(&self, path: &[&str]) {
@@ -405,24 +674,73 @@ pub struct SettingMatchBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// A list of driver names to match. Each element is a shell wildcard pattern.
+                            ///
+                            /// See NMSettingMatch:interface-name for how special characters '|', '&',
+                            /// '!' and '\\' are used for optional and mandatory matches and inverting the
+                            /// pattern.
                             #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn driver(self, driver: impl Into<glib::StrV>) -> Self {
                             Self { builder: self.builder.property("driver", driver.into()), }
                         }
 
+                            /// A list of interface names to match. Each element is a shell wildcard
+                            /// pattern.
+                            ///
+                            /// An element can be prefixed with a pipe symbol (|) or an ampersand (&).
+                            /// The former means that the element is optional and the latter means that
+                            /// it is mandatory. If there are any optional elements, than the match
+                            /// evaluates to true if at least one of the optional element matches
+                            /// (logical OR). If there are any mandatory elements, then they all
+                            /// must match (logical AND). By default, an element is optional. This means
+                            /// that an element "foo" behaves the same as "|foo". An element can also be inverted
+                            /// with exclamation mark (!) between the pipe symbol (or the ampersand) and before
+                            /// the pattern. Note that "!foo" is a shortcut for the mandatory match "&!foo". Finally,
+                            /// a backslash can be used at the beginning of the element (after the optional special characters)
+                            /// to escape the start of the pattern. For example, "&\\!a" is an mandatory match for literally "!a".
                             #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn interface_name(self, interface_name: impl Into<glib::StrV>) -> Self {
                             Self { builder: self.builder.property("interface-name", interface_name.into()), }
                         }
 
+                            /// A list of kernel command line arguments to match. This may be used to check
+                            /// whether a specific kernel command line option is set (or unset, if prefixed with
+                            /// the exclamation mark). The argument must either be a single word, or
+                            /// an assignment (i.e. two words, joined by "="). In the former case the kernel
+                            /// command line is searched for the word appearing as is, or as left hand side
+                            /// of an assignment. In the latter case, the exact assignment is looked for
+                            /// with right and left hand side matching. Wildcard patterns are not supported.
+                            ///
+                            /// See NMSettingMatch:interface-name for how special characters '|', '&',
+                            /// '!' and '\\' are used for optional and mandatory matches and inverting the
+                            /// match.
                             #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn kernel_command_line(self, kernel_command_line: impl Into<glib::StrV>) -> Self {
                             Self { builder: self.builder.property("kernel-command-line", kernel_command_line.into()), }
                         }
 
+                            /// A list of paths to match against the ID_PATH udev property of
+                            /// devices. ID_PATH represents the topological persistent path of a
+                            /// device. It typically contains a subsystem string (pci, usb, platform,
+                            /// etc.) and a subsystem-specific identifier.
+                            ///
+                            /// For PCI devices the path has the form
+                            /// "pci-$domain:$bus:$device.$function", where each variable is an
+                            /// hexadecimal value; for example "pci-0000:0a:00.0".
+                            ///
+                            /// The path of a device can be obtained with "udevadm info
+                            /// /sys/class/net/$dev | grep ID_PATH=" or by looking at the "path"
+                            /// property exported by NetworkManager ("nmcli -f general.path device
+                            /// show $dev").
+                            ///
+                            /// Each element of the list is a shell wildcard pattern.
+                            ///
+                            /// See NMSettingMatch:interface-name for how special characters '|', '&',
+                            /// '!' and '\\' are used for optional and mandatory matches and inverting the
+                            /// pattern.
                             #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     pub fn path(self, path: impl Into<glib::StrV>) -> Self {

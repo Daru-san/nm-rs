@@ -21,6 +21,18 @@ glib::wrapper! {
 }
 
 impl IPAddress {
+    /// Creates a new #NMIPAddress object.
+    /// ## `family`
+    /// the IP address family (<literal>AF_INET</literal> or
+    ///   <literal>AF_INET6</literal>)
+    /// ## `addr`
+    /// the IP address
+    /// ## `prefix`
+    /// the address prefix length
+    ///
+    /// # Returns
+    ///
+    /// the new #NMIPAddress object, or [`None`] on error
     #[doc(alias = "nm_ip_address_new")]
     pub fn new(family: i32, addr: &str, prefix: u32) -> Result<IPAddress, glib::Error> {
         assert_initialized_main_thread!();
@@ -36,6 +48,19 @@ impl IPAddress {
     //    unsafe { TODO: call ffi:nm_ip_address_new_binary() }
     //}
 
+    /// Note that with @cmp_flags #NM_IP_ADDRESS_CMP_FLAGS_WITH_ATTRS, there
+    /// is no total order for comparing GVariant. That means, if the two addresses
+    /// only differ by their attributes, the sort order is undefined and the return
+    /// value only indicates equality.
+    /// ## `b`
+    /// the #NMIPAddress to compare @address to.
+    /// ## `cmp_flags`
+    /// the #NMIPAddressCmpFlags that indicate what to compare.
+    ///
+    /// # Returns
+    ///
+    /// 0 if the two objects have the same values (according to their flags)
+    ///   or a integer indicating the compare order.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "nm_ip_address_cmp_full")]
@@ -45,6 +70,15 @@ impl IPAddress {
         }
     }
 
+    /// Creates a copy of @self
+    ///
+    /// # Returns
+    ///
+    /// a copy of @self
+    ///
+    /// This API was part of public headers before 1.32.0 but
+    /// was erroneously not exported in the ABI. It is thus only
+    /// usable since 1.32.0.
     #[cfg(feature = "v1_32")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_32")))]
     #[doc(alias = "nm_ip_address_dup")]
@@ -62,6 +96,11 @@ impl IPAddress {
         }
     }
 
+    /// Gets the IP address property of this address object.
+    ///
+    /// # Returns
+    ///
+    /// the IP address
     #[doc(alias = "nm_ip_address_get_address")]
     #[doc(alias = "get_address")]
     pub fn address(&self) -> glib::GString {
@@ -82,6 +121,11 @@ impl IPAddress {
     //    unsafe { TODO: call ffi:nm_ip_address_get_attribute() }
     //}
 
+    /// Gets an array of attribute names defined on @self.
+    ///
+    /// # Returns
+    ///
+    /// a [`None`]-terminated array of attribute names,
     #[doc(alias = "nm_ip_address_get_attribute_names")]
     #[doc(alias = "get_attribute_names")]
     pub fn attribute_names(&self) -> Vec<glib::GString> {
@@ -90,6 +134,12 @@ impl IPAddress {
         }
     }
 
+    /// Gets the IP address family (eg, AF_INET) property of this address
+    /// object.
+    ///
+    /// # Returns
+    ///
+    /// the IP address family
     #[doc(alias = "nm_ip_address_get_family")]
     #[doc(alias = "get_family")]
     pub fn family(&self) -> i32 {
@@ -98,6 +148,12 @@ impl IPAddress {
         }
     }
 
+    /// Gets the IP address prefix (ie "24" or "30" etc) property of this address
+    /// object.
+    ///
+    /// # Returns
+    ///
+    /// the IP address prefix
     #[doc(alias = "nm_ip_address_get_prefix")]
     #[doc(alias = "get_prefix")]
     pub fn prefix(&self) -> u32 {
@@ -106,6 +162,12 @@ impl IPAddress {
         }
     }
 
+    /// Sets the IP address property of this address object.
+    ///
+    /// @addr must be a valid address of @self's family. If you aren't sure you
+    /// have a valid address, use nm_utils_ipaddr_valid() to check it.
+    /// ## `addr`
+    /// the IP address, as a string
     #[doc(alias = "nm_ip_address_set_address")]
     pub fn set_address(&self, addr: &str) {
         unsafe {
@@ -123,6 +185,9 @@ impl IPAddress {
     //    unsafe { TODO: call ffi:nm_ip_address_set_attribute() }
     //}
 
+    /// Sets the IP address prefix property of this address object.
+    /// ## `prefix`
+    /// the IP address prefix
     #[doc(alias = "nm_ip_address_set_prefix")]
     pub fn set_prefix(&self, prefix: u32) {
         unsafe {

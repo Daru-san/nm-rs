@@ -20,6 +20,19 @@ glib::wrapper! {
 }
 
 impl BridgeVlan {
+    /// Creates a new #NMBridgeVlan object for the given VLAN id range.
+    /// Setting @vid_end to 0 is equivalent to setting it to @vid_start
+    /// and creates a single-id VLAN.
+    ///
+    /// Since 1.42, ref-counting of #NMBridgeVlan is thread-safe.
+    /// ## `vid_start`
+    /// the start VLAN id, must be between 1 and 4094.
+    /// ## `vid_end`
+    /// the end VLAN id, must be 0 or between @vid_start and 4094.
+    ///
+    /// # Returns
+    ///
+    /// the new #NMBridgeVlan object.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_new")]
@@ -30,6 +43,16 @@ impl BridgeVlan {
         }
     }
 
+    /// Compare two bridge VLAN objects.
+    /// ## `b`
+    /// another #NMBridgeVlan
+    ///
+    /// # Returns
+    ///
+    /// zero of the two instances are equivalent or
+    ///   a non-zero integer otherwise. This defines a total ordering
+    ///   over the VLANs. Whether a VLAN is sealed or not does not
+    ///   affect the comparison.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_cmp")]
@@ -39,6 +62,18 @@ impl BridgeVlan {
         }
     }
 
+    /// Gets the VLAN id range.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] is the VLAN specifies a range, [`false`] if it is
+    /// a single-id VLAN.
+    ///
+    /// ## `vid_start`
+    /// location to store the VLAN id range start.
+    ///
+    /// ## `vid_end`
+    /// location to store the VLAN id range end
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_get_vid_range")]
@@ -52,6 +87,11 @@ impl BridgeVlan {
         }
     }
 
+    /// Returns whether the VLAN is the PVID for the port.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the VLAN is the PVID
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_is_pvid")]
@@ -61,6 +101,10 @@ impl BridgeVlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether @self_ is sealed or not.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_is_sealed")]
@@ -70,6 +114,11 @@ impl BridgeVlan {
         }
     }
 
+    /// Returns whether the VLAN is untagged.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the VLAN is untagged, [`false`] otherwise
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_is_untagged")]
@@ -79,6 +128,11 @@ impl BridgeVlan {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// a clone of @self. This instance
+    ///   is always unsealed.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_new_clone")]
@@ -89,6 +143,10 @@ impl BridgeVlan {
         }
     }
 
+    /// Seal the #NMBridgeVlan instance. Afterwards, it is a bug
+    /// to call all functions that modify the instance (except ref/unref).
+    /// A sealed instance cannot be unsealed again, but you can create
+    /// an unsealed copy with nm_bridge_vlan_new_clone().
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_seal")]
@@ -98,6 +156,11 @@ impl BridgeVlan {
         }
     }
 
+    /// Change the value of the PVID property of the VLAN. It
+    /// is invalid to set the value to [`true`] for non-single-id
+    /// VLANs.
+    /// ## `value`
+    /// the new value
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_set_pvid")]
@@ -107,6 +170,9 @@ impl BridgeVlan {
         }
     }
 
+    /// Change the value of the untagged property of the VLAN.
+    /// ## `value`
+    /// the new value
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_set_untagged")]
@@ -116,6 +182,11 @@ impl BridgeVlan {
         }
     }
 
+    /// Convert a `NMBridgeVlan` to a string.
+    ///
+    /// # Returns
+    ///
+    /// formatted string or [`None`]
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_to_str")]
@@ -127,6 +198,14 @@ impl BridgeVlan {
         }
     }
 
+    /// Parses the string representation of the queueing
+    /// discipline to a `NMBridgeVlan` instance.
+    /// ## `str`
+    /// the string representation of a bridge VLAN
+    ///
+    /// # Returns
+    ///
+    /// the `NMBridgeVlan` or [`None`]
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_bridge_vlan_from_str")]

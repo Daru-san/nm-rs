@@ -23,6 +23,25 @@ glib::wrapper! {
 }
 
 impl TeamLinkWatcher {
+    /// Creates a new arp_ping #NMTeamLinkWatcher object
+    /// ## `init_wait`
+    /// init_wait value
+    /// ## `interval`
+    /// interval value
+    /// ## `missed_max`
+    /// missed_max value
+    /// ## `target_host`
+    /// the host name or the ip address that will be used as destination
+    ///   address in the arp request
+    /// ## `source_host`
+    /// the host name or the ip address that will be used as source
+    ///   address in the arp request
+    /// ## `flags`
+    /// the watcher #NMTeamLinkWatcherArpPingFlags
+    ///
+    /// # Returns
+    ///
+    /// the new #NMTeamLinkWatcher object, or [`None`] on error
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_new_arp_ping")]
@@ -35,6 +54,27 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Creates a new arp_ping #NMTeamLinkWatcher object
+    /// ## `init_wait`
+    /// init_wait value
+    /// ## `interval`
+    /// interval value
+    /// ## `missed_max`
+    /// missed_max value
+    /// ## `vlanid`
+    /// vlanid value
+    /// ## `target_host`
+    /// the host name or the ip address that will be used as destination
+    ///   address in the arp request
+    /// ## `source_host`
+    /// the host name or the ip address that will be used as source
+    ///   address in the arp request
+    /// ## `flags`
+    /// the watcher #NMTeamLinkWatcherArpPingFlags
+    ///
+    /// # Returns
+    ///
+    /// the new #NMTeamLinkWatcher object, or [`None`] on error
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "nm_team_link_watcher_new_arp_ping2")]
@@ -47,6 +87,15 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Creates a new ethtool #NMTeamLinkWatcher object
+    /// ## `delay_up`
+    /// delay_up value
+    /// ## `delay_down`
+    /// delay_down value
+    ///
+    /// # Returns
+    ///
+    /// the new #NMTeamLinkWatcher object
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_new_ethtool")]
@@ -59,6 +108,20 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Creates a new nsna_ping #NMTeamLinkWatcher object
+    /// ## `init_wait`
+    /// init_wait value
+    /// ## `interval`
+    /// interval value
+    /// ## `missed_max`
+    /// missed_max value
+    /// ## `target_host`
+    /// the host name or the ipv6 address that will be used as
+    ///   target address in the NS packet
+    ///
+    /// # Returns
+    ///
+    /// the new #NMTeamLinkWatcher object, or [`None`] on error
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_new_nsna_ping")]
@@ -71,6 +134,11 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Creates a copy of @self
+    ///
+    /// # Returns
+    ///
+    /// a copy of @self
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_dup")]
@@ -90,6 +158,8 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the delay_down interval (in milliseconds) that elapses between the link
+    /// going down and the runner being notified about it.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_delay_down")]
@@ -100,6 +170,8 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the delay_up interval (in milliseconds) that elapses between the link
+    /// coming up and the runner being notified about it.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_delay_up")]
@@ -110,6 +182,7 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the arp ping watcher flags.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_flags")]
@@ -120,6 +193,8 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the init_wait interval (in milliseconds) that the team port should
+    /// wait before sending the first packet to the target host.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_init_wait")]
@@ -130,6 +205,8 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the interval (in milliseconds) that the team port should wait between
+    /// sending two check packets to the target host.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_interval")]
@@ -140,6 +217,7 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the number of missed replies after which the link is considered down.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_missed_max")]
@@ -150,6 +228,7 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the name of the link watcher to be used.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_name")]
@@ -160,6 +239,7 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the ip address to be used as source for the link probing packets.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_source_host")]
@@ -170,6 +250,8 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the host name/ip address to be used as destination for the link probing
+    /// packets.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_team_link_watcher_get_target_host")]
@@ -180,6 +262,7 @@ impl TeamLinkWatcher {
         }
     }
 
+    /// Gets the VLAN tag ID to be used to outgoing link probes
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "nm_team_link_watcher_get_vlanid")]

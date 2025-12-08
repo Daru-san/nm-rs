@@ -8,6 +8,56 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Serial Link Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `baud`
+    ///  Speed to use for communication over the serial port.  Note that this
+    /// value usually has no effect for mobile broadband modems as they generally
+    /// ignore speed settings and use the highest available speed.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `bits`
+    ///  Byte-width of the serial communication. The 8 in "8n1" for example.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `parity`
+    ///  Parity setting of the serial port.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `send-delay`
+    ///  Time to delay between each byte sent to the modem, in microseconds.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `stopbits`
+    ///  Number of stop bits for communication on the serial port.  Either 1 or 2.
+    /// The 1 in "8n1" for example.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingSerial")]
     pub struct SettingSerial(Object<ffi::NMSettingSerial, ffi::NMSettingSerialClass>) @extends Setting;
 
@@ -17,6 +67,11 @@ glib::wrapper! {
 }
 
 impl SettingSerial {
+    /// Creates a new #NMSettingSerial object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingSerial object
     #[doc(alias = "nm_setting_serial_new")]
     pub fn new() -> SettingSerial {
         assert_initialized_main_thread!();
@@ -34,6 +89,10 @@ impl SettingSerial {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSerial:baud property of the setting
     #[doc(alias = "nm_setting_serial_get_baud")]
     #[doc(alias = "get_baud")]
     pub fn baud(&self) -> u32 {
@@ -42,6 +101,10 @@ impl SettingSerial {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSerial:bits property of the setting
     #[doc(alias = "nm_setting_serial_get_bits")]
     #[doc(alias = "get_bits")]
     pub fn bits(&self) -> u32 {
@@ -50,6 +113,10 @@ impl SettingSerial {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSerial:parity property of the setting
     #[doc(alias = "nm_setting_serial_get_parity")]
     #[doc(alias = "get_parity")]
     pub fn parity(&self) -> SettingSerialParity {
@@ -58,6 +125,10 @@ impl SettingSerial {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSerial:send-delay property of the setting
     #[doc(alias = "nm_setting_serial_get_send_delay")]
     #[doc(alias = "get_send_delay")]
     #[doc(alias = "send-delay")]
@@ -67,6 +138,10 @@ impl SettingSerial {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingSerial:stopbits property of the setting
     #[doc(alias = "nm_setting_serial_get_stopbits")]
     #[doc(alias = "get_stopbits")]
     pub fn stopbits(&self) -> u32 {
@@ -75,23 +150,31 @@ impl SettingSerial {
         }
     }
 
+    /// Speed to use for communication over the serial port.  Note that this
+    /// value usually has no effect for mobile broadband modems as they generally
+    /// ignore speed settings and use the highest available speed.
     pub fn set_baud(&self, baud: u32) {
         ObjectExt::set_property(self,"baud", baud)
     }
 
+    /// Byte-width of the serial communication. The 8 in "8n1" for example.
     pub fn set_bits(&self, bits: u32) {
         ObjectExt::set_property(self,"bits", bits)
     }
 
+    /// Parity setting of the serial port.
     pub fn set_parity(&self, parity: SettingSerialParity) {
         ObjectExt::set_property(self,"parity", parity)
     }
 
+    /// Time to delay between each byte sent to the modem, in microseconds.
     #[doc(alias = "send-delay")]
     pub fn set_send_delay(&self, send_delay: u64) {
         ObjectExt::set_property(self,"send-delay", send_delay)
     }
 
+    /// Number of stop bits for communication on the serial port.  Either 1 or 2.
+    /// The 1 in "8n1" for example.
     pub fn set_stopbits(&self, stopbits: u32) {
         ObjectExt::set_property(self,"stopbits", stopbits)
     }
@@ -182,22 +265,30 @@ pub struct SettingSerialBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Speed to use for communication over the serial port.  Note that this
+                            /// value usually has no effect for mobile broadband modems as they generally
+                            /// ignore speed settings and use the highest available speed.
                             pub fn baud(self, baud: u32) -> Self {
                             Self { builder: self.builder.property("baud", baud), }
                         }
 
+                            /// Byte-width of the serial communication. The 8 in "8n1" for example.
                             pub fn bits(self, bits: u32) -> Self {
                             Self { builder: self.builder.property("bits", bits), }
                         }
 
+                            /// Parity setting of the serial port.
                             pub fn parity(self, parity: SettingSerialParity) -> Self {
                             Self { builder: self.builder.property("parity", parity), }
                         }
 
+                            /// Time to delay between each byte sent to the modem, in microseconds.
                             pub fn send_delay(self, send_delay: u64) -> Self {
                             Self { builder: self.builder.property("send-delay", send_delay), }
                         }
 
+                            /// Number of stop bits for communication on the serial port.  Either 1 or 2.
+                            /// The 1 in "8n1" for example.
                             pub fn stopbits(self, stopbits: u32) -> Self {
                             Self { builder: self.builder.property("stopbits", stopbits), }
                         }

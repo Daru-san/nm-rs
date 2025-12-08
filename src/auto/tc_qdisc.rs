@@ -20,6 +20,15 @@ glib::wrapper! {
 }
 
 impl TCQdisc {
+    /// Creates a new #NMTCQdisc object.
+    /// ## `kind`
+    /// name of the queueing discipline
+    /// ## `parent`
+    /// the parent queueing discipline
+    ///
+    /// # Returns
+    ///
+    /// the new #NMTCQdisc object, or [`None`] on error
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_qdisc_new")]
@@ -32,6 +41,11 @@ impl TCQdisc {
         }
     }
 
+    /// Creates a copy of @self
+    ///
+    /// # Returns
+    ///
+    /// a copy of @self
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_qdisc_dup")]
@@ -59,6 +73,12 @@ impl TCQdisc {
     //    unsafe { TODO: call ffi:nm_tc_qdisc_get_attribute() }
     //}
 
+    /// Gets an array of attribute names defined on @self.
+    ///
+    /// # Returns
+    ///
+    /// a [`None`]-terminated array of attribute names
+    ///   or [`None`] if no attributes are set.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_tc_qdisc_get_attribute_names")]
@@ -69,6 +89,10 @@ impl TCQdisc {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the queueing discipline handle
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_qdisc_get_handle")]
@@ -89,6 +113,10 @@ impl TCQdisc {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the parent class
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_qdisc_get_parent")]
@@ -106,6 +134,9 @@ impl TCQdisc {
     //    unsafe { TODO: call ffi:nm_tc_qdisc_set_attribute() }
     //}
 
+    /// Sets the queueing discipline handle.
+    /// ## `handle`
+    /// the queueing discipline handle
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_tc_qdisc_set_handle")]

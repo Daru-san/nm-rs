@@ -18,6 +18,13 @@ use crate::{
 use crate::{TCAction, TCQdisc, TCTfilter};
 use glib::translate::*;
 
+/// ## `filename`
+/// name of the file to attempt to read into a new #NMConnection
+///
+/// # Returns
+///
+/// a new #NMConnection imported from @path, or [`None`]
+/// on error or if the file with @filename was not recognized as a WireGuard config
 #[cfg(feature = "v1_40")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
 #[doc(alias = "nm_conn_wireguard_import")]
@@ -34,6 +41,13 @@ pub fn conn_wireguard_import(filename: &str) -> Result<Connection, glib::Error> 
     }
 }
 
+/// Checks whether @optname is a valid option name for a channels setting.
+/// ## `optname`
+/// the option name to check
+///
+/// # Returns
+///
+/// [`true`], if @optname is valid
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 #[doc(alias = "nm_ethtool_optname_is_channels")]
@@ -46,6 +60,13 @@ pub fn ethtool_optname_is_channels(optname: Option<&str>) -> bool {
     }
 }
 
+/// Checks whether @optname is a valid option name for a coalesce setting.
+/// ## `optname`
+/// the option name to check
+///
+/// # Returns
+///
+/// [`true`], if @optname is valid
 #[cfg(feature = "v1_26")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
 #[doc(alias = "nm_ethtool_optname_is_coalesce")]
@@ -58,6 +79,13 @@ pub fn ethtool_optname_is_coalesce(optname: Option<&str>) -> bool {
     }
 }
 
+/// Checks whether @optname is a valid option name for an eee setting.
+/// ## `optname`
+/// the option name to check
+///
+/// # Returns
+///
+/// [`true`], if @optname is valid
 #[cfg(feature = "v1_46")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
 #[doc(alias = "nm_ethtool_optname_is_eee")]
@@ -66,6 +94,17 @@ pub fn ethtool_optname_is_eee(optname: Option<&str>) -> bool {
     unsafe { from_glib(ffi::nm_ethtool_optname_is_eee(optname.to_glib_none().0)) }
 }
 
+/// Checks whether @optname is a valid option name for an offload feature.
+/// ## `optname`
+/// the option name to check
+///
+/// # Returns
+///
+/// [`true`], if @optname is valid
+///
+/// Note that nm_ethtool_optname_is_feature() was first added to the libnm header files
+/// in 1.14.0 but forgot to actually add to the library. This happened belatedly in 1.20.0 and
+/// the stable versions 1.18.2, 1.16.4 and 1.14.8 (with linker version "libnm_1_14_8").
 #[cfg(feature = "v1_20")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
 #[doc(alias = "nm_ethtool_optname_is_feature")]
@@ -74,6 +113,13 @@ pub fn ethtool_optname_is_feature(optname: Option<&str>) -> bool {
     unsafe { from_glib(ffi::nm_ethtool_optname_is_feature(optname.to_glib_none().0)) }
 }
 
+/// Checks whether @optname is a valid option name for a fec setting.
+/// ## `optname`
+/// the option name to check
+///
+/// # Returns
+///
+/// [`true`], if @optname is valid
 #[cfg(feature = "v1_52")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
 #[doc(alias = "nm_ethtool_optname_is_fec")]
@@ -82,6 +128,13 @@ pub fn ethtool_optname_is_fec(optname: Option<&str>) -> bool {
     unsafe { from_glib(ffi::nm_ethtool_optname_is_fec(optname.to_glib_none().0)) }
 }
 
+/// Checks whether @optname is a valid option name for a pause setting.
+/// ## `optname`
+/// the option name to check
+///
+/// # Returns
+///
+/// [`true`], if @optname is valid
 #[cfg(feature = "v1_32")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_32")))]
 #[doc(alias = "nm_ethtool_optname_is_pause")]
@@ -90,6 +143,13 @@ pub fn ethtool_optname_is_pause(optname: Option<&str>) -> bool {
     unsafe { from_glib(ffi::nm_ethtool_optname_is_pause(optname.to_glib_none().0)) }
 }
 
+/// Checks whether @optname is a valid option name for a ring setting.
+/// ## `optname`
+/// the option name to check
+///
+/// # Returns
+///
+/// [`true`], if @optname is valid
 #[cfg(feature = "v1_26")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
 #[doc(alias = "nm_ethtool_optname_is_ring")]
@@ -112,6 +172,20 @@ pub fn ethtool_optname_is_ring(optname: Option<&str>) -> bool {
 //    unsafe { TODO: call ffi:nm_keyfile_write() }
 //}
 
+/// Given a set of device capabilities, and a desired security type to check
+/// against, determines whether the combination of device capabilities and
+/// desired security type are valid for AP/Hotspot connections.
+/// ## `type_`
+/// the security type to check device capabilities against,
+/// e.g. #NMU_SEC_STATIC_WEP
+/// ## `wifi_caps`
+/// bitfield of the capabilities of the specific Wi-Fi device, e.g.
+/// #NM_WIFI_DEVICE_CAP_CIPHER_WEP40
+///
+/// # Returns
+///
+/// [`true`] if the device capabilities are compatible with the desired
+/// @type_, [`false`] if they are not.
 #[doc(alias = "nm_utils_ap_mode_security_valid")]
 pub fn utils_ap_mode_security_valid(
     type_: UtilsSecurityType,
@@ -126,6 +200,21 @@ pub fn utils_ap_mode_security_valid(
     }
 }
 
+/// ## `base64_key`
+/// the (possibly invalid) base64 encode key.
+/// ## `required_key_len`
+/// the expected (binary) length of the key after
+///   decoding. If the length does not match, the validation fails.
+///
+/// # Returns
+///
+/// [`true`] if the input key is a valid base64 encoded key
+///   with @required_key_len bytes.
+///
+/// ## `out_key`
+/// an optional output buffer for the binary
+///   key. If given, it will be filled with exactly @required_key_len
+///   bytes.
 #[cfg(feature = "v1_16")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
 #[doc(alias = "nm_utils_base64secret_decode")]
@@ -147,6 +236,17 @@ pub fn utils_base64secret_decode(base64_key: &str) -> Option<u8> {
     }
 }
 
+/// Converts the byte array @src into a hexadecimal string. If @final_len is
+/// greater than -1, the returned string is terminated at that index
+/// (returned_string[final_len] == '\0'),
+/// ## `src`
+/// an array of bytes
+/// ## `final_len`
+/// an index where to cut off the returned string, or -1
+///
+/// # Returns
+///
+/// the textual form of @bytes
 #[doc(alias = "nm_utils_bin2hexstr")]
 pub fn utils_bin2hexstr(src: &[u8], final_len: i32) -> glib::GString {
     assert_initialized_main_thread!();
@@ -160,6 +260,15 @@ pub fn utils_bin2hexstr(src: &[u8], final_len: i32) -> glib::GString {
     }
 }
 
+/// Convert bonding mode from integer value to descriptive name.
+/// See https://www.kernel.org/doc/Documentation/networking/bonding.txt for
+/// available modes.
+/// ## `mode`
+/// bonding mode as a numeric value
+///
+/// # Returns
+///
+/// bonding mode string, or NULL on error
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[doc(alias = "nm_utils_bond_mode_int_to_string")]
@@ -168,6 +277,16 @@ pub fn utils_bond_mode_int_to_string(mode: i32) -> glib::GString {
     unsafe { from_glib_none(ffi::nm_utils_bond_mode_int_to_string(mode)) }
 }
 
+/// Convert bonding mode from string representation to numeric value.
+/// See https://www.kernel.org/doc/Documentation/networking/bonding.txt for
+/// available modes.
+/// The @mode string can be either a descriptive name or a number (as string).
+/// ## `mode`
+/// bonding mode as string
+///
+/// # Returns
+///
+/// numeric bond mode, or -1 on error
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[doc(alias = "nm_utils_bond_mode_string_to_int")]
@@ -176,6 +295,29 @@ pub fn utils_bond_mode_string_to_int(mode: &str) -> i32 {
     unsafe { ffi::nm_utils_bond_mode_string_to_int(mode.to_glib_none().0) }
 }
 
+/// Determines if a connection of type @virtual_type can (in the
+/// general case) work with connections of type @other_type.
+///
+/// If @virtual_type is `NM_TYPE_SETTING_VLAN`, then this checks if
+/// @other_type is a valid type for the parent of a VLAN.
+///
+/// If @virtual_type is a "controller" type (eg, `NM_TYPE_SETTING_BRIDGE`),
+/// then this checks if @other_type is a valid type for a port of that
+/// controller.
+///
+/// Note that even if this returns [`true`] it is not guaranteed that
+/// <emphasis>every</emphasis> connection of type @other_type is
+/// compatible with @virtual_type; it may depend on the exact
+/// configuration of the two connections, or on the capabilities of an
+/// underlying device driver.
+/// ## `virtual_type`
+/// a virtual connection type
+/// ## `other_type`
+/// a connection type to test against @virtual_type
+///
+/// # Returns
+///
+/// [`true`] or [`false`]
 #[doc(alias = "nm_utils_check_virtual_device_compatibility")]
 pub fn utils_check_virtual_device_compatibility(
     virtual_type: glib::types::Type,
@@ -190,6 +332,10 @@ pub fn utils_check_virtual_device_compatibility(
     }
 }
 
+/// This ensures that all NMSetting GTypes are created. For example,
+/// after this call, g_type_from_name("NMSettingConnection") will work.
+///
+/// This cannot fail and does nothing if the type already exists.
 #[cfg(feature = "v1_42")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
 #[doc(alias = "nm_utils_ensure_gtypes")]
@@ -200,6 +346,27 @@ pub fn utils_ensure_gtypes() {
     }
 }
 
+/// Converts a string to the matching enum value.
+///
+/// If the enum is a `G_TYPE_FLAGS` the function returns the logical OR of values
+/// matching the comma-separated tokens in the string; if an unknown token is found
+/// the function returns [`false`] and stores a pointer to a newly allocated string
+/// containing the unrecognized token in @err_token.
+/// ## `type_`
+/// the `GType` of the enum
+/// ## `str`
+/// the input string
+///
+/// # Returns
+///
+/// [`true`] if the conversion was successful, [`false`] otherwise
+///
+/// ## `out_value`
+/// the output value
+///
+/// ## `err_token`
+/// location to store
+///   the first unrecognized token
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[doc(alias = "nm_utils_enum_from_str")]
@@ -225,6 +392,18 @@ pub fn utils_enum_from_str(
     }
 }
 
+/// Returns the list of possible values for a given enum.
+/// ## `type_`
+/// the `GType` of the enum
+/// ## `from`
+/// the first element to be returned
+/// ## `to`
+/// the last element to be returned
+///
+/// # Returns
+///
+/// a NULL-terminated dynamically-allocated array of static strings
+/// or [`None`] on error
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[doc(alias = "nm_utils_enum_get_values")]
@@ -239,6 +418,19 @@ pub fn utils_enum_get_values(type_: glib::types::Type, from: i32, to: i32) -> Ve
     }
 }
 
+/// Converts an enum value to its string representation. If the enum is a
+/// `G_TYPE_FLAGS` the function returns a comma-separated list of matching values.
+/// If the value has no corresponding string representation, it is converted
+/// to a number. For enums it is converted to a decimal number, for flags
+/// to an (unsigned) hex number.
+/// ## `type_`
+/// the `GType` of the enum
+/// ## `value`
+/// the value to be translated
+///
+/// # Returns
+///
+/// a newly allocated string or [`None`]
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[doc(alias = "nm_utils_enum_to_str")]
@@ -247,6 +439,24 @@ pub fn utils_enum_to_str(type_: glib::types::Type, value: i32) -> glib::GString 
     unsafe { from_glib_full(ffi::nm_utils_enum_to_str(type_.into_glib(), value)) }
 }
 
+/// This function does a quick printable character conversion of the SSID, simply
+/// replacing embedded NULLs and non-printable characters with the hexadecimal
+/// representation of that character.  Intended for debugging only, should not
+/// be used for display of SSIDs.
+///
+/// Warning: this function uses a static buffer. It is not thread-safe. Don't
+///   use this function.
+///
+/// # Deprecated since 1.46
+///
+/// use nm_utils_ssid_to_utf8() or nm_utils_bin2hexstr().
+/// ## `ssid`
+/// pointer to a buffer containing the SSID data
+///
+/// # Returns
+///
+/// pointer to the escaped SSID, which uses an internal static buffer
+/// and will be overwritten by subsequent calls to this function
 #[cfg_attr(feature = "v1_46", deprecated = "Since 1.46")]
 #[allow(deprecated)]
 #[doc(alias = "nm_utils_escape_ssid")]
@@ -256,18 +466,46 @@ pub fn utils_escape_ssid(ssid: &[u8]) -> glib::GString {
     unsafe { from_glib_none(ffi::nm_utils_escape_ssid(ssid.to_glib_none().0, len)) }
 }
 
+/// Tests if @filename has a valid extension for an X.509 certificate file
+/// (".cer", ".crt", ".der", or ".pem"), and contains a certificate in a format
+/// recognized by NetworkManager.
+/// ## `filename`
+/// name of the file to test
+///
+/// # Returns
+///
+/// [`true`] if the file is a certificate, [`false`] if it is not
 #[doc(alias = "nm_utils_file_is_certificate")]
 pub fn utils_file_is_certificate(filename: &str) -> bool {
     assert_initialized_main_thread!();
     unsafe { from_glib(ffi::nm_utils_file_is_certificate(filename.to_glib_none().0)) }
 }
 
+/// Tests if @filename is a PKCS#<!-- -->12 file.
+/// ## `filename`
+/// name of the file to test
+///
+/// # Returns
+///
+/// [`true`] if the file is PKCS#<!-- -->12, [`false`] if it is not
 #[doc(alias = "nm_utils_file_is_pkcs12")]
 pub fn utils_file_is_pkcs12(filename: &str) -> bool {
     assert_initialized_main_thread!();
     unsafe { from_glib(ffi::nm_utils_file_is_pkcs12(filename.to_glib_none().0)) }
 }
 
+/// Tests if @filename has a valid extension for an X.509 private key file
+/// (".der", ".key", ".pem", or ".p12"), and contains a private key in a format
+/// recognized by NetworkManager.
+/// ## `filename`
+/// name of the file to test
+///
+/// # Returns
+///
+/// [`true`] if the file is a private key, [`false`] if it is not
+///
+/// ## `out_encrypted`
+/// on return, whether the file is encrypted
 #[doc(alias = "nm_utils_file_is_private_key")]
 pub fn utils_file_is_private_key(filename: &str) -> Option<bool> {
     assert_initialized_main_thread!();
@@ -297,6 +535,11 @@ pub fn utils_file_is_private_key(filename: &str) -> Option<bool> {
 //    unsafe { TODO: call ffi:nm_utils_format_variant_attributes() }
 //}
 
+/// Gets current time in milliseconds of CLOCK_BOOTTIME.
+///
+/// # Returns
+///
+/// time in milliseconds
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 #[doc(alias = "nm_utils_get_timestamp_msec")]
@@ -315,6 +558,17 @@ pub fn utils_get_timestamp_msec() -> i64 {
 //    unsafe { TODO: call ffi:nm_utils_hwaddr_atoba() }
 //}
 
+/// Parses @asc and converts it to binary form in @buffer.
+/// Bytes in @asc can be separated by colons (:), or hyphens (-), but not mixed.
+/// ## `asc`
+/// the ASCII representation of a hardware address
+/// ## `buffer`
+/// buffer to store the result into
+///
+/// # Returns
+///
+/// @buffer, or [`None`] if @asc couldn't be parsed
+///   or would be shorter or longer than @length.
 #[doc(alias = "nm_utils_hwaddr_aton")]
 pub fn utils_hwaddr_aton(asc: &str, buffer: &[u8]) -> u8 {
     assert_initialized_main_thread!();
@@ -329,6 +583,19 @@ pub fn utils_hwaddr_aton(asc: &str, buffer: &[u8]) -> u8 {
     }
 }
 
+/// Parses @asc to see if it is a valid hardware address of the given
+/// length, and if so, returns it in canonical form (uppercase, with
+/// leading 0s as needed, and with colons rather than hyphens).
+/// ## `asc`
+/// the ASCII representation of a hardware address
+/// ## `length`
+/// the length of address that @asc is expected to convert to
+///   (or -1 to accept any length up to `NM_UTILS_HWADDR_LEN_MAX`)
+///
+/// # Returns
+///
+/// the canonicalized address if @asc appears to
+///   be a valid hardware address of the indicated length, [`None`] if not.
 #[doc(alias = "nm_utils_hwaddr_canonical")]
 pub fn utils_hwaddr_canonical(asc: &str) -> glib::GString {
     assert_initialized_main_thread!();
@@ -336,6 +603,17 @@ pub fn utils_hwaddr_canonical(asc: &str) -> glib::GString {
     unsafe { from_glib_full(ffi::nm_utils_hwaddr_canonical(asc.to_glib_none().0, length)) }
 }
 
+/// Returns the length in octets of a hardware address of type @type_.
+///
+/// Before 1.28, it was an error to call this function with any value other than
+/// <literal>ARPHRD_ETHER</literal> or <literal>ARPHRD_INFINIBAND</literal>.
+/// ## `type_`
+/// the type of address; either <literal>ARPHRD_ETHER</literal> or
+/// <literal>ARPHRD_INFINIBAND</literal>
+///
+/// # Returns
+///
+/// the length or zero if the type is unrecognized.
 #[doc(alias = "nm_utils_hwaddr_len")]
 pub fn utils_hwaddr_len(type_: i32) -> usize {
     assert_initialized_main_thread!();
@@ -347,6 +625,13 @@ pub fn utils_hwaddr_len(type_: i32) -> usize {
 //    unsafe { TODO: call ffi:nm_utils_hwaddr_matches() }
 //}
 
+/// Converts @addr to textual form.
+/// ## `addr`
+/// a binary hardware address
+///
+/// # Returns
+///
+/// the textual form of @addr
 #[doc(alias = "nm_utils_hwaddr_ntoa")]
 pub fn utils_hwaddr_ntoa(addr: &[u8]) -> glib::GString {
     assert_initialized_main_thread!();
@@ -359,6 +644,18 @@ pub fn utils_hwaddr_ntoa(addr: &[u8]) -> glib::GString {
     }
 }
 
+/// Parses @asc to see if it is a valid hardware address of the given
+/// length.
+/// ## `asc`
+/// the ASCII representation of a hardware address
+/// ## `length`
+/// the length of address that @asc is expected to convert to
+///   (or -1 to accept any length up to `NM_UTILS_HWADDR_LEN_MAX`)
+///
+/// # Returns
+///
+/// [`true`] if @asc appears to be a valid hardware address
+///   of the indicated length, [`false`] if not.
 #[doc(alias = "nm_utils_hwaddr_valid")]
 pub fn utils_hwaddr_valid(asc: &str) -> bool {
     assert_initialized_main_thread!();
@@ -366,6 +663,20 @@ pub fn utils_hwaddr_valid(asc: &str) -> bool {
     unsafe { from_glib(ffi::nm_utils_hwaddr_valid(asc.to_glib_none().0, length)) }
 }
 
+/// Validate the network interface name.
+///
+/// # Deprecated since 1.6
+///
+/// Use nm_utils_is_valid_iface_name() instead, with better error reporting.
+/// ## `name`
+/// Name of interface
+///
+/// # Returns
+///
+/// [`true`] if interface name is valid, otherwise [`false`] is returned.
+///
+/// Before 1.20, this function did not accept [`None`] as @name argument. If you
+///   want to run against older versions of libnm, don't pass [`None`].
 #[cfg_attr(feature = "v1_6", deprecated = "Since 1.6")]
 #[allow(deprecated)]
 #[doc(alias = "nm_utils_iface_valid_name")]
@@ -374,6 +685,24 @@ pub fn utils_iface_valid_name(name: Option<&str>) -> bool {
     unsafe { from_glib(ffi::nm_utils_iface_valid_name(name.to_glib_none().0)) }
 }
 
+/// Wrapper for inet_ntop.
+/// ## `inaddr`
+/// the address that should be converted to string.
+/// ## `dst`
+/// the destination buffer, it must contain at least
+///  <literal>INET_ADDRSTRLEN</literal> or `NM_INET_ADDRSTRLEN`
+///  characters. If set to [`None`], it will return a pointer to an internal, static
+///  buffer (shared with nm_utils_inet6_ntop()).  Beware, that the internal
+///  buffer will be overwritten with ever new call of nm_utils_inet4_ntop() or
+///  nm_utils_inet6_ntop() that does not provide its own @dst buffer. Since
+///  1.28, the internal buffer is thread local and thus thread safe. Before
+///  it was not thread safe. When in doubt, pass your own
+///  @dst buffer to avoid these issues.
+///
+/// # Returns
+///
+/// the input buffer @dst, or a pointer to an
+///  internal, static buffer. This function cannot fail.
 #[doc(alias = "nm_utils_inet4_ntop")]
 pub fn utils_inet4_ntop(inaddr: u32, dst: &str) -> glib::GString {
     assert_initialized_main_thread!();
@@ -405,18 +734,46 @@ pub fn utils_inet4_ntop(inaddr: u32, dst: &str) -> glib::GString {
 //    unsafe { TODO: call ffi:nm_utils_ip4_dns_to_variant() }
 //}
 
+/// When the Internet was originally set up, various ranges of IP addresses were
+/// segmented into three network classes: A, B, and C.  This function will return
+/// a prefix that is associated with the IP address specified defining where it
+/// falls in the predefined classes.
+/// ## `ip`
+/// an IPv4 address (in network byte order)
+///
+/// # Returns
+///
+/// the default class prefix for the given IP
 #[doc(alias = "nm_utils_ip4_get_default_prefix")]
 pub fn utils_ip4_get_default_prefix(ip: u32) -> u32 {
     assert_initialized_main_thread!();
     unsafe { ffi::nm_utils_ip4_get_default_prefix(ip) }
 }
 
+/// ## `netmask`
+/// an IPv4 netmask in network byte order.
+///   Usually the netmask has all leading bits up to the prefix
+///   set so that the netmask is identical to having the first
+///   prefix bits of the address set.
+///   If that is not the case and there are "holes" in the
+///   mask, the prefix is determined based on the lowest bit
+///   set.
+///
+/// # Returns
+///
+/// the CIDR prefix represented by the netmask
 #[doc(alias = "nm_utils_ip4_netmask_to_prefix")]
 pub fn utils_ip4_netmask_to_prefix(netmask: u32) -> u32 {
     assert_initialized_main_thread!();
     unsafe { ffi::nm_utils_ip4_netmask_to_prefix(netmask) }
 }
 
+/// ## `prefix`
+/// a CIDR prefix, must be not larger than 32.
+///
+/// # Returns
+///
+/// the netmask represented by the prefix, in network byte order
 #[doc(alias = "nm_utils_ip4_prefix_to_netmask")]
 pub fn utils_ip4_prefix_to_netmask(prefix: u32) -> u32 {
     assert_initialized_main_thread!();
@@ -491,12 +848,31 @@ pub fn utils_ip4_prefix_to_netmask(prefix: u32) -> u32 {
 //    unsafe { TODO: call ffi:nm_utils_ip_routes_to_variant() }
 //}
 
+/// Checks if @ip contains a valid IP address of the given family.
+/// ## `family`
+/// <literal>AF_INET</literal> or <literal>AF_INET6</literal>, or
+///   <literal>AF_UNSPEC</literal> to accept either
+/// ## `ip`
+/// an IP address
+///
+/// # Returns
+///
+/// [`true`] or [`false`]
 #[doc(alias = "nm_utils_ipaddr_valid")]
 pub fn utils_ipaddr_valid(family: i32, ip: &str) -> bool {
     assert_initialized_main_thread!();
     unsafe { from_glib(ffi::nm_utils_ipaddr_valid(family, ip.to_glib_none().0)) }
 }
 
+/// Different manufacturers use different mechanisms for not broadcasting the
+/// AP's SSID.  This function attempts to detect blank/empty SSIDs using a
+/// number of known SSID-cloaking methods.
+/// ## `ssid`
+/// pointer to a buffer containing the SSID data
+///
+/// # Returns
+///
+/// [`true`] if the SSID is "empty", [`false`] if it is not
 #[doc(alias = "nm_utils_is_empty_ssid")]
 pub fn utils_is_empty_ssid(ssid: &[u8]) -> bool {
     assert_initialized_main_thread!();
@@ -504,6 +880,15 @@ pub fn utils_is_empty_ssid(ssid: &[u8]) -> bool {
     unsafe { from_glib(ffi::nm_utils_is_empty_ssid(ssid.to_glib_none().0, len)) }
 }
 
+/// ## `str`
+/// the JSON string to test
+///
+/// # Returns
+///
+/// whether the passed string is valid JSON.
+///   If libnm is not compiled with libjansson support, this check will
+///   also return [`true`] for possibly invalid inputs. If that is a problem
+///   for you, you must validate the JSON yourself.
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 #[doc(alias = "nm_utils_is_json_object")]
@@ -521,6 +906,22 @@ pub fn utils_is_json_object(str: &str) -> Result<(), glib::Error> {
     }
 }
 
+/// Checks if @str is a UUID
+///
+/// # Deprecated since 1.32
+///
+/// older versions of NetworkManager had a wrong
+///   understanding of what makes a valid UUID. This function can thus
+///   accept some inputs as valid, which in fact are not valid UUIDs.
+/// ## `str`
+/// a string that might be a UUID
+///
+/// # Returns
+///
+/// [`true`] if @str is a UUID, [`false`] if not
+///
+/// In older versions, nm_utils_is_uuid() did not accept [`None`] as @str
+/// argument. Don't pass [`None`] if you run against older versions of libnm.
 #[cfg_attr(feature = "v1_32", deprecated = "Since 1.32")]
 #[allow(deprecated)]
 #[doc(alias = "nm_utils_is_uuid")]
@@ -529,6 +930,19 @@ pub fn utils_is_uuid(str: Option<&str>) -> bool {
     unsafe { from_glib(ffi::nm_utils_is_uuid(str.to_glib_none().0)) }
 }
 
+/// Validate the network interface name.
+///
+/// This function is a 1:1 copy of the kernel's interface validation
+/// function in net/core/dev.c.
+/// ## `name`
+/// Name of interface
+///
+/// # Returns
+///
+/// [`true`] if interface name is valid, otherwise [`false`] is returned.
+///
+/// Before 1.20, this function did not accept [`None`] as @name argument. If you
+///   want to run against older versions of libnm, don't pass [`None`].
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 #[doc(alias = "nm_utils_is_valid_iface_name")]
@@ -553,6 +967,42 @@ pub fn utils_is_valid_iface_name(name: Option<&str>) -> Result<(), glib::Error> 
 //    unsafe { TODO: call ffi:nm_utils_parse_variant_attributes() }
 //}
 
+/// The only purpose of this function is to give access to g_print()
+/// or g_printerr() from pygobject. libnm can do debug logging by
+/// setting LIBNM_CLIENT_DEBUG and uses thereby g_printerr() or
+/// g_print(). A plain "print()" function in python is not in sync
+/// with these functions (it implements additional buffering). By
+/// using nm_utils_print(), the same logging mechanisms can be used.
+///
+/// LIBNM_CLIENT_DEBUG is a list of keywords separated by commas. The keyword
+/// "trace" enables printing messages of the lowest up to the highest severity.
+/// Likewise, the severities "debug", "warn" ("warning") and "error" are honored
+/// in similar way. Setting the flags "ERROR" or "WARN" ("WARNING") implies that
+/// respective levels are enabled, but also are ERROR messages printed with
+/// g_critical() and WARN messages with g_warning(). Together with G_DEBUG="fatal-warnings"
+/// or G_DEBUG="fatal-critical" this can be used to abort the program on errors.
+/// Note that all &lt;error&gt; messages imply an unexpected data on the D-Bus API
+/// (due to a bug). &lt;warn&gt; also implies unexepected data, but that can happen
+/// when using different versions of libnm and daemon. For testing, it is
+/// good to turn these into assertions.
+///
+/// By default, messages are printed to stderr, unless LIBNM_CLIENT_DEBUG
+/// contains "stdout" flag. Also, libnm honors LIBNM_CLIENT_DEBUG_FILE
+/// environment. If this is set to a filename pattern (accepting "%`p`" for the
+/// process ID), then the debug log is written to that file instead of
+/// stderr/stdout. With @output_mode zero, the same location will be written.
+///
+/// LIBNM_CLIENT_DEBUG_FILE is supported since 1.44. "ERROR", "WARN" and "WARNING"
+/// are supported since 1.46.
+/// ## `output_mode`
+/// if 1 it uses g_print(). If 2, it uses g_printerr().
+///   If 0, it uses the same output as internal libnm debug logging
+///   does. That is, depending on LIBNM_CLIENT_DEBUG's "stdout" flag
+///   it uses g_print() or g_printerr() and if LIBNM_CLIENT_DEBUG_FILE is
+///   set, it writes the output to file instead
+/// ## `msg`
+/// the message to print. The function does not append
+///   a trailing newline.
 #[cfg(feature = "v1_30")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_30")))]
 #[doc(alias = "nm_utils_print")]
@@ -563,6 +1013,22 @@ pub fn utils_print(output_mode: i32, msg: &str) {
     }
 }
 
+/// Earlier versions of the Linux kernel added a NULL byte to the end of the
+/// SSID to enable easy printing of the SSID on the console or in a terminal,
+/// but this behavior was problematic (SSIDs are simply byte arrays, not strings)
+/// and thus was changed.  This function compensates for that behavior at the
+/// cost of some compatibility with odd SSIDs that may legitimately have trailing
+/// NULLs, even though that is functionally pointless.
+/// ## `ssid1`
+/// the first SSID to compare
+/// ## `ssid2`
+/// the second SSID to compare
+/// ## `ignore_trailing_null`
+/// [`true`] to ignore one trailing NULL byte
+///
+/// # Returns
+///
+/// [`true`] if the SSIDs are the same, [`false`] if they are not
 #[doc(alias = "nm_utils_same_ssid")]
 pub fn utils_same_ssid(ssid1: &[u8], ssid2: &[u8], ignore_trailing_null: bool) -> bool {
     assert_initialized_main_thread!();
@@ -579,6 +1045,35 @@ pub fn utils_same_ssid(ssid1: &[u8], ssid2: &[u8], ignore_trailing_null: bool) -
     }
 }
 
+/// Given a set of device capabilities, and a desired security type to check
+/// against, determines whether the combination of device, desired security
+/// type, and AP capabilities intersect.
+///
+/// NOTE: this function cannot handle checking security for AP/Hotspot mode;
+/// use nm_utils_ap_mode_security_valid() instead.
+/// ## `type_`
+/// the security type to check AP flags and device capabilities against,
+/// e.g. #NMU_SEC_STATIC_WEP
+/// ## `wifi_caps`
+/// bitfield of the capabilities of the specific Wi-Fi device, e.g.
+/// #NM_WIFI_DEVICE_CAP_CIPHER_WEP40
+/// ## `have_ap`
+/// whether the @ap_flags, @ap_wpa, and @ap_rsn arguments are valid
+/// ## `adhoc`
+/// whether the capabilities being tested are from an Ad-Hoc AP (IBSS)
+/// ## `ap_flags`
+/// bitfield of AP capabilities, e.g. #NM_802_11_AP_FLAGS_PRIVACY
+/// ## `ap_wpa`
+/// bitfield of AP capabilities derived from the AP's WPA beacon,
+/// e.g. (#NM_802_11_AP_SEC_PAIR_TKIP | #NM_802_11_AP_SEC_KEY_MGMT_PSK)
+/// ## `ap_rsn`
+/// bitfield of AP capabilities derived from the AP's RSN/WPA2 beacon,
+/// e.g. (#NM_802_11_AP_SEC_PAIR_CCMP | #NM_802_11_AP_SEC_PAIR_TKIP)
+///
+/// # Returns
+///
+/// [`true`] if the device capabilities and AP capabilities intersect and are
+/// compatible with the desired @type_, [`false`] if they are not
 #[doc(alias = "nm_utils_security_valid")]
 pub fn utils_security_valid(
     type_: UtilsSecurityType,
@@ -603,6 +1098,13 @@ pub fn utils_security_valid(
     }
 }
 
+/// Converts a string to a SR-IOV virtual function object.
+/// ## `str`
+/// the input string
+///
+/// # Returns
+///
+/// the virtual function object
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 #[doc(alias = "nm_utils_sriov_vf_from_str")]
@@ -619,6 +1121,15 @@ pub fn utils_sriov_vf_from_str(str: &str) -> Result<SriovVF, glib::Error> {
     }
 }
 
+/// Converts a SR-IOV virtual function object to its string representation.
+/// ## `vf`
+/// the `NMSriovVF`
+/// ## `omit_index`
+/// if [`true`], the VF index will be omitted from output string
+///
+/// # Returns
+///
+/// a newly allocated string or [`None`] on error
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 #[doc(alias = "nm_utils_sriov_vf_to_str")]
@@ -636,6 +1147,36 @@ pub fn utils_sriov_vf_to_str(vf: &SriovVF, omit_index: bool) -> Result<glib::GSt
     }
 }
 
+/// Wi-Fi SSIDs are byte arrays, they are _not_ strings.  Thus, an SSID may
+/// contain embedded NULLs and other unprintable characters.  Often it is
+/// useful to print the SSID out for debugging purposes, but that should be the
+/// _only_ use of this function.  Do not use this function for any persistent
+/// storage of the SSID, since the printable SSID returned from this function
+/// cannot be converted back into the real SSID of the access point.
+///
+/// This function does almost everything humanly possible to convert the input
+/// into a printable UTF-8 string, using roughly the following procedure:
+///
+/// 1) if the input data is already UTF-8 safe, no conversion is performed
+/// 2) attempts to get the current system language from the LANG environment
+///    variable, and depending on the language, uses a table of alternative
+///    encodings to try.  For example, if LANG=hu_HU, the table may first try
+///    the ISO-8859-2 encoding, and if that fails, try the Windows-1250 encoding.
+///    If all fallback encodings fail, replaces non-UTF-8 characters with '?'.
+/// 3) If the system language was unable to be determined, falls back to the
+///    ISO-8859-1 encoding, then to the Windows-1251 encoding.
+/// 4) If step 3 fails, replaces non-UTF-8 characters with '?'.
+///
+/// Again, this function should be used for debugging and display purposes
+/// _only_.
+/// ## `ssid`
+/// pointer to a buffer containing the SSID data
+///
+/// # Returns
+///
+/// an allocated string containing a UTF-8
+/// representation of the SSID, which must be freed by the caller using g_free().
+/// Returns [`None`] on errors.
 #[doc(alias = "nm_utils_ssid_to_utf8")]
 pub fn utils_ssid_to_utf8(ssid: &[u8]) -> glib::GString {
     assert_initialized_main_thread!();
@@ -643,6 +1184,14 @@ pub fn utils_ssid_to_utf8(ssid: &[u8]) -> glib::GString {
     unsafe { from_glib_full(ffi::nm_utils_ssid_to_utf8(ssid.to_glib_none().0, len)) }
 }
 
+/// Parses the tc style string action representation of the queueing
+/// discipline to a `NMTCAction` instance. Supports a subset of the tc language.
+/// ## `str`
+/// the string representation of a action
+///
+/// # Returns
+///
+/// the `NMTCAction` or [`None`]
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 #[doc(alias = "nm_utils_tc_action_from_str")]
@@ -659,6 +1208,14 @@ pub fn utils_tc_action_from_str(str: &str) -> Result<TCAction, glib::Error> {
     }
 }
 
+/// Turns the `NMTCAction` into a tc style string representation of the queueing
+/// discipline.
+/// ## `action`
+/// the `NMTCAction`
+///
+/// # Returns
+///
+/// formatted string or [`None`]
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 #[doc(alias = "nm_utils_tc_action_to_str")]
@@ -675,6 +1232,14 @@ pub fn utils_tc_action_to_str(action: &TCAction) -> Result<glib::GString, glib::
     }
 }
 
+/// Parses the tc style string qdisc representation of the queueing
+/// discipline to a `NMTCQdisc` instance. Supports a subset of the tc language.
+/// ## `str`
+/// the string representation of a qdisc
+///
+/// # Returns
+///
+/// the `NMTCQdisc` or [`None`]
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 #[doc(alias = "nm_utils_tc_qdisc_from_str")]
@@ -691,6 +1256,14 @@ pub fn utils_tc_qdisc_from_str(str: &str) -> Result<TCQdisc, glib::Error> {
     }
 }
 
+/// Turns the `NMTCQdisc` into a tc style string representation of the queueing
+/// discipline.
+/// ## `qdisc`
+/// the `NMTCQdisc`
+///
+/// # Returns
+///
+/// formatted string or [`None`]
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 #[doc(alias = "nm_utils_tc_qdisc_to_str")]
@@ -707,6 +1280,14 @@ pub fn utils_tc_qdisc_to_str(qdisc: &TCQdisc) -> Result<glib::GString, glib::Err
     }
 }
 
+/// Parses the tc style string tfilter representation of the queueing
+/// discipline to a `NMTCTfilter` instance. Supports a subset of the tc language.
+/// ## `str`
+/// the string representation of a tfilter
+///
+/// # Returns
+///
+/// the `NMTCTfilter` or [`None`]
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 #[doc(alias = "nm_utils_tc_tfilter_from_str")]
@@ -723,6 +1304,14 @@ pub fn utils_tc_tfilter_from_str(str: &str) -> Result<TCTfilter, glib::Error> {
     }
 }
 
+/// Turns the `NMTCTfilter` into a tc style string representation of the queueing
+/// discipline.
+/// ## `tfilter`
+/// the `NMTCTfilter`
+///
+/// # Returns
+///
+/// formatted string or [`None`]
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 #[doc(alias = "nm_utils_tc_tfilter_to_str")]
@@ -739,12 +1328,22 @@ pub fn utils_tc_tfilter_to_str(tfilter: &TCTfilter) -> Result<glib::GString, gli
     }
 }
 
+///
+/// # Returns
+///
+/// a newly allocated UUID suitable for use as the #NMSettingConnection
+/// object's #NMSettingConnection:id: property.  Should be freed with g_free()
 #[doc(alias = "nm_utils_uuid_generate")]
 pub fn utils_uuid_generate() -> glib::GString {
     assert_initialized_main_thread!();
     unsafe { from_glib_full(ffi::nm_utils_uuid_generate()) }
 }
 
+///
+/// # Returns
+///
+/// the version ID of the libnm version. That is, the `NM_VERSION`
+///   at runtime.
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
 #[doc(alias = "nm_utils_version")]
@@ -753,6 +1352,15 @@ pub fn utils_version() -> u32 {
     unsafe { ffi::nm_utils_version() }
 }
 
+/// Checks if @key is a valid WEP key
+/// ## `key`
+/// a string that might be a WEP key
+/// ## `wep_type`
+/// the #NMWepKeyType type of the WEP key
+///
+/// # Returns
+///
+/// [`true`] if @key is a WEP key, [`false`] if not
 #[doc(alias = "nm_utils_wep_key_valid")]
 pub fn utils_wep_key_valid(key: &str, wep_type: WepKeyType) -> bool {
     assert_initialized_main_thread!();
@@ -764,6 +1372,11 @@ pub fn utils_wep_key_valid(key: &str, wep_type: WepKeyType) -> bool {
     }
 }
 
+/// Utility function to return 2.4 GHz Wi-Fi frequencies (802.11bg band).
+///
+/// # Returns
+///
+/// zero-terminated array of frequencies numbers (in MHz)
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[doc(alias = "nm_utils_wifi_2ghz_freqs")]
@@ -772,6 +1385,11 @@ pub fn utils_wifi_2ghz_freqs() -> u32 {
     unsafe { ffi::nm_utils_wifi_2ghz_freqs().read() }
 }
 
+/// Utility function to return 5 GHz Wi-Fi frequencies (802.11a band).
+///
+/// # Returns
+///
+/// zero-terminated array of frequencies numbers (in MHz)
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
 #[doc(alias = "nm_utils_wifi_5ghz_freqs")]
@@ -780,24 +1398,62 @@ pub fn utils_wifi_5ghz_freqs() -> u32 {
     unsafe { ffi::nm_utils_wifi_5ghz_freqs().read() }
 }
 
+/// Utility function to translate a Wi-Fi channel to its corresponding frequency.
+/// ## `channel`
+/// channel
+/// ## `band`
+/// frequency band for wireless ("a" or "bg")
+///
+/// # Returns
+///
+/// the frequency represented by the channel of the band,
+///          or -1 when the freq is invalid, or 0 when the band
+///          is invalid
 #[doc(alias = "nm_utils_wifi_channel_to_freq")]
 pub fn utils_wifi_channel_to_freq(channel: u32, band: &str) -> u32 {
     assert_initialized_main_thread!();
     unsafe { ffi::nm_utils_wifi_channel_to_freq(channel, band.to_glib_none().0) }
 }
 
+/// Utility function to find out next/previous Wi-Fi channel for a channel.
+/// ## `channel`
+/// current channel
+/// ## `direction`
+/// whether going downward (0 or less) or upward (1 or more)
+/// ## `band`
+/// frequency band for wireless ("a" or "bg")
+///
+/// # Returns
+///
+/// the next channel in the specified direction or 0
 #[doc(alias = "nm_utils_wifi_find_next_channel")]
 pub fn utils_wifi_find_next_channel(channel: u32, direction: i32, band: &str) -> u32 {
     assert_initialized_main_thread!();
     unsafe { ffi::nm_utils_wifi_find_next_channel(channel, direction, band.to_glib_none().0) }
 }
 
+/// Utility function to translate a Wi-Fi frequency to its corresponding channel.
+/// ## `freq`
+/// frequency
+///
+/// # Returns
+///
+/// the channel represented by the frequency or 0
 #[doc(alias = "nm_utils_wifi_freq_to_channel")]
 pub fn utils_wifi_freq_to_channel(freq: u32) -> u32 {
     assert_initialized_main_thread!();
     unsafe { ffi::nm_utils_wifi_freq_to_channel(freq) }
 }
 
+/// Utility function to verify Wi-Fi channel validity.
+/// ## `channel`
+/// channel
+/// ## `band`
+/// frequency band for wireless ("a" or "bg")
+///
+/// # Returns
+///
+/// [`true`] or [`false`]
 #[doc(alias = "nm_utils_wifi_is_channel_valid")]
 pub fn utils_wifi_is_channel_valid(channel: u32, band: &str) -> bool {
     assert_initialized_main_thread!();
@@ -809,12 +1465,32 @@ pub fn utils_wifi_is_channel_valid(channel: u32, band: &str) -> bool {
     }
 }
 
+/// Converts @strength into a 4-character-wide graphical representation of
+/// strength suitable for printing to stdout.
+///
+/// Previous versions used to take a guess at the terminal type and possibly
+/// return a wide UTF-8 encoded string. Now it always returns a 7-bit
+/// clean strings of one to 0 to 4 asterisks. Users that actually need
+/// the functionality are encouraged to make their implementations instead.
+/// ## `strength`
+/// the access point strength, from 0 to 100
+///
+/// # Returns
+///
+/// the graphical representation of the access point strength
 #[doc(alias = "nm_utils_wifi_strength_bars")]
 pub fn utils_wifi_strength_bars(strength: u8) -> glib::GString {
     assert_initialized_main_thread!();
     unsafe { from_glib_none(ffi::nm_utils_wifi_strength_bars(strength)) }
 }
 
+/// Checks if @psk is a valid WPA PSK
+/// ## `psk`
+/// a string that might be a WPA PSK
+///
+/// # Returns
+///
+/// [`true`] if @psk is a WPA PSK, [`false`] if not
 #[doc(alias = "nm_utils_wpa_psk_valid")]
 pub fn utils_wpa_psk_valid(psk: &str) -> bool {
     assert_initialized_main_thread!();

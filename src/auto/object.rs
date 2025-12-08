@@ -8,6 +8,36 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    ///
+    /// # Implements
+    ///
+    /// [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMObject")]
     pub struct Object(Object<ffi::NMObject, ffi::NMObjectClass>);
 
@@ -21,6 +51,11 @@ impl Object {
     
 }
 
+/// Trait containing all [`struct@Object`] methods.
+///
+/// # Implementors
+///
+/// [`AccessPoint`][struct@crate::AccessPoint], [`ActiveConnection`][struct@crate::ActiveConnection], [`Checkpoint`][struct@crate::Checkpoint], [`Device`][struct@crate::Device], [`DhcpConfig`][struct@crate::DhcpConfig], [`IPConfig`][struct@crate::IPConfig], [`Object`][struct@crate::Object], [`RemoteConnection`][struct@crate::RemoteConnection], [`WifiP2PPeer`][struct@crate::WifiP2PPeer], [`WimaxNsp`][struct@crate::WimaxNsp]
 pub trait ObjectExt: IsA<Object> + 'static {
     //#[cfg(feature = "v1_24")]
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
@@ -30,6 +65,16 @@ pub trait ObjectExt: IsA<Object> + 'static {
     //    unsafe { TODO: call ffi:nm_object_get_client() }
     //}
 
+    /// Gets the DBus path of the #NMObject.
+    ///
+    /// # Returns
+    ///
+    /// the object's path. This is the internal string used by the
+    /// object, and must not be modified.
+    ///
+    /// Note that the D-Bus path of an NMObject never changes, even
+    /// if the instance gets removed from the cache. To find out
+    /// whether the object is still alive/cached, check nm_object_get_client().
     #[doc(alias = "nm_object_get_path")]
     #[doc(alias = "get_path")]
     fn path(&self) -> glib::GString {

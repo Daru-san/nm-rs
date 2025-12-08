@@ -8,6 +8,45 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// OLPC Wireless Mesh Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `channel`
+    ///  Channel on which the mesh network to join is located.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-anycast-address`
+    ///  Anycast DHCP MAC address used when requesting an IP address via DHCP.
+    /// The specific anycast address used determines which DHCP server class
+    /// answers the request.
+    ///
+    /// This is currently only implemented by dhclient DHCP plugin.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ssid`
+    ///  SSID of the mesh network to join.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingOlpcMesh")]
     pub struct SettingOlpcMesh(Object<ffi::NMSettingOlpcMesh, ffi::NMSettingOlpcMeshClass>) @extends Setting;
 
@@ -17,6 +56,11 @@ glib::wrapper! {
 }
 
 impl SettingOlpcMesh {
+    /// Creates a new #NMSettingOlpcMesh object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingOlpcMesh object
     #[doc(alias = "nm_setting_olpc_mesh_new")]
     pub fn new() -> SettingOlpcMesh {
         assert_initialized_main_thread!();
@@ -57,10 +101,16 @@ impl SettingOlpcMesh {
     //    unsafe { TODO: call ffi:nm_setting_olpc_mesh_get_ssid() }
     //}
 
+    /// Channel on which the mesh network to join is located.
     pub fn set_channel(&self, channel: u32) {
         ObjectExt::set_property(self,"channel", channel)
     }
 
+    /// Anycast DHCP MAC address used when requesting an IP address via DHCP.
+    /// The specific anycast address used determines which DHCP server class
+    /// answers the request.
+    ///
+    /// This is currently only implemented by dhclient DHCP plugin.
     #[doc(alias = "dhcp-anycast-address")]
     pub fn set_dhcp_anycast_address(&self, dhcp_anycast_address: Option<&str>) {
         ObjectExt::set_property(self,"dhcp-anycast-address", dhcp_anycast_address)
@@ -130,10 +180,16 @@ pub struct SettingOlpcMeshBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// Channel on which the mesh network to join is located.
                             pub fn channel(self, channel: u32) -> Self {
                             Self { builder: self.builder.property("channel", channel), }
                         }
 
+                            /// Anycast DHCP MAC address used when requesting an IP address via DHCP.
+                            /// The specific anycast address used determines which DHCP server class
+                            /// answers the request.
+                            ///
+                            /// This is currently only implemented by dhclient DHCP plugin.
                             pub fn dhcp_anycast_address(self, dhcp_anycast_address: impl Into<glib::GString>) -> Self {
                             Self { builder: self.builder.property("dhcp-anycast-address", dhcp_anycast_address.into()), }
                         }

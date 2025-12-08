@@ -12,6 +12,76 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_,pin::Pin};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `filename`
+    ///  File that stores the connection in case the connection is
+    /// file-backed.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `flags`
+    ///  The flags of the connection as unsigned integer. The values
+    /// correspond to the #NMSettingsConnectionFlags enum.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `unsaved`
+    ///  [`true`] if the remote connection contains changes that have not been saved
+    /// to disk, [`false`] if the connection is the same as its on-disk representation.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `version-id`
+    ///  The version ID of the profile that is incremented when the profile gets modified.
+    /// This can be used to track concurrent modifications of the profile.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `visible`
+    ///  [`true`] if the remote connection is visible to the current user, [`false`] if
+    /// not.  If the connection is not visible then it is essentially useless; it
+    /// will not contain any settings, and operations such as
+    /// nm_remote_connection_save() and nm_remote_connection_delete() will always
+    /// fail. (#NMRemoteSettings will not normally return non-visible connections
+    /// to callers, but it is possible for a connection's visibility to change
+    /// after you already have a reference to it.)
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`ObjectExt`][trait@crate::prelude::ObjectExt], [`ConnectionExt`][trait@crate::prelude::ConnectionExt]
     #[doc(alias = "NMRemoteConnection")]
     pub struct RemoteConnection(Object<ffi::NMRemoteConnection, ffi::NMRemoteConnectionClass>) @extends Object, @implements Connection;
 
@@ -21,6 +91,21 @@ glib::wrapper! {
 }
 
 impl RemoteConnection {
+    /// Send any local changes to the settings and properties of @self to
+    /// NetworkManager. If @save_to_disk is [`true`], the updated connection will be saved to
+    /// disk; if [`false`], then only the in-memory representation will be changed.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_remote_connection_commit_changes_async() or GDBusConnection.
+    /// ## `save_to_disk`
+    /// whether to persist the changes to disk
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] on error, in which case @error will be set.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_remote_connection_commit_changes")]
@@ -33,6 +118,16 @@ impl RemoteConnection {
         }
     }
 
+    /// Asynchronously sends any local changes to the settings and properties of
+    /// @self to NetworkManager. If @save is [`true`], the updated connection will
+    /// be saved to disk; if [`false`], then only the in-memory representation will be
+    /// changed.
+    /// ## `save_to_disk`
+    /// whether to save the changes to persistent storage
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the commit operation completes
     #[doc(alias = "nm_remote_connection_commit_changes_async")]
     pub fn commit_changes_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, save_to_disk: bool, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
         
@@ -75,6 +170,17 @@ impl RemoteConnection {
         }))
     }
 
+    /// Deletes the connection.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_remote_connection_delete_async() or GDBusConnection.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] on error, in which case @error will be set.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_remote_connection_delete")]
@@ -87,6 +193,11 @@ impl RemoteConnection {
         }
     }
 
+    /// Asynchronously deletes the connection.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the delete operation completes
     #[doc(alias = "nm_remote_connection_delete_async")]
     pub fn delete_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
         
@@ -128,6 +239,10 @@ impl RemoteConnection {
         }))
     }
 
+    ///
+    /// # Returns
+    ///
+    /// file that stores the connection in case the connection is file-backed.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_remote_connection_get_filename")]
@@ -138,6 +253,10 @@ impl RemoteConnection {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the flags of the connection of type #NMSettingsConnectionFlags.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_remote_connection_get_flags")]
@@ -175,6 +294,12 @@ impl RemoteConnection {
         //}))
     //}
 
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the remote connection contains changes that have not
+    /// been saved to disk, [`false`] if the connection is the same as its on-disk
+    /// representation.
     #[doc(alias = "nm_remote_connection_get_unsaved")]
     #[doc(alias = "get_unsaved")]
     #[doc(alias = "unsaved")]
@@ -184,6 +309,11 @@ impl RemoteConnection {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the version-id of the profile. This ID is incremented
+    ///   whenever the profile is modified.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "nm_remote_connection_get_version_id")]
@@ -195,6 +325,19 @@ impl RemoteConnection {
         }
     }
 
+    /// Checks if the connection is visible to the current user.  If the
+    /// connection is not visible then it is essentially useless; it will
+    /// not contain any settings, and operations such as
+    /// nm_remote_connection_save() and nm_remote_connection_delete() will
+    /// always fail. (#NMRemoteSettings will not normally return
+    /// non-visible connections to callers, but it is possible for a
+    /// connection's visibility to change after you already have a
+    /// reference to it.)
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the remote connection is visible to the current
+    /// user, [`false`] if not.
     #[doc(alias = "nm_remote_connection_get_visible")]
     #[doc(alias = "get_visible")]
     #[doc(alias = "visible")]
@@ -204,6 +347,18 @@ impl RemoteConnection {
         }
     }
 
+    /// Saves the connection to disk if the connection has changes that have not yet
+    /// been written to disk, or if the connection has never been saved.
+    ///
+    /// # Deprecated since 1.22
+    ///
+    /// Use nm_remote_connection_save_async() or GDBusConnection.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    ///
+    /// # Returns
+    ///
+    /// [`true`] on success, [`false`] on error, in which case @error will be set.
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_remote_connection_save")]
@@ -216,6 +371,12 @@ impl RemoteConnection {
         }
     }
 
+    /// Saves the connection to disk if the connection has changes that have not yet
+    /// been written to disk, or if the connection has never been saved.
+    /// ## `cancellable`
+    /// a #GCancellable, or [`None`]
+    /// ## `callback`
+    /// callback to be called when the save operation completes
     #[doc(alias = "nm_remote_connection_save_async")]
     pub fn save_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
         

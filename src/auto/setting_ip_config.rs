@@ -29,6 +29,501 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `addresses`
+    ///  Array of IP addresses.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `auto-route-ext-gw`
+    ///  VPN connections will default to add the route automatically unless this
+    /// setting is set to [`false`].
+    ///
+    /// For other connection types, adding such an automatic route is currently
+    /// not supported and setting this to [`true`] has no effect.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dad-timeout`
+    ///  Maximum timeout in milliseconds used to check for the presence of duplicate
+    /// IP addresses on the network.  If an address conflict is detected, the
+    /// activation will fail. The property is currently implemented only for IPv4.
+    ///
+    /// A zero value means that no duplicate address detection is performed, -1 means
+    /// the default value (either the value configured globally in NetworkManger.conf
+    /// or 200ms).  A value greater than zero is a timeout in milliseconds.  Note that
+    /// the time intervals are subject to randomization as per RFC 5227 and so the
+    /// actual duration can be between half and the full time specified in this
+    /// property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-dscp`
+    ///  Specifies the value for the DSCP field (traffic class) of the IP header. When
+    /// empty, the global default value is used; if no global default is specified, it is
+    /// assumed to be "CS0". Allowed values are: "CS0", "CS4" and "CS6".
+    ///
+    /// The property is currently valid only for IPv4, and it is supported only by the
+    /// "internal" DHCP plugin.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-hostname`
+    ///  If the #NMSettingIPConfig:dhcp-send-hostname property is [`true`], then the
+    /// specified name will be sent to the DHCP server when acquiring a lease.
+    /// This property and #NMSettingIP4Config:dhcp-fqdn are mutually exclusive and
+    /// cannot be set at the same time.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-hostname-flags`
+    ///  Flags for the DHCP hostname and FQDN.
+    ///
+    /// Currently, this property only includes flags to control the FQDN flags
+    /// set in the DHCP FQDN option. Supported FQDN flags are
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE],
+    /// [`DhcpHostnameFlags::FQDN_ENCODED`][crate::DhcpHostnameFlags::FQDN_ENCODED] and
+    /// [`DhcpHostnameFlags::FQDN_NO_UPDATE`][crate::DhcpHostnameFlags::FQDN_NO_UPDATE].  When no FQDN flag is set and
+    /// [`DhcpHostnameFlags::FQDN_CLEAR_FLAGS`][crate::DhcpHostnameFlags::FQDN_CLEAR_FLAGS] is set, the DHCP FQDN option will
+    /// contain no flag. Otherwise, if no FQDN flag is set and
+    /// [`DhcpHostnameFlags::FQDN_CLEAR_FLAGS`][crate::DhcpHostnameFlags::FQDN_CLEAR_FLAGS] is not set, the standard FQDN flags
+    /// are set in the request:
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE],
+    /// [`DhcpHostnameFlags::FQDN_ENCODED`][crate::DhcpHostnameFlags::FQDN_ENCODED] for IPv4 and
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE] for IPv6.
+    ///
+    /// When this property is set to the default value [`DhcpHostnameFlags::NONE`][crate::DhcpHostnameFlags::NONE],
+    /// a global default is looked up in NetworkManager configuration. If that value
+    /// is unset or also [`DhcpHostnameFlags::NONE`][crate::DhcpHostnameFlags::NONE], then the standard FQDN flags
+    /// described above are sent in the DHCP requests.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-iaid`
+    ///  A string containing the "Identity Association Identifier" (IAID) used by
+    /// the DHCP client. The string can be a 32-bit number (either decimal,
+    /// hexadecimal or as colon separated hexadecimal numbers). Alternatively
+    /// it can be set to the special values "mac", "perm-mac", "ifname" or
+    /// "stable". When set to "mac" (or "perm-mac"), the last 4 bytes of the
+    /// current (or permanent) MAC address are used as IAID. When set to
+    /// "ifname", the IAID is computed by hashing the interface name. The
+    /// special value "stable" can be used to generate an IAID based on the
+    /// stable-id (see connection.stable-id), a per-host key and the interface
+    /// name. When the property is unset, the value from global configuration is
+    /// used; if no global default is set then the IAID is assumed to be
+    /// "ifname".
+    ///
+    /// For DHCPv4, the IAID is only used with "ipv4.dhcp-client-id"
+    /// values "duid" and "ipv6-duid" to generate the client-id.
+    ///
+    /// For DHCPv6, note that at the moment this property is
+    /// only supported by the "internal" DHCPv6 plugin. The "dhclient" DHCPv6
+    /// plugin always derives the IAID from the MAC address.
+    ///
+    /// The actually used DHCPv6 IAID for a currently activated interface is
+    /// exposed in the lease information of the device.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-reject-servers`
+    ///  Array of servers from which DHCP offers must be rejected. This property
+    /// is useful to avoid getting a lease from misconfigured or rogue servers.
+    ///
+    /// For DHCPv4, each element must be an IPv4 address, optionally
+    /// followed by a slash and a prefix length (e.g. "192.168.122.0/24").
+    ///
+    /// This property is currently not implemented for DHCPv6.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-send-hostname`
+    ///  Since 1.52 this property is deprecated and is only used as fallback value
+    /// for #NMSettingIPConfig:dhcp-send-hostname-v2 if it's set to 'default'.
+    /// This is only done to avoid breaking existing configurations, the new
+    /// property should be used from now on.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-send-hostname-v2`
+    ///  If [`true`], a hostname is sent to the DHCP server when acquiring a lease.
+    /// Some DHCP servers use this hostname to update DNS databases, essentially
+    /// providing a static hostname for the computer.  If the
+    /// #NMSettingIPConfig:dhcp-hostname property is [`None`] and this property is
+    /// [`true`], the current persistent hostname of the computer is sent.
+    ///
+    /// The default value is [`Ternary::Default`][crate::Ternary::Default]. In this case the global value
+    /// from NetworkManager configuration is looked up. If it's not set, the value
+    /// from #NMSettingIPConfig:dhcp-send-hostname, which defaults to [`true`], is
+    /// used for backwards compatibility. In the future this will change and, in
+    /// absence of a global default, it will always fallback to [`true`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-send-release`
+    ///  Whether the DHCP client will send RELEASE message when
+    /// bringing the connection down. The default value is [`Ternary::Default`][crate::Ternary::Default].
+    /// When the default value is specified, then the global value from NetworkManager
+    /// configuration is looked up, if not set, it is considered as [`false`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-timeout`
+    ///  A timeout for a DHCP transaction in seconds. If zero (the default), a
+    /// globally configured default is used. If still unspecified, a device specific
+    /// timeout is used (usually 45 seconds).
+    ///
+    /// Set to 2147483647 (MAXINT32) for infinity.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns`
+    ///  Array of DNS servers.
+    ///
+    /// Each server can be specified either as a plain IP address (optionally followed
+    /// by a "#" and the SNI server name for DNS over TLS) or with a URI syntax.
+    ///
+    /// When it is specified as an URI, the following forms are supported:
+    /// dns+udp://ADDRESS[:PORT], dns+tls://ADDRESS[:PORT][#SERVERNAME] .
+    ///
+    /// When using the URI syntax, IPv6 addresses must be enclosed in square
+    /// brackets ('[', ']').
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns-options`
+    ///  Array of DNS options to be added to resolv.conf.
+    ///
+    /// [`None`] means that the options are unset and left at the default.
+    /// In this case NetworkManager will use default options. This is
+    /// distinct from an empty list of properties.
+    ///
+    /// The following options are directly added to resolv.conf: "attempts",
+    ///  "debug", "edns0",
+    /// "inet6", "ip6-bytestring", "ip6-dotint", "ndots", "no-aaaa",
+    /// "no-check-names", "no-ip6-dotint", "no-reload", "no-tld-query",
+    /// "rotate", "single-request", "single-request-reopen", "timeout",
+    /// "trust-ad", "use-vc". See the resolv.conf(5) man page for a
+    /// detailed description of these options.
+    ///
+    /// In addition, NetworkManager supports the special options "_no-add-edns0"
+    /// and "_no-add-trust-ad". They are not added to resolv.conf, and can be
+    /// used to prevent the automatic addition of options "edns0" and "trust-ad"
+    /// when using caching DNS plugins (see below).
+    ///
+    /// The "trust-ad" setting is only honored if the profile contributes
+    /// name servers to resolv.conf, and if all contributing profiles have
+    /// "trust-ad" enabled.
+    ///
+    /// When using a caching DNS plugin (dnsmasq or systemd-resolved in
+    /// NetworkManager.conf) then "edns0" and "trust-ad" are automatically
+    /// added, unless "_no-add-edns0" and "_no-add-trust-ad" are present.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns-priority`
+    ///  DNS servers priority.
+    ///
+    /// The relative priority for DNS servers specified by this setting.  A lower
+    /// numerical value is better (higher priority).
+    ///
+    /// Negative values have the special effect of excluding other configurations
+    /// with a greater numerical priority value; so in presence of at least one negative
+    /// priority, only DNS servers from connections with the lowest priority value will be used.
+    /// To avoid all DNS leaks, set the priority of the profile that should be used
+    /// to the most negative value of all active connections profiles.
+    ///
+    /// Zero selects a globally configured default value. If the latter is missing
+    /// or zero too, it defaults to 50 for VPNs (including WireGuard) and 100 for
+    /// other connections.
+    ///
+    /// Note that the priority is to order DNS settings for multiple active
+    /// connections.  It does not disambiguate multiple DNS servers within the
+    /// same connection profile.
+    ///
+    /// When multiple devices have configurations with the same priority, VPNs will be
+    /// considered first, then devices with the best (lowest metric) default
+    /// route and then all other devices.
+    ///
+    /// When using dns=default, servers with higher priority will be on top of
+    /// resolv.conf. To prioritize a given server over another one within the
+    /// same connection, just specify them in the desired order.
+    /// Note that commonly the resolver tries name servers in /etc/resolv.conf
+    /// in the order listed, proceeding with the next server in the list
+    /// on failure. See for example the "rotate" option of the dns-options setting.
+    /// If there are any negative DNS priorities, then only name servers from
+    /// the devices with that lowest priority will be considered.
+    ///
+    /// When using a DNS resolver that supports Conditional Forwarding or
+    /// Split DNS (with dns=dnsmasq or dns=systemd-resolved settings), each connection
+    /// is used to query domains in its search list. The search domains determine which
+    /// name servers to ask, and the DNS priority is used to prioritize
+    /// name servers based on the domain.  Queries for domains not present in any
+    /// search list are routed through connections having the '~.' special wildcard
+    /// domain, which is added automatically to connections with the default route
+    /// (or can be added manually).  When multiple connections specify the same domain, the
+    /// one with the best priority (lowest numerical value) wins.  If a sub domain
+    /// is configured on another interface it will be accepted regardless the priority,
+    /// unless parent domain on the other interface has a negative priority, which causes
+    /// the sub domain to be shadowed.
+    /// With Split DNS one can avoid undesired DNS leaks by properly configuring
+    /// DNS priorities and the search domains, so that only name servers of the desired
+    /// interface are configured.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns-search`
+    ///  List of DNS search domains. Domains starting with a tilde ('~')
+    /// are considered 'routing' domains and are used only to decide the
+    /// interface over which a query must be forwarded; they are not used
+    /// to complete unqualified host names.
+    ///
+    /// When using a DNS plugin that supports Conditional Forwarding or
+    /// Split DNS, then the search domains specify which name servers to
+    /// query. This makes the behavior different from running with plain
+    /// /etc/resolv.conf. For more information see also the dns-priority setting.
+    ///
+    /// When set on a profile that also enabled DHCP, the DNS search list
+    /// received automatically (option 119 for DHCPv4 and option 24 for DHCPv6)
+    /// gets merged with the manual list. This can be prevented by setting
+    /// "ignore-auto-dns". Note that if no DNS searches are configured, the
+    /// fallback will be derived from the domain from DHCP (option 15).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `forwarding`
+    ///  Whether to configure sysctl interface-specific forwarding. When enabled, the interface
+    /// will act as a router to forward the packet from one interface to another. When set to
+    /// [`SettingIPConfigForwarding::Default`][crate::SettingIPConfigForwarding::Default], the value from global configuration is used;
+    /// if no global default is defined, [`SettingIPConfigForwarding::Auto`][crate::SettingIPConfigForwarding::Auto] will be used.
+    /// The #NMSettingIPConfig:forwarding property is ignored when #NMSettingIPConfig:method
+    /// is set to "shared", because forwarding is always enabled in this case.
+    /// The accepted values are:
+    ///   [`SettingIPConfigForwarding::Default`][crate::SettingIPConfigForwarding::Default]: use global default.
+    ///   [`SettingIPConfigForwarding::No`][crate::SettingIPConfigForwarding::No]: disabled.
+    ///   [`SettingIPConfigForwarding::Yes`][crate::SettingIPConfigForwarding::Yes]: enabled.
+    ///   [`SettingIPConfigForwarding::Auto`][crate::SettingIPConfigForwarding::Auto]: enable if any shared connection is active,
+    ///        use kernel default otherwise.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `gateway`
+    ///  The gateway associated with this configuration. This is only meaningful
+    /// if #NMSettingIPConfig:addresses is also set.
+    ///
+    /// Setting the gateway causes NetworkManager to configure a standard default route
+    /// with the gateway as next hop. This is ignored if #NMSettingIPConfig:never-default
+    /// is set. An alternative is to configure the default route explicitly with a manual
+    /// route and /0 as prefix length.
+    ///
+    /// Note that the gateway usually conflicts with routing that NetworkManager configures
+    /// for WireGuard interfaces, so usually it should not be set in that case. See
+    /// #NMSettingWireGuard:ip4-auto-default-route.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ignore-auto-dns`
+    ///  When #NMSettingIPConfig:method is set to "auto" and this property to
+    /// [`true`], automatically configured name servers and search domains are
+    /// ignored and only name servers and search domains specified in the
+    /// #NMSettingIPConfig:dns and #NMSettingIPConfig:dns-search properties, if
+    /// any, are used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ignore-auto-routes`
+    ///  When #NMSettingIPConfig:method is set to "auto" and this property to
+    /// [`true`], automatically configured routes are ignored and only routes
+    /// specified in the #NMSettingIPConfig:routes property, if any, are used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `may-fail`
+    ///  If [`true`], allow overall network configuration to proceed even if the
+    /// configuration specified by this property times out.  Note that at least
+    /// one IP configuration must succeed or overall network configuration will
+    /// still fail.  For example, in IPv6-only networks, setting this property to
+    /// [`true`] on the #NMSettingIP4Config allows the overall network configuration
+    /// to succeed if IPv4 configuration fails but IPv6 configuration completes
+    /// successfully.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `method`
+    ///  IP configuration method.
+    ///
+    /// #NMSettingIP4Config and #NMSettingIP6Config both support "disabled",
+    /// "auto", "manual", and "link-local". See the subclass-specific
+    /// documentation for other values.
+    ///
+    /// In general, for the "auto" method, properties such as
+    /// #NMSettingIPConfig:dns and #NMSettingIPConfig:routes specify information
+    /// that is added on to the information returned from automatic
+    /// configuration.  The #NMSettingIPConfig:ignore-auto-routes and
+    /// #NMSettingIPConfig:ignore-auto-dns properties modify this behavior.
+    ///
+    /// For methods that imply no upstream network, such as "shared" or
+    /// "link-local", these properties must be empty.
+    ///
+    /// For IPv4 method "shared", the IP subnet can be configured by adding one
+    /// manual IPv4 address or otherwise 10.42.x.0/24 is chosen. Note that the
+    /// shared method must be configured on the interface which shares the internet
+    /// to a subnet, not on the uplink which is shared.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `never-default`
+    ///  If [`true`], this connection will never be the default connection for this
+    /// IP type, meaning it will never be assigned the default route by
+    /// NetworkManager.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `replace-local-rule`
+    ///  Connections will default to keep the autogenerated priority 0 local rule
+    /// unless this setting is set to [`true`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `required-timeout`
+    ///  The minimum time interval in milliseconds for which dynamic IP configuration
+    /// should be tried before the connection succeeds.
+    ///
+    /// This property is useful for example if both IPv4 and IPv6 are enabled and
+    /// are allowed to fail. Normally the connection succeeds as soon as one of
+    /// the two address families completes; by setting a required timeout for
+    /// e.g. IPv4, one can ensure that even if IP6 succeeds earlier than IPv4,
+    /// NetworkManager waits some time for IPv4 before the connection becomes
+    /// active.
+    ///
+    /// Note that if #NMSettingIPConfig:may-fail is FALSE for the same address
+    /// family, this property has no effect as NetworkManager needs to wait for
+    /// the full DHCP timeout.
+    ///
+    /// A zero value means that no required timeout is present, -1 means the
+    /// default value (either configuration ipvx.required-timeout override or
+    /// zero).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `route-metric`
+    ///  The default metric for routes that don't explicitly specify a metric.
+    /// The default value -1 means that the metric is chosen automatically
+    /// based on the device type.
+    /// The metric applies to dynamic routes, manual (static) routes that
+    /// don't have an explicit metric setting, address prefix routes, and
+    /// the default route.
+    /// Note that for IPv6, the kernel accepts zero (0) but coerces it to
+    /// 1024 (user default). Hence, setting this property to zero effectively
+    /// mean setting it to 1024.
+    /// For IPv4, zero is a regular value for the metric.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `route-table`
+    ///  Enable policy routing (source routing) and set the routing table used when adding routes.
+    ///
+    /// This affects all routes, including device-routes, IPv4LL, DHCP, SLAAC, default-routes
+    /// and static routes. But note that static routes can individually overwrite the setting
+    /// by explicitly specifying a non-zero routing table.
+    ///
+    /// If the table setting is left at zero, it is eligible to be overwritten via global
+    /// configuration. If the property is zero even after applying the global configuration
+    /// value, policy routing is disabled for the address family of this connection.
+    ///
+    /// Policy routing disabled means that NetworkManager will add all routes to the main
+    /// table (except static routes that explicitly configure a different table). Additionally,
+    /// NetworkManager will not delete any extraneous routes from tables except the main table.
+    /// This is to preserve backward compatibility for users who manage routing tables outside
+    /// of NetworkManager.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `routed-dns`
+    ///  Whether to add routes for DNS servers. When enabled, NetworkManager adds a route
+    /// for each DNS server that is associated with this connection either statically
+    /// (defined in the connection profile) or dynamically (for example, retrieved via
+    /// DHCP). The route guarantees that the DNS server is reached via this interface. When
+    /// set to [`SettingIPConfigRoutedDns::Default`][crate::SettingIPConfigRoutedDns::Default], the value from global
+    /// configuration is used; if no global default is defined, this feature is disabled.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `routes`
+    ///  Array of IP routes.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `shared-dhcp-lease-time`
+    ///  This option allows you to specify a custom DHCP lease time for the shared connection
+    /// method in seconds. The value should be either a number between 120 and 31536000 (one year)
+    /// If this option is not specified, 3600 (one hour) is used.
+    ///
+    /// Special values are 0 for default value of 1 hour and 2147483647 (MAXINT32) for infinite lease time.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `shared-dhcp-range`
+    ///  This option allows you to specify a custom DHCP range for the shared connection
+    /// method. The value is expected to be in `<START_ADDRESS>,<END_ADDRESS>` format.
+    /// The range should be part of network set by ipv4.address option and it should
+    /// not contain network address or broadcast address. If this option is not specified,
+    /// the DHCP range will be automatically determined based on the interface address.
+    /// The range will be selected to be adjacent to the interface address, either before
+    /// or after it, with the larger possible range being preferred. The range will be
+    /// adjusted to fill the available address space, except for networks with a prefix
+    /// length greater than 24, which will be treated as if they have a prefix length of 24.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingIPConfigExt`][trait@crate::prelude::SettingIPConfigExt], [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingIPConfig")]
     pub struct SettingIPConfig(Object<ffi::NMSettingIPConfig, ffi::NMSettingIPConfigClass>) @extends Setting;
 
@@ -41,7 +536,21 @@ impl SettingIPConfig {
     pub const NONE: Option<&'static SettingIPConfig> = None;
 }
 
+/// Trait containing all [`struct@SettingIPConfig`] methods.
+///
+/// # Implementors
+///
+/// [`SettingIP4Config`][struct@crate::SettingIP4Config], [`SettingIP6Config`][struct@crate::SettingIP6Config], [`SettingIPConfig`][struct@crate::SettingIPConfig]
 pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
+    /// Adds a new IP address and associated information to the setting.  The
+    /// given address is duplicated internally and is not changed by this function.
+    /// ## `address`
+    /// the new address to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the address was added; [`false`] if the address was already
+    /// known.
     #[doc(alias = "nm_setting_ip_config_add_address")]
     fn add_address(&self, address: &IPAddress) -> bool {
         unsafe {
@@ -52,6 +561,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Adds a new DHCP reject server to the setting.
+    /// ## `server`
+    /// the DHCP reject server to add
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "nm_setting_ip_config_add_dhcp_reject_server")]
@@ -64,6 +576,18 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Adds a new DNS server to the setting.
+    /// ## `dns`
+    /// the IP address of the DNS server to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the DNS server was added; [`false`] if the server was already
+    /// known
+    ///
+    /// Before 1.42, setting @dns to an invalid string was treated as user-error.
+    /// Now, also invalid DNS values can be set, but will be rejected later during
+    /// nm_connection_verify().
     #[doc(alias = "nm_setting_ip_config_add_dns")]
     fn add_dns(&self, dns: &str) -> bool {
         unsafe {
@@ -74,6 +598,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Adds a new DNS option to the setting.
+    /// ## `dns_option`
+    /// the DNS option to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the DNS option was added; [`false`] otherwise
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_add_dns_option")]
@@ -86,6 +617,14 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Adds a new DNS search domain to the setting.
+    /// ## `dns_search`
+    /// the search domain to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the DNS search domain was added; [`false`] if the search
+    /// domain was already known
     #[doc(alias = "nm_setting_ip_config_add_dns_search")]
     fn add_dns_search(&self, dns_search: &str) -> bool {
         unsafe {
@@ -96,6 +635,20 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Appends a new route and associated information to the setting.  The
+    /// given route is duplicated internally and is not changed by this function.
+    /// If an identical route (considering attributes as well) already exists, the
+    /// route is not added and the function returns [`false`].
+    ///
+    /// Note that before 1.10, this function would not consider route attributes
+    /// and not add a route that has an existing route with same dest/prefix,next_hop,metric
+    /// parameters.
+    /// ## `route`
+    /// the route to add
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the route was added; [`false`] if the route was already known.
     #[doc(alias = "nm_setting_ip_config_add_route")]
     fn add_route(&self, route: &IPRoute) -> bool {
         unsafe {
@@ -106,6 +659,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Appends a new routing-rule and associated information to the setting. The
+    /// given routing rules gets sealed and the reference count is incremented.
+    /// The function does not check whether an identical rule already exists
+    /// and always appends the rule to the end of the list.
+    /// ## `routing_rule`
+    /// the #NMIPRoutingRule to add. The address family
+    ///   of the added rule must be compatible with the setting.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_ip_config_add_routing_rule")]
@@ -118,6 +678,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes all configured addresses.
     #[doc(alias = "nm_setting_ip_config_clear_addresses")]
     fn clear_addresses(&self) {
         unsafe {
@@ -125,6 +686,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes all configured DHCP reject servers.
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "nm_setting_ip_config_clear_dhcp_reject_servers")]
@@ -134,6 +696,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes all configured DNS servers.
     #[doc(alias = "nm_setting_ip_config_clear_dns")]
     fn clear_dns(&self) {
         unsafe {
@@ -141,6 +704,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes all configured DNS options.
+    /// ## `is_set`
+    /// the dns-options can be either empty or unset (default).
+    ///   Specify how to clear the options.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_clear_dns_options")]
@@ -153,6 +720,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes all configured DNS search domains.
     #[doc(alias = "nm_setting_ip_config_clear_dns_searches")]
     fn clear_dns_searches(&self) {
         unsafe {
@@ -160,6 +728,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes all configured routes.
     #[doc(alias = "nm_setting_ip_config_clear_routes")]
     fn clear_routes(&self) {
         unsafe {
@@ -167,6 +736,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes all configured routing rules.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_ip_config_clear_routing_rules")]
@@ -176,6 +746,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// ## `idx`
+    /// index number of the address to return
+    ///
+    /// # Returns
+    ///
+    /// the address at index @idx
     #[doc(alias = "nm_setting_ip_config_get_address")]
     #[doc(alias = "get_address")]
     fn address(&self, idx: i32) -> IPAddress {
@@ -187,6 +763,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIPConfig:auto-route-ext-gw property of the setting
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ip_config_get_auto_route_ext_gw")]
@@ -200,6 +780,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIPConfig:dad-timeout property.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_get_dad_timeout")]
@@ -209,6 +793,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         unsafe { ffi::nm_setting_ip_config_get_dad_timeout(self.as_ref().to_glib_none().0) }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:dhcp-dscp
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the value for the DSCP field for DHCP
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_ip_config_get_dhcp_dscp")]
@@ -222,6 +812,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:dhcp-hostname
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the configured hostname to send to the DHCP server
     #[doc(alias = "nm_setting_ip_config_get_dhcp_hostname")]
     #[doc(alias = "get_dhcp_hostname")]
     #[doc(alias = "dhcp-hostname")]
@@ -233,6 +829,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:dhcp-hostname-flags
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// flags for the DHCP hostname and FQDN
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "nm_setting_ip_config_get_dhcp_hostname_flags")]
@@ -246,6 +848,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:dhcp-iaid
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the configured DHCP IAID (Identity Association Identifier)
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_setting_ip_config_get_dhcp_iaid")]
@@ -259,6 +867,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    ///
+    ///   A [`None`] terminated array of DHCP reject servers. Even if no reject
+    ///   servers are configured, this always returns a non [`None`] value.
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "nm_setting_ip_config_get_dhcp_reject_servers")]
@@ -278,6 +892,18 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:dhcp-send-hostname
+    /// property.
+    ///
+    /// # Deprecated since 1.52
+    ///
+    /// Use nm_setting_ip_config_get_dhcp_send_hostname_v2() instead.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if NetworkManager should send the machine hostname to the
+    /// DHCP server when requesting addresses to allow the server to automatically
+    /// update DNS information for this machine.
     #[cfg_attr(feature = "v1_52", deprecated = "Since 1.52")]
     #[allow(deprecated)]
     #[doc(alias = "nm_setting_ip_config_get_dhcp_send_hostname")]
@@ -291,6 +917,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:dhcp-send-hostname-v2
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIPConfig:dhcp-send-hostname-v2 property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ip_config_get_dhcp_send_hostname_v2")]
@@ -304,6 +936,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIPConfig:dhcp-send-release property of the setting
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_ip_config_get_dhcp_send_release")]
@@ -317,6 +953,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:dhcp-timeout
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the configured DHCP timeout in seconds. 0 = default for
+    /// the particular kind of device.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_get_dhcp_timeout")]
@@ -326,6 +969,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         unsafe { ffi::nm_setting_ip_config_get_dhcp_timeout(self.as_ref().to_glib_none().0) }
     }
 
+    /// ## `idx`
+    /// index number of the DNS server to return
+    ///
+    /// # Returns
+    ///
+    /// the IP address of the DNS server at index @idx
     #[doc(alias = "nm_setting_ip_config_get_dns")]
     #[doc(alias = "get_dns")]
     fn dns(&self, idx: i32) -> glib::GString {
@@ -337,6 +986,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Since 1.46, access at index "len" is allowed and returns NULL.
+    /// ## `idx`
+    /// index number of the DNS option
+    ///
+    /// # Returns
+    ///
+    /// the DNS option at index @idx
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_get_dns_option")]
@@ -350,6 +1006,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the priority of DNS servers
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_setting_ip_config_get_dns_priority")]
@@ -359,6 +1019,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         unsafe { ffi::nm_setting_ip_config_get_dns_priority(self.as_ref().to_glib_none().0) }
     }
 
+    /// Since 1.46, access at index "len" is allowed and returns NULL.
+    /// ## `idx`
+    /// index number of the DNS search domain to return
+    ///
+    /// # Returns
+    ///
+    /// the DNS search domain at index @idx
     #[doc(alias = "nm_setting_ip_config_get_dns_search")]
     #[doc(alias = "get_dns_search")]
     #[doc(alias = "dns-search")]
@@ -371,6 +1038,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIPConfig:forwarding property of the setting
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "nm_setting_ip_config_get_forwarding")]
@@ -383,6 +1054,11 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the IP address of the gateway associated with this configuration, or
+    /// [`None`].
     #[doc(alias = "nm_setting_ip_config_get_gateway")]
     #[doc(alias = "get_gateway")]
     fn gateway(&self) -> glib::GString {
@@ -393,6 +1069,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:ignore-auto-dns
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if automatically configured (ie via DHCP) DNS information
+    /// should be ignored.
     #[doc(alias = "nm_setting_ip_config_get_ignore_auto_dns")]
     #[doc(alias = "get_ignore_auto_dns")]
     #[doc(alias = "ignore-auto-dns")]
@@ -404,6 +1087,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:ignore-auto-routes
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if automatically configured (ie via DHCP) routes should be
+    /// ignored.
     #[doc(alias = "nm_setting_ip_config_get_ignore_auto_routes")]
     #[doc(alias = "get_ignore_auto_routes")]
     #[doc(alias = "ignore-auto-routes")]
@@ -415,6 +1105,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:may-fail
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if this connection doesn't require this type of IP
+    /// addressing to complete for the connection to succeed.
     #[doc(alias = "nm_setting_ip_config_get_may_fail")]
     #[doc(alias = "get_may_fail")]
     #[doc(alias = "may-fail")]
@@ -426,6 +1123,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIPConfig:method property of the setting; see
+    /// #NMSettingIP4Config and #NMSettingIP6Config for details of the
+    /// methods available with each type.
     #[doc(alias = "nm_setting_ip_config_get_method")]
     #[doc(alias = "get_method")]
     fn method(&self) -> glib::GString {
@@ -436,6 +1139,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:never-default
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if this connection should never be the default
+    ///   connection
     #[doc(alias = "nm_setting_ip_config_get_never_default")]
     #[doc(alias = "get_never_default")]
     #[doc(alias = "never-default")]
@@ -447,18 +1157,30 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured addresses
     #[doc(alias = "nm_setting_ip_config_get_num_addresses")]
     #[doc(alias = "get_num_addresses")]
     fn num_addresses(&self) -> u32 {
         unsafe { ffi::nm_setting_ip_config_get_num_addresses(self.as_ref().to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured DNS servers
     #[doc(alias = "nm_setting_ip_config_get_num_dns")]
     #[doc(alias = "get_num_dns")]
     fn num_dns(&self) -> u32 {
         unsafe { ffi::nm_setting_ip_config_get_num_dns(self.as_ref().to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured DNS options
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_get_num_dns_options")]
@@ -467,18 +1189,30 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         unsafe { ffi::nm_setting_ip_config_get_num_dns_options(self.as_ref().to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured DNS search domains
     #[doc(alias = "nm_setting_ip_config_get_num_dns_searches")]
     #[doc(alias = "get_num_dns_searches")]
     fn num_dns_searches(&self) -> u32 {
         unsafe { ffi::nm_setting_ip_config_get_num_dns_searches(self.as_ref().to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured routes
     #[doc(alias = "nm_setting_ip_config_get_num_routes")]
     #[doc(alias = "get_num_routes")]
     fn num_routes(&self) -> u32 {
         unsafe { ffi::nm_setting_ip_config_get_num_routes(self.as_ref().to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the number of configured routing rules
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_ip_config_get_num_routing_rules")]
@@ -487,6 +1221,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         unsafe { ffi::nm_setting_ip_config_get_num_routing_rules(self.as_ref().to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIPConfig:replace-local-rule property of the setting
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "nm_setting_ip_config_get_replace_local_rule")]
@@ -500,6 +1238,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:required-timeout
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the required timeout for the address family
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "nm_setting_ip_config_get_required_timeout")]
@@ -509,6 +1253,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         unsafe { ffi::nm_setting_ip_config_get_required_timeout(self.as_ref().to_glib_none().0) }
     }
 
+    /// ## `idx`
+    /// index number of the route to return
+    ///
+    /// # Returns
+    ///
+    /// the route at index @idx
     #[doc(alias = "nm_setting_ip_config_get_route")]
     #[doc(alias = "get_route")]
     fn route(&self, idx: i32) -> IPRoute {
@@ -520,6 +1270,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:route-metric
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the route metric that is used for routes that don't explicitly
+    /// specify a metric. See #NMSettingIPConfig:route-metric for more details.
     #[doc(alias = "nm_setting_ip_config_get_route_metric")]
     #[doc(alias = "get_route_metric")]
     #[doc(alias = "route-metric")]
@@ -527,6 +1284,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         unsafe { ffi::nm_setting_ip_config_get_route_metric(self.as_ref().to_glib_none().0) }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:route-table
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the configured route-table.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_setting_ip_config_get_route_table")]
@@ -536,6 +1299,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         unsafe { ffi::nm_setting_ip_config_get_route_table(self.as_ref().to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingIPConfig:routed-dns property of the setting
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ip_config_get_routed_dns")]
@@ -549,6 +1316,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// ## `idx`
+    /// index number of the routing_rule to return
+    ///
+    /// # Returns
+    ///
+    /// the routing rule at index @idx
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_ip_config_get_routing_rule")]
@@ -562,6 +1335,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:shared-dhcp-lease-time
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the configured DHCP server lease time
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ip_config_get_shared_dhcp_lease_time")]
@@ -573,6 +1352,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIPConfig:shared-dhcp-range
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// the configured DHCP server range
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "nm_setting_ip_config_get_shared_dhcp_range")]
@@ -586,6 +1371,15 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// NMSettingIPConfig can have a list of dns-options. If the list
+    /// is empty, there are two similar (but differentiated) states.
+    /// Either the options are explicitly set to have no values,
+    /// or the options are left undefined. The latter means to use
+    /// a default configuration, while the former explicitly means "no-options".
+    ///
+    /// # Returns
+    ///
+    /// whether DNS options are initialized or left unset (the default).
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_has_dns_options")]
@@ -597,6 +1391,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the address at index @idx.
+    /// ## `idx`
+    /// index number of the address to remove
     #[doc(alias = "nm_setting_ip_config_remove_address")]
     fn remove_address(&self, idx: i32) {
         unsafe {
@@ -604,6 +1401,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the address @address.
+    /// ## `address`
+    /// the IP address to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the address was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_ip_config_remove_address_by_value")]
     fn remove_address_by_value(&self, address: &IPAddress) -> bool {
         unsafe {
@@ -614,6 +1418,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the DHCP reject server at index @idx.
+    /// ## `idx`
+    /// index number of the DHCP reject server
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "nm_setting_ip_config_remove_dhcp_reject_server")]
@@ -626,6 +1433,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the DNS server at index @idx.
+    /// ## `idx`
+    /// index number of the DNS server to remove
     #[doc(alias = "nm_setting_ip_config_remove_dns")]
     fn remove_dns(&self, idx: i32) {
         unsafe {
@@ -633,6 +1443,15 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the DNS server @dns.
+    /// ## `dns`
+    /// the DNS server to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the DNS server was found and removed; [`false`] if it was not.
+    ///
+    /// Before 1.42, setting @dns to an invalid string was treated as user-error.
     #[doc(alias = "nm_setting_ip_config_remove_dns_by_value")]
     fn remove_dns_by_value(&self, dns: &str) -> bool {
         unsafe {
@@ -643,6 +1462,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the DNS option at index @idx.
+    /// ## `idx`
+    /// index number of the DNS option
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_remove_dns_option")]
@@ -652,6 +1474,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the DNS option @dns_option.
+    /// ## `dns_option`
+    /// the DNS option to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the DNS option was found and removed; [`false`] if it was not.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip_config_remove_dns_option_by_value")]
@@ -664,6 +1493,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the DNS search domain at index @idx.
+    /// ## `idx`
+    /// index number of the DNS search domain
     #[doc(alias = "nm_setting_ip_config_remove_dns_search")]
     fn remove_dns_search(&self, idx: i32) {
         unsafe {
@@ -671,6 +1503,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the DNS search domain @dns_search.
+    /// ## `dns_search`
+    /// the search domain to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the DNS search domain was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_ip_config_remove_dns_search_by_value")]
     fn remove_dns_search_by_value(&self, dns_search: &str) -> bool {
         unsafe {
@@ -681,6 +1520,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the route at index @idx.
+    /// ## `idx`
+    /// index number of the route
     #[doc(alias = "nm_setting_ip_config_remove_route")]
     fn remove_route(&self, idx: i32) {
         unsafe {
@@ -688,6 +1530,15 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the first matching route that matches @route.
+    /// Note that before 1.10, this function would only compare dest/prefix,next_hop,metric
+    /// and ignore route attributes. Now, @route must match exactly.
+    /// ## `route`
+    /// the route to remove
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the route was found and removed; [`false`] if it was not.
     #[doc(alias = "nm_setting_ip_config_remove_route_by_value")]
     fn remove_route_by_value(&self, route: &IPRoute) -> bool {
         unsafe {
@@ -698,6 +1549,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Removes the routing_rule at index @idx.
+    /// ## `idx`
+    /// index number of the routing_rule
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_setting_ip_config_remove_routing_rule")]
@@ -707,6 +1561,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         }
     }
 
+    /// Array of IP addresses.
     fn addresses(&self) -> Vec<IPAddress> {
         let vals = ObjectExt::property::<glib::ValueArray>(self.as_ref(), "addresses");
         vals.iter()
@@ -714,6 +1569,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
             .collect()
     }
 
+    /// Array of IP addresses.
     fn set_addresses(&self, addresses: &[&IPAddress]) {
         ObjectExt::set_property(
             self.as_ref(),
@@ -725,6 +1581,11 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         )
     }
 
+    /// VPN connections will default to add the route automatically unless this
+    /// setting is set to [`false`].
+    ///
+    /// For other connection types, adding such an automatic route is currently
+    /// not supported and setting this to [`true`] has no effect.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "auto-route-ext-gw")]
@@ -732,6 +1593,16 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "auto-route-ext-gw", auto_route_ext_gw)
     }
 
+    /// Maximum timeout in milliseconds used to check for the presence of duplicate
+    /// IP addresses on the network.  If an address conflict is detected, the
+    /// activation will fail. The property is currently implemented only for IPv4.
+    ///
+    /// A zero value means that no duplicate address detection is performed, -1 means
+    /// the default value (either the value configured globally in NetworkManger.conf
+    /// or 200ms).  A value greater than zero is a timeout in milliseconds.  Note that
+    /// the time intervals are subject to randomization as per RFC 5227 and so the
+    /// actual duration can be between half and the full time specified in this
+    /// property.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "dad-timeout")]
@@ -739,6 +1610,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "dad-timeout", dad_timeout)
     }
 
+    /// Specifies the value for the DSCP field (traffic class) of the IP header. When
+    /// empty, the global default value is used; if no global default is specified, it is
+    /// assumed to be "CS0". Allowed values are: "CS0", "CS4" and "CS6".
+    ///
+    /// The property is currently valid only for IPv4, and it is supported only by the
+    /// "internal" DHCP plugin.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "dhcp-dscp")]
@@ -746,11 +1623,34 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "dhcp-dscp", dhcp_dscp)
     }
 
+    /// If the #NMSettingIPConfig:dhcp-send-hostname property is [`true`], then the
+    /// specified name will be sent to the DHCP server when acquiring a lease.
+    /// This property and #NMSettingIP4Config:dhcp-fqdn are mutually exclusive and
+    /// cannot be set at the same time.
     #[doc(alias = "dhcp-hostname")]
     fn set_dhcp_hostname(&self, dhcp_hostname: Option<&str>) {
         ObjectExt::set_property(self.as_ref(), "dhcp-hostname", dhcp_hostname)
     }
 
+    /// Flags for the DHCP hostname and FQDN.
+    ///
+    /// Currently, this property only includes flags to control the FQDN flags
+    /// set in the DHCP FQDN option. Supported FQDN flags are
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE],
+    /// [`DhcpHostnameFlags::FQDN_ENCODED`][crate::DhcpHostnameFlags::FQDN_ENCODED] and
+    /// [`DhcpHostnameFlags::FQDN_NO_UPDATE`][crate::DhcpHostnameFlags::FQDN_NO_UPDATE].  When no FQDN flag is set and
+    /// [`DhcpHostnameFlags::FQDN_CLEAR_FLAGS`][crate::DhcpHostnameFlags::FQDN_CLEAR_FLAGS] is set, the DHCP FQDN option will
+    /// contain no flag. Otherwise, if no FQDN flag is set and
+    /// [`DhcpHostnameFlags::FQDN_CLEAR_FLAGS`][crate::DhcpHostnameFlags::FQDN_CLEAR_FLAGS] is not set, the standard FQDN flags
+    /// are set in the request:
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE],
+    /// [`DhcpHostnameFlags::FQDN_ENCODED`][crate::DhcpHostnameFlags::FQDN_ENCODED] for IPv4 and
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE] for IPv6.
+    ///
+    /// When this property is set to the default value [`DhcpHostnameFlags::NONE`][crate::DhcpHostnameFlags::NONE],
+    /// a global default is looked up in NetworkManager configuration. If that value
+    /// is unset or also [`DhcpHostnameFlags::NONE`][crate::DhcpHostnameFlags::NONE], then the standard FQDN flags
+    /// described above are sent in the DHCP requests.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "dhcp-hostname-flags")]
@@ -765,6 +1665,28 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::property(self.as_ref(), "dhcp-iaid")
     }
 
+    /// A string containing the "Identity Association Identifier" (IAID) used by
+    /// the DHCP client. The string can be a 32-bit number (either decimal,
+    /// hexadecimal or as colon separated hexadecimal numbers). Alternatively
+    /// it can be set to the special values "mac", "perm-mac", "ifname" or
+    /// "stable". When set to "mac" (or "perm-mac"), the last 4 bytes of the
+    /// current (or permanent) MAC address are used as IAID. When set to
+    /// "ifname", the IAID is computed by hashing the interface name. The
+    /// special value "stable" can be used to generate an IAID based on the
+    /// stable-id (see connection.stable-id), a per-host key and the interface
+    /// name. When the property is unset, the value from global configuration is
+    /// used; if no global default is set then the IAID is assumed to be
+    /// "ifname".
+    ///
+    /// For DHCPv4, the IAID is only used with "ipv4.dhcp-client-id"
+    /// values "duid" and "ipv6-duid" to generate the client-id.
+    ///
+    /// For DHCPv6, note that at the moment this property is
+    /// only supported by the "internal" DHCPv6 plugin. The "dhclient" DHCPv6
+    /// plugin always derives the IAID from the MAC address.
+    ///
+    /// The actually used DHCPv6 IAID for a currently activated interface is
+    /// exposed in the lease information of the device.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "dhcp-iaid")]
@@ -772,6 +1694,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "dhcp-iaid", dhcp_iaid)
     }
 
+    /// Array of servers from which DHCP offers must be rejected. This property
+    /// is useful to avoid getting a lease from misconfigured or rogue servers.
+    ///
+    /// For DHCPv4, each element must be an IPv4 address, optionally
+    /// followed by a slash and a prefix length (e.g. "192.168.122.0/24").
+    ///
+    /// This property is currently not implemented for DHCPv6.
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "dhcp-reject-servers")]
@@ -779,12 +1708,31 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "dhcp-reject-servers", dhcp_reject_servers)
     }
 
+    /// Since 1.52 this property is deprecated and is only used as fallback value
+    /// for #NMSettingIPConfig:dhcp-send-hostname-v2 if it's set to 'default'.
+    /// This is only done to avoid breaking existing configurations, the new
+    /// property should be used from now on.
+    ///
+    /// # Deprecated since 1.52
+    ///
+    /// use the new version of dhcp-send-hostname instead.
     #[cfg_attr(feature = "v1_52", deprecated = "Since 1.52")]
     #[doc(alias = "dhcp-send-hostname")]
     fn set_dhcp_send_hostname(&self, dhcp_send_hostname: bool) {
         ObjectExt::set_property(self.as_ref(), "dhcp-send-hostname", dhcp_send_hostname)
     }
 
+    /// If [`true`], a hostname is sent to the DHCP server when acquiring a lease.
+    /// Some DHCP servers use this hostname to update DNS databases, essentially
+    /// providing a static hostname for the computer.  If the
+    /// #NMSettingIPConfig:dhcp-hostname property is [`None`] and this property is
+    /// [`true`], the current persistent hostname of the computer is sent.
+    ///
+    /// The default value is [`Ternary::Default`][crate::Ternary::Default]. In this case the global value
+    /// from NetworkManager configuration is looked up. If it's not set, the value
+    /// from #NMSettingIPConfig:dhcp-send-hostname, which defaults to [`true`], is
+    /// used for backwards compatibility. In the future this will change and, in
+    /// absence of a global default, it will always fallback to [`true`].
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "dhcp-send-hostname-v2")]
@@ -796,6 +1744,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         )
     }
 
+    /// Whether the DHCP client will send RELEASE message when
+    /// bringing the connection down. The default value is [`Ternary::Default`][crate::Ternary::Default].
+    /// When the default value is specified, then the global value from NetworkManager
+    /// configuration is looked up, if not set, it is considered as [`false`].
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "dhcp-send-release")]
@@ -810,15 +1762,56 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::property(self.as_ref(), "dhcp-timeout")
     }
 
+    /// A timeout for a DHCP transaction in seconds. If zero (the default), a
+    /// globally configured default is used. If still unspecified, a device specific
+    /// timeout is used (usually 45 seconds).
+    ///
+    /// Set to 2147483647 (MAXINT32) for infinity.
     #[doc(alias = "dhcp-timeout")]
     fn set_dhcp_timeout(&self, dhcp_timeout: i32) {
         ObjectExt::set_property(self.as_ref(), "dhcp-timeout", dhcp_timeout)
     }
 
+    /// Array of DNS servers.
+    ///
+    /// Each server can be specified either as a plain IP address (optionally followed
+    /// by a "#" and the SNI server name for DNS over TLS) or with a URI syntax.
+    ///
+    /// When it is specified as an URI, the following forms are supported:
+    /// dns+udp://ADDRESS[:PORT], dns+tls://ADDRESS[:PORT][#SERVERNAME] .
+    ///
+    /// When using the URI syntax, IPv6 addresses must be enclosed in square
+    /// brackets ('[', ']').
     fn set_dns(&self, dns: &[&str]) {
         ObjectExt::set_property(self.as_ref(), "dns", dns)
     }
 
+    /// Array of DNS options to be added to resolv.conf.
+    ///
+    /// [`None`] means that the options are unset and left at the default.
+    /// In this case NetworkManager will use default options. This is
+    /// distinct from an empty list of properties.
+    ///
+    /// The following options are directly added to resolv.conf: "attempts",
+    ///  "debug", "edns0",
+    /// "inet6", "ip6-bytestring", "ip6-dotint", "ndots", "no-aaaa",
+    /// "no-check-names", "no-ip6-dotint", "no-reload", "no-tld-query",
+    /// "rotate", "single-request", "single-request-reopen", "timeout",
+    /// "trust-ad", "use-vc". See the resolv.conf(5) man page for a
+    /// detailed description of these options.
+    ///
+    /// In addition, NetworkManager supports the special options "_no-add-edns0"
+    /// and "_no-add-trust-ad". They are not added to resolv.conf, and can be
+    /// used to prevent the automatic addition of options "edns0" and "trust-ad"
+    /// when using caching DNS plugins (see below).
+    ///
+    /// The "trust-ad" setting is only honored if the profile contributes
+    /// name servers to resolv.conf, and if all contributing profiles have
+    /// "trust-ad" enabled.
+    ///
+    /// When using a caching DNS plugin (dnsmasq or systemd-resolved in
+    /// NetworkManager.conf) then "edns0" and "trust-ad" are automatically
+    /// added, unless "_no-add-edns0" and "_no-add-trust-ad" are present.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "dns-options")]
@@ -826,6 +1819,32 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::property(self.as_ref(), "dns-options")
     }
 
+    /// Array of DNS options to be added to resolv.conf.
+    ///
+    /// [`None`] means that the options are unset and left at the default.
+    /// In this case NetworkManager will use default options. This is
+    /// distinct from an empty list of properties.
+    ///
+    /// The following options are directly added to resolv.conf: "attempts",
+    ///  "debug", "edns0",
+    /// "inet6", "ip6-bytestring", "ip6-dotint", "ndots", "no-aaaa",
+    /// "no-check-names", "no-ip6-dotint", "no-reload", "no-tld-query",
+    /// "rotate", "single-request", "single-request-reopen", "timeout",
+    /// "trust-ad", "use-vc". See the resolv.conf(5) man page for a
+    /// detailed description of these options.
+    ///
+    /// In addition, NetworkManager supports the special options "_no-add-edns0"
+    /// and "_no-add-trust-ad". They are not added to resolv.conf, and can be
+    /// used to prevent the automatic addition of options "edns0" and "trust-ad"
+    /// when using caching DNS plugins (see below).
+    ///
+    /// The "trust-ad" setting is only honored if the profile contributes
+    /// name servers to resolv.conf, and if all contributing profiles have
+    /// "trust-ad" enabled.
+    ///
+    /// When using a caching DNS plugin (dnsmasq or systemd-resolved in
+    /// NetworkManager.conf) then "edns0" and "trust-ad" are automatically
+    /// added, unless "_no-add-edns0" and "_no-add-trust-ad" are present.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "dns-options")]
@@ -833,6 +1852,53 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "dns-options", dns_options)
     }
 
+    /// DNS servers priority.
+    ///
+    /// The relative priority for DNS servers specified by this setting.  A lower
+    /// numerical value is better (higher priority).
+    ///
+    /// Negative values have the special effect of excluding other configurations
+    /// with a greater numerical priority value; so in presence of at least one negative
+    /// priority, only DNS servers from connections with the lowest priority value will be used.
+    /// To avoid all DNS leaks, set the priority of the profile that should be used
+    /// to the most negative value of all active connections profiles.
+    ///
+    /// Zero selects a globally configured default value. If the latter is missing
+    /// or zero too, it defaults to 50 for VPNs (including WireGuard) and 100 for
+    /// other connections.
+    ///
+    /// Note that the priority is to order DNS settings for multiple active
+    /// connections.  It does not disambiguate multiple DNS servers within the
+    /// same connection profile.
+    ///
+    /// When multiple devices have configurations with the same priority, VPNs will be
+    /// considered first, then devices with the best (lowest metric) default
+    /// route and then all other devices.
+    ///
+    /// When using dns=default, servers with higher priority will be on top of
+    /// resolv.conf. To prioritize a given server over another one within the
+    /// same connection, just specify them in the desired order.
+    /// Note that commonly the resolver tries name servers in /etc/resolv.conf
+    /// in the order listed, proceeding with the next server in the list
+    /// on failure. See for example the "rotate" option of the dns-options setting.
+    /// If there are any negative DNS priorities, then only name servers from
+    /// the devices with that lowest priority will be considered.
+    ///
+    /// When using a DNS resolver that supports Conditional Forwarding or
+    /// Split DNS (with dns=dnsmasq or dns=systemd-resolved settings), each connection
+    /// is used to query domains in its search list. The search domains determine which
+    /// name servers to ask, and the DNS priority is used to prioritize
+    /// name servers based on the domain.  Queries for domains not present in any
+    /// search list are routed through connections having the '~.' special wildcard
+    /// domain, which is added automatically to connections with the default route
+    /// (or can be added manually).  When multiple connections specify the same domain, the
+    /// one with the best priority (lowest numerical value) wins.  If a sub domain
+    /// is configured on another interface it will be accepted regardless the priority,
+    /// unless parent domain on the other interface has a negative priority, which causes
+    /// the sub domain to be shadowed.
+    /// With Split DNS one can avoid undesired DNS leaks by properly configuring
+    /// DNS priorities and the search domains, so that only name servers of the desired
+    /// interface are configured.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "dns-priority")]
@@ -840,45 +1906,122 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "dns-priority", dns_priority)
     }
 
+    /// List of DNS search domains. Domains starting with a tilde ('~')
+    /// are considered 'routing' domains and are used only to decide the
+    /// interface over which a query must be forwarded; they are not used
+    /// to complete unqualified host names.
+    ///
+    /// When using a DNS plugin that supports Conditional Forwarding or
+    /// Split DNS, then the search domains specify which name servers to
+    /// query. This makes the behavior different from running with plain
+    /// /etc/resolv.conf. For more information see also the dns-priority setting.
+    ///
+    /// When set on a profile that also enabled DHCP, the DNS search list
+    /// received automatically (option 119 for DHCPv4 and option 24 for DHCPv6)
+    /// gets merged with the manual list. This can be prevented by setting
+    /// "ignore-auto-dns". Note that if no DNS searches are configured, the
+    /// fallback will be derived from the domain from DHCP (option 15).
     #[doc(alias = "dns-search")]
     fn set_dns_search(&self, dns_search: &[&str]) {
         ObjectExt::set_property(self.as_ref(), "dns-search", dns_search)
     }
 
+    /// Whether to configure sysctl interface-specific forwarding. When enabled, the interface
+    /// will act as a router to forward the packet from one interface to another. When set to
+    /// [`SettingIPConfigForwarding::Default`][crate::SettingIPConfigForwarding::Default], the value from global configuration is used;
+    /// if no global default is defined, [`SettingIPConfigForwarding::Auto`][crate::SettingIPConfigForwarding::Auto] will be used.
+    /// The #NMSettingIPConfig:forwarding property is ignored when #NMSettingIPConfig:method
+    /// is set to "shared", because forwarding is always enabled in this case.
+    /// The accepted values are:
+    ///   [`SettingIPConfigForwarding::Default`][crate::SettingIPConfigForwarding::Default]: use global default.
+    ///   [`SettingIPConfigForwarding::No`][crate::SettingIPConfigForwarding::No]: disabled.
+    ///   [`SettingIPConfigForwarding::Yes`][crate::SettingIPConfigForwarding::Yes]: enabled.
+    ///   [`SettingIPConfigForwarding::Auto`][crate::SettingIPConfigForwarding::Auto]: enable if any shared connection is active,
+    ///        use kernel default otherwise.
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     fn set_forwarding(&self, forwarding: i32) {
         ObjectExt::set_property(self.as_ref(), "forwarding", forwarding)
     }
 
+    /// The gateway associated with this configuration. This is only meaningful
+    /// if #NMSettingIPConfig:addresses is also set.
+    ///
+    /// Setting the gateway causes NetworkManager to configure a standard default route
+    /// with the gateway as next hop. This is ignored if #NMSettingIPConfig:never-default
+    /// is set. An alternative is to configure the default route explicitly with a manual
+    /// route and /0 as prefix length.
+    ///
+    /// Note that the gateway usually conflicts with routing that NetworkManager configures
+    /// for WireGuard interfaces, so usually it should not be set in that case. See
+    /// #NMSettingWireGuard:ip4-auto-default-route.
     fn set_gateway(&self, gateway: Option<&str>) {
         ObjectExt::set_property(self.as_ref(), "gateway", gateway)
     }
 
+    /// When #NMSettingIPConfig:method is set to "auto" and this property to
+    /// [`true`], automatically configured name servers and search domains are
+    /// ignored and only name servers and search domains specified in the
+    /// #NMSettingIPConfig:dns and #NMSettingIPConfig:dns-search properties, if
+    /// any, are used.
     #[doc(alias = "ignore-auto-dns")]
     fn set_ignore_auto_dns(&self, ignore_auto_dns: bool) {
         ObjectExt::set_property(self.as_ref(), "ignore-auto-dns", ignore_auto_dns)
     }
 
+    /// When #NMSettingIPConfig:method is set to "auto" and this property to
+    /// [`true`], automatically configured routes are ignored and only routes
+    /// specified in the #NMSettingIPConfig:routes property, if any, are used.
     #[doc(alias = "ignore-auto-routes")]
     fn set_ignore_auto_routes(&self, ignore_auto_routes: bool) {
         ObjectExt::set_property(self.as_ref(), "ignore-auto-routes", ignore_auto_routes)
     }
 
+    /// If [`true`], allow overall network configuration to proceed even if the
+    /// configuration specified by this property times out.  Note that at least
+    /// one IP configuration must succeed or overall network configuration will
+    /// still fail.  For example, in IPv6-only networks, setting this property to
+    /// [`true`] on the #NMSettingIP4Config allows the overall network configuration
+    /// to succeed if IPv4 configuration fails but IPv6 configuration completes
+    /// successfully.
     #[doc(alias = "may-fail")]
     fn set_may_fail(&self, may_fail: bool) {
         ObjectExt::set_property(self.as_ref(), "may-fail", may_fail)
     }
 
+    /// IP configuration method.
+    ///
+    /// #NMSettingIP4Config and #NMSettingIP6Config both support "disabled",
+    /// "auto", "manual", and "link-local". See the subclass-specific
+    /// documentation for other values.
+    ///
+    /// In general, for the "auto" method, properties such as
+    /// #NMSettingIPConfig:dns and #NMSettingIPConfig:routes specify information
+    /// that is added on to the information returned from automatic
+    /// configuration.  The #NMSettingIPConfig:ignore-auto-routes and
+    /// #NMSettingIPConfig:ignore-auto-dns properties modify this behavior.
+    ///
+    /// For methods that imply no upstream network, such as "shared" or
+    /// "link-local", these properties must be empty.
+    ///
+    /// For IPv4 method "shared", the IP subnet can be configured by adding one
+    /// manual IPv4 address or otherwise 10.42.x.0/24 is chosen. Note that the
+    /// shared method must be configured on the interface which shares the internet
+    /// to a subnet, not on the uplink which is shared.
     fn set_method(&self, method: Option<&str>) {
         ObjectExt::set_property(self.as_ref(), "method", method)
     }
 
+    /// If [`true`], this connection will never be the default connection for this
+    /// IP type, meaning it will never be assigned the default route by
+    /// NetworkManager.
     #[doc(alias = "never-default")]
     fn set_never_default(&self, never_default: bool) {
         ObjectExt::set_property(self.as_ref(), "never-default", never_default)
     }
 
+    /// Connections will default to keep the autogenerated priority 0 local rule
+    /// unless this setting is set to [`true`].
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "replace-local-rule")]
@@ -886,6 +2029,23 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "replace-local-rule", replace_local_rule)
     }
 
+    /// The minimum time interval in milliseconds for which dynamic IP configuration
+    /// should be tried before the connection succeeds.
+    ///
+    /// This property is useful for example if both IPv4 and IPv6 are enabled and
+    /// are allowed to fail. Normally the connection succeeds as soon as one of
+    /// the two address families completes; by setting a required timeout for
+    /// e.g. IPv4, one can ensure that even if IP6 succeeds earlier than IPv4,
+    /// NetworkManager waits some time for IPv4 before the connection becomes
+    /// active.
+    ///
+    /// Note that if #NMSettingIPConfig:may-fail is FALSE for the same address
+    /// family, this property has no effect as NetworkManager needs to wait for
+    /// the full DHCP timeout.
+    ///
+    /// A zero value means that no required timeout is present, -1 means the
+    /// default value (either configuration ipvx.required-timeout override or
+    /// zero).
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "required-timeout")]
@@ -893,11 +2053,36 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "required-timeout", required_timeout)
     }
 
+    /// The default metric for routes that don't explicitly specify a metric.
+    /// The default value -1 means that the metric is chosen automatically
+    /// based on the device type.
+    /// The metric applies to dynamic routes, manual (static) routes that
+    /// don't have an explicit metric setting, address prefix routes, and
+    /// the default route.
+    /// Note that for IPv6, the kernel accepts zero (0) but coerces it to
+    /// 1024 (user default). Hence, setting this property to zero effectively
+    /// mean setting it to 1024.
+    /// For IPv4, zero is a regular value for the metric.
     #[doc(alias = "route-metric")]
     fn set_route_metric(&self, route_metric: i64) {
         ObjectExt::set_property(self.as_ref(), "route-metric", route_metric)
     }
 
+    /// Enable policy routing (source routing) and set the routing table used when adding routes.
+    ///
+    /// This affects all routes, including device-routes, IPv4LL, DHCP, SLAAC, default-routes
+    /// and static routes. But note that static routes can individually overwrite the setting
+    /// by explicitly specifying a non-zero routing table.
+    ///
+    /// If the table setting is left at zero, it is eligible to be overwritten via global
+    /// configuration. If the property is zero even after applying the global configuration
+    /// value, policy routing is disabled for the address family of this connection.
+    ///
+    /// Policy routing disabled means that NetworkManager will add all routes to the main
+    /// table (except static routes that explicitly configure a different table). Additionally,
+    /// NetworkManager will not delete any extraneous routes from tables except the main table.
+    /// This is to preserve backward compatibility for users who manage routing tables outside
+    /// of NetworkManager.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "route-table")]
@@ -905,6 +2090,12 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "route-table", route_table)
     }
 
+    /// Whether to add routes for DNS servers. When enabled, NetworkManager adds a route
+    /// for each DNS server that is associated with this connection either statically
+    /// (defined in the connection profile) or dynamically (for example, retrieved via
+    /// DHCP). The route guarantees that the DNS server is reached via this interface. When
+    /// set to [`SettingIPConfigRoutedDns::Default`][crate::SettingIPConfigRoutedDns::Default], the value from global
+    /// configuration is used; if no global default is defined, this feature is disabled.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "routed-dns")]
@@ -912,6 +2103,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         ObjectExt::set_property(self.as_ref(), "routed-dns", routed_dns)
     }
 
+    /// Array of IP routes.
     fn routes(&self) -> Vec<IPRoute> {
         let vals = ObjectExt::property::<glib::ValueArray>(self.as_ref(), "routes");
         vals.iter()
@@ -919,6 +2111,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
             .collect()
     }
 
+    /// Array of IP routes.
     fn set_routes(&self, routes: &[&IPRoute]) {
         ObjectExt::set_property(
             self.as_ref(),
@@ -930,6 +2123,11 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         )
     }
 
+    /// This option allows you to specify a custom DHCP lease time for the shared connection
+    /// method in seconds. The value should be either a number between 120 and 31536000 (one year)
+    /// If this option is not specified, 3600 (one hour) is used.
+    ///
+    /// Special values are 0 for default value of 1 hour and 2147483647 (MAXINT32) for infinite lease time.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "shared-dhcp-lease-time")]
@@ -941,6 +2139,15 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
         )
     }
 
+    /// This option allows you to specify a custom DHCP range for the shared connection
+    /// method. The value is expected to be in `<START_ADDRESS>,<END_ADDRESS>` format.
+    /// The range should be part of network set by ipv4.address option and it should
+    /// not contain network address or broadcast address. If this option is not specified,
+    /// the DHCP range will be automatically determined based on the interface address.
+    /// The range will be selected to be adjacent to the interface address, either before
+    /// or after it, with the larger possible range being preferred. The range will be
+    /// adjusted to fill the available address space, except for networks with a prefix
+    /// length greater than 24, which will be treated as if they have a prefix length of 24.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "shared-dhcp-range")]

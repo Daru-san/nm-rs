@@ -15,6 +15,146 @@ use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandle
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `connection`
+    ///  The connection that this is an active instance of.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `controller`
+    ///  The controller device if one exists. This replaces the deprecated
+    /// "master" property.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `default`
+    ///  Whether the active connection is the default IPv4 one.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `default6`
+    ///  Whether the active connection is the default IPv6 one.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `devices`
+    ///  The devices of the active connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp4-config`
+    ///  The IPv4 #NMDhcpConfig of the connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `dhcp6-config`
+    ///  The IPv6 #NMDhcpConfig of the connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `id`
+    ///  The active connection's ID
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip4-config`
+    ///  The IPv4 #NMIPConfig of the connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ip6-config`
+    ///  The IPv6 #NMIPConfig of the connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `master`
+    ///  The controller device if one exists. Replaced by the "controller" property.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `specific-object-path`
+    ///  The path to the "specific object" of the active connection; see
+    /// nm_active_connection_get_specific_object_path() for more details.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state`
+    ///  The state of the active connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `state-flags`
+    ///  The state flags of the active connection.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `type`
+    ///  The active connection's type
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `uuid`
+    ///  The active connection's UUID
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `vpn`
+    ///  Whether the active connection is a VPN connection.
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// ## Signals
+    ///
+    ///
+    /// #### `state-changed`
+    ///
+    ///
+    /// # Implements
+    ///
+    /// [`ActiveConnectionExt`][trait@crate::prelude::ActiveConnectionExt], [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMActiveConnection")]
     pub struct ActiveConnection(Object<ffi::NMActiveConnection, ffi::NMActiveConnectionClass>) @extends Object;
 
@@ -28,7 +168,18 @@ impl ActiveConnection {
     
 }
 
+/// Trait containing all [`struct@ActiveConnection`] methods.
+///
+/// # Implementors
+///
+/// [`ActiveConnection`][struct@crate::ActiveConnection], [`VpnConnection`][struct@crate::VpnConnection]
 pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
+    /// Gets the #NMRemoteConnection associated with @self.
+    ///
+    /// # Returns
+    ///
+    /// the #NMRemoteConnection which this
+    /// #NMActiveConnection is an active instance of.
     #[doc(alias = "nm_active_connection_get_connection")]
     #[doc(alias = "get_connection")]
     fn connection(&self) -> RemoteConnection {
@@ -37,6 +188,12 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the #NMConnection's type.
+    ///
+    /// # Returns
+    ///
+    /// the type of the #NMConnection that backs the #NMActiveConnection.
+    /// This is the internal string used by the connection, and must not be modified.
     #[doc(alias = "nm_active_connection_get_connection_type")]
     #[doc(alias = "get_connection_type")]
     fn connection_type(&self) -> glib::GString {
@@ -53,6 +210,12 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
     //    unsafe { TODO: call ffi:nm_active_connection_get_controller() }
     //}
 
+    /// Whether the active connection is the default IPv4 one (that is, is used for
+    /// the default IPv4 route and DNS information).
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the active connection is the default IPv4 connection
     #[doc(alias = "nm_active_connection_get_default")]
     #[doc(alias = "get_default")]
     #[doc(alias = "default")]
@@ -62,6 +225,12 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Whether the active connection is the default IPv6 one (that is, is used for
+    /// the default IPv6 route and DNS information).
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the active connection is the default IPv6 connection
     #[doc(alias = "nm_active_connection_get_default6")]
     #[doc(alias = "get_default6")]
     #[doc(alias = "default6")]
@@ -71,6 +240,12 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the #NMDevices used for the active connections.
+    ///
+    /// # Returns
+    ///
+    /// the #GPtrArray containing #NMDevices.
+    /// This is the internal copy used by the connection, and must not be modified.
     #[doc(alias = "nm_active_connection_get_devices")]
     #[doc(alias = "get_devices")]
     fn devices(&self) -> Vec<Device> {
@@ -79,6 +254,14 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the current IPv4 #NMDhcpConfig (if any) associated with the
+    /// #NMActiveConnection.
+    ///
+    /// # Returns
+    ///
+    /// the IPv4 #NMDhcpConfig, or [`None`] if the connection
+    ///   does not use DHCP, or is not in the [`ActiveConnectionState::Activated`][crate::ActiveConnectionState::Activated]
+    ///   state.
     #[doc(alias = "nm_active_connection_get_dhcp4_config")]
     #[doc(alias = "get_dhcp4_config")]
     #[doc(alias = "dhcp4-config")]
@@ -88,6 +271,14 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the current IPv6 #NMDhcpConfig (if any) associated with the
+    /// #NMActiveConnection.
+    ///
+    /// # Returns
+    ///
+    /// the IPv6 #NMDhcpConfig, or [`None`] if the connection
+    ///   does not use DHCPv6, or is not in the [`ActiveConnectionState::Activated`][crate::ActiveConnectionState::Activated]
+    ///   state.
     #[doc(alias = "nm_active_connection_get_dhcp6_config")]
     #[doc(alias = "get_dhcp6_config")]
     #[doc(alias = "dhcp6-config")]
@@ -97,6 +288,12 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the #NMConnection's ID.
+    ///
+    /// # Returns
+    ///
+    /// the ID of the #NMConnection that backs the #NMActiveConnection.
+    /// This is the internal string used by the connection, and must not be modified.
     #[doc(alias = "nm_active_connection_get_id")]
     #[doc(alias = "get_id")]
     fn id(&self) -> glib::GString {
@@ -105,6 +302,12 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the current IPv4 #NMIPConfig associated with the #NMActiveConnection.
+    ///
+    /// # Returns
+    ///
+    /// the IPv4 #NMIPConfig, or [`None`] if the connection is
+    ///   not in the [`ActiveConnectionState::Activated`][crate::ActiveConnectionState::Activated] state.
     #[doc(alias = "nm_active_connection_get_ip4_config")]
     #[doc(alias = "get_ip4_config")]
     #[doc(alias = "ip4-config")]
@@ -114,6 +317,12 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the current IPv6 #NMIPConfig associated with the #NMActiveConnection.
+    ///
+    /// # Returns
+    ///
+    /// the IPv6 #NMIPConfig, or [`None`] if the connection is
+    ///   not in the [`ActiveConnectionState::Activated`][crate::ActiveConnectionState::Activated] state.
     #[doc(alias = "nm_active_connection_get_ip6_config")]
     #[doc(alias = "get_ip6_config")]
     #[doc(alias = "ip6-config")]
@@ -131,6 +340,18 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
     //    unsafe { TODO: call ffi:nm_active_connection_get_master() }
     //}
 
+    /// Gets the path of the "specific object" used at activation.
+    ///
+    /// Currently, there is no single method that will allow you to automatically turn
+    /// this into an appropriate #NMObject; you need to know what kind of object it
+    /// is based on other information. (Eg, if @self corresponds to a Wi-Fi
+    /// connection, then the specific object will be an #NMAccessPoint, and you can
+    /// resolve it with nm_device_wifi_get_access_point_by_path().)
+    ///
+    /// # Returns
+    ///
+    /// the specific object's D-Bus path. This is the internal string used
+    /// by the connection, and must not be modified.
     #[doc(alias = "nm_active_connection_get_specific_object_path")]
     #[doc(alias = "get_specific_object_path")]
     #[doc(alias = "specific-object-path")]
@@ -140,6 +361,11 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the active connection's state.
+    ///
+    /// # Returns
+    ///
+    /// the state
     #[doc(alias = "nm_active_connection_get_state")]
     #[doc(alias = "get_state")]
     fn state(&self) -> ActiveConnectionState {
@@ -148,6 +374,11 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the active connection's state flags.
+    ///
+    /// # Returns
+    ///
+    /// the state flags
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "nm_active_connection_get_state_flags")]
@@ -159,6 +390,11 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the reason for active connection's state.
+    ///
+    /// # Returns
+    ///
+    /// the reason
     #[cfg(feature = "v1_8")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
     #[doc(alias = "nm_active_connection_get_state_reason")]
@@ -169,6 +405,12 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Gets the #NMConnection's UUID.
+    ///
+    /// # Returns
+    ///
+    /// the UUID of the #NMConnection that backs the #NMActiveConnection.
+    /// This is the internal string used by the connection, and must not be modified.
     #[doc(alias = "nm_active_connection_get_uuid")]
     #[doc(alias = "get_uuid")]
     fn uuid(&self) -> glib::GString {
@@ -177,6 +419,11 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// Whether the active connection is a VPN connection.
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the active connection is a VPN connection
     #[doc(alias = "nm_active_connection_get_vpn")]
     #[doc(alias = "get_vpn")]
     #[doc(alias = "vpn")]
@@ -186,11 +433,16 @@ pub trait ActiveConnectionExt: IsA<ActiveConnection> + 'static {
         }
     }
 
+    /// The active connection's type
     #[doc(alias = "type")]
     fn type_(&self) -> Option<glib::GString> {
         ObjectExt::property(self.as_ref(), "type")
     }
 
+    /// ## `state`
+    /// the new state number (#NMActiveConnectionState)
+    /// ## `reason`
+    /// the state change reason (#NMActiveConnectionStateReason)
     #[doc(alias = "state-changed")]
     fn connect_state_changed<F: Fn(&Self, u32, u32) + 'static>(&self, f: F) -> SignalHandlerId {
         unsafe extern "C" fn state_changed_trampoline<P: IsA<ActiveConnection>, F: Fn(&P, u32, u32) + 'static>(this: *mut ffi::NMActiveConnection, state: std::ffi::c_uint, reason: std::ffi::c_uint, f: glib::ffi::gpointer) {

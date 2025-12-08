@@ -12,6 +12,112 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    ///
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `bandwidth`
+    ///  The channel bandwidth announced by the AP in MHz.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `bssid`
+    ///  The BSSID of the access point.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `flags`
+    ///  The flags of the access point.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `frequency`
+    ///  The frequency of the access point.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `hw-address`
+    ///  Alias for #NMAccessPoint:bssid.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `last-seen`
+    ///  The timestamp (in CLOCK_BOOTTIME seconds) for the last time the
+    /// access point was found in scan results.  A value of -1 means the
+    /// access point has not been found in a scan.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `max-bitrate`
+    ///  The maximum bit rate of the access point in kbit/s.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `mode`
+    ///  The mode of the access point; either "infrastructure" (a central
+    /// coordinator of the wireless network allowing clients to connect) or
+    /// "ad-hoc" (a network with no central controller).
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `rsn-flags`
+    ///  The RSN flags of the access point.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `ssid`
+    ///  The SSID of the access point, or [`None`] if it is not known.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `strength`
+    ///  The current signal strength of the access point.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `wpa-flags`
+    ///  The WPA flags of the access point.
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMAccessPoint")]
     pub struct AccessPoint(Object<ffi::NMAccessPoint, ffi::NMAccessPointClass>) @extends Object;
 
@@ -21,6 +127,17 @@ glib::wrapper! {
 }
 
 impl AccessPoint {
+    /// Validates a given connection against a given Wi-Fi access point to ensure that
+    /// the connection may be activated with that AP.  The connection must match the
+    /// @self's SSID, (if given) BSSID, and other attributes like security settings,
+    /// channel, band, etc.
+    /// ## `connection`
+    /// an #NMConnection to validate against @self
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the connection may be activated with this Wi-Fi AP,
+    /// [`false`] if it cannot be.
     #[doc(alias = "nm_access_point_connection_valid")]
     pub fn connection_valid(&self, connection: &impl IsA<Connection>) -> bool {
         unsafe {
@@ -31,6 +148,28 @@ impl AccessPoint {
         }
     }
 
+    /// Filters a given array of connections for a given #NMAccessPoint object and
+    /// returns connections which may be activated with the access point.  Any
+    /// returned connections will match the @self's SSID and (if given) BSSID and
+    /// other attributes like security settings, channel, etc.
+    ///
+    /// To obtain the list of connections that are compatible with this access point,
+    /// use nm_client_get_connections() and then filter the returned list for a given
+    /// #NMDevice using nm_device_filter_connections() and finally filter that list
+    /// with this function.
+    /// ## `connections`
+    /// an array of #NMConnections to
+    /// filter
+    ///
+    /// # Returns
+    ///
+    /// an array of
+    /// #NMConnections that could be activated with the given @self.  The array should
+    /// be freed with g_ptr_array_unref() when it is no longer required.
+    ///
+    /// WARNING: the transfer annotation for this function may not work correctly
+    ///   with bindings. See https://gitlab.gnome.org/GNOME/gobject-introspection/-/issues/305.
+    ///   You can filter the list yourself with nm_access_point_connection_valid().
     #[doc(alias = "nm_access_point_filter_connections")]
     pub fn filter_connections(&self, connections: &[Connection]) -> Vec<Connection> {
         unsafe {
@@ -41,6 +180,11 @@ impl AccessPoint {
         }
     }
 
+    /// Gets the bandwidth advertised by the access point in MHz.
+    ///
+    /// # Returns
+    ///
+    /// the advertised bandwidth (MHz)
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_access_point_get_bandwidth")]
@@ -49,24 +193,47 @@ impl AccessPoint {
         unsafe { ffi::nm_access_point_get_bandwidth(self.to_glib_none().0) }
     }
 
+    /// Gets the Basic Service Set ID (BSSID) of the Wi-Fi access point.
+    ///
+    /// # Returns
+    ///
+    /// the BSSID of the access point. This is an internal string and must
+    /// not be modified or freed.
     #[doc(alias = "nm_access_point_get_bssid")]
     #[doc(alias = "get_bssid")]
     pub fn bssid(&self) -> glib::GString {
         unsafe { from_glib_none(ffi::nm_access_point_get_bssid(self.to_glib_none().0)) }
     }
 
+    /// Gets the flags of the access point.
+    ///
+    /// # Returns
+    ///
+    /// the flags
     #[doc(alias = "nm_access_point_get_flags")]
     #[doc(alias = "get_flags")]
     pub fn flags(&self) -> NM80211ApFlags {
         unsafe { from_glib(ffi::nm_access_point_get_flags(self.to_glib_none().0)) }
     }
 
+    /// Gets the frequency of the access point in MHz.
+    ///
+    /// # Returns
+    ///
+    /// the frequency in MHz
     #[doc(alias = "nm_access_point_get_frequency")]
     #[doc(alias = "get_frequency")]
     pub fn frequency(&self) -> u32 {
         unsafe { ffi::nm_access_point_get_frequency(self.to_glib_none().0) }
     }
 
+    /// Returns the timestamp (in CLOCK_BOOTTIME seconds) for the last time the
+    /// access point was found in scan results.  A value of -1 means the access
+    /// point has not been found in a scan.
+    ///
+    /// # Returns
+    ///
+    /// the last seen time in seconds
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_access_point_get_last_seen")]
@@ -76,6 +243,11 @@ impl AccessPoint {
         unsafe { ffi::nm_access_point_get_last_seen(self.to_glib_none().0) }
     }
 
+    /// Gets the maximum bit rate of the access point in kbit/s.
+    ///
+    /// # Returns
+    ///
+    /// the maximum bit rate (kbit/s)
     #[doc(alias = "nm_access_point_get_max_bitrate")]
     #[doc(alias = "get_max_bitrate")]
     #[doc(alias = "max-bitrate")]
@@ -83,12 +255,23 @@ impl AccessPoint {
         unsafe { ffi::nm_access_point_get_max_bitrate(self.to_glib_none().0) }
     }
 
+    /// Gets the mode of the access point.
+    ///
+    /// # Returns
+    ///
+    /// the mode
     #[doc(alias = "nm_access_point_get_mode")]
     #[doc(alias = "get_mode")]
     pub fn mode(&self) -> NM80211Mode {
         unsafe { from_glib(ffi::nm_access_point_get_mode(self.to_glib_none().0)) }
     }
 
+    /// Gets the RSN (Robust Secure Network, ie WPA version 2) flags of the access
+    /// point.
+    ///
+    /// # Returns
+    ///
+    /// the RSN flags
     #[doc(alias = "nm_access_point_get_rsn_flags")]
     #[doc(alias = "get_rsn_flags")]
     #[doc(alias = "rsn-flags")]
@@ -102,12 +285,22 @@ impl AccessPoint {
     //    unsafe { TODO: call ffi:nm_access_point_get_ssid() }
     //}
 
+    /// Gets the current signal strength of the access point as a percentage.
+    ///
+    /// # Returns
+    ///
+    /// the signal strength (0 to 100)
     #[doc(alias = "nm_access_point_get_strength")]
     #[doc(alias = "get_strength")]
     pub fn strength(&self) -> u8 {
         unsafe { ffi::nm_access_point_get_strength(self.to_glib_none().0) }
     }
 
+    /// Gets the WPA (version 1) flags of the access point.
+    ///
+    /// # Returns
+    ///
+    /// the WPA flags
     #[doc(alias = "nm_access_point_get_wpa_flags")]
     #[doc(alias = "get_wpa_flags")]
     #[doc(alias = "wpa-flags")]

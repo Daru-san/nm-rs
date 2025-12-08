@@ -8,6 +8,50 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Wi-Fi P2P Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `peer`
+    ///  The P2P device that should be connected to. Currently, this is the only
+    /// way to create or join a group.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `wfd-ies`
+    ///  The Wi-Fi Display (WFD) Information Elements (IEs) to set.
+    ///
+    /// Wi-Fi Display requires a protocol specific information element to be
+    /// set in certain Wi-Fi frames. These can be specified here for the
+    /// purpose of establishing a connection.
+    /// This setting is only useful when implementing a Wi-Fi Display client.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `wps-method`
+    ///  Flags indicating which mode of WPS is to be used.
+    ///
+    /// There's little point in changing the default setting as NetworkManager will
+    /// automatically determine the best method to use.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingWifiP2P")]
     pub struct SettingWifiP2P(Object<ffi::NMSettingWifiP2P, ffi::NMSettingWifiP2PClass>) @extends Setting;
 
@@ -17,6 +61,11 @@ glib::wrapper! {
 }
 
 impl SettingWifiP2P {
+    /// Creates a new #NMSettingWifiP2P object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingWifiP2P object
     #[doc(alias = "nm_setting_wifi_p2p_new")]
     pub fn new() -> SettingWifiP2P {
         assert_initialized_main_thread!();
@@ -34,6 +83,10 @@ impl SettingWifiP2P {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWifiP2P:peer property of the setting
     #[doc(alias = "nm_setting_wifi_p2p_get_peer")]
     #[doc(alias = "get_peer")]
     pub fn peer(&self) -> glib::GString {
@@ -49,6 +102,10 @@ impl SettingWifiP2P {
     //    unsafe { TODO: call ffi:nm_setting_wifi_p2p_get_wfd_ies() }
     //}
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingWifiP2P:wps-method property of the setting
     #[doc(alias = "nm_setting_wifi_p2p_get_wps_method")]
     #[doc(alias = "get_wps_method")]
     #[doc(alias = "wps-method")]
@@ -58,6 +115,8 @@ impl SettingWifiP2P {
         }
     }
 
+    /// The P2P device that should be connected to. Currently, this is the only
+    /// way to create or join a group.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn set_peer(&self, peer: Option<&str>) {
@@ -71,6 +130,10 @@ impl SettingWifiP2P {
     //    ObjectExt::set_property(self,"wfd-ies", wfd_ies)
     //}
 
+    /// Flags indicating which mode of WPS is to be used.
+    ///
+    /// There's little point in changing the default setting as NetworkManager will
+    /// automatically determine the best method to use.
     #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     #[doc(alias = "wps-method")]
@@ -146,6 +209,8 @@ pub struct SettingWifiP2PBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// The P2P device that should be connected to. Currently, this is the only
+                            /// way to create or join a group.
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn peer(self, peer: impl Into<glib::GString>) -> Self {
@@ -158,6 +223,10 @@ pub struct SettingWifiP2PBuilder {
                         //    Self { builder: self.builder.property("wfd-ies", wfd_ies), }
                         //}
 
+                            /// Flags indicating which mode of WPS is to be used.
+                            ///
+                            /// There's little point in changing the default setting as NetworkManager will
+                            /// automatically determine the best method to use.
                             #[cfg(feature = "v1_16")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     pub fn wps_method(self, wps_method: u32) -> Self {

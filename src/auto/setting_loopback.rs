@@ -8,6 +8,30 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    /// Loopback Link Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `mtu`
+    ///  If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple Ethernet frames.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingLoopback")]
     pub struct SettingLoopback(Object<ffi::NMSettingLoopback, ffi::NMSettingLoopbackClass>) @extends Setting;
 
@@ -17,6 +41,11 @@ glib::wrapper! {
 }
 
 impl SettingLoopback {
+    /// Creates a new #NMSettingLoopback object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingLoopback object
     #[doc(alias = "nm_setting_loopback_new")]
     pub fn new() -> SettingLoopback {
         assert_initialized_main_thread!();
@@ -34,6 +63,10 @@ impl SettingLoopback {
             }
         
 
+    ///
+    /// # Returns
+    ///
+    /// the #NMSettingLoopback:mtu property of the setting
     #[doc(alias = "nm_setting_loopback_get_mtu")]
     #[doc(alias = "get_mtu")]
     pub fn mtu(&self) -> u32 {
@@ -42,6 +75,8 @@ impl SettingLoopback {
         }
     }
 
+    /// If non-zero, only transmit packets of the specified size or smaller,
+    /// breaking larger packets up into multiple Ethernet frames.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn set_mtu(&self, mtu: u32) {
@@ -86,6 +121,8 @@ pub struct SettingLoopbackBuilder {
             Self { builder: glib::object::Object::builder() }
         }
 
+                            /// If non-zero, only transmit packets of the specified size or smaller,
+                            /// breaking larger packets up into multiple Ethernet frames.
                             #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn mtu(self, mtu: u32) -> Self {

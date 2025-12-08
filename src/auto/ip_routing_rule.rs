@@ -20,6 +20,14 @@ glib::wrapper! {
 }
 
 impl IPRoutingRule {
+    /// ## `addr_family`
+    /// the address family of the routing rule. Must be either
+    ///   `AF_INET` (2) or `AF_INET6` (10).
+    ///
+    /// # Returns
+    ///
+    /// a newly created rule instance with the
+    ///   provided address family. The instance is unsealed.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_new")]
@@ -28,6 +36,13 @@ impl IPRoutingRule {
         unsafe { from_glib_full(ffi::nm_ip_routing_rule_new(addr_family)) }
     }
 
+    /// ## `other`
+    /// the other #NMIPRoutingRule instance to compare
+    ///
+    /// # Returns
+    ///
+    /// zero, a positive, or a negative integer to indicate
+    ///   equality or how the arguments compare.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_cmp")]
@@ -35,6 +50,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_cmp(self.to_glib_none().0, other.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set action.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_action")]
@@ -43,6 +62,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_action(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the address family of the rule. Either `AF_INET` or `AF_INET6`.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_addr_family")]
@@ -51,6 +74,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_addr_family(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the destination port end setting.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_destination_port_end")]
@@ -59,6 +86,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_destination_port_end(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the destination port start setting.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_destination_port_start")]
@@ -67,6 +98,11 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_destination_port_start(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set from/src parameter or
+    ///   [`None`], if no value is set.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_from")]
@@ -75,6 +111,10 @@ impl IPRoutingRule {
         unsafe { from_glib_none(ffi::nm_ip_routing_rule_get_from(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set prefix length for the from/src parameter.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_from_len")]
@@ -83,6 +123,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_from_len(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the fwmark setting.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_fwmark")]
@@ -91,6 +135,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_fwmark(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the fwmask setting.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_fwmask")]
@@ -99,6 +147,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_fwmask(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set iifname or [`None`] if unset.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_iifname")]
@@ -107,6 +159,10 @@ impl IPRoutingRule {
         unsafe { from_glib_none(ffi::nm_ip_routing_rule_get_iifname(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the "invert" setting of the rule.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_invert")]
@@ -115,6 +171,10 @@ impl IPRoutingRule {
         unsafe { from_glib(ffi::nm_ip_routing_rule_get_invert(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the ipproto of the rule.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_ipproto")]
@@ -123,6 +183,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_ipproto(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set oifname or [`None`] if unset.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_oifname")]
@@ -131,6 +195,11 @@ impl IPRoutingRule {
         unsafe { from_glib_none(ffi::nm_ip_routing_rule_get_oifname(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the priority. A valid priority is in the range from
+    ///   0 to `G_MAXUINT32`. If unset, -1 is returned.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_priority")]
@@ -139,6 +208,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_priority(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the source port end setting.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_source_port_end")]
@@ -147,6 +220,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_source_port_end(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the source port start setting.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_source_port_start")]
@@ -155,6 +232,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_source_port_start(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the suppress_prefixlength of the rule. -1 means that the value is unset.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_ip_routing_rule_get_suppress_prefixlength")]
@@ -163,6 +244,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_suppress_prefixlength(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set table.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_table")]
@@ -171,6 +256,11 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_table(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set to/dst parameter or
+    ///   [`None`], if no value is set.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_to")]
@@ -179,6 +269,10 @@ impl IPRoutingRule {
         unsafe { from_glib_none(ffi::nm_ip_routing_rule_get_to(self.to_glib_none().0)) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the set prefix length for the to/dst parameter.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_to_len")]
@@ -187,6 +281,10 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_to_len(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// the tos of the rule.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_get_tos")]
@@ -195,6 +293,21 @@ impl IPRoutingRule {
         unsafe { ffi::nm_ip_routing_rule_get_tos(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if a uid range is set.
+    ///
+    /// This API was wrongly introduced in the header files for 1.32, but the
+    /// symbols were not exported. The API only works since 1.34 and newer.
+    ///
+    /// ## `out_range_start`
+    /// returns the start of the range
+    ///   or 0 if the range is not set.
+    ///
+    /// ## `out_range_end`
+    /// returns the end of the range
+    ///   or 0 if the range is not set.
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "nm_ip_routing_rule_get_uid_range")]
@@ -216,6 +329,11 @@ impl IPRoutingRule {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// whether @self is sealed. Once sealed, an instance
+    ///   cannot be modified nor unsealed.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_is_sealed")]
@@ -223,6 +341,13 @@ impl IPRoutingRule {
         unsafe { from_glib(ffi::nm_ip_routing_rule_is_sealed(self.to_glib_none().0)) }
     }
 
+    /// Since 1.42, ref-counting of #NMIPRoutingRule is thread-safe.
+    ///
+    /// # Returns
+    ///
+    /// a newly created rule instance with
+    ///   the same settings as @self. Note that the instance will
+    ///   always be unsealed.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_new_clone")]
@@ -231,6 +356,9 @@ impl IPRoutingRule {
         unsafe { from_glib_full(ffi::nm_ip_routing_rule_new_clone(self.to_glib_none().0)) }
     }
 
+    /// Seals the routing rule. Afterwards, the instance can no longer be
+    /// modified, and it is a bug to call any of the accessors that would
+    /// modify the rule. If @self was already sealed, this has no effect.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_seal")]
@@ -240,6 +368,10 @@ impl IPRoutingRule {
         }
     }
 
+    /// Note that currently only certain actions are allowed. nm_ip_routing_rule_validate()
+    /// will reject unsupported actions as invalid.
+    /// ## `action`
+    /// the action to set
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_action")]
@@ -249,6 +381,10 @@ impl IPRoutingRule {
         }
     }
 
+    /// ## `start`
+    /// the start port to set.
+    /// ## `end`
+    /// the end port to set.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_destination_port")]
@@ -258,6 +394,13 @@ impl IPRoutingRule {
         }
     }
 
+    /// Setting invalid values is accepted, but will later fail
+    /// during nm_ip_routing_rule_validate().
+    /// ## `from`
+    /// the from/src address to set.
+    ///   The address family must match.
+    /// ## `len`
+    /// the corresponding prefix length of the address.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_from")]
@@ -270,6 +413,10 @@ impl IPRoutingRule {
         }
     }
 
+    /// ## `fwmark`
+    /// the fwmark
+    /// ## `fwmask`
+    /// the fwmask
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_fwmark")]
@@ -279,6 +426,12 @@ impl IPRoutingRule {
         }
     }
 
+    /// The name supports C backslash escaping for non-UTF-8 characters.
+    /// Note that nm_ip_routing_rule_from_string() too uses backslash
+    /// escaping when tokenizing the words by whitespace. So, in string
+    /// representation you'd get double backslashes.
+    /// ## `iifname`
+    /// the iifname to set or [`None`] to unset.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_iifname")]
@@ -288,6 +441,8 @@ impl IPRoutingRule {
         }
     }
 
+    /// ## `invert`
+    /// the new value to set
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_invert")]
@@ -297,6 +452,8 @@ impl IPRoutingRule {
         }
     }
 
+    /// ## `ipproto`
+    /// the ipproto to set
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_ipproto")]
@@ -306,6 +463,12 @@ impl IPRoutingRule {
         }
     }
 
+    /// The name supports C backslash escaping for non-UTF-8 characters.
+    /// Note that nm_ip_routing_rule_from_string() too uses backslash
+    /// escaping when tokenizing the words by whitespace. So, in string
+    /// representation you'd get double backslashes.
+    /// ## `oifname`
+    /// the oifname to set or [`None`] to unset.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_oifname")]
@@ -315,6 +478,11 @@ impl IPRoutingRule {
         }
     }
 
+    /// A valid priority ranges from 0 to `G_MAXUINT32`. "-1" is also allowed
+    /// to reset the priority. It is a bug calling this function with any
+    /// other value.
+    /// ## `priority`
+    /// the priority to set
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_priority")]
@@ -324,6 +492,10 @@ impl IPRoutingRule {
         }
     }
 
+    /// ## `start`
+    /// the start port to set.
+    /// ## `end`
+    /// the end port to set.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_source_port")]
@@ -333,6 +505,9 @@ impl IPRoutingRule {
         }
     }
 
+    /// ## `suppress_prefixlength`
+    /// the suppress_prefixlength to set. The value -1 means
+    ///   unset.
     #[cfg(feature = "v1_20")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     #[doc(alias = "nm_ip_routing_rule_set_suppress_prefixlength")]
@@ -345,6 +520,8 @@ impl IPRoutingRule {
         }
     }
 
+    /// ## `table`
+    /// the table to set
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_table")]
@@ -354,6 +531,14 @@ impl IPRoutingRule {
         }
     }
 
+    /// Setting invalid values is accepted, but will later fail
+    /// during nm_ip_routing_rule_validate().
+    /// ## `to`
+    /// the to/dst address to set.
+    ///   The address family must match.
+    /// ## `len`
+    /// the corresponding prefix length of the address.
+    ///   If @to is [`None`], this valid is ignored.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_to")]
@@ -366,6 +551,8 @@ impl IPRoutingRule {
         }
     }
 
+    /// ## `tos`
+    /// the tos to set
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_tos")]
@@ -375,6 +562,15 @@ impl IPRoutingRule {
         }
     }
 
+    /// For a valid range, start must be less or equal to end.
+    /// If set to an invalid range, the range gets unset.
+    ///
+    /// This API was wrongly introduced in the header files for 1.32, but the
+    /// symbols were not exported. The API only works since 1.34 and newer.
+    /// ## `uid_range_start`
+    /// the uid_range start to set.
+    /// ## `uid_range_end`
+    /// the uid_range start to set.
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "nm_ip_routing_rule_set_uid_range")]
@@ -395,6 +591,10 @@ impl IPRoutingRule {
     //    unsafe { TODO: call ffi:nm_ip_routing_rule_to_string() }
     //}
 
+    ///
+    /// # Returns
+    ///
+    /// [`true`] if the rule validates.
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_validate")]

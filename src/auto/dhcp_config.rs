@@ -8,6 +8,51 @@ use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
 use std::{boxed::Box as Box_};
 
 glib::wrapper! {
+    ///
+    ///
+    /// This is an Abstract Base Class, you cannot instantiate it.
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `family`
+    ///  The IP address family of the configuration; either
+    /// <literal>AF_INET</literal> or <literal>AF_INET6</literal>.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `options`
+    ///  The #GHashTable containing options of the configuration.
+    ///
+    /// Readable
+    /// <details><summary><h4>Object</h4></summary>
+    ///
+    ///
+    /// #### `client`
+    ///  The NMClient instance as returned by nm_object_get_client().
+    ///
+    /// When an NMObject gets removed from the NMClient cache,
+    /// the NMObject:path property stays unchanged, but this client
+    /// instance gets reset to [`None`]. You can use this property to
+    /// track removal of the object from the cache.
+    ///
+    /// Readable
+    ///
+    ///
+    /// #### `path`
+    ///  The D-Bus object path.
+    ///
+    /// The D-Bus path of an object instance never changes, even if the object
+    /// gets removed from the cache. To see whether the object is still in the
+    /// cache, check NMObject:client.
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`ObjectExt`][trait@crate::prelude::ObjectExt]
     #[doc(alias = "NMDhcpConfig")]
     pub struct DhcpConfig(Object<ffi::NMDhcpConfig, ffi::NMDhcpConfigClass>) @extends Object;
 
@@ -17,6 +62,12 @@ glib::wrapper! {
 }
 
 impl DhcpConfig {
+    /// Gets the IP address family of the configuration
+    ///
+    /// # Returns
+    ///
+    /// the IP address family; either <literal>AF_INET</literal> or
+    ///   <literal>AF_INET6</literal>
     #[doc(alias = "nm_dhcp_config_get_family")]
     #[doc(alias = "get_family")]
     pub fn family(&self) -> i32 {
@@ -25,6 +76,14 @@ impl DhcpConfig {
         }
     }
 
+    /// Gets one option by option name.
+    /// ## `option`
+    /// the option to retrieve
+    ///
+    /// # Returns
+    ///
+    /// the configuration option's value. This is the internal string used by the
+    /// configuration, and must not be modified.
     #[doc(alias = "nm_dhcp_config_get_one_option")]
     #[doc(alias = "get_one_option")]
     pub fn one_option(&self, option: &str) -> glib::GString {

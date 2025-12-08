@@ -18,6 +18,662 @@ use glib::{
 use std::boxed::Box as Box_;
 
 glib::wrapper! {
+    /// IPv6 Settings
+    ///
+    /// ## Properties
+    ///
+    ///
+    /// #### `addr-gen-mode`
+    ///  Configure the method for creating the IPv6 interface identifier of
+    /// addresses for RFC4862 IPv6 Stateless Address Autoconfiguration and IPv6
+    /// Link Local.
+    ///
+    /// The permitted values are: [`SettingIP6ConfigAddrGenMode::Eui64`][crate::SettingIP6ConfigAddrGenMode::Eui64],
+    /// [`SettingIP6ConfigAddrGenMode::StablePrivacy`][crate::SettingIP6ConfigAddrGenMode::StablePrivacy].
+    /// [`SettingIP6ConfigAddrGenMode::DefaultOrEui64`][crate::SettingIP6ConfigAddrGenMode::DefaultOrEui64] or
+    /// [`SettingIP6ConfigAddrGenMode::Default`][crate::SettingIP6ConfigAddrGenMode::Default].
+    ///
+    /// If the property is set to "eui64", the addresses will be generated using
+    /// the interface token derived from the hardware address. This makes the
+    /// host part of the address constant, making it possible to track the
+    /// host's presence when it changes networks. The address changes when the
+    /// interface hardware is replaced. If a duplicate address is detected,
+    /// there is no fallback to generate another address. When configured, the
+    /// "ipv6.token" is used instead of the MAC address to generate addresses
+    /// for stateless autoconfiguration.
+    ///
+    /// If the property is set to "stable-privacy", the interface identifier is
+    /// generated as specified by RFC7217. This works by hashing a host specific
+    /// key (see NetworkManager(8) manual), the interface name, the connection's
+    /// "connection.stable-id" property and the address prefix.  This improves
+    /// privacy by making it harder to use the address to track the host's
+    /// presence as every prefix and network has a different identifier. Also,
+    /// the address is stable when the network interface hardware is replaced.
+    ///
+    /// The special values "default" and "default-or-eui64" will fallback to the
+    /// global connection default as documented in the NetworkManager.conf(5)
+    /// manual. If the global default is not specified, the fallback value is
+    /// "stable-privacy" or "eui64", respectively.
+    ///
+    /// For libnm, the property defaults to "default" since 1.40.  Previously it
+    /// used to default to "stable-privacy".  On D-Bus, the absence of an
+    /// addr-gen-mode setting equals "default". For keyfile plugin, the absence
+    /// of the setting on disk means "default-or-eui64" so that the property
+    /// doesn't change on upgrade from older versions.
+    ///
+    /// Note that this setting is distinct from the Privacy Extensions as
+    /// configured by "ip6-privacy" property and it does not affect the
+    /// temporary addresses configured with this option.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-duid`
+    ///  A string containing the DHCPv6 Unique Identifier (DUID) used by the dhcp
+    /// client to identify itself to DHCPv6 servers (RFC 3315). The DUID is carried
+    /// in the Client Identifier option.
+    /// If the property is a hex string ('aa:bb:cc') it is interpreted as a binary
+    /// DUID and filled as an opaque value in the Client Identifier option.
+    ///
+    /// The special value "lease" will retrieve the DUID previously used from the
+    /// lease file belonging to the connection. If no DUID is found and "dhclient"
+    /// is the configured dhcp client, the DUID is searched in the system-wide
+    /// dhclient lease file. If still no DUID is found, or another dhcp client is
+    /// used, a global and permanent DUID-UUID (RFC 6355) will be generated based
+    /// on the machine-id.
+    ///
+    /// The special values "llt" and "ll" will generate a DUID of type LLT or LL
+    /// (see RFC 3315) based on the current MAC address of the device. In order to
+    /// try providing a stable DUID-LLT, the time field will contain a constant
+    /// timestamp that is used globally (for all profiles) and persisted to disk.
+    ///
+    /// The special values "stable-llt", "stable-ll" and "stable-uuid" will generate
+    /// a DUID of the corresponding type, derived from the connection's stable-id and
+    /// a per-host unique key. You may want to include the "${DEVICE}" or "${MAC}" specifier
+    /// in the stable-id, in case this profile gets activated on multiple devices.
+    /// So, the link-layer address of "stable-ll" and "stable-llt" will be a generated
+    /// address derived from the stable id. The DUID-LLT time value in the "stable-llt"
+    /// option will be picked among a static timespan of three years (the upper bound
+    /// of the interval is the same constant timestamp used in "llt").
+    ///
+    /// When the property is unset, the global value provided for "ipv6.dhcp-duid" is
+    /// used. If no global value is provided, the default "lease" value is assumed.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-pd-hint`
+    ///  A IPv6 address followed by a slash and a prefix length. If set, the value is
+    /// sent to the DHCPv6 server as hint indicating the prefix delegation (IA_PD) we
+    /// want to receive.
+    /// To only hint a prefix length without prefix, set the address part to the
+    /// zero address (for example "::/60").
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ip6-privacy`
+    ///  Configure IPv6 Privacy Extensions for SLAAC, described in RFC4941.  If
+    /// enabled, it makes the kernel generate a temporary IPv6 address in
+    /// addition to the public one generated from MAC address via modified
+    /// EUI-64.  This enhances privacy, but could cause problems in some
+    /// applications, on the other hand.  The permitted values are: -1: unknown,
+    /// 0: disabled, 1: enabled (prefer public address), 2: enabled (prefer temporary
+    /// addresses).
+    ///
+    /// Having a per-connection setting set to "-1" (default) means fallback to
+    /// global configuration "ipv6.ip6-privacy". If it's also unspecified or set
+    /// to "-1", fallback to read "/proc/sys/net/ipv6/conf/default/use_tempaddr".
+    ///
+    /// Note that this setting is distinct from the Stable Privacy addresses
+    /// that can be enabled with the "addr-gen-mode" property's "stable-privacy"
+    /// setting as another way of avoiding host tracking with IPv6 addresses.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `mtu`
+    ///  Maximum transmission unit size, in bytes. If zero (the default), the MTU
+    /// is set automatically from router advertisements or is left equal to the
+    /// link-layer MTU. If greater than the link-layer MTU, or greater than zero
+    /// but less than the minimum IPv6 MTU of 1280, this value has no effect.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ra-timeout`
+    ///  A timeout for waiting Router Advertisements in seconds. If zero (the default), a
+    /// globally configured default is used. If still unspecified, the timeout depends on the
+    /// sysctl settings of the device.
+    ///
+    /// Set to 2147483647 (MAXINT32) for infinity.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `temp-preferred-lifetime`
+    ///  The preferred lifetime of autogenerated temporary addresses, in seconds.
+    ///
+    /// Having a per-connection setting set to "0" (default) means fallback to
+    /// global configuration "ipv6.temp-preferred-lifetime" setting". If it's also
+    /// unspecified or set to "0", fallback to read
+    /// "/proc/sys/net/ipv6/conf/default/temp_prefered_lft".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `temp-valid-lifetime`
+    ///  The valid lifetime of autogenerated temporary addresses, in seconds.
+    ///
+    /// Having a per-connection setting set to "0" (default) means fallback to
+    /// global configuration "ipv6.temp-valid-lifetime" setting". If it's also
+    /// unspecified or set to "0", fallback to read
+    /// "/proc/sys/net/ipv6/conf/default/temp_valid_lft".
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `token`
+    ///  Configure the token for draft-chown-6man-tokenised-ipv6-identifiers-02
+    /// IPv6 tokenized interface identifiers. Useful with eui64 addr-gen-mode.
+    ///
+    /// When set, the token is used as IPv6 interface identifier instead of the
+    /// hardware address. This only applies to addresses from stateless
+    /// autoconfiguration, not to IPv6 link local addresses.
+    ///
+    /// Readable | Writeable
+    /// <details><summary><h4>SettingIPConfig</h4></summary>
+    ///
+    ///
+    /// #### `addresses`
+    ///  Array of IP addresses.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `auto-route-ext-gw`
+    ///  VPN connections will default to add the route automatically unless this
+    /// setting is set to [`false`].
+    ///
+    /// For other connection types, adding such an automatic route is currently
+    /// not supported and setting this to [`true`] has no effect.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dad-timeout`
+    ///  Maximum timeout in milliseconds used to check for the presence of duplicate
+    /// IP addresses on the network.  If an address conflict is detected, the
+    /// activation will fail. The property is currently implemented only for IPv4.
+    ///
+    /// A zero value means that no duplicate address detection is performed, -1 means
+    /// the default value (either the value configured globally in NetworkManger.conf
+    /// or 200ms).  A value greater than zero is a timeout in milliseconds.  Note that
+    /// the time intervals are subject to randomization as per RFC 5227 and so the
+    /// actual duration can be between half and the full time specified in this
+    /// property.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-dscp`
+    ///  Specifies the value for the DSCP field (traffic class) of the IP header. When
+    /// empty, the global default value is used; if no global default is specified, it is
+    /// assumed to be "CS0". Allowed values are: "CS0", "CS4" and "CS6".
+    ///
+    /// The property is currently valid only for IPv4, and it is supported only by the
+    /// "internal" DHCP plugin.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-hostname`
+    ///  If the #NMSettingIPConfig:dhcp-send-hostname property is [`true`], then the
+    /// specified name will be sent to the DHCP server when acquiring a lease.
+    /// This property and #NMSettingIP4Config:dhcp-fqdn are mutually exclusive and
+    /// cannot be set at the same time.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-hostname-flags`
+    ///  Flags for the DHCP hostname and FQDN.
+    ///
+    /// Currently, this property only includes flags to control the FQDN flags
+    /// set in the DHCP FQDN option. Supported FQDN flags are
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE],
+    /// [`DhcpHostnameFlags::FQDN_ENCODED`][crate::DhcpHostnameFlags::FQDN_ENCODED] and
+    /// [`DhcpHostnameFlags::FQDN_NO_UPDATE`][crate::DhcpHostnameFlags::FQDN_NO_UPDATE].  When no FQDN flag is set and
+    /// [`DhcpHostnameFlags::FQDN_CLEAR_FLAGS`][crate::DhcpHostnameFlags::FQDN_CLEAR_FLAGS] is set, the DHCP FQDN option will
+    /// contain no flag. Otherwise, if no FQDN flag is set and
+    /// [`DhcpHostnameFlags::FQDN_CLEAR_FLAGS`][crate::DhcpHostnameFlags::FQDN_CLEAR_FLAGS] is not set, the standard FQDN flags
+    /// are set in the request:
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE],
+    /// [`DhcpHostnameFlags::FQDN_ENCODED`][crate::DhcpHostnameFlags::FQDN_ENCODED] for IPv4 and
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE] for IPv6.
+    ///
+    /// When this property is set to the default value [`DhcpHostnameFlags::NONE`][crate::DhcpHostnameFlags::NONE],
+    /// a global default is looked up in NetworkManager configuration. If that value
+    /// is unset or also [`DhcpHostnameFlags::NONE`][crate::DhcpHostnameFlags::NONE], then the standard FQDN flags
+    /// described above are sent in the DHCP requests.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-iaid`
+    ///  A string containing the "Identity Association Identifier" (IAID) used by
+    /// the DHCP client. The string can be a 32-bit number (either decimal,
+    /// hexadecimal or as colon separated hexadecimal numbers). Alternatively
+    /// it can be set to the special values "mac", "perm-mac", "ifname" or
+    /// "stable". When set to "mac" (or "perm-mac"), the last 4 bytes of the
+    /// current (or permanent) MAC address are used as IAID. When set to
+    /// "ifname", the IAID is computed by hashing the interface name. The
+    /// special value "stable" can be used to generate an IAID based on the
+    /// stable-id (see connection.stable-id), a per-host key and the interface
+    /// name. When the property is unset, the value from global configuration is
+    /// used; if no global default is set then the IAID is assumed to be
+    /// "ifname".
+    ///
+    /// For DHCPv4, the IAID is only used with "ipv4.dhcp-client-id"
+    /// values "duid" and "ipv6-duid" to generate the client-id.
+    ///
+    /// For DHCPv6, note that at the moment this property is
+    /// only supported by the "internal" DHCPv6 plugin. The "dhclient" DHCPv6
+    /// plugin always derives the IAID from the MAC address.
+    ///
+    /// The actually used DHCPv6 IAID for a currently activated interface is
+    /// exposed in the lease information of the device.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-reject-servers`
+    ///  Array of servers from which DHCP offers must be rejected. This property
+    /// is useful to avoid getting a lease from misconfigured or rogue servers.
+    ///
+    /// For DHCPv4, each element must be an IPv4 address, optionally
+    /// followed by a slash and a prefix length (e.g. "192.168.122.0/24").
+    ///
+    /// This property is currently not implemented for DHCPv6.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-send-hostname`
+    ///  Since 1.52 this property is deprecated and is only used as fallback value
+    /// for #NMSettingIPConfig:dhcp-send-hostname-v2 if it's set to 'default'.
+    /// This is only done to avoid breaking existing configurations, the new
+    /// property should be used from now on.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-send-hostname-v2`
+    ///  If [`true`], a hostname is sent to the DHCP server when acquiring a lease.
+    /// Some DHCP servers use this hostname to update DNS databases, essentially
+    /// providing a static hostname for the computer.  If the
+    /// #NMSettingIPConfig:dhcp-hostname property is [`None`] and this property is
+    /// [`true`], the current persistent hostname of the computer is sent.
+    ///
+    /// The default value is [`Ternary::Default`][crate::Ternary::Default]. In this case the global value
+    /// from NetworkManager configuration is looked up. If it's not set, the value
+    /// from #NMSettingIPConfig:dhcp-send-hostname, which defaults to [`true`], is
+    /// used for backwards compatibility. In the future this will change and, in
+    /// absence of a global default, it will always fallback to [`true`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-send-release`
+    ///  Whether the DHCP client will send RELEASE message when
+    /// bringing the connection down. The default value is [`Ternary::Default`][crate::Ternary::Default].
+    /// When the default value is specified, then the global value from NetworkManager
+    /// configuration is looked up, if not set, it is considered as [`false`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dhcp-timeout`
+    ///  A timeout for a DHCP transaction in seconds. If zero (the default), a
+    /// globally configured default is used. If still unspecified, a device specific
+    /// timeout is used (usually 45 seconds).
+    ///
+    /// Set to 2147483647 (MAXINT32) for infinity.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns`
+    ///  Array of DNS servers.
+    ///
+    /// Each server can be specified either as a plain IP address (optionally followed
+    /// by a "#" and the SNI server name for DNS over TLS) or with a URI syntax.
+    ///
+    /// When it is specified as an URI, the following forms are supported:
+    /// dns+udp://ADDRESS[:PORT], dns+tls://ADDRESS[:PORT][#SERVERNAME] .
+    ///
+    /// When using the URI syntax, IPv6 addresses must be enclosed in square
+    /// brackets ('[', ']').
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns-options`
+    ///  Array of DNS options to be added to resolv.conf.
+    ///
+    /// [`None`] means that the options are unset and left at the default.
+    /// In this case NetworkManager will use default options. This is
+    /// distinct from an empty list of properties.
+    ///
+    /// The following options are directly added to resolv.conf: "attempts",
+    ///  "debug", "edns0",
+    /// "inet6", "ip6-bytestring", "ip6-dotint", "ndots", "no-aaaa",
+    /// "no-check-names", "no-ip6-dotint", "no-reload", "no-tld-query",
+    /// "rotate", "single-request", "single-request-reopen", "timeout",
+    /// "trust-ad", "use-vc". See the resolv.conf(5) man page for a
+    /// detailed description of these options.
+    ///
+    /// In addition, NetworkManager supports the special options "_no-add-edns0"
+    /// and "_no-add-trust-ad". They are not added to resolv.conf, and can be
+    /// used to prevent the automatic addition of options "edns0" and "trust-ad"
+    /// when using caching DNS plugins (see below).
+    ///
+    /// The "trust-ad" setting is only honored if the profile contributes
+    /// name servers to resolv.conf, and if all contributing profiles have
+    /// "trust-ad" enabled.
+    ///
+    /// When using a caching DNS plugin (dnsmasq or systemd-resolved in
+    /// NetworkManager.conf) then "edns0" and "trust-ad" are automatically
+    /// added, unless "_no-add-edns0" and "_no-add-trust-ad" are present.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns-priority`
+    ///  DNS servers priority.
+    ///
+    /// The relative priority for DNS servers specified by this setting.  A lower
+    /// numerical value is better (higher priority).
+    ///
+    /// Negative values have the special effect of excluding other configurations
+    /// with a greater numerical priority value; so in presence of at least one negative
+    /// priority, only DNS servers from connections with the lowest priority value will be used.
+    /// To avoid all DNS leaks, set the priority of the profile that should be used
+    /// to the most negative value of all active connections profiles.
+    ///
+    /// Zero selects a globally configured default value. If the latter is missing
+    /// or zero too, it defaults to 50 for VPNs (including WireGuard) and 100 for
+    /// other connections.
+    ///
+    /// Note that the priority is to order DNS settings for multiple active
+    /// connections.  It does not disambiguate multiple DNS servers within the
+    /// same connection profile.
+    ///
+    /// When multiple devices have configurations with the same priority, VPNs will be
+    /// considered first, then devices with the best (lowest metric) default
+    /// route and then all other devices.
+    ///
+    /// When using dns=default, servers with higher priority will be on top of
+    /// resolv.conf. To prioritize a given server over another one within the
+    /// same connection, just specify them in the desired order.
+    /// Note that commonly the resolver tries name servers in /etc/resolv.conf
+    /// in the order listed, proceeding with the next server in the list
+    /// on failure. See for example the "rotate" option of the dns-options setting.
+    /// If there are any negative DNS priorities, then only name servers from
+    /// the devices with that lowest priority will be considered.
+    ///
+    /// When using a DNS resolver that supports Conditional Forwarding or
+    /// Split DNS (with dns=dnsmasq or dns=systemd-resolved settings), each connection
+    /// is used to query domains in its search list. The search domains determine which
+    /// name servers to ask, and the DNS priority is used to prioritize
+    /// name servers based on the domain.  Queries for domains not present in any
+    /// search list are routed through connections having the '~.' special wildcard
+    /// domain, which is added automatically to connections with the default route
+    /// (or can be added manually).  When multiple connections specify the same domain, the
+    /// one with the best priority (lowest numerical value) wins.  If a sub domain
+    /// is configured on another interface it will be accepted regardless the priority,
+    /// unless parent domain on the other interface has a negative priority, which causes
+    /// the sub domain to be shadowed.
+    /// With Split DNS one can avoid undesired DNS leaks by properly configuring
+    /// DNS priorities and the search domains, so that only name servers of the desired
+    /// interface are configured.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `dns-search`
+    ///  List of DNS search domains. Domains starting with a tilde ('~')
+    /// are considered 'routing' domains and are used only to decide the
+    /// interface over which a query must be forwarded; they are not used
+    /// to complete unqualified host names.
+    ///
+    /// When using a DNS plugin that supports Conditional Forwarding or
+    /// Split DNS, then the search domains specify which name servers to
+    /// query. This makes the behavior different from running with plain
+    /// /etc/resolv.conf. For more information see also the dns-priority setting.
+    ///
+    /// When set on a profile that also enabled DHCP, the DNS search list
+    /// received automatically (option 119 for DHCPv4 and option 24 for DHCPv6)
+    /// gets merged with the manual list. This can be prevented by setting
+    /// "ignore-auto-dns". Note that if no DNS searches are configured, the
+    /// fallback will be derived from the domain from DHCP (option 15).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `forwarding`
+    ///  Whether to configure sysctl interface-specific forwarding. When enabled, the interface
+    /// will act as a router to forward the packet from one interface to another. When set to
+    /// [`SettingIPConfigForwarding::Default`][crate::SettingIPConfigForwarding::Default], the value from global configuration is used;
+    /// if no global default is defined, [`SettingIPConfigForwarding::Auto`][crate::SettingIPConfigForwarding::Auto] will be used.
+    /// The #NMSettingIPConfig:forwarding property is ignored when #NMSettingIPConfig:method
+    /// is set to "shared", because forwarding is always enabled in this case.
+    /// The accepted values are:
+    ///   [`SettingIPConfigForwarding::Default`][crate::SettingIPConfigForwarding::Default]: use global default.
+    ///   [`SettingIPConfigForwarding::No`][crate::SettingIPConfigForwarding::No]: disabled.
+    ///   [`SettingIPConfigForwarding::Yes`][crate::SettingIPConfigForwarding::Yes]: enabled.
+    ///   [`SettingIPConfigForwarding::Auto`][crate::SettingIPConfigForwarding::Auto]: enable if any shared connection is active,
+    ///        use kernel default otherwise.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `gateway`
+    ///  The gateway associated with this configuration. This is only meaningful
+    /// if #NMSettingIPConfig:addresses is also set.
+    ///
+    /// Setting the gateway causes NetworkManager to configure a standard default route
+    /// with the gateway as next hop. This is ignored if #NMSettingIPConfig:never-default
+    /// is set. An alternative is to configure the default route explicitly with a manual
+    /// route and /0 as prefix length.
+    ///
+    /// Note that the gateway usually conflicts with routing that NetworkManager configures
+    /// for WireGuard interfaces, so usually it should not be set in that case. See
+    /// #NMSettingWireGuard:ip4-auto-default-route.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ignore-auto-dns`
+    ///  When #NMSettingIPConfig:method is set to "auto" and this property to
+    /// [`true`], automatically configured name servers and search domains are
+    /// ignored and only name servers and search domains specified in the
+    /// #NMSettingIPConfig:dns and #NMSettingIPConfig:dns-search properties, if
+    /// any, are used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `ignore-auto-routes`
+    ///  When #NMSettingIPConfig:method is set to "auto" and this property to
+    /// [`true`], automatically configured routes are ignored and only routes
+    /// specified in the #NMSettingIPConfig:routes property, if any, are used.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `may-fail`
+    ///  If [`true`], allow overall network configuration to proceed even if the
+    /// configuration specified by this property times out.  Note that at least
+    /// one IP configuration must succeed or overall network configuration will
+    /// still fail.  For example, in IPv6-only networks, setting this property to
+    /// [`true`] on the #NMSettingIP4Config allows the overall network configuration
+    /// to succeed if IPv4 configuration fails but IPv6 configuration completes
+    /// successfully.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `method`
+    ///  IP configuration method.
+    ///
+    /// #NMSettingIP4Config and #NMSettingIP6Config both support "disabled",
+    /// "auto", "manual", and "link-local". See the subclass-specific
+    /// documentation for other values.
+    ///
+    /// In general, for the "auto" method, properties such as
+    /// #NMSettingIPConfig:dns and #NMSettingIPConfig:routes specify information
+    /// that is added on to the information returned from automatic
+    /// configuration.  The #NMSettingIPConfig:ignore-auto-routes and
+    /// #NMSettingIPConfig:ignore-auto-dns properties modify this behavior.
+    ///
+    /// For methods that imply no upstream network, such as "shared" or
+    /// "link-local", these properties must be empty.
+    ///
+    /// For IPv4 method "shared", the IP subnet can be configured by adding one
+    /// manual IPv4 address or otherwise 10.42.x.0/24 is chosen. Note that the
+    /// shared method must be configured on the interface which shares the internet
+    /// to a subnet, not on the uplink which is shared.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `never-default`
+    ///  If [`true`], this connection will never be the default connection for this
+    /// IP type, meaning it will never be assigned the default route by
+    /// NetworkManager.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `replace-local-rule`
+    ///  Connections will default to keep the autogenerated priority 0 local rule
+    /// unless this setting is set to [`true`].
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `required-timeout`
+    ///  The minimum time interval in milliseconds for which dynamic IP configuration
+    /// should be tried before the connection succeeds.
+    ///
+    /// This property is useful for example if both IPv4 and IPv6 are enabled and
+    /// are allowed to fail. Normally the connection succeeds as soon as one of
+    /// the two address families completes; by setting a required timeout for
+    /// e.g. IPv4, one can ensure that even if IP6 succeeds earlier than IPv4,
+    /// NetworkManager waits some time for IPv4 before the connection becomes
+    /// active.
+    ///
+    /// Note that if #NMSettingIPConfig:may-fail is FALSE for the same address
+    /// family, this property has no effect as NetworkManager needs to wait for
+    /// the full DHCP timeout.
+    ///
+    /// A zero value means that no required timeout is present, -1 means the
+    /// default value (either configuration ipvx.required-timeout override or
+    /// zero).
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `route-metric`
+    ///  The default metric for routes that don't explicitly specify a metric.
+    /// The default value -1 means that the metric is chosen automatically
+    /// based on the device type.
+    /// The metric applies to dynamic routes, manual (static) routes that
+    /// don't have an explicit metric setting, address prefix routes, and
+    /// the default route.
+    /// Note that for IPv6, the kernel accepts zero (0) but coerces it to
+    /// 1024 (user default). Hence, setting this property to zero effectively
+    /// mean setting it to 1024.
+    /// For IPv4, zero is a regular value for the metric.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `route-table`
+    ///  Enable policy routing (source routing) and set the routing table used when adding routes.
+    ///
+    /// This affects all routes, including device-routes, IPv4LL, DHCP, SLAAC, default-routes
+    /// and static routes. But note that static routes can individually overwrite the setting
+    /// by explicitly specifying a non-zero routing table.
+    ///
+    /// If the table setting is left at zero, it is eligible to be overwritten via global
+    /// configuration. If the property is zero even after applying the global configuration
+    /// value, policy routing is disabled for the address family of this connection.
+    ///
+    /// Policy routing disabled means that NetworkManager will add all routes to the main
+    /// table (except static routes that explicitly configure a different table). Additionally,
+    /// NetworkManager will not delete any extraneous routes from tables except the main table.
+    /// This is to preserve backward compatibility for users who manage routing tables outside
+    /// of NetworkManager.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `routed-dns`
+    ///  Whether to add routes for DNS servers. When enabled, NetworkManager adds a route
+    /// for each DNS server that is associated with this connection either statically
+    /// (defined in the connection profile) or dynamically (for example, retrieved via
+    /// DHCP). The route guarantees that the DNS server is reached via this interface. When
+    /// set to [`SettingIPConfigRoutedDns::Default`][crate::SettingIPConfigRoutedDns::Default], the value from global
+    /// configuration is used; if no global default is defined, this feature is disabled.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `routes`
+    ///  Array of IP routes.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `shared-dhcp-lease-time`
+    ///  This option allows you to specify a custom DHCP lease time for the shared connection
+    /// method in seconds. The value should be either a number between 120 and 31536000 (one year)
+    /// If this option is not specified, 3600 (one hour) is used.
+    ///
+    /// Special values are 0 for default value of 1 hour and 2147483647 (MAXINT32) for infinite lease time.
+    ///
+    /// Readable | Writeable
+    ///
+    ///
+    /// #### `shared-dhcp-range`
+    ///  This option allows you to specify a custom DHCP range for the shared connection
+    /// method. The value is expected to be in `<START_ADDRESS>,<END_ADDRESS>` format.
+    /// The range should be part of network set by ipv4.address option and it should
+    /// not contain network address or broadcast address. If this option is not specified,
+    /// the DHCP range will be automatically determined based on the interface address.
+    /// The range will be selected to be adjacent to the interface address, either before
+    /// or after it, with the larger possible range being preferred. The range will be
+    /// adjusted to fill the available address space, except for networks with a prefix
+    /// length greater than 24, which will be treated as if they have a prefix length of 24.
+    ///
+    /// Readable | Writeable
+    /// </details>
+    /// <details><summary><h4>Setting</h4></summary>
+    ///
+    ///
+    /// #### `name`
+    ///  The setting's name, which uniquely identifies the setting within the
+    /// connection.  Each setting type has a name unique to that type, for
+    /// example "ppp" or "802-11-wireless" or "802-3-ethernet".
+    ///
+    /// Readable
+    /// </details>
+    ///
+    /// # Implements
+    ///
+    /// [`SettingIPConfigExt`][trait@crate::prelude::SettingIPConfigExt], [`SettingExt`][trait@crate::prelude::SettingExt]
     #[doc(alias = "NMSettingIP6Config")]
     pub struct SettingIP6Config(Object<ffi::NMSettingIP6Config, ffi::NMSettingIP6ConfigClass>) @extends SettingIPConfig, Setting;
 
@@ -27,6 +683,11 @@ glib::wrapper! {
 }
 
 impl SettingIP6Config {
+    /// Creates a new #NMSettingIP6Config object with default values.
+    ///
+    /// # Returns
+    ///
+    /// the new empty #NMSettingIP6Config object
     #[doc(alias = "nm_setting_ip6_config_new")]
     pub fn new() -> SettingIP6Config {
         assert_initialized_main_thread!();
@@ -41,6 +702,12 @@ impl SettingIP6Config {
         SettingIP6ConfigBuilder::new()
     }
 
+    /// Returns the value contained in the #NMSettingIP6Config:addr-gen-mode
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// IPv6 Address Generation Mode.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_setting_ip6_config_get_addr_gen_mode")]
@@ -54,6 +721,13 @@ impl SettingIP6Config {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIP6Config:dhcp-duid
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// The configured DUID value to be included in the DHCPv6 requests
+    /// sent to the DHCPv6 servers.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_setting_ip6_config_get_dhcp_duid")]
@@ -67,6 +741,13 @@ impl SettingIP6Config {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIP6Config:dhcp-pd-hint
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// a string containing an address and prefix length to be used
+    /// as hint for DHCPv6 prefix delegation.
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "nm_setting_ip6_config_get_dhcp_pd_hint")]
@@ -80,6 +761,12 @@ impl SettingIP6Config {
         }
     }
 
+    /// Returns the value contained in the #NMSettingIP6Config:ip6-privacy
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// IPv6 Privacy Extensions configuration value (#NMSettingIP6ConfigPrivacy).
     #[doc(alias = "nm_setting_ip6_config_get_ip6_privacy")]
     #[doc(alias = "get_ip6_privacy")]
     #[doc(alias = "ip6-privacy")]
@@ -91,6 +778,11 @@ impl SettingIP6Config {
         }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// The configured [`SETTING_IP6_CONFIG_MTU`][crate::SETTING_IP6_CONFIG_MTU] value for the maximum
+    /// transmission unit.
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     #[doc(alias = "nm_setting_ip6_config_get_mtu")]
@@ -99,6 +791,11 @@ impl SettingIP6Config {
         unsafe { ffi::nm_setting_ip6_config_get_mtu(self.to_glib_none().0) }
     }
 
+    ///
+    /// # Returns
+    ///
+    /// The configured [`SETTING_IP6_CONFIG_RA_TIMEOUT`][crate::SETTING_IP6_CONFIG_RA_TIMEOUT] value with the
+    /// timeout for router advertisements in seconds.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "nm_setting_ip6_config_get_ra_timeout")]
@@ -108,6 +805,12 @@ impl SettingIP6Config {
         unsafe { ffi::nm_setting_ip6_config_get_ra_timeout(self.to_glib_none().0) }
     }
 
+    /// Returns the value contained in the #NMSettingIP6Config:temp-preferred-lifetime
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// The preferred lifetime of autogenerated temporary addresses.
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_ip6_config_get_temp_preferred_lifetime")]
@@ -117,6 +820,12 @@ impl SettingIP6Config {
         unsafe { ffi::nm_setting_ip6_config_get_temp_preferred_lifetime(self.to_glib_none().0) }
     }
 
+    /// Returns the value contained in the #NMSettingIP6Config:temp-valid-lifetime
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// The valid lifetime of autogenerated temporary addresses.
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "nm_setting_ip6_config_get_temp_valid_lifetime")]
@@ -126,6 +835,12 @@ impl SettingIP6Config {
         unsafe { ffi::nm_setting_ip6_config_get_temp_valid_lifetime(self.to_glib_none().0) }
     }
 
+    /// Returns the value contained in the #NMSettingIP6Config:token
+    /// property.
+    ///
+    /// # Returns
+    ///
+    /// A string.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_setting_ip6_config_get_token")]
@@ -134,6 +849,46 @@ impl SettingIP6Config {
         unsafe { from_glib_none(ffi::nm_setting_ip6_config_get_token(self.to_glib_none().0)) }
     }
 
+    /// Configure the method for creating the IPv6 interface identifier of
+    /// addresses for RFC4862 IPv6 Stateless Address Autoconfiguration and IPv6
+    /// Link Local.
+    ///
+    /// The permitted values are: [`SettingIP6ConfigAddrGenMode::Eui64`][crate::SettingIP6ConfigAddrGenMode::Eui64],
+    /// [`SettingIP6ConfigAddrGenMode::StablePrivacy`][crate::SettingIP6ConfigAddrGenMode::StablePrivacy].
+    /// [`SettingIP6ConfigAddrGenMode::DefaultOrEui64`][crate::SettingIP6ConfigAddrGenMode::DefaultOrEui64] or
+    /// [`SettingIP6ConfigAddrGenMode::Default`][crate::SettingIP6ConfigAddrGenMode::Default].
+    ///
+    /// If the property is set to "eui64", the addresses will be generated using
+    /// the interface token derived from the hardware address. This makes the
+    /// host part of the address constant, making it possible to track the
+    /// host's presence when it changes networks. The address changes when the
+    /// interface hardware is replaced. If a duplicate address is detected,
+    /// there is no fallback to generate another address. When configured, the
+    /// "ipv6.token" is used instead of the MAC address to generate addresses
+    /// for stateless autoconfiguration.
+    ///
+    /// If the property is set to "stable-privacy", the interface identifier is
+    /// generated as specified by RFC7217. This works by hashing a host specific
+    /// key (see NetworkManager(8) manual), the interface name, the connection's
+    /// "connection.stable-id" property and the address prefix.  This improves
+    /// privacy by making it harder to use the address to track the host's
+    /// presence as every prefix and network has a different identifier. Also,
+    /// the address is stable when the network interface hardware is replaced.
+    ///
+    /// The special values "default" and "default-or-eui64" will fallback to the
+    /// global connection default as documented in the NetworkManager.conf(5)
+    /// manual. If the global default is not specified, the fallback value is
+    /// "stable-privacy" or "eui64", respectively.
+    ///
+    /// For libnm, the property defaults to "default" since 1.40.  Previously it
+    /// used to default to "stable-privacy".  On D-Bus, the absence of an
+    /// addr-gen-mode setting equals "default". For keyfile plugin, the absence
+    /// of the setting on disk means "default-or-eui64" so that the property
+    /// doesn't change on upgrade from older versions.
+    ///
+    /// Note that this setting is distinct from the Privacy Extensions as
+    /// configured by "ip6-privacy" property and it does not affect the
+    /// temporary addresses configured with this option.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "addr-gen-mode")]
@@ -141,6 +896,35 @@ impl SettingIP6Config {
         ObjectExt::set_property(self, "addr-gen-mode", addr_gen_mode)
     }
 
+    /// A string containing the DHCPv6 Unique Identifier (DUID) used by the dhcp
+    /// client to identify itself to DHCPv6 servers (RFC 3315). The DUID is carried
+    /// in the Client Identifier option.
+    /// If the property is a hex string ('aa:bb:cc') it is interpreted as a binary
+    /// DUID and filled as an opaque value in the Client Identifier option.
+    ///
+    /// The special value "lease" will retrieve the DUID previously used from the
+    /// lease file belonging to the connection. If no DUID is found and "dhclient"
+    /// is the configured dhcp client, the DUID is searched in the system-wide
+    /// dhclient lease file. If still no DUID is found, or another dhcp client is
+    /// used, a global and permanent DUID-UUID (RFC 6355) will be generated based
+    /// on the machine-id.
+    ///
+    /// The special values "llt" and "ll" will generate a DUID of type LLT or LL
+    /// (see RFC 3315) based on the current MAC address of the device. In order to
+    /// try providing a stable DUID-LLT, the time field will contain a constant
+    /// timestamp that is used globally (for all profiles) and persisted to disk.
+    ///
+    /// The special values "stable-llt", "stable-ll" and "stable-uuid" will generate
+    /// a DUID of the corresponding type, derived from the connection's stable-id and
+    /// a per-host unique key. You may want to include the "${DEVICE}" or "${MAC}" specifier
+    /// in the stable-id, in case this profile gets activated on multiple devices.
+    /// So, the link-layer address of "stable-ll" and "stable-llt" will be a generated
+    /// address derived from the stable id. The DUID-LLT time value in the "stable-llt"
+    /// option will be picked among a static timespan of three years (the upper bound
+    /// of the interval is the same constant timestamp used in "llt").
+    ///
+    /// When the property is unset, the global value provided for "ipv6.dhcp-duid" is
+    /// used. If no global value is provided, the default "lease" value is assumed.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "dhcp-duid")]
@@ -148,6 +932,11 @@ impl SettingIP6Config {
         ObjectExt::set_property(self, "dhcp-duid", dhcp_duid)
     }
 
+    /// A IPv6 address followed by a slash and a prefix length. If set, the value is
+    /// sent to the DHCPv6 server as hint indicating the prefix delegation (IA_PD) we
+    /// want to receive.
+    /// To only hint a prefix length without prefix, set the address part to the
+    /// zero address (for example "::/60").
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "dhcp-pd-hint")]
@@ -155,17 +944,41 @@ impl SettingIP6Config {
         ObjectExt::set_property(self, "dhcp-pd-hint", dhcp_pd_hint)
     }
 
+    /// Configure IPv6 Privacy Extensions for SLAAC, described in RFC4941.  If
+    /// enabled, it makes the kernel generate a temporary IPv6 address in
+    /// addition to the public one generated from MAC address via modified
+    /// EUI-64.  This enhances privacy, but could cause problems in some
+    /// applications, on the other hand.  The permitted values are: -1: unknown,
+    /// 0: disabled, 1: enabled (prefer public address), 2: enabled (prefer temporary
+    /// addresses).
+    ///
+    /// Having a per-connection setting set to "-1" (default) means fallback to
+    /// global configuration "ipv6.ip6-privacy". If it's also unspecified or set
+    /// to "-1", fallback to read "/proc/sys/net/ipv6/conf/default/use_tempaddr".
+    ///
+    /// Note that this setting is distinct from the Stable Privacy addresses
+    /// that can be enabled with the "addr-gen-mode" property's "stable-privacy"
+    /// setting as another way of avoiding host tracking with IPv6 addresses.
     #[doc(alias = "ip6-privacy")]
     pub fn set_ip6_privacy(&self, ip6_privacy: SettingIP6ConfigPrivacy) {
         ObjectExt::set_property(self, "ip6-privacy", ip6_privacy)
     }
 
+    /// Maximum transmission unit size, in bytes. If zero (the default), the MTU
+    /// is set automatically from router advertisements or is left equal to the
+    /// link-layer MTU. If greater than the link-layer MTU, or greater than zero
+    /// but less than the minimum IPv6 MTU of 1280, this value has no effect.
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     pub fn set_mtu(&self, mtu: u32) {
         ObjectExt::set_property(self, "mtu", mtu)
     }
 
+    /// A timeout for waiting Router Advertisements in seconds. If zero (the default), a
+    /// globally configured default is used. If still unspecified, the timeout depends on the
+    /// sysctl settings of the device.
+    ///
+    /// Set to 2147483647 (MAXINT32) for infinity.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "ra-timeout")]
@@ -173,6 +986,12 @@ impl SettingIP6Config {
         ObjectExt::set_property(self, "ra-timeout", ra_timeout)
     }
 
+    /// The preferred lifetime of autogenerated temporary addresses, in seconds.
+    ///
+    /// Having a per-connection setting set to "0" (default) means fallback to
+    /// global configuration "ipv6.temp-preferred-lifetime" setting". If it's also
+    /// unspecified or set to "0", fallback to read
+    /// "/proc/sys/net/ipv6/conf/default/temp_prefered_lft".
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "temp-preferred-lifetime")]
@@ -180,6 +999,12 @@ impl SettingIP6Config {
         ObjectExt::set_property(self, "temp-preferred-lifetime", temp_preferred_lifetime)
     }
 
+    /// The valid lifetime of autogenerated temporary addresses, in seconds.
+    ///
+    /// Having a per-connection setting set to "0" (default) means fallback to
+    /// global configuration "ipv6.temp-valid-lifetime" setting". If it's also
+    /// unspecified or set to "0", fallback to read
+    /// "/proc/sys/net/ipv6/conf/default/temp_valid_lft".
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "temp-valid-lifetime")]
@@ -187,6 +1012,12 @@ impl SettingIP6Config {
         ObjectExt::set_property(self, "temp-valid-lifetime", temp_valid_lifetime)
     }
 
+    /// Configure the token for draft-chown-6man-tokenised-ipv6-identifiers-02
+    /// IPv6 tokenized interface identifiers. Useful with eui64 addr-gen-mode.
+    ///
+    /// When set, the token is used as IPv6 interface identifier instead of the
+    /// hardware address. This only applies to addresses from stateless
+    /// autoconfiguration, not to IPv6 link local addresses.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn set_token(&self, token: Option<&str>) {
@@ -449,6 +1280,46 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Configure the method for creating the IPv6 interface identifier of
+    /// addresses for RFC4862 IPv6 Stateless Address Autoconfiguration and IPv6
+    /// Link Local.
+    ///
+    /// The permitted values are: [`SettingIP6ConfigAddrGenMode::Eui64`][crate::SettingIP6ConfigAddrGenMode::Eui64],
+    /// [`SettingIP6ConfigAddrGenMode::StablePrivacy`][crate::SettingIP6ConfigAddrGenMode::StablePrivacy].
+    /// [`SettingIP6ConfigAddrGenMode::DefaultOrEui64`][crate::SettingIP6ConfigAddrGenMode::DefaultOrEui64] or
+    /// [`SettingIP6ConfigAddrGenMode::Default`][crate::SettingIP6ConfigAddrGenMode::Default].
+    ///
+    /// If the property is set to "eui64", the addresses will be generated using
+    /// the interface token derived from the hardware address. This makes the
+    /// host part of the address constant, making it possible to track the
+    /// host's presence when it changes networks. The address changes when the
+    /// interface hardware is replaced. If a duplicate address is detected,
+    /// there is no fallback to generate another address. When configured, the
+    /// "ipv6.token" is used instead of the MAC address to generate addresses
+    /// for stateless autoconfiguration.
+    ///
+    /// If the property is set to "stable-privacy", the interface identifier is
+    /// generated as specified by RFC7217. This works by hashing a host specific
+    /// key (see NetworkManager(8) manual), the interface name, the connection's
+    /// "connection.stable-id" property and the address prefix.  This improves
+    /// privacy by making it harder to use the address to track the host's
+    /// presence as every prefix and network has a different identifier. Also,
+    /// the address is stable when the network interface hardware is replaced.
+    ///
+    /// The special values "default" and "default-or-eui64" will fallback to the
+    /// global connection default as documented in the NetworkManager.conf(5)
+    /// manual. If the global default is not specified, the fallback value is
+    /// "stable-privacy" or "eui64", respectively.
+    ///
+    /// For libnm, the property defaults to "default" since 1.40.  Previously it
+    /// used to default to "stable-privacy".  On D-Bus, the absence of an
+    /// addr-gen-mode setting equals "default". For keyfile plugin, the absence
+    /// of the setting on disk means "default-or-eui64" so that the property
+    /// doesn't change on upgrade from older versions.
+    ///
+    /// Note that this setting is distinct from the Privacy Extensions as
+    /// configured by "ip6-privacy" property and it does not affect the
+    /// temporary addresses configured with this option.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn addr_gen_mode(self, addr_gen_mode: i32) -> Self {
@@ -457,6 +1328,35 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// A string containing the DHCPv6 Unique Identifier (DUID) used by the dhcp
+    /// client to identify itself to DHCPv6 servers (RFC 3315). The DUID is carried
+    /// in the Client Identifier option.
+    /// If the property is a hex string ('aa:bb:cc') it is interpreted as a binary
+    /// DUID and filled as an opaque value in the Client Identifier option.
+    ///
+    /// The special value "lease" will retrieve the DUID previously used from the
+    /// lease file belonging to the connection. If no DUID is found and "dhclient"
+    /// is the configured dhcp client, the DUID is searched in the system-wide
+    /// dhclient lease file. If still no DUID is found, or another dhcp client is
+    /// used, a global and permanent DUID-UUID (RFC 6355) will be generated based
+    /// on the machine-id.
+    ///
+    /// The special values "llt" and "ll" will generate a DUID of type LLT or LL
+    /// (see RFC 3315) based on the current MAC address of the device. In order to
+    /// try providing a stable DUID-LLT, the time field will contain a constant
+    /// timestamp that is used globally (for all profiles) and persisted to disk.
+    ///
+    /// The special values "stable-llt", "stable-ll" and "stable-uuid" will generate
+    /// a DUID of the corresponding type, derived from the connection's stable-id and
+    /// a per-host unique key. You may want to include the "${DEVICE}" or "${MAC}" specifier
+    /// in the stable-id, in case this profile gets activated on multiple devices.
+    /// So, the link-layer address of "stable-ll" and "stable-llt" will be a generated
+    /// address derived from the stable id. The DUID-LLT time value in the "stable-llt"
+    /// option will be picked among a static timespan of three years (the upper bound
+    /// of the interval is the same constant timestamp used in "llt").
+    ///
+    /// When the property is unset, the global value provided for "ipv6.dhcp-duid" is
+    /// used. If no global value is provided, the default "lease" value is assumed.
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn dhcp_duid(self, dhcp_duid: impl Into<glib::GString>) -> Self {
@@ -465,6 +1365,11 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// A IPv6 address followed by a slash and a prefix length. If set, the value is
+    /// sent to the DHCPv6 server as hint indicating the prefix delegation (IA_PD) we
+    /// want to receive.
+    /// To only hint a prefix length without prefix, set the address part to the
+    /// zero address (for example "::/60").
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn dhcp_pd_hint(self, dhcp_pd_hint: impl Into<glib::GString>) -> Self {
@@ -473,12 +1378,31 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Configure IPv6 Privacy Extensions for SLAAC, described in RFC4941.  If
+    /// enabled, it makes the kernel generate a temporary IPv6 address in
+    /// addition to the public one generated from MAC address via modified
+    /// EUI-64.  This enhances privacy, but could cause problems in some
+    /// applications, on the other hand.  The permitted values are: -1: unknown,
+    /// 0: disabled, 1: enabled (prefer public address), 2: enabled (prefer temporary
+    /// addresses).
+    ///
+    /// Having a per-connection setting set to "-1" (default) means fallback to
+    /// global configuration "ipv6.ip6-privacy". If it's also unspecified or set
+    /// to "-1", fallback to read "/proc/sys/net/ipv6/conf/default/use_tempaddr".
+    ///
+    /// Note that this setting is distinct from the Stable Privacy addresses
+    /// that can be enabled with the "addr-gen-mode" property's "stable-privacy"
+    /// setting as another way of avoiding host tracking with IPv6 addresses.
     pub fn ip6_privacy(self, ip6_privacy: SettingIP6ConfigPrivacy) -> Self {
         Self {
             builder: self.builder.property("ip6-privacy", ip6_privacy),
         }
     }
 
+    /// Maximum transmission unit size, in bytes. If zero (the default), the MTU
+    /// is set automatically from router advertisements or is left equal to the
+    /// link-layer MTU. If greater than the link-layer MTU, or greater than zero
+    /// but less than the minimum IPv6 MTU of 1280, this value has no effect.
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     pub fn mtu(self, mtu: u32) -> Self {
@@ -487,6 +1411,11 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// A timeout for waiting Router Advertisements in seconds. If zero (the default), a
+    /// globally configured default is used. If still unspecified, the timeout depends on the
+    /// sysctl settings of the device.
+    ///
+    /// Set to 2147483647 (MAXINT32) for infinity.
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn ra_timeout(self, ra_timeout: i32) -> Self {
@@ -495,6 +1424,12 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// The preferred lifetime of autogenerated temporary addresses, in seconds.
+    ///
+    /// Having a per-connection setting set to "0" (default) means fallback to
+    /// global configuration "ipv6.temp-preferred-lifetime" setting". If it's also
+    /// unspecified or set to "0", fallback to read
+    /// "/proc/sys/net/ipv6/conf/default/temp_prefered_lft".
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn temp_preferred_lifetime(self, temp_preferred_lifetime: i32) -> Self {
@@ -505,6 +1440,12 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// The valid lifetime of autogenerated temporary addresses, in seconds.
+    ///
+    /// Having a per-connection setting set to "0" (default) means fallback to
+    /// global configuration "ipv6.temp-valid-lifetime" setting". If it's also
+    /// unspecified or set to "0", fallback to read
+    /// "/proc/sys/net/ipv6/conf/default/temp_valid_lft".
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn temp_valid_lifetime(self, temp_valid_lifetime: i32) -> Self {
@@ -515,6 +1456,12 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Configure the token for draft-chown-6man-tokenised-ipv6-identifiers-02
+    /// IPv6 tokenized interface identifiers. Useful with eui64 addr-gen-mode.
+    ///
+    /// When set, the token is used as IPv6 interface identifier instead of the
+    /// hardware address. This only applies to addresses from stateless
+    /// autoconfiguration, not to IPv6 link local addresses.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn token(self, token: impl Into<glib::GString>) -> Self {
@@ -523,6 +1470,7 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Array of IP addresses.
     pub fn addresses(self, addresses: &[&IPAddress]) -> Self {
         Self {
             builder: self.builder.property(
@@ -535,6 +1483,11 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// VPN connections will default to add the route automatically unless this
+    /// setting is set to [`false`].
+    ///
+    /// For other connection types, adding such an automatic route is currently
+    /// not supported and setting this to [`true`] has no effect.
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn auto_route_ext_gw(self, auto_route_ext_gw: Ternary) -> Self {
@@ -545,6 +1498,16 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Maximum timeout in milliseconds used to check for the presence of duplicate
+    /// IP addresses on the network.  If an address conflict is detected, the
+    /// activation will fail. The property is currently implemented only for IPv4.
+    ///
+    /// A zero value means that no duplicate address detection is performed, -1 means
+    /// the default value (either the value configured globally in NetworkManger.conf
+    /// or 200ms).  A value greater than zero is a timeout in milliseconds.  Note that
+    /// the time intervals are subject to randomization as per RFC 5227 and so the
+    /// actual duration can be between half and the full time specified in this
+    /// property.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn dad_timeout(self, dad_timeout: i32) -> Self {
@@ -553,6 +1516,12 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Specifies the value for the DSCP field (traffic class) of the IP header. When
+    /// empty, the global default value is used; if no global default is specified, it is
+    /// assumed to be "CS0". Allowed values are: "CS0", "CS4" and "CS6".
+    ///
+    /// The property is currently valid only for IPv4, and it is supported only by the
+    /// "internal" DHCP plugin.
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn dhcp_dscp(self, dhcp_dscp: impl Into<glib::GString>) -> Self {
@@ -561,12 +1530,35 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// If the #NMSettingIPConfig:dhcp-send-hostname property is [`true`], then the
+    /// specified name will be sent to the DHCP server when acquiring a lease.
+    /// This property and #NMSettingIP4Config:dhcp-fqdn are mutually exclusive and
+    /// cannot be set at the same time.
     pub fn dhcp_hostname(self, dhcp_hostname: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("dhcp-hostname", dhcp_hostname.into()),
         }
     }
 
+    /// Flags for the DHCP hostname and FQDN.
+    ///
+    /// Currently, this property only includes flags to control the FQDN flags
+    /// set in the DHCP FQDN option. Supported FQDN flags are
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE],
+    /// [`DhcpHostnameFlags::FQDN_ENCODED`][crate::DhcpHostnameFlags::FQDN_ENCODED] and
+    /// [`DhcpHostnameFlags::FQDN_NO_UPDATE`][crate::DhcpHostnameFlags::FQDN_NO_UPDATE].  When no FQDN flag is set and
+    /// [`DhcpHostnameFlags::FQDN_CLEAR_FLAGS`][crate::DhcpHostnameFlags::FQDN_CLEAR_FLAGS] is set, the DHCP FQDN option will
+    /// contain no flag. Otherwise, if no FQDN flag is set and
+    /// [`DhcpHostnameFlags::FQDN_CLEAR_FLAGS`][crate::DhcpHostnameFlags::FQDN_CLEAR_FLAGS] is not set, the standard FQDN flags
+    /// are set in the request:
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE],
+    /// [`DhcpHostnameFlags::FQDN_ENCODED`][crate::DhcpHostnameFlags::FQDN_ENCODED] for IPv4 and
+    /// [`DhcpHostnameFlags::FQDN_SERV_UPDATE`][crate::DhcpHostnameFlags::FQDN_SERV_UPDATE] for IPv6.
+    ///
+    /// When this property is set to the default value [`DhcpHostnameFlags::NONE`][crate::DhcpHostnameFlags::NONE],
+    /// a global default is looked up in NetworkManager configuration. If that value
+    /// is unset or also [`DhcpHostnameFlags::NONE`][crate::DhcpHostnameFlags::NONE], then the standard FQDN flags
+    /// described above are sent in the DHCP requests.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     pub fn dhcp_hostname_flags(self, dhcp_hostname_flags: u32) -> Self {
@@ -577,6 +1569,28 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// A string containing the "Identity Association Identifier" (IAID) used by
+    /// the DHCP client. The string can be a 32-bit number (either decimal,
+    /// hexadecimal or as colon separated hexadecimal numbers). Alternatively
+    /// it can be set to the special values "mac", "perm-mac", "ifname" or
+    /// "stable". When set to "mac" (or "perm-mac"), the last 4 bytes of the
+    /// current (or permanent) MAC address are used as IAID. When set to
+    /// "ifname", the IAID is computed by hashing the interface name. The
+    /// special value "stable" can be used to generate an IAID based on the
+    /// stable-id (see connection.stable-id), a per-host key and the interface
+    /// name. When the property is unset, the value from global configuration is
+    /// used; if no global default is set then the IAID is assumed to be
+    /// "ifname".
+    ///
+    /// For DHCPv4, the IAID is only used with "ipv4.dhcp-client-id"
+    /// values "duid" and "ipv6-duid" to generate the client-id.
+    ///
+    /// For DHCPv6, note that at the moment this property is
+    /// only supported by the "internal" DHCPv6 plugin. The "dhclient" DHCPv6
+    /// plugin always derives the IAID from the MAC address.
+    ///
+    /// The actually used DHCPv6 IAID for a currently activated interface is
+    /// exposed in the lease information of the device.
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     pub fn dhcp_iaid(self, dhcp_iaid: impl Into<glib::GString>) -> Self {
@@ -585,6 +1599,13 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Array of servers from which DHCP offers must be rejected. This property
+    /// is useful to avoid getting a lease from misconfigured or rogue servers.
+    ///
+    /// For DHCPv4, each element must be an IPv4 address, optionally
+    /// followed by a slash and a prefix length (e.g. "192.168.122.0/24").
+    ///
+    /// This property is currently not implemented for DHCPv6.
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     pub fn dhcp_reject_servers(self, dhcp_reject_servers: impl Into<glib::StrV>) -> Self {
@@ -595,6 +1616,11 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Since 1.52 this property is deprecated and is only used as fallback value
+    /// for #NMSettingIPConfig:dhcp-send-hostname-v2 if it's set to 'default'.
+    /// This is only done to avoid breaking existing configurations, the new
+    /// property should be used from now on.
+    /// use the new version of dhcp-send-hostname instead.
     #[cfg_attr(feature = "v1_52", deprecated = "Since 1.52")]
     pub fn dhcp_send_hostname(self, dhcp_send_hostname: bool) -> Self {
         Self {
@@ -604,6 +1630,17 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// If [`true`], a hostname is sent to the DHCP server when acquiring a lease.
+    /// Some DHCP servers use this hostname to update DNS databases, essentially
+    /// providing a static hostname for the computer.  If the
+    /// #NMSettingIPConfig:dhcp-hostname property is [`None`] and this property is
+    /// [`true`], the current persistent hostname of the computer is sent.
+    ///
+    /// The default value is [`Ternary::Default`][crate::Ternary::Default]. In this case the global value
+    /// from NetworkManager configuration is looked up. If it's not set, the value
+    /// from #NMSettingIPConfig:dhcp-send-hostname, which defaults to [`true`], is
+    /// used for backwards compatibility. In the future this will change and, in
+    /// absence of a global default, it will always fallback to [`true`].
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn dhcp_send_hostname_v2(self, dhcp_send_hostname_v2: i32) -> Self {
@@ -614,6 +1651,10 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Whether the DHCP client will send RELEASE message when
+    /// bringing the connection down. The default value is [`Ternary::Default`][crate::Ternary::Default].
+    /// When the default value is specified, then the global value from NetworkManager
+    /// configuration is looked up, if not set, it is considered as [`false`].
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn dhcp_send_release(self, dhcp_send_release: Ternary) -> Self {
@@ -624,18 +1665,59 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// A timeout for a DHCP transaction in seconds. If zero (the default), a
+    /// globally configured default is used. If still unspecified, a device specific
+    /// timeout is used (usually 45 seconds).
+    ///
+    /// Set to 2147483647 (MAXINT32) for infinity.
     pub fn dhcp_timeout(self, dhcp_timeout: i32) -> Self {
         Self {
             builder: self.builder.property("dhcp-timeout", dhcp_timeout),
         }
     }
 
+    /// Array of DNS servers.
+    ///
+    /// Each server can be specified either as a plain IP address (optionally followed
+    /// by a "#" and the SNI server name for DNS over TLS) or with a URI syntax.
+    ///
+    /// When it is specified as an URI, the following forms are supported:
+    /// dns+udp://ADDRESS[:PORT], dns+tls://ADDRESS[:PORT][#SERVERNAME] .
+    ///
+    /// When using the URI syntax, IPv6 addresses must be enclosed in square
+    /// brackets ('[', ']').
     pub fn dns(self, dns: impl Into<glib::StrV>) -> Self {
         Self {
             builder: self.builder.property("dns", dns.into()),
         }
     }
 
+    /// Array of DNS options to be added to resolv.conf.
+    ///
+    /// [`None`] means that the options are unset and left at the default.
+    /// In this case NetworkManager will use default options. This is
+    /// distinct from an empty list of properties.
+    ///
+    /// The following options are directly added to resolv.conf: "attempts",
+    ///  "debug", "edns0",
+    /// "inet6", "ip6-bytestring", "ip6-dotint", "ndots", "no-aaaa",
+    /// "no-check-names", "no-ip6-dotint", "no-reload", "no-tld-query",
+    /// "rotate", "single-request", "single-request-reopen", "timeout",
+    /// "trust-ad", "use-vc". See the resolv.conf(5) man page for a
+    /// detailed description of these options.
+    ///
+    /// In addition, NetworkManager supports the special options "_no-add-edns0"
+    /// and "_no-add-trust-ad". They are not added to resolv.conf, and can be
+    /// used to prevent the automatic addition of options "edns0" and "trust-ad"
+    /// when using caching DNS plugins (see below).
+    ///
+    /// The "trust-ad" setting is only honored if the profile contributes
+    /// name servers to resolv.conf, and if all contributing profiles have
+    /// "trust-ad" enabled.
+    ///
+    /// When using a caching DNS plugin (dnsmasq or systemd-resolved in
+    /// NetworkManager.conf) then "edns0" and "trust-ad" are automatically
+    /// added, unless "_no-add-edns0" and "_no-add-trust-ad" are present.
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn dns_options(self, dns_options: impl Into<glib::StrV>) -> Self {
@@ -644,6 +1726,53 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// DNS servers priority.
+    ///
+    /// The relative priority for DNS servers specified by this setting.  A lower
+    /// numerical value is better (higher priority).
+    ///
+    /// Negative values have the special effect of excluding other configurations
+    /// with a greater numerical priority value; so in presence of at least one negative
+    /// priority, only DNS servers from connections with the lowest priority value will be used.
+    /// To avoid all DNS leaks, set the priority of the profile that should be used
+    /// to the most negative value of all active connections profiles.
+    ///
+    /// Zero selects a globally configured default value. If the latter is missing
+    /// or zero too, it defaults to 50 for VPNs (including WireGuard) and 100 for
+    /// other connections.
+    ///
+    /// Note that the priority is to order DNS settings for multiple active
+    /// connections.  It does not disambiguate multiple DNS servers within the
+    /// same connection profile.
+    ///
+    /// When multiple devices have configurations with the same priority, VPNs will be
+    /// considered first, then devices with the best (lowest metric) default
+    /// route and then all other devices.
+    ///
+    /// When using dns=default, servers with higher priority will be on top of
+    /// resolv.conf. To prioritize a given server over another one within the
+    /// same connection, just specify them in the desired order.
+    /// Note that commonly the resolver tries name servers in /etc/resolv.conf
+    /// in the order listed, proceeding with the next server in the list
+    /// on failure. See for example the "rotate" option of the dns-options setting.
+    /// If there are any negative DNS priorities, then only name servers from
+    /// the devices with that lowest priority will be considered.
+    ///
+    /// When using a DNS resolver that supports Conditional Forwarding or
+    /// Split DNS (with dns=dnsmasq or dns=systemd-resolved settings), each connection
+    /// is used to query domains in its search list. The search domains determine which
+    /// name servers to ask, and the DNS priority is used to prioritize
+    /// name servers based on the domain.  Queries for domains not present in any
+    /// search list are routed through connections having the '~.' special wildcard
+    /// domain, which is added automatically to connections with the default route
+    /// (or can be added manually).  When multiple connections specify the same domain, the
+    /// one with the best priority (lowest numerical value) wins.  If a sub domain
+    /// is configured on another interface it will be accepted regardless the priority,
+    /// unless parent domain on the other interface has a negative priority, which causes
+    /// the sub domain to be shadowed.
+    /// With Split DNS one can avoid undesired DNS leaks by properly configuring
+    /// DNS priorities and the search domains, so that only name servers of the desired
+    /// interface are configured.
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn dns_priority(self, dns_priority: i32) -> Self {
@@ -652,12 +1781,39 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// List of DNS search domains. Domains starting with a tilde ('~')
+    /// are considered 'routing' domains and are used only to decide the
+    /// interface over which a query must be forwarded; they are not used
+    /// to complete unqualified host names.
+    ///
+    /// When using a DNS plugin that supports Conditional Forwarding or
+    /// Split DNS, then the search domains specify which name servers to
+    /// query. This makes the behavior different from running with plain
+    /// /etc/resolv.conf. For more information see also the dns-priority setting.
+    ///
+    /// When set on a profile that also enabled DHCP, the DNS search list
+    /// received automatically (option 119 for DHCPv4 and option 24 for DHCPv6)
+    /// gets merged with the manual list. This can be prevented by setting
+    /// "ignore-auto-dns". Note that if no DNS searches are configured, the
+    /// fallback will be derived from the domain from DHCP (option 15).
     pub fn dns_search(self, dns_search: impl Into<glib::StrV>) -> Self {
         Self {
             builder: self.builder.property("dns-search", dns_search.into()),
         }
     }
 
+    /// Whether to configure sysctl interface-specific forwarding. When enabled, the interface
+    /// will act as a router to forward the packet from one interface to another. When set to
+    /// [`SettingIPConfigForwarding::Default`][crate::SettingIPConfigForwarding::Default], the value from global configuration is used;
+    /// if no global default is defined, [`SettingIPConfigForwarding::Auto`][crate::SettingIPConfigForwarding::Auto] will be used.
+    /// The #NMSettingIPConfig:forwarding property is ignored when #NMSettingIPConfig:method
+    /// is set to "shared", because forwarding is always enabled in this case.
+    /// The accepted values are:
+    ///   [`SettingIPConfigForwarding::Default`][crate::SettingIPConfigForwarding::Default]: use global default.
+    ///   [`SettingIPConfigForwarding::No`][crate::SettingIPConfigForwarding::No]: disabled.
+    ///   [`SettingIPConfigForwarding::Yes`][crate::SettingIPConfigForwarding::Yes]: enabled.
+    ///   [`SettingIPConfigForwarding::Auto`][crate::SettingIPConfigForwarding::Auto]: enable if any shared connection is active,
+    ///        use kernel default otherwise.
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     pub fn forwarding(self, forwarding: i32) -> Self {
@@ -666,18 +1822,37 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// The gateway associated with this configuration. This is only meaningful
+    /// if #NMSettingIPConfig:addresses is also set.
+    ///
+    /// Setting the gateway causes NetworkManager to configure a standard default route
+    /// with the gateway as next hop. This is ignored if #NMSettingIPConfig:never-default
+    /// is set. An alternative is to configure the default route explicitly with a manual
+    /// route and /0 as prefix length.
+    ///
+    /// Note that the gateway usually conflicts with routing that NetworkManager configures
+    /// for WireGuard interfaces, so usually it should not be set in that case. See
+    /// #NMSettingWireGuard:ip4-auto-default-route.
     pub fn gateway(self, gateway: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("gateway", gateway.into()),
         }
     }
 
+    /// When #NMSettingIPConfig:method is set to "auto" and this property to
+    /// [`true`], automatically configured name servers and search domains are
+    /// ignored and only name servers and search domains specified in the
+    /// #NMSettingIPConfig:dns and #NMSettingIPConfig:dns-search properties, if
+    /// any, are used.
     pub fn ignore_auto_dns(self, ignore_auto_dns: bool) -> Self {
         Self {
             builder: self.builder.property("ignore-auto-dns", ignore_auto_dns),
         }
     }
 
+    /// When #NMSettingIPConfig:method is set to "auto" and this property to
+    /// [`true`], automatically configured routes are ignored and only routes
+    /// specified in the #NMSettingIPConfig:routes property, if any, are used.
     pub fn ignore_auto_routes(self, ignore_auto_routes: bool) -> Self {
         Self {
             builder: self
@@ -686,24 +1861,55 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// If [`true`], allow overall network configuration to proceed even if the
+    /// configuration specified by this property times out.  Note that at least
+    /// one IP configuration must succeed or overall network configuration will
+    /// still fail.  For example, in IPv6-only networks, setting this property to
+    /// [`true`] on the #NMSettingIP4Config allows the overall network configuration
+    /// to succeed if IPv4 configuration fails but IPv6 configuration completes
+    /// successfully.
     pub fn may_fail(self, may_fail: bool) -> Self {
         Self {
             builder: self.builder.property("may-fail", may_fail),
         }
     }
 
+    /// IP configuration method.
+    ///
+    /// #NMSettingIP4Config and #NMSettingIP6Config both support "disabled",
+    /// "auto", "manual", and "link-local". See the subclass-specific
+    /// documentation for other values.
+    ///
+    /// In general, for the "auto" method, properties such as
+    /// #NMSettingIPConfig:dns and #NMSettingIPConfig:routes specify information
+    /// that is added on to the information returned from automatic
+    /// configuration.  The #NMSettingIPConfig:ignore-auto-routes and
+    /// #NMSettingIPConfig:ignore-auto-dns properties modify this behavior.
+    ///
+    /// For methods that imply no upstream network, such as "shared" or
+    /// "link-local", these properties must be empty.
+    ///
+    /// For IPv4 method "shared", the IP subnet can be configured by adding one
+    /// manual IPv4 address or otherwise 10.42.x.0/24 is chosen. Note that the
+    /// shared method must be configured on the interface which shares the internet
+    /// to a subnet, not on the uplink which is shared.
     pub fn method(self, method: impl Into<glib::GString>) -> Self {
         Self {
             builder: self.builder.property("method", method.into()),
         }
     }
 
+    /// If [`true`], this connection will never be the default connection for this
+    /// IP type, meaning it will never be assigned the default route by
+    /// NetworkManager.
     pub fn never_default(self, never_default: bool) -> Self {
         Self {
             builder: self.builder.property("never-default", never_default),
         }
     }
 
+    /// Connections will default to keep the autogenerated priority 0 local rule
+    /// unless this setting is set to [`true`].
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn replace_local_rule(self, replace_local_rule: Ternary) -> Self {
@@ -714,6 +1920,23 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// The minimum time interval in milliseconds for which dynamic IP configuration
+    /// should be tried before the connection succeeds.
+    ///
+    /// This property is useful for example if both IPv4 and IPv6 are enabled and
+    /// are allowed to fail. Normally the connection succeeds as soon as one of
+    /// the two address families completes; by setting a required timeout for
+    /// e.g. IPv4, one can ensure that even if IP6 succeeds earlier than IPv4,
+    /// NetworkManager waits some time for IPv4 before the connection becomes
+    /// active.
+    ///
+    /// Note that if #NMSettingIPConfig:may-fail is FALSE for the same address
+    /// family, this property has no effect as NetworkManager needs to wait for
+    /// the full DHCP timeout.
+    ///
+    /// A zero value means that no required timeout is present, -1 means the
+    /// default value (either configuration ipvx.required-timeout override or
+    /// zero).
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     pub fn required_timeout(self, required_timeout: i32) -> Self {
@@ -722,12 +1945,37 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// The default metric for routes that don't explicitly specify a metric.
+    /// The default value -1 means that the metric is chosen automatically
+    /// based on the device type.
+    /// The metric applies to dynamic routes, manual (static) routes that
+    /// don't have an explicit metric setting, address prefix routes, and
+    /// the default route.
+    /// Note that for IPv6, the kernel accepts zero (0) but coerces it to
+    /// 1024 (user default). Hence, setting this property to zero effectively
+    /// mean setting it to 1024.
+    /// For IPv4, zero is a regular value for the metric.
     pub fn route_metric(self, route_metric: i64) -> Self {
         Self {
             builder: self.builder.property("route-metric", route_metric),
         }
     }
 
+    /// Enable policy routing (source routing) and set the routing table used when adding routes.
+    ///
+    /// This affects all routes, including device-routes, IPv4LL, DHCP, SLAAC, default-routes
+    /// and static routes. But note that static routes can individually overwrite the setting
+    /// by explicitly specifying a non-zero routing table.
+    ///
+    /// If the table setting is left at zero, it is eligible to be overwritten via global
+    /// configuration. If the property is zero even after applying the global configuration
+    /// value, policy routing is disabled for the address family of this connection.
+    ///
+    /// Policy routing disabled means that NetworkManager will add all routes to the main
+    /// table (except static routes that explicitly configure a different table). Additionally,
+    /// NetworkManager will not delete any extraneous routes from tables except the main table.
+    /// This is to preserve backward compatibility for users who manage routing tables outside
+    /// of NetworkManager.
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn route_table(self, route_table: u32) -> Self {
@@ -736,6 +1984,12 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Whether to add routes for DNS servers. When enabled, NetworkManager adds a route
+    /// for each DNS server that is associated with this connection either statically
+    /// (defined in the connection profile) or dynamically (for example, retrieved via
+    /// DHCP). The route guarantees that the DNS server is reached via this interface. When
+    /// set to [`SettingIPConfigRoutedDns::Default`][crate::SettingIPConfigRoutedDns::Default], the value from global
+    /// configuration is used; if no global default is defined, this feature is disabled.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn routed_dns(self, routed_dns: i32) -> Self {
@@ -744,6 +1998,7 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// Array of IP routes.
     pub fn routes(self, routes: &[&IPRoute]) -> Self {
         Self {
             builder: self.builder.property(
@@ -756,6 +2011,11 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// This option allows you to specify a custom DHCP lease time for the shared connection
+    /// method in seconds. The value should be either a number between 120 and 31536000 (one year)
+    /// If this option is not specified, 3600 (one hour) is used.
+    ///
+    /// Special values are 0 for default value of 1 hour and 2147483647 (MAXINT32) for infinite lease time.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn shared_dhcp_lease_time(self, shared_dhcp_lease_time: i32) -> Self {
@@ -766,6 +2026,15 @@ impl SettingIP6ConfigBuilder {
         }
     }
 
+    /// This option allows you to specify a custom DHCP range for the shared connection
+    /// method. The value is expected to be in `<START_ADDRESS>,<END_ADDRESS>` format.
+    /// The range should be part of network set by ipv4.address option and it should
+    /// not contain network address or broadcast address. If this option is not specified,
+    /// the DHCP range will be automatically determined based on the interface address.
+    /// The range will be selected to be adjacent to the interface address, either before
+    /// or after it, with the larger possible range being preferred. The range will be
+    /// adjusted to fill the available address space, except for networks with a prefix
+    /// length greater than 24, which will be treated as if they have a prefix length of 24.
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn shared_dhcp_range(self, shared_dhcp_range: impl Into<glib::GString>) -> Self {
