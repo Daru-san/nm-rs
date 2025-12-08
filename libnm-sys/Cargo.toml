@@ -1,7 +1,13 @@
 [package]
-name = "libnm-sys"
+name = "libnm-api-sys"
 version = "0.0.1"
 edition = "2021"
+authors = ["Daru-san"]
+categories = ["api-bindings"]
+homepage = "https://github.com/Daru-san/nm-rs"
+license = "MIT"
+repository = "https://github.com/Daru-san/nm-rs"
+description = "FFI bindings for NetworkManager"
 build = "build.rs"
 
 [package.metadata.system-deps.libnm]

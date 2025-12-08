@@ -1,12 +1,18 @@
 [package]
-name = "libnm"
+name = "libnm-api"
 version = "0.1.0"
 edition = "2024"
+authors = ["Daru-san"]
+categories = ["api-bindings"]
+homepage = "https://github.com/Daru-san/nm-rs"
+license = "MIT"
+repository = "https://github.com/Daru-san/nm-rs"
+description = "Rust bindings for the libnm library."
 
 [dependencies]
 gio = "0.21.5"
 glib = "0.21.5"
-libnm-sys = { path = "libnm-sys" }
+libnm-api-sys = { path = "libnm-sys" }
 
 [features]
 default = [
@@ -51,3 +57,6 @@ v1_50 = ["libnm-sys/v1_50"]
 v1_52 = ["libnm-sys/v1_52"]
 v1_54 = ["libnm-sys/v1_54"]
 gio_v2_22 = []
+
+[workspace]
+members = ["libnm-sys"]
