@@ -3,8 +3,8 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,SettingCompareFlags,SettingSecretFlags};
-use glib::{translate::*};
+use crate::{SettingCompareFlags, SettingSecretFlags, ffi};
+use glib::translate::*;
 
 glib::wrapper! {
     #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -21,15 +21,17 @@ impl WireGuardPeer {
     #[doc(alias = "nm_wireguard_peer_new")]
     pub fn new() -> WireGuardPeer {
         assert_initialized_main_thread!();
-        unsafe {
-            from_glib_full(ffi::nm_wireguard_peer_new())
-        }
+        unsafe { from_glib_full(ffi::nm_wireguard_peer_new()) }
     }
 
     #[doc(alias = "nm_wireguard_peer_append_allowed_ip")]
     pub fn append_allowed_ip(&self, allowed_ip: &str, accept_invalid: bool) -> bool {
         unsafe {
-            from_glib(ffi::nm_wireguard_peer_append_allowed_ip(self.to_glib_none().0, allowed_ip.to_glib_none().0, accept_invalid.into_glib()))
+            from_glib(ffi::nm_wireguard_peer_append_allowed_ip(
+                self.to_glib_none().0,
+                allowed_ip.to_glib_none().0,
+                accept_invalid.into_glib(),
+            ))
         }
     }
 
@@ -43,47 +45,51 @@ impl WireGuardPeer {
     #[doc(alias = "nm_wireguard_peer_cmp")]
     pub fn cmp(&self, b: Option<&WireGuardPeer>, compare_flags: SettingCompareFlags) -> i32 {
         unsafe {
-            ffi::nm_wireguard_peer_cmp(self.to_glib_none().0, b.to_glib_none().0, compare_flags.into_glib())
+            ffi::nm_wireguard_peer_cmp(
+                self.to_glib_none().0,
+                b.to_glib_none().0,
+                compare_flags.into_glib(),
+            )
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_get_allowed_ip")]
     #[doc(alias = "get_allowed_ip")]
-    pub fn allowed_ip(&self, idx: u32, out_is_valid: Option<bool>) -> Option<glib::GString> {
+    pub fn allowed_ip(&self, idx: u32, out_is_valid: bool) -> Option<glib::GString> {
         unsafe {
-            from_glib_none(ffi::nm_wireguard_peer_get_allowed_ip(self.to_glib_none().0, idx, out_is_valid.into_glib()))
+            from_glib_none(ffi::nm_wireguard_peer_get_allowed_ip(
+                self.to_glib_none().0,
+                idx,
+                &mut out_is_valid.into_glib(),
+            ))
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_get_allowed_ips_len")]
     #[doc(alias = "get_allowed_ips_len")]
     pub fn allowed_ips_len(&self) -> u32 {
-        unsafe {
-            ffi::nm_wireguard_peer_get_allowed_ips_len(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_wireguard_peer_get_allowed_ips_len(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_wireguard_peer_get_endpoint")]
     #[doc(alias = "get_endpoint")]
     pub fn endpoint(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_wireguard_peer_get_endpoint(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_wireguard_peer_get_endpoint(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_wireguard_peer_get_persistent_keepalive")]
     #[doc(alias = "get_persistent_keepalive")]
     pub fn persistent_keepalive(&self) -> u16 {
-        unsafe {
-            ffi::nm_wireguard_peer_get_persistent_keepalive(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_wireguard_peer_get_persistent_keepalive(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_wireguard_peer_get_preshared_key")]
     #[doc(alias = "get_preshared_key")]
     pub fn preshared_key(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_wireguard_peer_get_preshared_key(self.to_glib_none().0))
+            from_glib_none(ffi::nm_wireguard_peer_get_preshared_key(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -91,47 +97,64 @@ impl WireGuardPeer {
     #[doc(alias = "get_preshared_key_flags")]
     pub fn preshared_key_flags(&self) -> SettingSecretFlags {
         unsafe {
-            from_glib(ffi::nm_wireguard_peer_get_preshared_key_flags(self.to_glib_none().0))
+            from_glib(ffi::nm_wireguard_peer_get_preshared_key_flags(
+                self.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_get_public_key")]
     #[doc(alias = "get_public_key")]
     pub fn public_key(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_wireguard_peer_get_public_key(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_wireguard_peer_get_public_key(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_wireguard_peer_is_sealed")]
     pub fn is_sealed(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_wireguard_peer_is_sealed(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_wireguard_peer_is_sealed(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_wireguard_peer_is_valid")]
-    pub fn is_valid(&self, check_non_secrets: bool, check_secrets: bool) -> Result<(), glib::Error> {
+    pub fn is_valid(
+        &self,
+        check_non_secrets: bool,
+        check_secrets: bool,
+    ) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_wireguard_peer_is_valid(self.to_glib_none().0, check_non_secrets.into_glib(), check_secrets.into_glib(), &mut error);
+            let is_ok = ffi::nm_wireguard_peer_is_valid(
+                self.to_glib_none().0,
+                check_non_secrets.into_glib(),
+                check_secrets.into_glib(),
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_new_clone")]
-#[must_use]
+    #[must_use]
     pub fn new_clone(&self, with_secrets: bool) -> WireGuardPeer {
         unsafe {
-            from_glib_full(ffi::nm_wireguard_peer_new_clone(self.to_glib_none().0, with_secrets.into_glib()))
+            from_glib_full(ffi::nm_wireguard_peer_new_clone(
+                self.to_glib_none().0,
+                with_secrets.into_glib(),
+            ))
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_remove_allowed_ip")]
     pub fn remove_allowed_ip(&self, idx: u32) -> bool {
         unsafe {
-            from_glib(ffi::nm_wireguard_peer_remove_allowed_ip(self.to_glib_none().0, idx))
+            from_glib(ffi::nm_wireguard_peer_remove_allowed_ip(
+                self.to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -145,35 +168,53 @@ impl WireGuardPeer {
     #[doc(alias = "nm_wireguard_peer_set_endpoint")]
     pub fn set_endpoint(&self, endpoint: &str, allow_invalid: bool) -> bool {
         unsafe {
-            from_glib(ffi::nm_wireguard_peer_set_endpoint(self.to_glib_none().0, endpoint.to_glib_none().0, allow_invalid.into_glib()))
+            from_glib(ffi::nm_wireguard_peer_set_endpoint(
+                self.to_glib_none().0,
+                endpoint.to_glib_none().0,
+                allow_invalid.into_glib(),
+            ))
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_set_persistent_keepalive")]
     pub fn set_persistent_keepalive(&self, persistent_keepalive: u16) {
         unsafe {
-            ffi::nm_wireguard_peer_set_persistent_keepalive(self.to_glib_none().0, persistent_keepalive);
+            ffi::nm_wireguard_peer_set_persistent_keepalive(
+                self.to_glib_none().0,
+                persistent_keepalive,
+            );
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_set_preshared_key")]
     pub fn set_preshared_key(&self, preshared_key: Option<&str>, accept_invalid: bool) -> bool {
         unsafe {
-            from_glib(ffi::nm_wireguard_peer_set_preshared_key(self.to_glib_none().0, preshared_key.to_glib_none().0, accept_invalid.into_glib()))
+            from_glib(ffi::nm_wireguard_peer_set_preshared_key(
+                self.to_glib_none().0,
+                preshared_key.to_glib_none().0,
+                accept_invalid.into_glib(),
+            ))
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_set_preshared_key_flags")]
     pub fn set_preshared_key_flags(&self, preshared_key_flags: SettingSecretFlags) {
         unsafe {
-            ffi::nm_wireguard_peer_set_preshared_key_flags(self.to_glib_none().0, preshared_key_flags.into_glib());
+            ffi::nm_wireguard_peer_set_preshared_key_flags(
+                self.to_glib_none().0,
+                preshared_key_flags.into_glib(),
+            );
         }
     }
 
     #[doc(alias = "nm_wireguard_peer_set_public_key")]
     pub fn set_public_key(&self, public_key: Option<&str>, accept_invalid: bool) -> bool {
         unsafe {
-            from_glib(ffi::nm_wireguard_peer_set_public_key(self.to_glib_none().0, public_key.to_glib_none().0, accept_invalid.into_glib()))
+            from_glib(ffi::nm_wireguard_peer_set_public_key(
+                self.to_glib_none().0,
+                public_key.to_glib_none().0,
+                accept_invalid.into_glib(),
+            ))
         }
     }
 }
@@ -181,7 +222,7 @@ impl WireGuardPeer {
 #[cfg(feature = "v1_16")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
 impl Default for WireGuardPeer {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+    }
+}

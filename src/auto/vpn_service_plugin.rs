@@ -3,9 +3,14 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,VpnPluginFailure,VpnServiceState};
-use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::{VpnPluginFailure, VpnServiceState, ffi};
+use glib::{
+    object::ObjectType as _,
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
@@ -29,8 +34,7 @@ glib::wrapper! {
 }
 
 impl VpnServicePlugin {
-        pub const NONE: Option<&'static VpnServicePlugin> = None;
-    
+    pub const NONE: Option<&'static VpnServicePlugin> = None;
 
     //#[doc(alias = "nm_vpn_service_plugin_get_secret_flags")]
     //#[doc(alias = "get_secret_flags")]
@@ -49,9 +53,14 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
     fn disconnect(&self) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_vpn_service_plugin_disconnect(self.as_ref().to_glib_none().0, &mut error);
+            let is_ok =
+                ffi::nm_vpn_service_plugin_disconnect(self.as_ref().to_glib_none().0, &mut error);
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -71,7 +80,11 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
     #[doc(alias = "nm_vpn_service_plugin_secrets_required")]
     fn secrets_required(&self, message: &str, hints: &str) {
         unsafe {
-            ffi::nm_vpn_service_plugin_secrets_required(self.as_ref().to_glib_none().0, message.to_glib_none().0, hints.to_glib_none().0);
+            ffi::nm_vpn_service_plugin_secrets_required(
+                self.as_ref().to_glib_none().0,
+                message.to_glib_none().0,
+                &mut hints.to_glib_none().0,
+            );
         }
     }
 
@@ -93,7 +106,10 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
     #[doc(alias = "nm_vpn_service_plugin_set_login_banner")]
     fn set_login_banner(&self, banner: &str) {
         unsafe {
-            ffi::nm_vpn_service_plugin_set_login_banner(self.as_ref().to_glib_none().0, banner.to_glib_none().0);
+            ffi::nm_vpn_service_plugin_set_login_banner(
+                self.as_ref().to_glib_none().0,
+                banner.to_glib_none().0,
+            );
         }
     }
 
@@ -122,7 +138,7 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     fn set_state(&self, state: VpnServiceState) {
-        ObjectExt::set_property(self.as_ref(),"state", state)
+        ObjectExt::set_property(self.as_ref(), "state", state)
     }
 
     #[cfg(feature = "v1_2")]
@@ -139,14 +155,30 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
 
     #[doc(alias = "failure")]
     fn connect_failure<F: Fn(&Self, u32) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn failure_trampoline<P: IsA<VpnServicePlugin>, F: Fn(&P, u32) + 'static>(this: *mut ffi::NMVpnServicePlugin, object: std::ffi::c_uint, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn failure_trampoline<
+            P: IsA<VpnServicePlugin>,
+            F: Fn(&P, u32) + 'static,
+        >(
+            this: *mut ffi::NMVpnServicePlugin,
+            object: std::ffi::c_uint,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
-            f(VpnServicePlugin::from_glib_borrow(this).unsafe_cast_ref(), object)
+            f(
+                VpnServicePlugin::from_glib_borrow(this).unsafe_cast_ref(),
+                object,
+            )
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"failure".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(failure_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"failure".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    failure_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -162,27 +194,52 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
 
     #[doc(alias = "login-banner")]
     fn connect_login_banner<F: Fn(&Self, &str) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn login_banner_trampoline<P: IsA<VpnServicePlugin>, F: Fn(&P, &str) + 'static>(this: *mut ffi::NMVpnServicePlugin, object: *mut std::ffi::c_char, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn login_banner_trampoline<
+            P: IsA<VpnServicePlugin>,
+            F: Fn(&P, &str) + 'static,
+        >(
+            this: *mut ffi::NMVpnServicePlugin,
+            object: *mut std::ffi::c_char,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
-            f(VpnServicePlugin::from_glib_borrow(this).unsafe_cast_ref(), &glib::GString::from_glib_borrow(object))
+            f(
+                VpnServicePlugin::from_glib_borrow(this).unsafe_cast_ref(),
+                &glib::GString::from_glib_borrow(object),
+            )
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"login-banner".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(login_banner_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"login-banner".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    login_banner_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "quit")]
     fn connect_quit<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn quit_trampoline<P: IsA<VpnServicePlugin>, F: Fn(&P) + 'static>(this: *mut ffi::NMVpnServicePlugin, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn quit_trampoline<P: IsA<VpnServicePlugin>, F: Fn(&P) + 'static>(
+            this: *mut ffi::NMVpnServicePlugin,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(VpnServicePlugin::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"quit".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(quit_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"quit".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    quit_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -193,14 +250,30 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
 
     #[doc(alias = "state-changed")]
     fn connect_state_changed<F: Fn(&Self, u32) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn state_changed_trampoline<P: IsA<VpnServicePlugin>, F: Fn(&P, u32) + 'static>(this: *mut ffi::NMVpnServicePlugin, object: std::ffi::c_uint, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn state_changed_trampoline<
+            P: IsA<VpnServicePlugin>,
+            F: Fn(&P, u32) + 'static,
+        >(
+            this: *mut ffi::NMVpnServicePlugin,
+            object: std::ffi::c_uint,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
-            f(VpnServicePlugin::from_glib_borrow(this).unsafe_cast_ref(), object)
+            f(
+                VpnServicePlugin::from_glib_borrow(this).unsafe_cast_ref(),
+                object,
+            )
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"state-changed".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(state_changed_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"state-changed".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    state_changed_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -208,14 +281,27 @@ pub trait VpnServicePluginExt: IsA<VpnServicePlugin> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "state")]
     fn connect_state_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_state_trampoline<P: IsA<VpnServicePlugin>, F: Fn(&P) + 'static>(this: *mut ffi::NMVpnServicePlugin, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_state_trampoline<
+            P: IsA<VpnServicePlugin>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMVpnServicePlugin,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(VpnServicePlugin::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::state".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_state_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::state".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_state_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }

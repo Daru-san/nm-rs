@@ -603,10 +603,10 @@ impl Client {
         flags: CheckpointCreateFlags,
     ) -> Pin<Box_<dyn std::future::Future<Output = Result<Checkpoint, glib::Error>> + 'static>>
     {
-        let devices = devices.clone();
+        let devices = devices.to_vec();
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
             obj.checkpoint_create(
-                &devices,
+                devices.as_slice(),
                 rollback_timeout,
                 flags,
                 Some(cancellable),
@@ -1332,11 +1332,22 @@ impl Client {
     ) -> Pin<
         Box_<dyn std::future::Future<Output = Result<Vec<glib::GString>, glib::Error>> + 'static>,
     > {
-        let filenames = filenames.to_vec();
+        let filenames = filenames
+            .iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>();
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.load_connections_async(&filenames, Some(cancellable), move |res| {
-                send.resolve(res);
-            });
+            obj.load_connections_async(
+                filenames
+                    .iter()
+                    .map(|s| s.as_str())
+                    .collect::<Vec<&str>>()
+                    .as_slice(),
+                Some(cancellable),
+                move |res| {
+                    send.resolve(res);
+                },
+            );
         }))
     }
 

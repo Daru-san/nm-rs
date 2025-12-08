@@ -3,17 +3,20 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi};
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-use crate::{VpnEditorPlugin};
-use glib::{prelude::*};
+use crate::VpnEditorPlugin;
+use crate::ffi;
+use glib::prelude::*;
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
+use glib::{
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-use std::{boxed::Box as Box_};
+use std::boxed::Box as Box_;
 
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
@@ -46,7 +49,11 @@ impl VpnPluginInfo {
         unsafe {
             let mut error = std::ptr::null_mut();
             let ret = ffi::nm_vpn_plugin_info_new_from_file(filename.to_glib_none().0, &mut error);
-            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -56,7 +63,10 @@ impl VpnPluginInfo {
     pub fn new_search_file(name: Option<&str>, service: Option<&str>) -> Option<VpnPluginInfo> {
         assert_initialized_main_thread!();
         unsafe {
-            from_glib_full(ffi::nm_vpn_plugin_info_new_search_file(name.to_glib_none().0, service.to_glib_none().0))
+            from_glib_full(ffi::nm_vpn_plugin_info_new_search_file(
+                name.to_glib_none().0,
+                service.to_glib_none().0,
+            ))
         }
     }
 
@@ -68,14 +78,13 @@ impl VpnPluginInfo {
     //    unsafe { TODO: call ffi:nm_vpn_plugin_info_new_with_data() }
     //}
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`VpnPluginInfo`] objects.
-            ///
-            /// This method returns an instance of [`VpnPluginInfoBuilder`](crate::builders::VpnPluginInfoBuilder) which can be used to create [`VpnPluginInfo`] objects.
-            pub fn builder() -> VpnPluginInfoBuilder {
-                VpnPluginInfoBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`VpnPluginInfo`] objects.
+    ///
+    /// This method returns an instance of [`VpnPluginInfoBuilder`](crate::builders::VpnPluginInfoBuilder) which can be used to create [`VpnPluginInfo`] objects.
+    pub fn builder() -> VpnPluginInfoBuilder {
+        VpnPluginInfoBuilder::new()
+    }
 
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
@@ -83,7 +92,9 @@ impl VpnPluginInfo {
     #[doc(alias = "get_aliases")]
     pub fn aliases(&self) -> Vec<glib::GString> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_vpn_plugin_info_get_aliases(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(ffi::nm_vpn_plugin_info_get_aliases(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -93,7 +104,9 @@ impl VpnPluginInfo {
     #[doc(alias = "get_auth_dialog")]
     pub fn auth_dialog(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_get_auth_dialog(self.to_glib_none().0))
+            from_glib_none(ffi::nm_vpn_plugin_info_get_auth_dialog(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -103,7 +116,9 @@ impl VpnPluginInfo {
     #[doc(alias = "get_editor_plugin")]
     pub fn editor_plugin(&self) -> VpnEditorPlugin {
         unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_get_editor_plugin(self.to_glib_none().0))
+            from_glib_none(ffi::nm_vpn_plugin_info_get_editor_plugin(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -112,9 +127,7 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_get_filename")]
     #[doc(alias = "get_filename")]
     pub fn filename(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_get_filename(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_filename(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_2")]
@@ -122,9 +135,7 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_get_name")]
     #[doc(alias = "get_name")]
     pub fn name(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_get_name(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_name(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_2")]
@@ -132,9 +143,7 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_get_plugin")]
     #[doc(alias = "get_plugin")]
     pub fn plugin(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_get_plugin(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_plugin(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_2")]
@@ -142,9 +151,7 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_get_program")]
     #[doc(alias = "get_program")]
     pub fn program(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_get_program(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_program(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_4")]
@@ -152,9 +159,7 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_get_service")]
     #[doc(alias = "get_service")]
     pub fn service(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_get_service(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_vpn_plugin_info_get_service(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_2")]
@@ -164,7 +169,11 @@ impl VpnPluginInfo {
         unsafe {
             let mut error = std::ptr::null_mut();
             let ret = ffi::nm_vpn_plugin_info_load_editor_plugin(self.to_glib_none().0, &mut error);
-            if error.is_null() { Ok(from_glib_none(ret)) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(from_glib_none(ret))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -173,7 +182,11 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_lookup_property")]
     pub fn lookup_property(&self, group: &str, key: &str) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_lookup_property(self.to_glib_none().0, group.to_glib_none().0, key.to_glib_none().0))
+            from_glib_none(ffi::nm_vpn_plugin_info_lookup_property(
+                self.to_glib_none().0,
+                group.to_glib_none().0,
+                key.to_glib_none().0,
+            ))
         }
     }
 
@@ -182,7 +195,10 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_set_editor_plugin")]
     pub fn set_editor_plugin(&self, plugin: Option<&impl IsA<VpnEditorPlugin>>) {
         unsafe {
-            ffi::nm_vpn_plugin_info_set_editor_plugin(self.to_glib_none().0, plugin.map(|p| p.as_ref()).to_glib_none().0);
+            ffi::nm_vpn_plugin_info_set_editor_plugin(
+                self.to_glib_none().0,
+                plugin.map(|p| p.as_ref()).to_glib_none().0,
+            );
         }
     }
 
@@ -191,7 +207,9 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_supports_hints")]
     pub fn supports_hints(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_vpn_plugin_info_supports_hints(self.to_glib_none().0))
+            from_glib(ffi::nm_vpn_plugin_info_supports_hints(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -200,20 +218,38 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_supports_multiple")]
     pub fn supports_multiple(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_vpn_plugin_info_supports_multiple(self.to_glib_none().0))
+            from_glib(ffi::nm_vpn_plugin_info_supports_multiple(
+                self.to_glib_none().0,
+            ))
         }
     }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "nm_vpn_plugin_info_list_add")]
-    pub fn list_add(list: &[VpnPluginInfo], plugin_info: &VpnPluginInfo) -> Result<(), glib::Error> {
+    pub fn list_add(
+        list: &[VpnPluginInfo],
+        plugin_info: &VpnPluginInfo,
+    ) -> Result<(), glib::Error> {
         skip_assert_initialized!();
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_vpn_plugin_info_list_add(list.to_glib_none().0, plugin_info.to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_vpn_plugin_info_list_add(
+                &mut list
+                    .into_iter()
+                    .cloned()
+                    .collect::<glib::SList<VpnPluginInfo>>()
+                    .to_glib_none()
+                    .0,
+                plugin_info.to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -223,7 +259,14 @@ impl VpnPluginInfo {
     pub fn list_find_by_filename(list: &[VpnPluginInfo], filename: &str) -> VpnPluginInfo {
         assert_initialized_main_thread!();
         unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_list_find_by_filename(list.to_glib_none().0, filename.to_glib_none().0))
+            from_glib_none(ffi::nm_vpn_plugin_info_list_find_by_filename(
+                list.into_iter()
+                    .cloned()
+                    .collect::<glib::SList<_>>()
+                    .to_glib_none()
+                    .0,
+                filename.to_glib_none().0,
+            ))
         }
     }
 
@@ -233,7 +276,14 @@ impl VpnPluginInfo {
     pub fn list_find_by_name(list: &[VpnPluginInfo], name: &str) -> VpnPluginInfo {
         assert_initialized_main_thread!();
         unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_list_find_by_name(list.to_glib_none().0, name.to_glib_none().0))
+            from_glib_none(ffi::nm_vpn_plugin_info_list_find_by_name(
+                list.into_iter()
+                    .cloned()
+                    .collect::<glib::SList<_>>()
+                    .to_glib_none()
+                    .0,
+                name.to_glib_none().0,
+            ))
         }
     }
 
@@ -243,7 +293,14 @@ impl VpnPluginInfo {
     pub fn list_find_by_service(list: &[VpnPluginInfo], service: &str) -> VpnPluginInfo {
         assert_initialized_main_thread!();
         unsafe {
-            from_glib_none(ffi::nm_vpn_plugin_info_list_find_by_service(list.to_glib_none().0, service.to_glib_none().0))
+            from_glib_none(ffi::nm_vpn_plugin_info_list_find_by_service(
+                list.into_iter()
+                    .cloned()
+                    .collect::<glib::SList<_>>()
+                    .to_glib_none()
+                    .0,
+                service.to_glib_none().0,
+            ))
         }
     }
 
@@ -253,17 +310,36 @@ impl VpnPluginInfo {
     pub fn list_find_service_type(list: &[VpnPluginInfo], name: &str) -> glib::GString {
         assert_initialized_main_thread!();
         unsafe {
-            from_glib_full(ffi::nm_vpn_plugin_info_list_find_service_type(list.to_glib_none().0, name.to_glib_none().0))
+            from_glib_full(ffi::nm_vpn_plugin_info_list_find_service_type(
+                list.into_iter()
+                    .cloned()
+                    .collect::<glib::SList<_>>()
+                    .to_glib_none()
+                    .0,
+                name.to_glib_none().0,
+            ))
         }
     }
 
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "nm_vpn_plugin_info_list_get_service_types")]
-    pub fn list_get_service_types(list: &[VpnPluginInfo], only_existing: bool, with_abbreviations: bool) -> Vec<glib::GString> {
+    pub fn list_get_service_types(
+        list: &[VpnPluginInfo],
+        only_existing: bool,
+        with_abbreviations: bool,
+    ) -> Vec<glib::GString> {
         assert_initialized_main_thread!();
         unsafe {
-            FromGlibPtrContainer::from_glib_full(ffi::nm_vpn_plugin_info_list_get_service_types(list.to_glib_none().0, only_existing.into_glib(), with_abbreviations.into_glib()))
+            FromGlibPtrContainer::from_glib_full(ffi::nm_vpn_plugin_info_list_get_service_types(
+                list.into_iter()
+                    .cloned()
+                    .collect::<glib::SList<_>>()
+                    .to_glib_none()
+                    .0,
+                only_existing.into_glib(),
+                with_abbreviations.into_glib(),
+            ))
         }
     }
 
@@ -272,9 +348,7 @@ impl VpnPluginInfo {
     #[doc(alias = "nm_vpn_plugin_info_list_load")]
     pub fn list_load() -> Vec<VpnPluginInfo> {
         assert_initialized_main_thread!();
-        unsafe {
-            FromGlibPtrContainer::from_glib_full(ffi::nm_vpn_plugin_info_list_load())
-        }
+        unsafe { FromGlibPtrContainer::from_glib_full(ffi::nm_vpn_plugin_info_list_load()) }
     }
 
     #[cfg(feature = "v1_2")]
@@ -283,7 +357,15 @@ impl VpnPluginInfo {
     pub fn list_remove(list: &[VpnPluginInfo], plugin_info: &VpnPluginInfo) -> bool {
         skip_assert_initialized!();
         unsafe {
-            from_glib(ffi::nm_vpn_plugin_info_list_remove(list.to_glib_none().0, plugin_info.to_glib_none().0))
+            from_glib(ffi::nm_vpn_plugin_info_list_remove(
+                &mut list
+                    .into_iter()
+                    .cloned()
+                    .collect::<glib::SList<_>>()
+                    .to_glib_none()
+                    .0,
+                plugin_info.to_glib_none().0,
+            ))
         }
     }
 
@@ -293,7 +375,9 @@ impl VpnPluginInfo {
     pub fn validate_filename(filename: &str) -> bool {
         assert_initialized_main_thread!();
         unsafe {
-            from_glib(ffi::nm_vpn_plugin_info_validate_filename(filename.to_glib_none().0))
+            from_glib(ffi::nm_vpn_plugin_info_validate_filename(
+                filename.to_glib_none().0,
+            ))
         }
     }
 
@@ -301,14 +385,24 @@ impl VpnPluginInfo {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "name")]
     pub fn connect_name_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_name_trampoline<F: Fn(&VpnPluginInfo) + 'static>(this: *mut ffi::NMVpnPluginInfo, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_name_trampoline<F: Fn(&VpnPluginInfo) + 'static>(
+            this: *mut ffi::NMVpnPluginInfo,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::name".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_name_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::name".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_name_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
@@ -323,35 +417,42 @@ impl std::fmt::Display for VpnPluginInfo {
 }
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`VpnPluginInfo`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`VpnPluginInfo`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct VpnPluginInfoBuilder {
-            builder: glib::object::ObjectBuilder<'static, VpnPluginInfo>,
-        }
+    builder: glib::object::ObjectBuilder<'static, VpnPluginInfo>,
+}
 
-        impl VpnPluginInfoBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+impl VpnPluginInfoBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-                            #[cfg(feature = "v1_2")]
+    #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn filename(self, filename: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("filename", filename.into()), }
-                        }
+        Self {
+            builder: self.builder.property("filename", filename.into()),
+        }
+    }
 
-                        //    #[cfg(feature = "v1_2")]
+    #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-    //pub fn keyfile(self, keyfile: /*Ignored*/&glib::KeyFile) -> Self {
-                        //    Self { builder: self.builder.property("keyfile", keyfile), }
-                        //}
+    pub fn keyfile(self, keyfile: /*Ignored*/ &glib::KeyFile) -> Self {
+        Self {
+            builder: self.builder.property("keyfile", keyfile),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`VpnPluginInfo`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> VpnPluginInfo {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

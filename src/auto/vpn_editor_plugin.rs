@@ -3,12 +3,16 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Connection,VpnEditor,VpnEditorPluginCapability};
+use crate::{Connection, VpnEditor, VpnEditorPluginCapability, ffi};
 #[cfg(feature = "v1_4")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
-use crate::{VpnEditorPluginVT,VpnPluginInfo};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::{VpnEditorPluginVT, VpnPluginInfo};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMVpnEditorPlugin")]
@@ -20,8 +24,7 @@ glib::wrapper! {
 }
 
 impl VpnEditorPlugin {
-        pub const NONE: Option<&'static VpnEditorPlugin> = None;
-    
+    pub const NONE: Option<&'static VpnEditorPlugin> = None;
 
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
@@ -30,8 +33,16 @@ impl VpnEditorPlugin {
         assert_initialized_main_thread!();
         unsafe {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_vpn_editor_plugin_load(plugin_name.to_glib_none().0, check_service.to_glib_none().0, &mut error);
-            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+            let ret = ffi::nm_vpn_editor_plugin_load(
+                plugin_name.to_glib_none().0,
+                check_service.to_glib_none().0,
+                &mut error,
+            );
+            if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -48,9 +59,18 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     fn export(&self, path: &str, connection: &impl IsA<Connection>) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_vpn_editor_plugin_export(self.as_ref().to_glib_none().0, path.to_glib_none().0, connection.as_ref().to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_vpn_editor_plugin_export(
+                self.as_ref().to_glib_none().0,
+                path.to_glib_none().0,
+                connection.as_ref().to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -58,7 +78,9 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     #[doc(alias = "get_capabilities")]
     fn capabilities(&self) -> VpnEditorPluginCapability {
         unsafe {
-            from_glib(ffi::nm_vpn_editor_plugin_get_capabilities(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_vpn_editor_plugin_get_capabilities(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -67,8 +89,16 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     fn editor(&self, connection: &impl IsA<Connection>) -> Result<VpnEditor, glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_vpn_editor_plugin_get_editor(self.as_ref().to_glib_none().0, connection.as_ref().to_glib_none().0, &mut error);
-            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+            let ret = ffi::nm_vpn_editor_plugin_get_editor(
+                self.as_ref().to_glib_none().0,
+                connection.as_ref().to_glib_none().0,
+                &mut error,
+            );
+            if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -78,7 +108,9 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     #[doc(alias = "get_plugin_info")]
     fn plugin_info(&self) -> VpnPluginInfo {
         unsafe {
-            from_glib_none(ffi::nm_vpn_editor_plugin_get_plugin_info(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_vpn_editor_plugin_get_plugin_info(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -86,7 +118,10 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     #[doc(alias = "get_suggested_filename")]
     fn suggested_filename(&self, connection: &impl IsA<Connection>) -> glib::GString {
         unsafe {
-            from_glib_full(ffi::nm_vpn_editor_plugin_get_suggested_filename(self.as_ref().to_glib_none().0, connection.as_ref().to_glib_none().0))
+            from_glib_full(ffi::nm_vpn_editor_plugin_get_suggested_filename(
+                self.as_ref().to_glib_none().0,
+                connection.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -97,7 +132,11 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     fn vt(&self, vt_size: usize) -> (usize, VpnEditorPluginVT) {
         unsafe {
             let mut vt = VpnEditorPluginVT::uninitialized();
-            let ret = ffi::nm_vpn_editor_plugin_get_vt(self.as_ref().to_glib_none().0, vt.to_glib_none_mut().0, vt_size);
+            let ret = ffi::nm_vpn_editor_plugin_get_vt(
+                self.as_ref().to_glib_none().0,
+                &mut vt.to_glib_none_mut().0,
+                vt_size,
+            );
             (ret, vt)
         }
     }
@@ -106,8 +145,16 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     fn import(&self, path: &str) -> Result<Connection, glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_vpn_editor_plugin_import(self.as_ref().to_glib_none().0, path.to_glib_none().0, &mut error);
-            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+            let ret = ffi::nm_vpn_editor_plugin_import(
+                self.as_ref().to_glib_none().0,
+                path.to_glib_none().0,
+                &mut error,
+            );
+            if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -116,7 +163,10 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
     #[doc(alias = "nm_vpn_editor_plugin_set_plugin_info")]
     fn set_plugin_info(&self, plugin_info: Option<&VpnPluginInfo>) {
         unsafe {
-            ffi::nm_vpn_editor_plugin_set_plugin_info(self.as_ref().to_glib_none().0, plugin_info.to_glib_none().0);
+            ffi::nm_vpn_editor_plugin_set_plugin_info(
+                self.as_ref().to_glib_none().0,
+                plugin_info.to_glib_none().0,
+            );
         }
     }
 
@@ -134,40 +184,79 @@ pub trait VpnEditorPluginExt: IsA<VpnEditorPlugin> + 'static {
 
     #[doc(alias = "description")]
     fn connect_description_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_description_trampoline<P: IsA<VpnEditorPlugin>, F: Fn(&P) + 'static>(this: *mut ffi::NMVpnEditorPlugin, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_description_trampoline<
+            P: IsA<VpnEditorPlugin>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMVpnEditorPlugin,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(VpnEditorPlugin::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::description".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_description_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::description".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_description_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "name")]
     fn connect_name_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_name_trampoline<P: IsA<VpnEditorPlugin>, F: Fn(&P) + 'static>(this: *mut ffi::NMVpnEditorPlugin, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_name_trampoline<
+            P: IsA<VpnEditorPlugin>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMVpnEditorPlugin,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(VpnEditorPlugin::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::name".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_name_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::name".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_name_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "service")]
     fn connect_service_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_service_trampoline<P: IsA<VpnEditorPlugin>, F: Fn(&P) + 'static>(this: *mut ffi::NMVpnEditorPlugin, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_service_trampoline<
+            P: IsA<VpnEditorPlugin>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMVpnEditorPlugin,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(VpnEditorPlugin::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::service".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_service_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::service".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_service_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
