@@ -153,7 +153,7 @@ pub fn utils_bin2hexstr(src: &[u8], final_len: i32) -> glib::GString {
     let len = src.len() as _;
     unsafe {
         from_glib_full(ffi::nm_utils_bin2hexstr(
-            src.to_glib_none().0,
+            src.to_glib_none().0.cast_const() as *const std::ffi::c_void,
             len,
             final_len,
         ))
@@ -325,6 +325,7 @@ pub fn utils_hwaddr_aton(asc: &str, buffer: &[u8]) -> u8 {
             buffer.to_glib_none().0 as glib::ffi::gpointer,
             length,
         )
+        .read()
     }
 }
 
@@ -350,7 +351,12 @@ pub fn utils_hwaddr_len(type_: i32) -> usize {
 pub fn utils_hwaddr_ntoa(addr: &[u8]) -> glib::GString {
     assert_initialized_main_thread!();
     let length = addr.len() as _;
-    unsafe { from_glib_full(ffi::nm_utils_hwaddr_ntoa(addr.to_glib_none().0, length)) }
+    unsafe {
+        from_glib_full(ffi::nm_utils_hwaddr_ntoa(
+            addr.to_glib_none().0.cast_const() as *const std::ffi::c_void,
+            length,
+        ))
+    }
 }
 
 #[doc(alias = "nm_utils_hwaddr_valid")]
@@ -763,7 +769,7 @@ pub fn utils_wep_key_valid(key: &str, wep_type: WepKeyType) -> bool {
 #[doc(alias = "nm_utils_wifi_2ghz_freqs")]
 pub fn utils_wifi_2ghz_freqs() -> u32 {
     assert_initialized_main_thread!();
-    unsafe { ffi::nm_utils_wifi_2ghz_freqs() }
+    unsafe { ffi::nm_utils_wifi_2ghz_freqs().read() }
 }
 
 #[cfg(feature = "v1_2")]
@@ -771,7 +777,7 @@ pub fn utils_wifi_2ghz_freqs() -> u32 {
 #[doc(alias = "nm_utils_wifi_5ghz_freqs")]
 pub fn utils_wifi_5ghz_freqs() -> u32 {
     assert_initialized_main_thread!();
-    unsafe { ffi::nm_utils_wifi_5ghz_freqs() }
+    unsafe { ffi::nm_utils_wifi_5ghz_freqs().read() }
 }
 
 #[doc(alias = "nm_utils_wifi_channel_to_freq")]

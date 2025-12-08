@@ -3,10 +3,10 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi};
+use crate::ffi;
 #[cfg(feature = "v1_18")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-use glib::{translate::*};
+use glib::translate::*;
 
 glib::wrapper! {
     #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -25,18 +25,14 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_new")]
     pub fn new(addr_family: i32) -> IPRoutingRule {
         assert_initialized_main_thread!();
-        unsafe {
-            from_glib_full(ffi::nm_ip_routing_rule_new(addr_family))
-        }
+        unsafe { from_glib_full(ffi::nm_ip_routing_rule_new(addr_family)) }
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_cmp")]
     pub fn cmp(&self, other: Option<&IPRoutingRule>) -> i32 {
-        unsafe {
-            ffi::nm_ip_routing_rule_cmp(self.to_glib_none().0, other.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_cmp(self.to_glib_none().0, other.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -44,9 +40,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_action")]
     #[doc(alias = "get_action")]
     pub fn action(&self) -> u8 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_action(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_action(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -54,9 +48,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_addr_family")]
     #[doc(alias = "get_addr_family")]
     pub fn addr_family(&self) -> i32 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_addr_family(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_addr_family(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -64,9 +56,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_destination_port_end")]
     #[doc(alias = "get_destination_port_end")]
     pub fn destination_port_end(&self) -> u16 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_destination_port_end(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_destination_port_end(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -74,9 +64,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_destination_port_start")]
     #[doc(alias = "get_destination_port_start")]
     pub fn destination_port_start(&self) -> u16 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_destination_port_start(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_destination_port_start(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -84,9 +72,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_from")]
     #[doc(alias = "get_from")]
     pub fn from(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_ip_routing_rule_get_from(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_ip_routing_rule_get_from(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -94,9 +80,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_from_len")]
     #[doc(alias = "get_from_len")]
     pub fn from_len(&self) -> u8 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_from_len(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_from_len(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -104,9 +88,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_fwmark")]
     #[doc(alias = "get_fwmark")]
     pub fn fwmark(&self) -> u32 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_fwmark(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_fwmark(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -114,9 +96,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_fwmask")]
     #[doc(alias = "get_fwmask")]
     pub fn fwmask(&self) -> u32 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_fwmask(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_fwmask(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -124,9 +104,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_iifname")]
     #[doc(alias = "get_iifname")]
     pub fn iifname(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_ip_routing_rule_get_iifname(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_ip_routing_rule_get_iifname(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -134,9 +112,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_invert")]
     #[doc(alias = "get_invert")]
     pub fn inverts(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_ip_routing_rule_get_invert(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_ip_routing_rule_get_invert(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -144,9 +120,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_ipproto")]
     #[doc(alias = "get_ipproto")]
     pub fn ipproto(&self) -> u8 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_ipproto(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_ipproto(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -154,9 +128,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_oifname")]
     #[doc(alias = "get_oifname")]
     pub fn oifname(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_ip_routing_rule_get_oifname(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_ip_routing_rule_get_oifname(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -164,9 +136,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_priority")]
     #[doc(alias = "get_priority")]
     pub fn priority(&self) -> i64 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_priority(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_priority(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -174,9 +144,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_source_port_end")]
     #[doc(alias = "get_source_port_end")]
     pub fn source_port_end(&self) -> u16 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_source_port_end(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_source_port_end(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -184,9 +152,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_source_port_start")]
     #[doc(alias = "get_source_port_start")]
     pub fn source_port_start(&self) -> u16 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_source_port_start(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_source_port_start(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_20")]
@@ -194,9 +160,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_suppress_prefixlength")]
     #[doc(alias = "get_suppress_prefixlength")]
     pub fn suppress_prefixlength(&self) -> i32 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_suppress_prefixlength(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_suppress_prefixlength(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -204,9 +168,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_table")]
     #[doc(alias = "get_table")]
     pub fn table(&self) -> u32 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_table(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_table(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -214,9 +176,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_to")]
     #[doc(alias = "get_to")]
     pub fn to(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_ip_routing_rule_get_to(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_ip_routing_rule_get_to(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -224,9 +184,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_to_len")]
     #[doc(alias = "get_to_len")]
     pub fn to_len(&self) -> u8 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_to_len(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_to_len(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -234,9 +192,7 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_get_tos")]
     #[doc(alias = "get_tos")]
     pub fn tos(&self) -> u8 {
-        unsafe {
-            ffi::nm_ip_routing_rule_get_tos(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_ip_routing_rule_get_tos(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_34")]
@@ -247,8 +203,16 @@ impl IPRoutingRule {
         unsafe {
             let mut out_range_start = std::mem::MaybeUninit::uninit();
             let mut out_range_end = std::mem::MaybeUninit::uninit();
-            let ret = from_glib(ffi::nm_ip_routing_rule_get_uid_range(self.to_glib_none().0, out_range_start.as_mut_ptr(), out_range_end.as_mut_ptr()));
-            if ret { Some((out_range_start.assume_init(), out_range_end.assume_init())) } else { None }
+            let ret = from_glib(ffi::nm_ip_routing_rule_get_uid_range(
+                self.to_glib_none().0,
+                out_range_start.as_mut_ptr(),
+                out_range_end.as_mut_ptr(),
+            ));
+            if ret {
+                Some((out_range_start.assume_init(), out_range_end.assume_init()))
+            } else {
+                None
+            }
         }
     }
 
@@ -256,19 +220,15 @@ impl IPRoutingRule {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_is_sealed")]
     pub fn is_sealed(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_ip_routing_rule_is_sealed(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_ip_routing_rule_is_sealed(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_new_clone")]
-#[must_use]
+    #[must_use]
     pub fn new_clone(&self) -> IPRoutingRule {
-        unsafe {
-            from_glib_full(ffi::nm_ip_routing_rule_new_clone(self.to_glib_none().0))
-        }
+        unsafe { from_glib_full(ffi::nm_ip_routing_rule_new_clone(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -302,9 +262,11 @@ impl IPRoutingRule {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_from")]
     pub fn set_from(&self, from: Option<&str>) {
-        let len = from.len() as _;
-        unsafe {
-            ffi::nm_ip_routing_rule_set_from(self.to_glib_none().0, from.to_glib_none().0, len);
+        if let Some(s) = from {
+            let len = s.len() as _;
+            unsafe {
+                ffi::nm_ip_routing_rule_set_from(self.to_glib_none().0, s.to_glib_none().0, len);
+            }
         }
     }
 
@@ -376,7 +338,10 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_set_suppress_prefixlength")]
     pub fn set_suppress_prefixlength(&self, suppress_prefixlength: i32) {
         unsafe {
-            ffi::nm_ip_routing_rule_set_suppress_prefixlength(self.to_glib_none().0, suppress_prefixlength);
+            ffi::nm_ip_routing_rule_set_suppress_prefixlength(
+                self.to_glib_none().0,
+                suppress_prefixlength,
+            );
         }
     }
 
@@ -393,9 +358,11 @@ impl IPRoutingRule {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "nm_ip_routing_rule_set_to")]
     pub fn set_to(&self, to: Option<&str>) {
-        let len = to.len() as _;
-        unsafe {
-            ffi::nm_ip_routing_rule_set_to(self.to_glib_none().0, to.to_glib_none().0, len);
+        if let Some(s) = to {
+            let len = s.len() as _;
+            unsafe {
+                ffi::nm_ip_routing_rule_set_to(self.to_glib_none().0, s.to_glib_none().0, len);
+            }
         }
     }
 
@@ -413,7 +380,11 @@ impl IPRoutingRule {
     #[doc(alias = "nm_ip_routing_rule_set_uid_range")]
     pub fn set_uid_range(&self, uid_range_start: u32, uid_range_end: u32) {
         unsafe {
-            ffi::nm_ip_routing_rule_set_uid_range(self.to_glib_none().0, uid_range_start, uid_range_end);
+            ffi::nm_ip_routing_rule_set_uid_range(
+                self.to_glib_none().0,
+                uid_range_start,
+                uid_range_end,
+            );
         }
     }
 
@@ -432,7 +403,11 @@ impl IPRoutingRule {
             let mut error = std::ptr::null_mut();
             let is_ok = ffi::nm_ip_routing_rule_validate(self.to_glib_none().0, &mut error);
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
