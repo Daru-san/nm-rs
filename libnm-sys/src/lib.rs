@@ -3468,6 +3468,7 @@ impl ::std::fmt::Debug for NMVpnEditorPluginInterface {
 
 #[repr(C)]
 #[allow(dead_code)]
+#[derive(Copy, Clone)]
 pub struct _NMVpnEditorPluginVT {
     _data: [u8; 0],
     _marker: core::marker::PhantomData<(*mut u8, core::marker::PhantomPinned)>,
