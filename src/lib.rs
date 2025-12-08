@@ -12,7 +12,7 @@ macro_rules! skip_assert_initialized {
 }
 
 pub use auto::*;
-use libnm_sys as ffi;
+use libnm_api_sys as ffi;
 
 mod auto;
 pub mod prelude;
