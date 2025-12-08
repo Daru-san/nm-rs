@@ -1,6 +1,6 @@
 [package]
 name = "libnm-api-sys"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["Daru-san"]
 categories = ["api-bindings"]
@@ -101,7 +101,7 @@ rustdoc-args = ["--cfg", "docsrs", "--generate-link-to-definition"]
 all-features = true
 
 [lib]
-name = "libnm_sys"
+name = "libnm_api_sys"
 
 [dependencies]
 gio-sys = "0.21.5"
