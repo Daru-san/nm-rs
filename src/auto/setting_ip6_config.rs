@@ -3,15 +3,19 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,IPAddress,IPRoute,Setting,SettingIP6ConfigPrivacy,SettingIPConfig};
 #[cfg(feature = "v1_2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-use crate::{SettingIP6ConfigAddrGenMode};
+use crate::SettingIP6ConfigAddrGenMode;
 #[cfg(feature = "v1_42")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-use crate::{Ternary};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::Ternary;
+use crate::{IPAddress, IPRoute, Setting, SettingIP6ConfigPrivacy, SettingIPConfig, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSettingIP6Config")]
@@ -26,19 +30,16 @@ impl SettingIP6Config {
     #[doc(alias = "nm_setting_ip6_config_new")]
     pub fn new() -> SettingIP6Config {
         assert_initialized_main_thread!();
-        unsafe {
-            Setting::from_glib_full(ffi::nm_setting_ip6_config_new()).unsafe_cast()
-        }
+        unsafe { Setting::from_glib_full(ffi::nm_setting_ip6_config_new()).unsafe_cast() }
     }
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`SettingIP6Config`] objects.
-            ///
-            /// This method returns an instance of [`SettingIP6ConfigBuilder`](crate::builders::SettingIP6ConfigBuilder) which can be used to create [`SettingIP6Config`] objects.
-            pub fn builder() -> SettingIP6ConfigBuilder {
-                SettingIP6ConfigBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`SettingIP6Config`] objects.
+    ///
+    /// This method returns an instance of [`SettingIP6ConfigBuilder`](crate::builders::SettingIP6ConfigBuilder) which can be used to create [`SettingIP6Config`] objects.
+    pub fn builder() -> SettingIP6ConfigBuilder {
+        SettingIP6ConfigBuilder::new()
+    }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
@@ -47,7 +48,9 @@ impl SettingIP6Config {
     #[doc(alias = "addr-gen-mode")]
     pub fn addr_gen_mode(&self) -> SettingIP6ConfigAddrGenMode {
         unsafe {
-            from_glib(ffi::nm_setting_ip6_config_get_addr_gen_mode(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip6_config_get_addr_gen_mode(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -58,7 +61,9 @@ impl SettingIP6Config {
     #[doc(alias = "dhcp-duid")]
     pub fn dhcp_duid(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip6_config_get_dhcp_duid(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ip6_config_get_dhcp_duid(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -69,7 +74,9 @@ impl SettingIP6Config {
     #[doc(alias = "dhcp-pd-hint")]
     pub fn dhcp_pd_hint(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip6_config_get_dhcp_pd_hint(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ip6_config_get_dhcp_pd_hint(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -78,7 +85,9 @@ impl SettingIP6Config {
     #[doc(alias = "ip6-privacy")]
     pub fn ip6_privacy(&self) -> SettingIP6ConfigPrivacy {
         unsafe {
-            from_glib(ffi::nm_setting_ip6_config_get_ip6_privacy(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip6_config_get_ip6_privacy(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -87,9 +96,7 @@ impl SettingIP6Config {
     #[doc(alias = "nm_setting_ip6_config_get_mtu")]
     #[doc(alias = "get_mtu")]
     pub fn mtu(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ip6_config_get_mtu(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip6_config_get_mtu(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_24")]
@@ -98,9 +105,7 @@ impl SettingIP6Config {
     #[doc(alias = "get_ra_timeout")]
     #[doc(alias = "ra-timeout")]
     pub fn ra_timeout(&self) -> i32 {
-        unsafe {
-            ffi::nm_setting_ip6_config_get_ra_timeout(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip6_config_get_ra_timeout(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_48")]
@@ -109,9 +114,7 @@ impl SettingIP6Config {
     #[doc(alias = "get_temp_preferred_lifetime")]
     #[doc(alias = "temp-preferred-lifetime")]
     pub fn temp_preferred_lifetime(&self) -> i32 {
-        unsafe {
-            ffi::nm_setting_ip6_config_get_temp_preferred_lifetime(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip6_config_get_temp_preferred_lifetime(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_48")]
@@ -120,9 +123,7 @@ impl SettingIP6Config {
     #[doc(alias = "get_temp_valid_lifetime")]
     #[doc(alias = "temp-valid-lifetime")]
     pub fn temp_valid_lifetime(&self) -> i32 {
-        unsafe {
-            ffi::nm_setting_ip6_config_get_temp_valid_lifetime(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip6_config_get_temp_valid_lifetime(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_4")]
@@ -130,82 +131,90 @@ impl SettingIP6Config {
     #[doc(alias = "nm_setting_ip6_config_get_token")]
     #[doc(alias = "get_token")]
     pub fn token(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_setting_ip6_config_get_token(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_setting_ip6_config_get_token(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "addr-gen-mode")]
     pub fn set_addr_gen_mode(&self, addr_gen_mode: i32) {
-        ObjectExt::set_property(self,"addr-gen-mode", addr_gen_mode)
+        ObjectExt::set_property(self, "addr-gen-mode", addr_gen_mode)
     }
 
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "dhcp-duid")]
     pub fn set_dhcp_duid(&self, dhcp_duid: Option<&str>) {
-        ObjectExt::set_property(self,"dhcp-duid", dhcp_duid)
+        ObjectExt::set_property(self, "dhcp-duid", dhcp_duid)
     }
 
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "dhcp-pd-hint")]
     pub fn set_dhcp_pd_hint(&self, dhcp_pd_hint: Option<&str>) {
-        ObjectExt::set_property(self,"dhcp-pd-hint", dhcp_pd_hint)
+        ObjectExt::set_property(self, "dhcp-pd-hint", dhcp_pd_hint)
     }
 
     #[doc(alias = "ip6-privacy")]
     pub fn set_ip6_privacy(&self, ip6_privacy: SettingIP6ConfigPrivacy) {
-        ObjectExt::set_property(self,"ip6-privacy", ip6_privacy)
+        ObjectExt::set_property(self, "ip6-privacy", ip6_privacy)
     }
 
     #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     pub fn set_mtu(&self, mtu: u32) {
-        ObjectExt::set_property(self,"mtu", mtu)
+        ObjectExt::set_property(self, "mtu", mtu)
     }
 
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "ra-timeout")]
     pub fn set_ra_timeout(&self, ra_timeout: i32) {
-        ObjectExt::set_property(self,"ra-timeout", ra_timeout)
+        ObjectExt::set_property(self, "ra-timeout", ra_timeout)
     }
 
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "temp-preferred-lifetime")]
     pub fn set_temp_preferred_lifetime(&self, temp_preferred_lifetime: i32) {
-        ObjectExt::set_property(self,"temp-preferred-lifetime", temp_preferred_lifetime)
+        ObjectExt::set_property(self, "temp-preferred-lifetime", temp_preferred_lifetime)
     }
 
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "temp-valid-lifetime")]
     pub fn set_temp_valid_lifetime(&self, temp_valid_lifetime: i32) {
-        ObjectExt::set_property(self,"temp-valid-lifetime", temp_valid_lifetime)
+        ObjectExt::set_property(self, "temp-valid-lifetime", temp_valid_lifetime)
     }
 
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn set_token(&self, token: Option<&str>) {
-        ObjectExt::set_property(self,"token", token)
+        ObjectExt::set_property(self, "token", token)
     }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "addr-gen-mode")]
     pub fn connect_addr_gen_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_addr_gen_mode_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_addr_gen_mode_trampoline<F: Fn(&SettingIP6Config) + 'static>(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::addr-gen-mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_addr_gen_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::addr-gen-mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_addr_gen_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -213,14 +222,24 @@ impl SettingIP6Config {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "dhcp-duid")]
     pub fn connect_dhcp_duid_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_duid_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_duid_trampoline<F: Fn(&SettingIP6Config) + 'static>(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-duid".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_duid_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-duid".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_duid_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -228,27 +247,47 @@ impl SettingIP6Config {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "dhcp-pd-hint")]
     pub fn connect_dhcp_pd_hint_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_pd_hint_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_pd_hint_trampoline<F: Fn(&SettingIP6Config) + 'static>(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-pd-hint".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_pd_hint_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-pd-hint".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_pd_hint_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "ip6-privacy")]
     pub fn connect_ip6_privacy_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_ip6_privacy_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_ip6_privacy_trampoline<F: Fn(&SettingIP6Config) + 'static>(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::ip6-privacy".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_ip6_privacy_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::ip6-privacy".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_ip6_privacy_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -256,14 +295,24 @@ impl SettingIP6Config {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     #[doc(alias = "mtu")]
     pub fn connect_mtu_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mtu_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_mtu_trampoline<F: Fn(&SettingIP6Config) + 'static>(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mtu".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mtu_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mtu".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mtu_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -271,44 +320,84 @@ impl SettingIP6Config {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "ra-timeout")]
     pub fn connect_ra_timeout_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_ra_timeout_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_ra_timeout_trampoline<F: Fn(&SettingIP6Config) + 'static>(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::ra-timeout".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_ra_timeout_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::ra-timeout".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_ra_timeout_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "temp-preferred-lifetime")]
-    pub fn connect_temp_preferred_lifetime_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_temp_preferred_lifetime_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_temp_preferred_lifetime_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_temp_preferred_lifetime_trampoline<
+            F: Fn(&SettingIP6Config) + 'static,
+        >(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::temp-preferred-lifetime".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_temp_preferred_lifetime_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::temp-preferred-lifetime".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_temp_preferred_lifetime_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "temp-valid-lifetime")]
-    pub fn connect_temp_valid_lifetime_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_temp_valid_lifetime_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_temp_valid_lifetime_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_temp_valid_lifetime_trampoline<
+            F: Fn(&SettingIP6Config) + 'static,
+        >(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::temp-valid-lifetime".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_temp_valid_lifetime_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::temp-valid-lifetime".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_temp_valid_lifetime_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -316,253 +405,382 @@ impl SettingIP6Config {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "token")]
     pub fn connect_token_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_token_trampoline<F: Fn(&SettingIP6Config) + 'static>(this: *mut ffi::NMSettingIP6Config, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_token_trampoline<F: Fn(&SettingIP6Config) + 'static>(
+            this: *mut ffi::NMSettingIP6Config,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::token".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_token_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::token".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_token_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
 
 impl Default for SettingIP6Config {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`SettingIP6Config`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`SettingIP6Config`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct SettingIP6ConfigBuilder {
-            builder: glib::object::ObjectBuilder<'static, SettingIP6Config>,
-        }
+    builder: glib::object::ObjectBuilder<'static, SettingIP6Config>,
+}
 
-        impl SettingIP6ConfigBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+impl SettingIP6ConfigBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-                            #[cfg(feature = "v1_2")]
+    #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn addr_gen_mode(self, addr_gen_mode: i32) -> Self {
-                            Self { builder: self.builder.property("addr-gen-mode", addr_gen_mode), }
-                        }
+        Self {
+            builder: self.builder.property("addr-gen-mode", addr_gen_mode),
+        }
+    }
 
-                            #[cfg(feature = "v1_12")]
+    #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     pub fn dhcp_duid(self, dhcp_duid: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("dhcp-duid", dhcp_duid.into()), }
-                        }
+        Self {
+            builder: self.builder.property("dhcp-duid", dhcp_duid.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_44")]
+    #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn dhcp_pd_hint(self, dhcp_pd_hint: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("dhcp-pd-hint", dhcp_pd_hint.into()), }
-                        }
+        Self {
+            builder: self.builder.property("dhcp-pd-hint", dhcp_pd_hint.into()),
+        }
+    }
 
-                            pub fn ip6_privacy(self, ip6_privacy: SettingIP6ConfigPrivacy) -> Self {
-                            Self { builder: self.builder.property("ip6-privacy", ip6_privacy), }
-                        }
+    pub fn ip6_privacy(self, ip6_privacy: SettingIP6ConfigPrivacy) -> Self {
+        Self {
+            builder: self.builder.property("ip6-privacy", ip6_privacy),
+        }
+    }
 
-                            #[cfg(feature = "v1_40")]
+    #[cfg(feature = "v1_40")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_40")))]
     pub fn mtu(self, mtu: u32) -> Self {
-                            Self { builder: self.builder.property("mtu", mtu), }
-                        }
+        Self {
+            builder: self.builder.property("mtu", mtu),
+        }
+    }
 
-                            #[cfg(feature = "v1_24")]
+    #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn ra_timeout(self, ra_timeout: i32) -> Self {
-                            Self { builder: self.builder.property("ra-timeout", ra_timeout), }
-                        }
+        Self {
+            builder: self.builder.property("ra-timeout", ra_timeout),
+        }
+    }
 
-                            #[cfg(feature = "v1_48")]
+    #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn temp_preferred_lifetime(self, temp_preferred_lifetime: i32) -> Self {
-                            Self { builder: self.builder.property("temp-preferred-lifetime", temp_preferred_lifetime), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("temp-preferred-lifetime", temp_preferred_lifetime),
+        }
+    }
 
-                            #[cfg(feature = "v1_48")]
+    #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn temp_valid_lifetime(self, temp_valid_lifetime: i32) -> Self {
-                            Self { builder: self.builder.property("temp-valid-lifetime", temp_valid_lifetime), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("temp-valid-lifetime", temp_valid_lifetime),
+        }
+    }
 
-                            #[cfg(feature = "v1_4")]
+    #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn token(self, token: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("token", token.into()), }
-                        }
+        Self {
+            builder: self.builder.property("token", token.into()),
+        }
+    }
 
-                            pub fn addresses(self, addresses: &[&IPAddress]) -> Self {
-                            Self { builder: self.builder.property("addresses", addresses.clone()), }
-                        }
+    pub fn addresses(self, addresses: &[&IPAddress]) -> Self {
+        Self {
+            builder: self.builder.property(
+                "addresses",
+                addresses
+                    .iter()
+                    .map(|address| address.to_value())
+                    .collect::<glib::ValueArray>(),
+            ),
+        }
+    }
 
-                            #[cfg(feature = "v1_42")]
+    #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn auto_route_ext_gw(self, auto_route_ext_gw: Ternary) -> Self {
-                            Self { builder: self.builder.property("auto-route-ext-gw", auto_route_ext_gw), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("auto-route-ext-gw", auto_route_ext_gw),
+        }
+    }
 
-                            #[cfg(feature = "v1_2")]
+    #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn dad_timeout(self, dad_timeout: i32) -> Self {
-                            Self { builder: self.builder.property("dad-timeout", dad_timeout), }
-                        }
+        Self {
+            builder: self.builder.property("dad-timeout", dad_timeout),
+        }
+    }
 
-                            #[cfg(feature = "v1_46")]
+    #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn dhcp_dscp(self, dhcp_dscp: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("dhcp-dscp", dhcp_dscp.into()), }
-                        }
+        Self {
+            builder: self.builder.property("dhcp-dscp", dhcp_dscp.into()),
+        }
+    }
 
-                            pub fn dhcp_hostname(self, dhcp_hostname: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("dhcp-hostname", dhcp_hostname.into()), }
-                        }
+    pub fn dhcp_hostname(self, dhcp_hostname: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self.builder.property("dhcp-hostname", dhcp_hostname.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_22")]
+    #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     pub fn dhcp_hostname_flags(self, dhcp_hostname_flags: u32) -> Self {
-                            Self { builder: self.builder.property("dhcp-hostname-flags", dhcp_hostname_flags), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("dhcp-hostname-flags", dhcp_hostname_flags),
+        }
+    }
 
-                            #[cfg(feature = "v1_22")]
+    #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     pub fn dhcp_iaid(self, dhcp_iaid: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("dhcp-iaid", dhcp_iaid.into()), }
-                        }
+        Self {
+            builder: self.builder.property("dhcp-iaid", dhcp_iaid.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_28")]
+    #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     pub fn dhcp_reject_servers(self, dhcp_reject_servers: impl Into<glib::StrV>) -> Self {
-                            Self { builder: self.builder.property("dhcp-reject-servers", dhcp_reject_servers.into()), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("dhcp-reject-servers", dhcp_reject_servers.into()),
+        }
+    }
 
-                            #[cfg_attr(feature = "v1_52", deprecated = "Since 1.52")]
+    #[cfg_attr(feature = "v1_52", deprecated = "Since 1.52")]
     pub fn dhcp_send_hostname(self, dhcp_send_hostname: bool) -> Self {
-                            Self { builder: self.builder.property("dhcp-send-hostname", dhcp_send_hostname), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("dhcp-send-hostname", dhcp_send_hostname),
+        }
+    }
 
-                            #[cfg(feature = "v1_52")]
+    #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn dhcp_send_hostname_v2(self, dhcp_send_hostname_v2: i32) -> Self {
-                            Self { builder: self.builder.property("dhcp-send-hostname-v2", dhcp_send_hostname_v2), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("dhcp-send-hostname-v2", dhcp_send_hostname_v2),
+        }
+    }
 
-                            #[cfg(feature = "v1_48")]
+    #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     pub fn dhcp_send_release(self, dhcp_send_release: Ternary) -> Self {
-                            Self { builder: self.builder.property("dhcp-send-release", dhcp_send_release), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("dhcp-send-release", dhcp_send_release),
+        }
+    }
 
-                            pub fn dhcp_timeout(self, dhcp_timeout: i32) -> Self {
-                            Self { builder: self.builder.property("dhcp-timeout", dhcp_timeout), }
-                        }
+    pub fn dhcp_timeout(self, dhcp_timeout: i32) -> Self {
+        Self {
+            builder: self.builder.property("dhcp-timeout", dhcp_timeout),
+        }
+    }
 
-                            pub fn dns(self, dns: impl Into<glib::StrV>) -> Self {
-                            Self { builder: self.builder.property("dns", dns.into()), }
-                        }
+    pub fn dns(self, dns: impl Into<glib::StrV>) -> Self {
+        Self {
+            builder: self.builder.property("dns", dns.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_2")]
+    #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn dns_options(self, dns_options: impl Into<glib::StrV>) -> Self {
-                            Self { builder: self.builder.property("dns-options", dns_options.into()), }
-                        }
+        Self {
+            builder: self.builder.property("dns-options", dns_options.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_4")]
+    #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     pub fn dns_priority(self, dns_priority: i32) -> Self {
-                            Self { builder: self.builder.property("dns-priority", dns_priority), }
-                        }
+        Self {
+            builder: self.builder.property("dns-priority", dns_priority),
+        }
+    }
 
-                            pub fn dns_search(self, dns_search: impl Into<glib::StrV>) -> Self {
-                            Self { builder: self.builder.property("dns-search", dns_search.into()), }
-                        }
+    pub fn dns_search(self, dns_search: impl Into<glib::StrV>) -> Self {
+        Self {
+            builder: self.builder.property("dns-search", dns_search.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_54")]
+    #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     pub fn forwarding(self, forwarding: i32) -> Self {
-                            Self { builder: self.builder.property("forwarding", forwarding), }
-                        }
+        Self {
+            builder: self.builder.property("forwarding", forwarding),
+        }
+    }
 
-                            pub fn gateway(self, gateway: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("gateway", gateway.into()), }
-                        }
+    pub fn gateway(self, gateway: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self.builder.property("gateway", gateway.into()),
+        }
+    }
 
-                            pub fn ignore_auto_dns(self, ignore_auto_dns: bool) -> Self {
-                            Self { builder: self.builder.property("ignore-auto-dns", ignore_auto_dns), }
-                        }
+    pub fn ignore_auto_dns(self, ignore_auto_dns: bool) -> Self {
+        Self {
+            builder: self.builder.property("ignore-auto-dns", ignore_auto_dns),
+        }
+    }
 
-                            pub fn ignore_auto_routes(self, ignore_auto_routes: bool) -> Self {
-                            Self { builder: self.builder.property("ignore-auto-routes", ignore_auto_routes), }
-                        }
+    pub fn ignore_auto_routes(self, ignore_auto_routes: bool) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("ignore-auto-routes", ignore_auto_routes),
+        }
+    }
 
-                            pub fn may_fail(self, may_fail: bool) -> Self {
-                            Self { builder: self.builder.property("may-fail", may_fail), }
-                        }
+    pub fn may_fail(self, may_fail: bool) -> Self {
+        Self {
+            builder: self.builder.property("may-fail", may_fail),
+        }
+    }
 
-                            pub fn method(self, method: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("method", method.into()), }
-                        }
+    pub fn method(self, method: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self.builder.property("method", method.into()),
+        }
+    }
 
-                            pub fn never_default(self, never_default: bool) -> Self {
-                            Self { builder: self.builder.property("never-default", never_default), }
-                        }
+    pub fn never_default(self, never_default: bool) -> Self {
+        Self {
+            builder: self.builder.property("never-default", never_default),
+        }
+    }
 
-                            #[cfg(feature = "v1_44")]
+    #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     pub fn replace_local_rule(self, replace_local_rule: Ternary) -> Self {
-                            Self { builder: self.builder.property("replace-local-rule", replace_local_rule), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("replace-local-rule", replace_local_rule),
+        }
+    }
 
-                            #[cfg(feature = "v1_34")]
+    #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     pub fn required_timeout(self, required_timeout: i32) -> Self {
-                            Self { builder: self.builder.property("required-timeout", required_timeout), }
-                        }
+        Self {
+            builder: self.builder.property("required-timeout", required_timeout),
+        }
+    }
 
-                            pub fn route_metric(self, route_metric: i64) -> Self {
-                            Self { builder: self.builder.property("route-metric", route_metric), }
-                        }
+    pub fn route_metric(self, route_metric: i64) -> Self {
+        Self {
+            builder: self.builder.property("route-metric", route_metric),
+        }
+    }
 
-                            #[cfg(feature = "v1_10")]
+    #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn route_table(self, route_table: u32) -> Self {
-                            Self { builder: self.builder.property("route-table", route_table), }
-                        }
+        Self {
+            builder: self.builder.property("route-table", route_table),
+        }
+    }
 
-                            #[cfg(feature = "v1_52")]
+    #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn routed_dns(self, routed_dns: i32) -> Self {
-                            Self { builder: self.builder.property("routed-dns", routed_dns), }
-                        }
+        Self {
+            builder: self.builder.property("routed-dns", routed_dns),
+        }
+    }
 
-                            pub fn routes(self, routes: &[&IPRoute]) -> Self {
-                            Self { builder: self.builder.property("routes", routes.clone()), }
-                        }
+    pub fn routes(self, routes: &[&IPRoute]) -> Self {
+        Self {
+            builder: self.builder.property(
+                "routes",
+                routes
+                    .iter()
+                    .map(|route| route.to_value())
+                    .collect::<glib::ValueArray>(),
+            ),
+        }
+    }
 
-                            #[cfg(feature = "v1_52")]
+    #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn shared_dhcp_lease_time(self, shared_dhcp_lease_time: i32) -> Self {
-                            Self { builder: self.builder.property("shared-dhcp-lease-time", shared_dhcp_lease_time), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("shared-dhcp-lease-time", shared_dhcp_lease_time),
+        }
+    }
 
-                            #[cfg(feature = "v1_52")]
+    #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     pub fn shared_dhcp_range(self, shared_dhcp_range: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("shared-dhcp-range", shared_dhcp_range.into()), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("shared-dhcp-range", shared_dhcp_range.into()),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`SettingIP6Config`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> SettingIP6Config {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

@@ -4,24 +4,29 @@
 // DO NOT EDIT
 #![allow(deprecated)]
 
-use crate::{ffi,IPAddress,IPRoute,Setting};
-#[cfg(feature = "v1_18")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-use crate::{IPRoutingRule};
 #[cfg(feature = "v1_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-use crate::{DhcpHostnameFlags};
-#[cfg(feature = "v1_42")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-use crate::{Ternary};
-#[cfg(feature = "v1_52")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
-use crate::{SettingIPConfigRoutedDns};
+use crate::DhcpHostnameFlags;
+#[cfg(feature = "v1_18")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
+use crate::IPRoutingRule;
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-use crate::{SettingIPConfigForwarding};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::SettingIPConfigForwarding;
+#[cfg(feature = "v1_52")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
+use crate::SettingIPConfigRoutedDns;
+#[cfg(feature = "v1_42")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
+use crate::Ternary;
+use crate::{IPAddress, IPRoute, Setting, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+    value::FromValue,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSettingIPConfig")]
@@ -33,15 +38,17 @@ glib::wrapper! {
 }
 
 impl SettingIPConfig {
-        pub const NONE: Option<&'static SettingIPConfig> = None;
-    
+    pub const NONE: Option<&'static SettingIPConfig> = None;
 }
 
 pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_add_address")]
     fn add_address(&self, address: &IPAddress) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_add_address(self.as_ref().to_glib_none().0, address.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_add_address(
+                self.as_ref().to_glib_none().0,
+                address.to_glib_none().0,
+            ))
         }
     }
 
@@ -50,14 +57,20 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_add_dhcp_reject_server")]
     fn add_dhcp_reject_server(&self, server: &str) {
         unsafe {
-            ffi::nm_setting_ip_config_add_dhcp_reject_server(self.as_ref().to_glib_none().0, server.to_glib_none().0);
+            ffi::nm_setting_ip_config_add_dhcp_reject_server(
+                self.as_ref().to_glib_none().0,
+                server.to_glib_none().0,
+            );
         }
     }
 
     #[doc(alias = "nm_setting_ip_config_add_dns")]
     fn add_dns(&self, dns: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_add_dns(self.as_ref().to_glib_none().0, dns.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_add_dns(
+                self.as_ref().to_glib_none().0,
+                dns.to_glib_none().0,
+            ))
         }
     }
 
@@ -66,21 +79,30 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_add_dns_option")]
     fn add_dns_option(&self, dns_option: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_add_dns_option(self.as_ref().to_glib_none().0, dns_option.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_add_dns_option(
+                self.as_ref().to_glib_none().0,
+                dns_option.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_ip_config_add_dns_search")]
     fn add_dns_search(&self, dns_search: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_add_dns_search(self.as_ref().to_glib_none().0, dns_search.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_add_dns_search(
+                self.as_ref().to_glib_none().0,
+                dns_search.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_ip_config_add_route")]
     fn add_route(&self, route: &IPRoute) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_add_route(self.as_ref().to_glib_none().0, route.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_add_route(
+                self.as_ref().to_glib_none().0,
+                route.to_glib_none().0,
+            ))
         }
     }
 
@@ -89,7 +111,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_add_routing_rule")]
     fn add_routing_rule(&self, routing_rule: &IPRoutingRule) {
         unsafe {
-            ffi::nm_setting_ip_config_add_routing_rule(self.as_ref().to_glib_none().0, routing_rule.to_glib_none().0);
+            ffi::nm_setting_ip_config_add_routing_rule(
+                self.as_ref().to_glib_none().0,
+                routing_rule.to_glib_none().0,
+            );
         }
     }
 
@@ -121,7 +146,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_clear_dns_options")]
     fn clear_dns_options(&self, is_set: bool) {
         unsafe {
-            ffi::nm_setting_ip_config_clear_dns_options(self.as_ref().to_glib_none().0, is_set.into_glib());
+            ffi::nm_setting_ip_config_clear_dns_options(
+                self.as_ref().to_glib_none().0,
+                is_set.into_glib(),
+            );
         }
     }
 
@@ -152,7 +180,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_address")]
     fn address(&self, idx: i32) -> IPAddress {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_address(self.as_ref().to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_ip_config_get_address(
+                self.as_ref().to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -163,7 +194,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "auto-route-ext-gw")]
     fn auto_route_ext_gw(&self) -> Ternary {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_auto_route_ext_gw(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_auto_route_ext_gw(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -173,9 +206,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_dad_timeout")]
     #[doc(alias = "dad-timeout")]
     fn dad_timeout(&self) -> i32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_dad_timeout(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_dad_timeout(self.as_ref().to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_46")]
@@ -185,7 +216,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "dhcp-dscp")]
     fn dhcp_dscp(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_dhcp_dscp(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ip_config_get_dhcp_dscp(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -194,7 +227,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "dhcp-hostname")]
     fn dhcp_hostname(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_dhcp_hostname(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ip_config_get_dhcp_hostname(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -205,7 +240,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "dhcp-hostname-flags")]
     fn dhcp_hostname_flags(&self) -> DhcpHostnameFlags {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_dhcp_hostname_flags(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_dhcp_hostname_flags(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -216,7 +253,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "dhcp-iaid")]
     fn dhcp_iaid(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_dhcp_iaid(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ip_config_get_dhcp_iaid(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -228,7 +267,13 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     fn dhcp_reject_servers(&self) -> Vec<glib::GString> {
         unsafe {
             let mut out_len = std::mem::MaybeUninit::uninit();
-            let ret = FromGlibContainer::from_glib_none_num(ffi::nm_setting_ip_config_get_dhcp_reject_servers(self.as_ref().to_glib_none().0, out_len.as_mut_ptr()), out_len.assume_init() as _);
+            let ret = FromGlibContainer::from_glib_none_num(
+                ffi::nm_setting_ip_config_get_dhcp_reject_servers(
+                    self.as_ref().to_glib_none().0,
+                    out_len.as_mut_ptr(),
+                ),
+                out_len.assume_init() as _,
+            );
             ret
         }
     }
@@ -240,7 +285,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "dhcp-send-hostname")]
     fn is_dhcp_send_hostname(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_dhcp_send_hostname(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_dhcp_send_hostname(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -251,7 +298,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "dhcp-send-hostname-v2")]
     fn dhcp_send_hostname_v2(&self) -> Ternary {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_dhcp_send_hostname_v2(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_dhcp_send_hostname_v2(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -262,7 +311,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "dhcp-send-release")]
     fn dhcp_send_release(&self) -> Ternary {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_dhcp_send_release(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_dhcp_send_release(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -272,16 +323,17 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_dhcp_timeout")]
     #[doc(alias = "dhcp-timeout")]
     fn dhcp_timeout(&self) -> i32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_dhcp_timeout(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_dhcp_timeout(self.as_ref().to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_ip_config_get_dns")]
     #[doc(alias = "get_dns")]
     fn dns(&self, idx: i32) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_dns(self.as_ref().to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_ip_config_get_dns(
+                self.as_ref().to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -291,7 +343,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_dns_option")]
     fn dns_option(&self, idx: u32) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_dns_option(self.as_ref().to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_ip_config_get_dns_option(
+                self.as_ref().to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -301,9 +356,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_dns_priority")]
     #[doc(alias = "dns-priority")]
     fn dns_priority(&self) -> i32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_dns_priority(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_dns_priority(self.as_ref().to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_ip_config_get_dns_search")]
@@ -311,7 +364,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "dns-search")]
     fn dns_search(&self, idx: i32) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_dns_search(self.as_ref().to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_ip_config_get_dns_search(
+                self.as_ref().to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -321,7 +377,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_forwarding")]
     fn forwarding(&self) -> SettingIPConfigForwarding {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_forwarding(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_forwarding(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -329,7 +387,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_gateway")]
     fn gateway(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_gateway(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ip_config_get_gateway(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -338,7 +398,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "ignore-auto-dns")]
     fn ignores_auto_dns(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_ignore_auto_dns(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_ignore_auto_dns(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -347,7 +409,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "ignore-auto-routes")]
     fn ignores_auto_routes(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_ignore_auto_routes(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_ignore_auto_routes(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -356,7 +420,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "may-fail")]
     fn is_may_fail(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_may_fail(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_may_fail(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -364,7 +430,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_method")]
     fn method(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_method(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ip_config_get_method(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -373,24 +441,22 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "never-default")]
     fn is_never_default(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_never_default(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_never_default(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_ip_config_get_num_addresses")]
     #[doc(alias = "get_num_addresses")]
     fn num_addresses(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_num_addresses(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_num_addresses(self.as_ref().to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_ip_config_get_num_dns")]
     #[doc(alias = "get_num_dns")]
     fn num_dns(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_num_dns(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_num_dns(self.as_ref().to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_2")]
@@ -398,25 +464,19 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_get_num_dns_options")]
     #[doc(alias = "get_num_dns_options")]
     fn num_dns_options(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_num_dns_options(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_num_dns_options(self.as_ref().to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_ip_config_get_num_dns_searches")]
     #[doc(alias = "get_num_dns_searches")]
     fn num_dns_searches(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_num_dns_searches(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_num_dns_searches(self.as_ref().to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_ip_config_get_num_routes")]
     #[doc(alias = "get_num_routes")]
     fn num_routes(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_num_routes(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_num_routes(self.as_ref().to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -424,9 +484,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_get_num_routing_rules")]
     #[doc(alias = "get_num_routing_rules")]
     fn num_routing_rules(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_num_routing_rules(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_num_routing_rules(self.as_ref().to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_44")]
@@ -436,7 +494,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "replace-local-rule")]
     fn replace_local_rule(&self) -> Ternary {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_replace_local_rule(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_replace_local_rule(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -446,16 +506,17 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_required_timeout")]
     #[doc(alias = "required-timeout")]
     fn required_timeout(&self) -> i32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_required_timeout(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_required_timeout(self.as_ref().to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_ip_config_get_route")]
     #[doc(alias = "get_route")]
     fn route(&self, idx: i32) -> IPRoute {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_route(self.as_ref().to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_ip_config_get_route(
+                self.as_ref().to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -463,9 +524,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_route_metric")]
     #[doc(alias = "route-metric")]
     fn route_metric(&self) -> i64 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_route_metric(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_route_metric(self.as_ref().to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_10")]
@@ -474,9 +533,7 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_route_table")]
     #[doc(alias = "route-table")]
     fn route_table(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ip_config_get_route_table(self.as_ref().to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ip_config_get_route_table(self.as_ref().to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_52")]
@@ -486,7 +543,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "routed-dns")]
     fn routed_dns(&self) -> SettingIPConfigRoutedDns {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_get_routed_dns(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_get_routed_dns(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -496,7 +555,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "get_routing_rule")]
     fn routing_rule(&self, idx: u32) -> IPRoutingRule {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_routing_rule(self.as_ref().to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_ip_config_get_routing_rule(
+                self.as_ref().to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -518,7 +580,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "shared-dhcp-range")]
     fn shared_dhcp_range(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ip_config_get_shared_dhcp_range(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ip_config_get_shared_dhcp_range(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -527,7 +591,9 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_has_dns_options")]
     fn has_dns_options(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_has_dns_options(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_has_dns_options(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -541,7 +607,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_remove_address_by_value")]
     fn remove_address_by_value(&self, address: &IPAddress) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_remove_address_by_value(self.as_ref().to_glib_none().0, address.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_remove_address_by_value(
+                self.as_ref().to_glib_none().0,
+                address.to_glib_none().0,
+            ))
         }
     }
 
@@ -550,7 +619,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_remove_dhcp_reject_server")]
     fn remove_dhcp_reject_server(&self, idx: u32) {
         unsafe {
-            ffi::nm_setting_ip_config_remove_dhcp_reject_server(self.as_ref().to_glib_none().0, idx);
+            ffi::nm_setting_ip_config_remove_dhcp_reject_server(
+                self.as_ref().to_glib_none().0,
+                idx,
+            );
         }
     }
 
@@ -564,7 +636,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_remove_dns_by_value")]
     fn remove_dns_by_value(&self, dns: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_remove_dns_by_value(self.as_ref().to_glib_none().0, dns.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_remove_dns_by_value(
+                self.as_ref().to_glib_none().0,
+                dns.to_glib_none().0,
+            ))
         }
     }
 
@@ -582,7 +657,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_remove_dns_option_by_value")]
     fn remove_dns_option_by_value(&self, dns_option: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_remove_dns_option_by_value(self.as_ref().to_glib_none().0, dns_option.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_remove_dns_option_by_value(
+                self.as_ref().to_glib_none().0,
+                dns_option.to_glib_none().0,
+            ))
         }
     }
 
@@ -596,7 +674,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_remove_dns_search_by_value")]
     fn remove_dns_search_by_value(&self, dns_search: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_remove_dns_search_by_value(self.as_ref().to_glib_none().0, dns_search.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_remove_dns_search_by_value(
+                self.as_ref().to_glib_none().0,
+                dns_search.to_glib_none().0,
+            ))
         }
     }
 
@@ -610,7 +691,10 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[doc(alias = "nm_setting_ip_config_remove_route_by_value")]
     fn remove_route_by_value(&self, route: &IPRoute) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ip_config_remove_route_by_value(self.as_ref().to_glib_none().0, route.to_glib_none().0))
+            from_glib(ffi::nm_setting_ip_config_remove_route_by_value(
+                self.as_ref().to_glib_none().0,
+                route.to_glib_none().0,
+            ))
         }
     }
 
@@ -624,44 +708,54 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     }
 
     fn addresses(&self) -> Vec<IPAddress> {
-        ObjectExt::property(self.as_ref(), "addresses")
+        let vals = ObjectExt::property::<glib::ValueArray>(self.as_ref(), "addresses");
+        vals.iter()
+            .map(|value| unsafe { IPAddress::from_value(value) })
+            .collect()
     }
 
     fn set_addresses(&self, addresses: &[&IPAddress]) {
-        ObjectExt::set_property(self.as_ref(),"addresses", addresses)
+        ObjectExt::set_property(
+            self.as_ref(),
+            "addresses",
+            addresses
+                .iter()
+                .map(|address| address.to_value())
+                .collect::<glib::ValueArray>(),
+        )
     }
 
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "auto-route-ext-gw")]
     fn set_auto_route_ext_gw(&self, auto_route_ext_gw: Ternary) {
-        ObjectExt::set_property(self.as_ref(),"auto-route-ext-gw", auto_route_ext_gw)
+        ObjectExt::set_property(self.as_ref(), "auto-route-ext-gw", auto_route_ext_gw)
     }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "dad-timeout")]
     fn set_dad_timeout(&self, dad_timeout: i32) {
-        ObjectExt::set_property(self.as_ref(),"dad-timeout", dad_timeout)
+        ObjectExt::set_property(self.as_ref(), "dad-timeout", dad_timeout)
     }
 
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "dhcp-dscp")]
     fn set_dhcp_dscp(&self, dhcp_dscp: Option<&str>) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-dscp", dhcp_dscp)
+        ObjectExt::set_property(self.as_ref(), "dhcp-dscp", dhcp_dscp)
     }
 
     #[doc(alias = "dhcp-hostname")]
     fn set_dhcp_hostname(&self, dhcp_hostname: Option<&str>) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-hostname", dhcp_hostname)
+        ObjectExt::set_property(self.as_ref(), "dhcp-hostname", dhcp_hostname)
     }
 
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "dhcp-hostname-flags")]
     fn set_dhcp_hostname_flags(&self, dhcp_hostname_flags: u32) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-hostname-flags", dhcp_hostname_flags)
+        ObjectExt::set_property(self.as_ref(), "dhcp-hostname-flags", dhcp_hostname_flags)
     }
 
     #[cfg(not(feature = "v1_42"))]
@@ -675,34 +769,38 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "dhcp-iaid")]
     fn set_dhcp_iaid(&self, dhcp_iaid: Option<&str>) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-iaid", dhcp_iaid)
+        ObjectExt::set_property(self.as_ref(), "dhcp-iaid", dhcp_iaid)
     }
 
     #[cfg(feature = "v1_28")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "dhcp-reject-servers")]
     fn set_dhcp_reject_servers(&self, dhcp_reject_servers: &[&str]) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-reject-servers", dhcp_reject_servers)
+        ObjectExt::set_property(self.as_ref(), "dhcp-reject-servers", dhcp_reject_servers)
     }
 
     #[cfg_attr(feature = "v1_52", deprecated = "Since 1.52")]
     #[doc(alias = "dhcp-send-hostname")]
     fn set_dhcp_send_hostname(&self, dhcp_send_hostname: bool) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-send-hostname", dhcp_send_hostname)
+        ObjectExt::set_property(self.as_ref(), "dhcp-send-hostname", dhcp_send_hostname)
     }
 
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "dhcp-send-hostname-v2")]
     fn set_dhcp_send_hostname_v2(&self, dhcp_send_hostname_v2: i32) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-send-hostname-v2", dhcp_send_hostname_v2)
+        ObjectExt::set_property(
+            self.as_ref(),
+            "dhcp-send-hostname-v2",
+            dhcp_send_hostname_v2,
+        )
     }
 
     #[cfg(feature = "v1_48")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "dhcp-send-release")]
     fn set_dhcp_send_release(&self, dhcp_send_release: Ternary) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-send-release", dhcp_send_release)
+        ObjectExt::set_property(self.as_ref(), "dhcp-send-release", dhcp_send_release)
     }
 
     #[cfg(not(feature = "v1_2"))]
@@ -714,11 +812,11 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
 
     #[doc(alias = "dhcp-timeout")]
     fn set_dhcp_timeout(&self, dhcp_timeout: i32) {
-        ObjectExt::set_property(self.as_ref(),"dhcp-timeout", dhcp_timeout)
+        ObjectExt::set_property(self.as_ref(), "dhcp-timeout", dhcp_timeout)
     }
 
     fn set_dns(&self, dns: &[&str]) {
-        ObjectExt::set_property(self.as_ref(),"dns", dns)
+        ObjectExt::set_property(self.as_ref(), "dns", dns)
     }
 
     #[cfg(feature = "v1_2")]
@@ -732,120 +830,147 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "dns-options")]
     fn set_dns_options(&self, dns_options: &[&str]) {
-        ObjectExt::set_property(self.as_ref(),"dns-options", dns_options)
+        ObjectExt::set_property(self.as_ref(), "dns-options", dns_options)
     }
 
     #[cfg(feature = "v1_4")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "dns-priority")]
     fn set_dns_priority(&self, dns_priority: i32) {
-        ObjectExt::set_property(self.as_ref(),"dns-priority", dns_priority)
+        ObjectExt::set_property(self.as_ref(), "dns-priority", dns_priority)
     }
 
     #[doc(alias = "dns-search")]
     fn set_dns_search(&self, dns_search: &[&str]) {
-        ObjectExt::set_property(self.as_ref(),"dns-search", dns_search)
+        ObjectExt::set_property(self.as_ref(), "dns-search", dns_search)
     }
 
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     fn set_forwarding(&self, forwarding: i32) {
-        ObjectExt::set_property(self.as_ref(),"forwarding", forwarding)
+        ObjectExt::set_property(self.as_ref(), "forwarding", forwarding)
     }
 
     fn set_gateway(&self, gateway: Option<&str>) {
-        ObjectExt::set_property(self.as_ref(),"gateway", gateway)
+        ObjectExt::set_property(self.as_ref(), "gateway", gateway)
     }
 
     #[doc(alias = "ignore-auto-dns")]
     fn set_ignore_auto_dns(&self, ignore_auto_dns: bool) {
-        ObjectExt::set_property(self.as_ref(),"ignore-auto-dns", ignore_auto_dns)
+        ObjectExt::set_property(self.as_ref(), "ignore-auto-dns", ignore_auto_dns)
     }
 
     #[doc(alias = "ignore-auto-routes")]
     fn set_ignore_auto_routes(&self, ignore_auto_routes: bool) {
-        ObjectExt::set_property(self.as_ref(),"ignore-auto-routes", ignore_auto_routes)
+        ObjectExt::set_property(self.as_ref(), "ignore-auto-routes", ignore_auto_routes)
     }
 
     #[doc(alias = "may-fail")]
     fn set_may_fail(&self, may_fail: bool) {
-        ObjectExt::set_property(self.as_ref(),"may-fail", may_fail)
+        ObjectExt::set_property(self.as_ref(), "may-fail", may_fail)
     }
 
     fn set_method(&self, method: Option<&str>) {
-        ObjectExt::set_property(self.as_ref(),"method", method)
+        ObjectExt::set_property(self.as_ref(), "method", method)
     }
 
     #[doc(alias = "never-default")]
     fn set_never_default(&self, never_default: bool) {
-        ObjectExt::set_property(self.as_ref(),"never-default", never_default)
+        ObjectExt::set_property(self.as_ref(), "never-default", never_default)
     }
 
     #[cfg(feature = "v1_44")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "replace-local-rule")]
     fn set_replace_local_rule(&self, replace_local_rule: Ternary) {
-        ObjectExt::set_property(self.as_ref(),"replace-local-rule", replace_local_rule)
+        ObjectExt::set_property(self.as_ref(), "replace-local-rule", replace_local_rule)
     }
 
     #[cfg(feature = "v1_34")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "required-timeout")]
     fn set_required_timeout(&self, required_timeout: i32) {
-        ObjectExt::set_property(self.as_ref(),"required-timeout", required_timeout)
+        ObjectExt::set_property(self.as_ref(), "required-timeout", required_timeout)
     }
 
     #[doc(alias = "route-metric")]
     fn set_route_metric(&self, route_metric: i64) {
-        ObjectExt::set_property(self.as_ref(),"route-metric", route_metric)
+        ObjectExt::set_property(self.as_ref(), "route-metric", route_metric)
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "route-table")]
     fn set_route_table(&self, route_table: u32) {
-        ObjectExt::set_property(self.as_ref(),"route-table", route_table)
+        ObjectExt::set_property(self.as_ref(), "route-table", route_table)
     }
 
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "routed-dns")]
     fn set_routed_dns(&self, routed_dns: i32) {
-        ObjectExt::set_property(self.as_ref(),"routed-dns", routed_dns)
+        ObjectExt::set_property(self.as_ref(), "routed-dns", routed_dns)
     }
 
     fn routes(&self) -> Vec<IPRoute> {
-        ObjectExt::property(self.as_ref(), "routes")
+        let vals = ObjectExt::property::<glib::ValueArray>(self.as_ref(), "routes");
+        vals.iter()
+            .map(|value| unsafe { IPRoute::from_value(value) })
+            .collect()
     }
 
     fn set_routes(&self, routes: &[&IPRoute]) {
-        ObjectExt::set_property(self.as_ref(),"routes", routes)
+        ObjectExt::set_property(
+            self.as_ref(),
+            "routes",
+            routes
+                .iter()
+                .map(|route| route.to_value())
+                .collect::<glib::ValueArray>(),
+        )
     }
 
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "shared-dhcp-lease-time")]
     fn set_shared_dhcp_lease_time(&self, shared_dhcp_lease_time: i32) {
-        ObjectExt::set_property(self.as_ref(),"shared-dhcp-lease-time", shared_dhcp_lease_time)
+        ObjectExt::set_property(
+            self.as_ref(),
+            "shared-dhcp-lease-time",
+            shared_dhcp_lease_time,
+        )
     }
 
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "shared-dhcp-range")]
     fn set_shared_dhcp_range(&self, shared_dhcp_range: Option<&str>) {
-        ObjectExt::set_property(self.as_ref(),"shared-dhcp-range", shared_dhcp_range)
+        ObjectExt::set_property(self.as_ref(), "shared-dhcp-range", shared_dhcp_range)
     }
 
     #[doc(alias = "addresses")]
     fn connect_addresses_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_addresses_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_addresses_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::addresses".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_addresses_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::addresses".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_addresses_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -853,14 +978,27 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "auto-route-ext-gw")]
     fn connect_auto_route_ext_gw_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_auto_route_ext_gw_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_auto_route_ext_gw_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::auto-route-ext-gw".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_auto_route_ext_gw_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::auto-route-ext-gw".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_auto_route_ext_gw_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -868,14 +1006,27 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "dad-timeout")]
     fn connect_dad_timeout_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dad_timeout_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dad_timeout_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dad-timeout".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dad_timeout_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dad-timeout".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dad_timeout_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -883,27 +1034,53 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "dhcp-dscp")]
     fn connect_dhcp_dscp_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_dscp_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_dscp_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-dscp".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_dscp_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-dscp".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_dscp_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "dhcp-hostname")]
     fn connect_dhcp_hostname_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_hostname_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_hostname_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-hostname".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_hostname_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-hostname".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_hostname_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -911,14 +1088,27 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "dhcp-hostname-flags")]
     fn connect_dhcp_hostname_flags_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_hostname_flags_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_hostname_flags_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-hostname-flags".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_hostname_flags_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-hostname-flags".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_hostname_flags_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -926,14 +1116,27 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "dhcp-iaid")]
     fn connect_dhcp_iaid_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_iaid_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_iaid_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-iaid".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_iaid_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-iaid".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_iaid_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -941,43 +1144,85 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_28")))]
     #[doc(alias = "dhcp-reject-servers")]
     fn connect_dhcp_reject_servers_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_reject_servers_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_reject_servers_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-reject-servers".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_reject_servers_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-reject-servers".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_reject_servers_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg_attr(feature = "v1_52", deprecated = "Since 1.52")]
     #[doc(alias = "dhcp-send-hostname")]
     fn connect_dhcp_send_hostname_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_send_hostname_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_send_hostname_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-send-hostname".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_send_hostname_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-send-hostname".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_send_hostname_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "dhcp-send-hostname-v2")]
-    fn connect_dhcp_send_hostname_v2_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_send_hostname_v2_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    fn connect_dhcp_send_hostname_v2_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_dhcp_send_hostname_v2_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-send-hostname-v2".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_send_hostname_v2_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-send-hostname-v2".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_send_hostname_v2_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -985,40 +1230,76 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_48")))]
     #[doc(alias = "dhcp-send-release")]
     fn connect_dhcp_send_release_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_send_release_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_send_release_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-send-release".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_send_release_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-send-release".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_send_release_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "dhcp-timeout")]
     fn connect_dhcp_timeout_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dhcp_timeout_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dhcp_timeout_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dhcp-timeout".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dhcp_timeout_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dhcp-timeout".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dhcp_timeout_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "dns")]
     fn connect_dns_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dns_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dns_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dns".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dns_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dns".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dns_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1026,14 +1307,27 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "dns-options")]
     fn connect_dns_options_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dns_options_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dns_options_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dns-options".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dns_options_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dns-options".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dns_options_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1041,27 +1335,53 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_4")))]
     #[doc(alias = "dns-priority")]
     fn connect_dns_priority_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dns_priority_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dns_priority_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dns-priority".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dns_priority_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dns-priority".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dns_priority_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "dns-search")]
     fn connect_dns_search_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dns_search_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dns_search_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dns-search".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dns_search_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dns-search".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dns_search_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1069,92 +1389,183 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "forwarding")]
     fn connect_forwarding_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_forwarding_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_forwarding_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::forwarding".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_forwarding_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::forwarding".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_forwarding_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "gateway")]
     fn connect_gateway_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_gateway_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_gateway_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::gateway".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_gateway_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::gateway".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_gateway_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "ignore-auto-dns")]
     fn connect_ignore_auto_dns_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_ignore_auto_dns_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_ignore_auto_dns_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::ignore-auto-dns".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_ignore_auto_dns_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::ignore-auto-dns".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_ignore_auto_dns_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "ignore-auto-routes")]
     fn connect_ignore_auto_routes_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_ignore_auto_routes_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_ignore_auto_routes_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::ignore-auto-routes".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_ignore_auto_routes_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::ignore-auto-routes".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_ignore_auto_routes_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "may-fail")]
     fn connect_may_fail_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_may_fail_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_may_fail_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::may-fail".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_may_fail_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::may-fail".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_may_fail_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "method")]
     fn connect_method_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_method_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_method_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::method".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_method_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::method".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_method_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "never-default")]
     fn connect_never_default_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_never_default_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_never_default_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::never-default".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_never_default_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::never-default".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_never_default_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1162,14 +1573,27 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_44")))]
     #[doc(alias = "replace-local-rule")]
     fn connect_replace_local_rule_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_replace_local_rule_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_replace_local_rule_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::replace-local-rule".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_replace_local_rule_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::replace-local-rule".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_replace_local_rule_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1177,27 +1601,53 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_34")))]
     #[doc(alias = "required-timeout")]
     fn connect_required_timeout_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_required_timeout_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_required_timeout_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::required-timeout".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_required_timeout_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::required-timeout".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_required_timeout_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "route-metric")]
     fn connect_route_metric_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_route_metric_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_route_metric_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::route-metric".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_route_metric_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::route-metric".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_route_metric_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1205,14 +1655,27 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "route-table")]
     fn connect_route_table_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_route_table_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_route_table_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::route-table".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_route_table_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::route-table".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_route_table_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1220,42 +1683,84 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "routed-dns")]
     fn connect_routed_dns_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_routed_dns_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_routed_dns_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::routed-dns".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_routed_dns_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::routed-dns".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_routed_dns_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "routes")]
     fn connect_routes_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_routes_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_routes_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::routes".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_routes_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::routes".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_routes_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_52")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "shared-dhcp-lease-time")]
-    fn connect_shared_dhcp_lease_time_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_shared_dhcp_lease_time_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    fn connect_shared_dhcp_lease_time_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_shared_dhcp_lease_time_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::shared-dhcp-lease-time".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_shared_dhcp_lease_time_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::shared-dhcp-lease-time".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_shared_dhcp_lease_time_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1263,14 +1768,27 @@ pub trait SettingIPConfigExt: IsA<SettingIPConfig> + 'static {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_52")))]
     #[doc(alias = "shared-dhcp-range")]
     fn connect_shared_dhcp_range_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_shared_dhcp_range_trampoline<P: IsA<SettingIPConfig>, F: Fn(&P) + 'static>(this: *mut ffi::NMSettingIPConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_shared_dhcp_range_trampoline<
+            P: IsA<SettingIPConfig>,
+            F: Fn(&P) + 'static,
+        >(
+            this: *mut ffi::NMSettingIPConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(SettingIPConfig::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::shared-dhcp-range".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_shared_dhcp_range_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::shared-dhcp-range".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_shared_dhcp_range_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }

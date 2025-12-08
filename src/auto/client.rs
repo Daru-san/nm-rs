@@ -4,24 +4,33 @@
 // DO NOT EDIT
 #![allow(deprecated)]
 
-use crate::{ffi,ActiveConnection,ClientPermission,ClientPermissionResult,Connection,ConnectivityState,Device,RemoteConnection,State};
 #[cfg(feature = "v1_6")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-use crate::{DnsEntry};
-#[cfg(feature = "v1_12")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-use crate::{Checkpoint,CheckpointCreateFlags};
-#[cfg(feature = "v1_22")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-use crate::{ManagerReloadFlags,Metered};
-#[cfg(feature = "v1_24")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
-use crate::{ClientInstanceFlags,Object,Ternary};
+use crate::DnsEntry;
 #[cfg(feature = "v1_38")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_38")))]
-use crate::{RadioFlags};
-use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_,pin::Pin};
+use crate::RadioFlags;
+use crate::{
+    ActiveConnection, ClientPermission, ClientPermissionResult, Connection, ConnectivityState,
+    Device, RemoteConnection, State, ffi,
+};
+#[cfg(feature = "v1_12")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
+use crate::{Checkpoint, CheckpointCreateFlags};
+#[cfg(feature = "v1_24")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
+use crate::{ClientInstanceFlags, Object, Ternary};
+#[cfg(feature = "v1_22")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
+use crate::{ManagerReloadFlags, Metered};
+use glib::{
+    GString,
+    object::ObjectType as _,
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::{boxed::Box as Box_, pin::Pin};
 
 #[cfg(feature = "gio_v2_22")]
 #[cfg_attr(docsrs, doc(cfg(feature = "gio_v2_22")))]
@@ -61,51 +70,89 @@ impl Client {
         assert_initialized_main_thread!();
         unsafe {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_client_new(cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
-            if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) }
+            let ret =
+                ffi::nm_client_new(cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`Client`] objects.
-            ///
-            /// This method returns an instance of [`ClientBuilder`](crate::builders::ClientBuilder) which can be used to create [`Client`] objects.
-            pub fn builder() -> ClientBuilder {
-                ClientBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`Client`] objects.
+    ///
+    /// This method returns an instance of [`ClientBuilder`](crate::builders::ClientBuilder) which can be used to create [`Client`] objects.
+    pub fn builder() -> ClientBuilder {
+        ClientBuilder::new()
+    }
 
     #[doc(alias = "nm_client_activate_connection_async")]
-    pub fn activate_connection_async<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(&self, connection: Option<&impl IsA<Connection>>, device: Option<&impl IsA<Device>>, specific_object: Option<&str>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn activate_connection_async_trampoline<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn activate_connection_async<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(
+        &self,
+        connection: Option<&impl IsA<Connection>>,
+        device: Option<&impl IsA<Device>>,
+        specific_object: Option<&str>,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn activate_connection_async_trampoline<
+            P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_client_activate_connection_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let ret = ffi::nm_client_activate_connection_finish(
+                _source_object as *mut _,
+                res,
+                &mut error,
+            );
+            let result = if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = activate_connection_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_activate_connection_async(self.to_glib_none().0, connection.map(|p| p.as_ref()).to_glib_none().0, device.map(|p| p.as_ref()).to_glib_none().0, specific_object.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_activate_connection_async(
+                self.to_glib_none().0,
+                connection.map(|p| p.as_ref()).to_glib_none().0,
+                device.map(|p| p.as_ref()).to_glib_none().0,
+                specific_object.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn activate_connection_future(&self, connection: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<ActiveConnection, glib::Error>> + 'static>> {
-
+    pub fn activate_connection_future(
+        &self,
+        connection: Option<&(impl IsA<Connection> + Clone + 'static)>,
+        device: Option<&(impl IsA<Device> + Clone + 'static)>,
+        specific_object: Option<&str>,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<ActiveConnection, glib::Error>> + 'static>>
+    {
         let connection = connection.map(ToOwned::to_owned);
         let device = device.map(ToOwned::to_owned);
         let specific_object = specific_object.map(ToOwned::to_owned);
@@ -134,55 +181,91 @@ impl Client {
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_16")))]
     //pub fn add_and_activate_connection2_future(&self, partial: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>, options: /*Ignored*/&glib::Variant) -> Pin<Box_<dyn std::future::Future<Output = Result<(ActiveConnection, /*Ignored*/Option<glib::Variant>), glib::Error>> + 'static>> {
 
-        //let partial = partial.map(ToOwned::to_owned);
-        //let device = device.map(ToOwned::to_owned);
-        //let specific_object = specific_object.map(ToOwned::to_owned);
-        //let options = options.clone();
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.add_and_activate_connection2(
-        //        partial.as_ref().map(::std::borrow::Borrow::borrow),
-        //        device.as_ref().map(::std::borrow::Borrow::borrow),
-        //        specific_object.as_ref().map(::std::borrow::Borrow::borrow),
-        //        &options,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
+    //let partial = partial.map(ToOwned::to_owned);
+    //let device = device.map(ToOwned::to_owned);
+    //let specific_object = specific_object.map(ToOwned::to_owned);
+    //let options = options.clone();
+    //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+    //    obj.add_and_activate_connection2(
+    //        partial.as_ref().map(::std::borrow::Borrow::borrow),
+    //        device.as_ref().map(::std::borrow::Borrow::borrow),
+    //        specific_object.as_ref().map(::std::borrow::Borrow::borrow),
+    //        &options,
+    //        Some(cancellable),
+    //        move |res| {
+    //            send.resolve(res);
+    //        },
+    //    );
+    //}))
     //}
 
     #[doc(alias = "nm_client_add_and_activate_connection_async")]
-    pub fn add_and_activate_connection_async<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(&self, partial: Option<&impl IsA<Connection>>, device: Option<&impl IsA<Device>>, specific_object: Option<&str>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn add_and_activate_connection_async_trampoline<P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn add_and_activate_connection_async<
+        P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static,
+    >(
+        &self,
+        partial: Option<&impl IsA<Connection>>,
+        device: Option<&impl IsA<Device>>,
+        specific_object: Option<&str>,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn add_and_activate_connection_async_trampoline<
+            P: FnOnce(Result<ActiveConnection, glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_client_add_and_activate_connection_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let ret = ffi::nm_client_add_and_activate_connection_finish(
+                _source_object as *mut _,
+                res,
+                &mut error,
+            );
+            let result = if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = add_and_activate_connection_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_add_and_activate_connection_async(self.to_glib_none().0, partial.map(|p| p.as_ref()).to_glib_none().0, device.map(|p| p.as_ref()).to_glib_none().0, specific_object.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_add_and_activate_connection_async(
+                self.to_glib_none().0,
+                partial.map(|p| p.as_ref()).to_glib_none().0,
+                device.map(|p| p.as_ref()).to_glib_none().0,
+                specific_object.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn add_and_activate_connection_future(&self, partial: Option<&(impl IsA<Connection> + Clone + 'static)>, device: Option<&(impl IsA<Device> + Clone + 'static)>, specific_object: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<ActiveConnection, glib::Error>> + 'static>> {
-
+    pub fn add_and_activate_connection_future(
+        &self,
+        partial: Option<&(impl IsA<Connection> + Clone + 'static)>,
+        device: Option<&(impl IsA<Device> + Clone + 'static)>,
+        specific_object: Option<&str>,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<ActiveConnection, glib::Error>> + 'static>>
+    {
         let partial = partial.map(ToOwned::to_owned);
         let device = device.map(ToOwned::to_owned);
         let specific_object = specific_object.map(ToOwned::to_owned);
@@ -211,153 +294,236 @@ impl Client {
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_20")))]
     //pub fn add_connection2_future(&self, settings: /*Ignored*/&glib::Variant, flags: SettingsAddConnection2Flags, args: /*Ignored*/Option<&glib::Variant>, ignore_out_result: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<(RemoteConnection, /*Ignored*/Option<glib::Variant>), glib::Error>> + 'static>> {
 
-        //let settings = settings.clone();
-        //let args = args.map(ToOwned::to_owned);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.add_connection2(
-        //        &settings,
-        //        flags,
-        //        args.as_ref().map(::std::borrow::Borrow::borrow),
-        //        ignore_out_result,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
+    //let settings = settings.clone();
+    //let args = args.map(ToOwned::to_owned);
+    //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+    //    obj.add_connection2(
+    //        &settings,
+    //        flags,
+    //        args.as_ref().map(::std::borrow::Borrow::borrow),
+    //        ignore_out_result,
+    //        Some(cancellable),
+    //        move |res| {
+    //            send.resolve(res);
+    //        },
+    //    );
+    //}))
     //}
 
     #[doc(alias = "nm_client_add_connection_async")]
-    pub fn add_connection_async<P: FnOnce(Result<RemoteConnection, glib::Error>) + 'static>(&self, connection: &impl IsA<Connection>, save_to_disk: bool, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn add_connection_async_trampoline<P: FnOnce(Result<RemoteConnection, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn add_connection_async<P: FnOnce(Result<RemoteConnection, glib::Error>) + 'static>(
+        &self,
+        connection: &impl IsA<Connection>,
+        save_to_disk: bool,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn add_connection_async_trampoline<
+            P: FnOnce(Result<RemoteConnection, glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_client_add_connection_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let ret =
+                ffi::nm_client_add_connection_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = add_connection_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_add_connection_async(self.to_glib_none().0, connection.as_ref().to_glib_none().0, save_to_disk.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_add_connection_async(
+                self.to_glib_none().0,
+                connection.as_ref().to_glib_none().0,
+                save_to_disk.into_glib(),
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn add_connection_future(&self, connection: &(impl IsA<Connection> + Clone + 'static), save_to_disk: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<RemoteConnection, glib::Error>> + 'static>> {
-
+    pub fn add_connection_future(
+        &self,
+        connection: &(impl IsA<Connection> + Clone + 'static),
+        save_to_disk: bool,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<RemoteConnection, glib::Error>> + 'static>>
+    {
         let connection = connection.clone();
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.add_connection_async(
-                &connection,
-                save_to_disk,
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            obj.add_connection_async(&connection, save_to_disk, Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_check_connectivity")]
-    pub fn check_connectivity(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<ConnectivityState, glib::Error> {
+    pub fn check_connectivity(
+        &self,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+    ) -> Result<ConnectivityState, glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_client_check_connectivity(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
-            if error.is_null() { Ok(from_glib(ret)) } else { Err(from_glib_full(error)) }
+            let ret = ffi::nm_client_check_connectivity(
+                self.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                &mut error,
+            );
+            if error.is_null() {
+                Ok(from_glib(ret))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "nm_client_check_connectivity_async")]
-    pub fn check_connectivity_async<P: FnOnce(Result<ConnectivityState, glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn check_connectivity_async_trampoline<P: FnOnce(Result<ConnectivityState, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn check_connectivity_async<P: FnOnce(Result<ConnectivityState, glib::Error>) + 'static>(
+        &self,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn check_connectivity_async_trampoline<
+            P: FnOnce(Result<ConnectivityState, glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_client_check_connectivity_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(from_glib(ret)) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let ret =
+                ffi::nm_client_check_connectivity_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() {
+                Ok(from_glib(ret))
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = check_connectivity_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_check_connectivity_async(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_check_connectivity_async(
+                self.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn check_connectivity_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<ConnectivityState, glib::Error>> + 'static>> {
-
+    pub fn check_connectivity_future(
+        &self,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<ConnectivityState, glib::Error>> + 'static>>
+    {
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.check_connectivity_async(
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            obj.check_connectivity_async(Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_client_checkpoint_adjust_rollback_timeout")]
-    pub fn checkpoint_adjust_rollback_timeout<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, checkpoint_path: &str, add_timeout: u32, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn checkpoint_adjust_rollback_timeout_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn checkpoint_adjust_rollback_timeout<P: FnOnce(Result<(), glib::Error>) + 'static>(
+        &self,
+        checkpoint_path: &str,
+        add_timeout: u32,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn checkpoint_adjust_rollback_timeout_trampoline<
+            P: FnOnce(Result<(), glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
-            ffi::nm_client_checkpoint_adjust_rollback_timeout_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            ffi::nm_client_checkpoint_adjust_rollback_timeout_finish(
+                _source_object as *mut _,
+                res,
+                &mut error,
+            );
+            let result = if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = checkpoint_adjust_rollback_timeout_trampoline::<P>;
         unsafe {
-            ffi::nm_client_checkpoint_adjust_rollback_timeout(self.to_glib_none().0, checkpoint_path.to_glib_none().0, add_timeout, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_checkpoint_adjust_rollback_timeout(
+                self.to_glib_none().0,
+                checkpoint_path.to_glib_none().0,
+                add_timeout,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn checkpoint_adjust_rollback_timeout_future(&self, checkpoint_path: &str, add_timeout: u32) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
-
+    pub fn checkpoint_adjust_rollback_timeout_future(
+        &self,
+        checkpoint_path: &str,
+        add_timeout: u32,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
         let checkpoint_path = String::from(checkpoint_path);
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
             obj.checkpoint_adjust_rollback_timeout(
@@ -374,38 +540,69 @@ impl Client {
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_client_checkpoint_create")]
-    pub fn checkpoint_create<P: FnOnce(Result<Checkpoint, glib::Error>) + 'static>(&self, devices: &[Device], rollback_timeout: u32, flags: CheckpointCreateFlags, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn checkpoint_create_trampoline<P: FnOnce(Result<Checkpoint, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn checkpoint_create<P: FnOnce(Result<Checkpoint, glib::Error>) + 'static>(
+        &self,
+        devices: &[Device],
+        rollback_timeout: u32,
+        flags: CheckpointCreateFlags,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn checkpoint_create_trampoline<
+            P: FnOnce(Result<Checkpoint, glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
-            let ret = ffi::nm_client_checkpoint_create_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let ret =
+                ffi::nm_client_checkpoint_create_finish(_source_object as *mut _, res, &mut error);
+            let result = if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = checkpoint_create_trampoline::<P>;
         unsafe {
-            ffi::nm_client_checkpoint_create(self.to_glib_none().0, devices.to_glib_none().0, rollback_timeout, flags.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_checkpoint_create(
+                self.to_glib_none().0,
+                devices.to_glib_none().0,
+                rollback_timeout,
+                flags.into_glib(),
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn checkpoint_create_future(&self, devices: &[Device], rollback_timeout: u32, flags: CheckpointCreateFlags) -> Pin<Box_<dyn std::future::Future<Output = Result<Checkpoint, glib::Error>> + 'static>> {
-
+    pub fn checkpoint_create_future(
+        &self,
+        devices: &[Device],
+        rollback_timeout: u32,
+        flags: CheckpointCreateFlags,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<Checkpoint, glib::Error>> + 'static>>
+    {
         let devices = devices.clone();
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
             obj.checkpoint_create(
@@ -423,47 +620,66 @@ impl Client {
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "nm_client_checkpoint_destroy")]
-    pub fn checkpoint_destroy<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, checkpoint_path: &str, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn checkpoint_destroy_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn checkpoint_destroy<P: FnOnce(Result<(), glib::Error>) + 'static>(
+        &self,
+        checkpoint_path: &str,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn checkpoint_destroy_trampoline<
+            P: FnOnce(Result<(), glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
             ffi::nm_client_checkpoint_destroy_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let result = if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = checkpoint_destroy_trampoline::<P>;
         unsafe {
-            ffi::nm_client_checkpoint_destroy(self.to_glib_none().0, checkpoint_path.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_checkpoint_destroy(
+                self.to_glib_none().0,
+                checkpoint_path.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
     #[cfg(feature = "v1_12")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-    pub fn checkpoint_destroy_future(&self, checkpoint_path: &str) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
-
+    pub fn checkpoint_destroy_future(
+        &self,
+        checkpoint_path: &str,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
         let checkpoint_path = String::from(checkpoint_path);
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.checkpoint_destroy(
-                &checkpoint_path,
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            obj.checkpoint_destroy(&checkpoint_path, Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
@@ -479,16 +695,16 @@ impl Client {
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     //pub fn checkpoint_rollback_future(&self, checkpoint_path: &str) -> Pin<Box_<dyn std::future::Future<Output = Result</*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 7 }, glib::Error>> + 'static>> {
 
-        //let checkpoint_path = String::from(checkpoint_path);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.checkpoint_rollback(
-        //        &checkpoint_path,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
+    //let checkpoint_path = String::from(checkpoint_path);
+    //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+    //    obj.checkpoint_rollback(
+    //        &checkpoint_path,
+    //        Some(cancellable),
+    //        move |res| {
+    //            send.resolve(res);
+    //        },
+    //    );
+    //}))
     //}
 
     #[cfg(feature = "v1_10")]
@@ -496,7 +712,9 @@ impl Client {
     #[doc(alias = "nm_client_connectivity_check_get_available")]
     pub fn connectivity_check_get_available(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_client_connectivity_check_get_available(self.to_glib_none().0))
+            from_glib(ffi::nm_client_connectivity_check_get_available(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -505,7 +723,9 @@ impl Client {
     #[doc(alias = "nm_client_connectivity_check_get_enabled")]
     pub fn connectivity_check_get_enabled(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_client_connectivity_check_get_enabled(self.to_glib_none().0))
+            from_glib(ffi::nm_client_connectivity_check_get_enabled(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -514,7 +734,9 @@ impl Client {
     #[doc(alias = "nm_client_connectivity_check_get_uri")]
     pub fn connectivity_check_get_uri(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_client_connectivity_check_get_uri(self.to_glib_none().0))
+            from_glib_none(ffi::nm_client_connectivity_check_get_uri(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -525,7 +747,10 @@ impl Client {
     #[doc(alias = "nm_client_connectivity_check_set_enabled")]
     pub fn connectivity_check_set_enabled(&self, enabled: bool) {
         unsafe {
-            ffi::nm_client_connectivity_check_set_enabled(self.to_glib_none().0, enabled.into_glib());
+            ffi::nm_client_connectivity_check_set_enabled(
+                self.to_glib_none().0,
+                enabled.into_glib(),
+            );
         }
     }
 
@@ -541,25 +766,25 @@ impl Client {
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     //pub fn dbus_call_future(&self, object_path: &str, interface_name: &str, method_name: &str, parameters: /*Ignored*/Option<&glib::Variant>, reply_type: /*Ignored*/Option<&glib::VariantTy>, timeout_msec: i32) -> Pin<Box_<dyn std::future::Future<Output = Result</*Ignored*/glib::Variant, glib::Error>> + 'static>> {
 
-        //let object_path = String::from(object_path);
-        //let interface_name = String::from(interface_name);
-        //let method_name = String::from(method_name);
-        //let parameters = parameters.map(ToOwned::to_owned);
-        //let reply_type = reply_type.map(ToOwned::to_owned);
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.dbus_call(
-        //        &object_path,
-        //        &interface_name,
-        //        &method_name,
-        //        parameters.as_ref().map(::std::borrow::Borrow::borrow),
-        //        reply_type.as_ref().map(::std::borrow::Borrow::borrow),
-        //        timeout_msec,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
+    //let object_path = String::from(object_path);
+    //let interface_name = String::from(interface_name);
+    //let method_name = String::from(method_name);
+    //let parameters = parameters.map(ToOwned::to_owned);
+    //let reply_type = reply_type.map(ToOwned::to_owned);
+    //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+    //    obj.dbus_call(
+    //        &object_path,
+    //        &interface_name,
+    //        &method_name,
+    //        parameters.as_ref().map(::std::borrow::Borrow::borrow),
+    //        reply_type.as_ref().map(::std::borrow::Borrow::borrow),
+    //        timeout_msec,
+    //        Some(cancellable),
+    //        move |res| {
+    //            send.resolve(res);
+    //        },
+    //    );
+    //}))
     //}
 
     //#[cfg(feature = "v1_24")]
@@ -574,77 +799,109 @@ impl Client {
     //#[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     //pub fn dbus_set_property_future(&self, object_path: &str, interface_name: &str, property_name: &str, value: /*Ignored*/&glib::Variant, timeout_msec: i32) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
 
-        //let object_path = String::from(object_path);
-        //let interface_name = String::from(interface_name);
-        //let property_name = String::from(property_name);
-        //let value = value.clone();
-        //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-        //    obj.dbus_set_property(
-        //        &object_path,
-        //        &interface_name,
-        //        &property_name,
-        //        &value,
-        //        timeout_msec,
-        //        Some(cancellable),
-        //        move |res| {
-        //            send.resolve(res);
-        //        },
-        //    );
-        //}))
+    //let object_path = String::from(object_path);
+    //let interface_name = String::from(interface_name);
+    //let property_name = String::from(property_name);
+    //let value = value.clone();
+    //Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
+    //    obj.dbus_set_property(
+    //        &object_path,
+    //        &interface_name,
+    //        &property_name,
+    //        &value,
+    //        timeout_msec,
+    //        Some(cancellable),
+    //        move |res| {
+    //            send.resolve(res);
+    //        },
+    //    );
+    //}))
     //}
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_deactivate_connection")]
-    pub fn deactivate_connection(&self, active: &impl IsA<ActiveConnection>, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+    pub fn deactivate_connection(
+        &self,
+        active: &impl IsA<ActiveConnection>,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+    ) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_client_deactivate_connection(self.to_glib_none().0, active.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_client_deactivate_connection(
+                self.to_glib_none().0,
+                active.as_ref().to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "nm_client_deactivate_connection_async")]
-    pub fn deactivate_connection_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, active: &impl IsA<ActiveConnection>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn deactivate_connection_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn deactivate_connection_async<P: FnOnce(Result<(), glib::Error>) + 'static>(
+        &self,
+        active: &impl IsA<ActiveConnection>,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn deactivate_connection_async_trampoline<
+            P: FnOnce(Result<(), glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
             ffi::nm_client_deactivate_connection_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let result = if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = deactivate_connection_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_deactivate_connection_async(self.to_glib_none().0, active.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_deactivate_connection_async(
+                self.to_glib_none().0,
+                active.as_ref().to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn deactivate_connection_future(&self, active: &(impl IsA<ActiveConnection> + Clone + 'static)) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
-
+    pub fn deactivate_connection_future(
+        &self,
+        active: &(impl IsA<ActiveConnection> + Clone + 'static),
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
         let active = active.clone();
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.deactivate_connection_async(
-                &active,
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            obj.deactivate_connection_async(&active, Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
@@ -653,7 +910,9 @@ impl Client {
     #[doc(alias = "activating-connection")]
     pub fn activating_connection(&self) -> ActiveConnection {
         unsafe {
-            from_glib_none(ffi::nm_client_get_activating_connection(self.to_glib_none().0))
+            from_glib_none(ffi::nm_client_get_activating_connection(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -662,7 +921,9 @@ impl Client {
     #[doc(alias = "active-connections")]
     pub fn active_connections(&self) -> Vec<ActiveConnection> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_active_connections(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_active_connections(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -673,7 +934,9 @@ impl Client {
     #[doc(alias = "all-devices")]
     pub fn all_devices(&self) -> Vec<Device> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_all_devices(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_all_devices(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -684,7 +947,10 @@ impl Client {
     pub fn capabilities(&self) -> Vec<u32> {
         unsafe {
             let mut length = std::mem::MaybeUninit::uninit();
-            let ret = FromGlibContainer::from_glib_none_num(ffi::nm_client_get_capabilities(self.to_glib_none().0, length.as_mut_ptr()), length.assume_init() as _);
+            let ret = FromGlibContainer::from_glib_none_num(
+                ffi::nm_client_get_capabilities(self.to_glib_none().0, length.as_mut_ptr()),
+                length.assume_init() as _,
+            );
             ret
         }
     }
@@ -695,7 +961,9 @@ impl Client {
     #[doc(alias = "get_checkpoints")]
     pub fn checkpoints(&self) -> Vec<Checkpoint> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_checkpoints(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_checkpoints(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -703,7 +971,10 @@ impl Client {
     #[doc(alias = "get_connection_by_id")]
     pub fn connection_by_id(&self, id: &str) -> RemoteConnection {
         unsafe {
-            from_glib_none(ffi::nm_client_get_connection_by_id(self.to_glib_none().0, id.to_glib_none().0))
+            from_glib_none(ffi::nm_client_get_connection_by_id(
+                self.to_glib_none().0,
+                id.to_glib_none().0,
+            ))
         }
     }
 
@@ -711,7 +982,10 @@ impl Client {
     #[doc(alias = "get_connection_by_path")]
     pub fn connection_by_path(&self, path: &str) -> RemoteConnection {
         unsafe {
-            from_glib_none(ffi::nm_client_get_connection_by_path(self.to_glib_none().0, path.to_glib_none().0))
+            from_glib_none(ffi::nm_client_get_connection_by_path(
+                self.to_glib_none().0,
+                path.to_glib_none().0,
+            ))
         }
     }
 
@@ -719,7 +993,10 @@ impl Client {
     #[doc(alias = "get_connection_by_uuid")]
     pub fn connection_by_uuid(&self, uuid: &str) -> RemoteConnection {
         unsafe {
-            from_glib_none(ffi::nm_client_get_connection_by_uuid(self.to_glib_none().0, uuid.to_glib_none().0))
+            from_glib_none(ffi::nm_client_get_connection_by_uuid(
+                self.to_glib_none().0,
+                uuid.to_glib_none().0,
+            ))
         }
     }
 
@@ -727,16 +1004,16 @@ impl Client {
     #[doc(alias = "get_connections")]
     pub fn connections(&self) -> Vec<RemoteConnection> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_connections(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_connections(
+                self.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_client_get_connectivity")]
     #[doc(alias = "get_connectivity")]
     pub fn connectivity(&self) -> ConnectivityState {
-        unsafe {
-            from_glib(ffi::nm_client_get_connectivity(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_get_connectivity(self.to_glib_none().0)) }
     }
 
     //#[cfg(feature = "v1_22")]
@@ -762,16 +1039,17 @@ impl Client {
     #[doc(alias = "get_dbus_name_owner")]
     #[doc(alias = "dbus-name-owner")]
     pub fn dbus_name_owner(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_client_get_dbus_name_owner(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_client_get_dbus_name_owner(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_client_get_device_by_iface")]
     #[doc(alias = "get_device_by_iface")]
     pub fn device_by_iface(&self, iface: &str) -> Device {
         unsafe {
-            from_glib_none(ffi::nm_client_get_device_by_iface(self.to_glib_none().0, iface.to_glib_none().0))
+            from_glib_none(ffi::nm_client_get_device_by_iface(
+                self.to_glib_none().0,
+                iface.to_glib_none().0,
+            ))
         }
     }
 
@@ -779,7 +1057,10 @@ impl Client {
     #[doc(alias = "get_device_by_path")]
     pub fn device_by_path(&self, object_path: &str) -> Device {
         unsafe {
-            from_glib_none(ffi::nm_client_get_device_by_path(self.to_glib_none().0, object_path.to_glib_none().0))
+            from_glib_none(ffi::nm_client_get_device_by_path(
+                self.to_glib_none().0,
+                object_path.to_glib_none().0,
+            ))
         }
     }
 
@@ -798,7 +1079,9 @@ impl Client {
     #[doc(alias = "dns-configuration")]
     pub fn dns_configuration(&self) -> Vec<DnsEntry> {
         unsafe {
-            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_dns_configuration(self.to_glib_none().0))
+            FromGlibPtrContainer::from_glib_none(ffi::nm_client_get_dns_configuration(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -808,9 +1091,7 @@ impl Client {
     #[doc(alias = "get_dns_mode")]
     #[doc(alias = "dns-mode")]
     pub fn dns_mode(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_client_get_dns_mode(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_client_get_dns_mode(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_6")]
@@ -819,9 +1100,7 @@ impl Client {
     #[doc(alias = "get_dns_rc_manager")]
     #[doc(alias = "dns-rc-manager")]
     pub fn dns_rc_manager(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_client_get_dns_rc_manager(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_client_get_dns_rc_manager(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_24")]
@@ -830,9 +1109,7 @@ impl Client {
     #[doc(alias = "get_instance_flags")]
     #[doc(alias = "instance-flags")]
     pub fn instance_flags(&self) -> ClientInstanceFlags {
-        unsafe {
-            from_glib(ffi::nm_client_get_instance_flags(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_get_instance_flags(self.to_glib_none().0)) }
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
@@ -844,9 +1121,18 @@ impl Client {
             let mut level = std::ptr::null_mut();
             let mut domains = std::ptr::null_mut();
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_client_get_logging(self.to_glib_none().0, &mut level, &mut domains, &mut error);
+            let is_ok = ffi::nm_client_get_logging(
+                self.to_glib_none().0,
+                &mut level,
+                &mut domains,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok((from_glib_full(level), from_glib_full(domains))) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok((from_glib_full(level), from_glib_full(domains)))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -863,18 +1149,14 @@ impl Client {
     #[doc(alias = "nm_client_get_metered")]
     #[doc(alias = "get_metered")]
     pub fn metered(&self) -> Metered {
-        unsafe {
-            from_glib(ffi::nm_client_get_metered(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_get_metered(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_client_get_nm_running")]
     #[doc(alias = "get_nm_running")]
     #[doc(alias = "nm-running")]
     pub fn is_nm_running(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_client_get_nm_running(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_get_nm_running(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_24")]
@@ -883,7 +1165,10 @@ impl Client {
     #[doc(alias = "get_object_by_path")]
     pub fn object_by_path(&self, dbus_path: &str) -> Object {
         unsafe {
-            from_glib_none(ffi::nm_client_get_object_by_path(self.to_glib_none().0, dbus_path.to_glib_none().0))
+            from_glib_none(ffi::nm_client_get_object_by_path(
+                self.to_glib_none().0,
+                dbus_path.to_glib_none().0,
+            ))
         }
     }
 
@@ -891,7 +1176,10 @@ impl Client {
     #[doc(alias = "get_permission_result")]
     pub fn permission_result(&self, permission: ClientPermission) -> ClientPermissionResult {
         unsafe {
-            from_glib(ffi::nm_client_get_permission_result(self.to_glib_none().0, permission.into_glib()))
+            from_glib(ffi::nm_client_get_permission_result(
+                self.to_glib_none().0,
+                permission.into_glib(),
+            ))
         }
     }
 
@@ -901,18 +1189,14 @@ impl Client {
     #[doc(alias = "get_permissions_state")]
     #[doc(alias = "permissions-state")]
     pub fn permissions_state(&self) -> Ternary {
-        unsafe {
-            from_glib(ffi::nm_client_get_permissions_state(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_get_permissions_state(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_client_get_primary_connection")]
     #[doc(alias = "get_primary_connection")]
     #[doc(alias = "primary-connection")]
     pub fn primary_connection(&self) -> ActiveConnection {
-        unsafe {
-            from_glib_none(ffi::nm_client_get_primary_connection(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_client_get_primary_connection(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_38")]
@@ -921,34 +1205,26 @@ impl Client {
     #[doc(alias = "get_radio_flags")]
     #[doc(alias = "radio-flags")]
     pub fn radio_flags(&self) -> RadioFlags {
-        unsafe {
-            from_glib(ffi::nm_client_get_radio_flags(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_get_radio_flags(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_client_get_startup")]
     #[doc(alias = "get_startup")]
     #[doc(alias = "startup")]
     pub fn is_startup(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_client_get_startup(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_get_startup(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_client_get_state")]
     #[doc(alias = "get_state")]
     pub fn state(&self) -> State {
-        unsafe {
-            from_glib(ffi::nm_client_get_state(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_get_state(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_client_get_version")]
     #[doc(alias = "get_version")]
     pub fn version(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_client_get_version(self.to_glib_none().0))
-        }
+        unsafe { glib::GString::from_glib_none(ffi::nm_client_get_version(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_42")]
@@ -959,7 +1235,10 @@ impl Client {
     pub fn version_info(&self) -> Vec<u32> {
         unsafe {
             let mut length = std::mem::MaybeUninit::uninit();
-            let ret = FromGlibContainer::from_glib_none_num(ffi::nm_client_get_version_info(self.to_glib_none().0, length.as_mut_ptr()), length.assume_init() as _);
+            let ret = FromGlibContainer::from_glib_none_num(
+                ffi::nm_client_get_version_info(self.to_glib_none().0, length.as_mut_ptr()),
+                length.assume_init() as _,
+            );
             ret
         }
     }
@@ -967,65 +1246,103 @@ impl Client {
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_load_connections")]
-    pub fn load_connections(&self, filenames: &[&str], cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<glib::GString, glib::Error> {
+    pub fn load_connections(
+        &self,
+        filenames: &[&str],
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+    ) -> Result<glib::GString, glib::Error> {
         unsafe {
             let mut failures = std::ptr::null_mut();
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_client_load_connections(self.to_glib_none().0, filenames.to_glib_none().0, &mut failures, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_client_load_connections(
+                self.to_glib_none().0,
+                filenames.to_glib_none().0,
+                &mut failures,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(from_glib_full(failures)) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(from_glib_full(std::ptr::read(failures)))
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "nm_client_load_connections_async")]
-    pub fn load_connections_async<P: FnOnce(Result<Vec<glib::GString>, glib::Error>) + 'static>(&self, filenames: &[&str], cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn load_connections_async_trampoline<P: FnOnce(Result<Vec<glib::GString>, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn load_connections_async<P: FnOnce(Result<Vec<glib::GString>, glib::Error>) + 'static>(
+        &self,
+        filenames: &[&str],
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn load_connections_async_trampoline<
+            P: FnOnce(Result<Vec<glib::GString>, glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
             let mut failures = std::ptr::null_mut();
-            ffi::nm_client_load_connections_finish(_source_object as *mut _, &mut failures, res, &mut error);
-            let result = if error.is_null() { Ok(FromGlibPtrContainer::from_glib_full(failures)) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            ffi::nm_client_load_connections_finish(
+                _source_object as *mut _,
+                &mut failures,
+                res,
+                &mut error,
+            );
+            let result = if error.is_null() {
+                Ok(FromGlibPtrContainer::from_glib_full(failures))
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = load_connections_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_load_connections_async(self.to_glib_none().0, filenames.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_load_connections_async(
+                self.to_glib_none().0,
+                filenames.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn load_connections_future(&self, filenames: &[&str]) -> Pin<Box_<dyn std::future::Future<Output = Result<Vec<glib::GString>, glib::Error>> + 'static>> {
-
+    pub fn load_connections_future(
+        &self,
+        filenames: &[&str],
+    ) -> Pin<
+        Box_<dyn std::future::Future<Output = Result<Vec<glib::GString>, glib::Error>> + 'static>,
+    > {
         let filenames = filenames.to_vec();
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.load_connections_async(
-                &filenames,
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            obj.load_connections_async(&filenames, Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
     #[doc(alias = "nm_client_networking_get_enabled")]
     pub fn networking_get_enabled(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_client_networking_get_enabled(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_networking_get_enabled(self.to_glib_none().0)) }
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
@@ -1034,154 +1351,243 @@ impl Client {
     pub fn networking_set_enabled(&self, enabled: bool) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_client_networking_set_enabled(self.to_glib_none().0, enabled.into_glib(), &mut error);
+            let is_ok = ffi::nm_client_networking_set_enabled(
+                self.to_glib_none().0,
+                enabled.into_glib(),
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "nm_client_reload")]
-    pub fn reload<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, flags: ManagerReloadFlags, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn reload_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn reload<P: FnOnce(Result<(), glib::Error>) + 'static>(
+        &self,
+        flags: ManagerReloadFlags,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn reload_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
             ffi::nm_client_reload_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let result = if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = reload_trampoline::<P>;
         unsafe {
-            ffi::nm_client_reload(self.to_glib_none().0, flags.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_reload(
+                self.to_glib_none().0,
+                flags.into_glib(),
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
-    pub fn reload_future(&self, flags: ManagerReloadFlags) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
-
+    pub fn reload_future(
+        &self,
+        flags: ManagerReloadFlags,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.reload(
-                flags,
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            obj.reload(flags, Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_reload_connections")]
-    pub fn reload_connections(&self, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+    pub fn reload_connections(
+        &self,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+    ) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_client_reload_connections(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_client_reload_connections(
+                self.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "nm_client_reload_connections_async")]
-    pub fn reload_connections_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn reload_connections_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn reload_connections_async<P: FnOnce(Result<(), glib::Error>) + 'static>(
+        &self,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn reload_connections_async_trampoline<
+            P: FnOnce(Result<(), glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
             ffi::nm_client_reload_connections_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let result = if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = reload_connections_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_reload_connections_async(self.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_reload_connections_async(
+                self.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn reload_connections_future(&self) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
-
+    pub fn reload_connections_future(
+        &self,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.reload_connections_async(
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            obj.reload_connections_async(Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_save_hostname")]
-    pub fn save_hostname(&self, hostname: Option<&str>, cancellable: Option<&impl IsA<gio::Cancellable>>) -> Result<(), glib::Error> {
+    pub fn save_hostname(
+        &self,
+        hostname: Option<&str>,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+    ) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_client_save_hostname(self.to_glib_none().0, hostname.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_client_save_hostname(
+                self.to_glib_none().0,
+                hostname.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "nm_client_save_hostname_async")]
-    pub fn save_hostname_async<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, hostname: Option<&str>, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn save_hostname_async_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+    pub fn save_hostname_async<P: FnOnce(Result<(), glib::Error>) + 'static>(
+        &self,
+        hostname: Option<&str>,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn save_hostname_async_trampoline<
+            P: FnOnce(Result<(), glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
             ffi::nm_client_save_hostname_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let result = if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = save_hostname_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_save_hostname_async(self.to_glib_none().0, hostname.to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_save_hostname_async(
+                self.to_glib_none().0,
+                hostname.to_glib_none().0,
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn save_hostname_future(&self, hostname: Option<&str>) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
-
+    pub fn save_hostname_future(
+        &self,
+        hostname: Option<&str>,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
         let hostname = hostname.map(ToOwned::to_owned);
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
             obj.save_hostname_async(
@@ -1197,58 +1603,90 @@ impl Client {
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[allow(deprecated)]
     #[doc(alias = "nm_client_set_logging")]
-    pub fn set_logging(&self, level: Option<&str>, domains: Option<&str>) -> Result<(), glib::Error> {
+    pub fn set_logging(
+        &self,
+        level: Option<&str>,
+        domains: Option<&str>,
+    ) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_client_set_logging(self.to_glib_none().0, level.to_glib_none().0, domains.to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_client_set_logging(
+                self.to_glib_none().0,
+                level.to_glib_none().0,
+                domains.to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "nm_client_wait_shutdown")]
-    pub fn wait_shutdown<P: FnOnce(Result<(), glib::Error>) + 'static>(&self, integrate_maincontext: bool, cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn wait_shutdown_trampoline<P: FnOnce(Result<(), glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
-            let mut error = std::ptr::null_mut();
-            ffi::nm_client_wait_shutdown_finish(_source_object as *mut _, res, &mut error);
-            let result = if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+    pub fn wait_shutdown<P: FnOnce(Result<(), glib::Error>) + 'static>(
+        &self,
+        integrate_maincontext: bool,
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn wait_shutdown_trampoline<
+            P: FnOnce(Result<(), glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
+            let mut error: *mut glib::ffi::GError = std::ptr::null_mut();
+            ffi::nm_client_wait_shutdown_finish(res, &mut error);
+            let result = if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = wait_shutdown_trampoline::<P>;
         unsafe {
-            ffi::nm_client_wait_shutdown(self.to_glib_none().0, integrate_maincontext.into_glib(), cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_wait_shutdown(
+                self.to_glib_none().0,
+                integrate_maincontext.into_glib(),
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-    pub fn wait_shutdown_future(&self, integrate_maincontext: bool) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
-
+    pub fn wait_shutdown_future(
+        &self,
+        integrate_maincontext: bool,
+    ) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>> {
         Box_::pin(gio::GioFuture::new(self, move |obj, cancellable, send| {
-            obj.wait_shutdown(
-                integrate_maincontext,
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            obj.wait_shutdown(integrate_maincontext, Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
@@ -1256,9 +1694,7 @@ impl Client {
     #[allow(deprecated)]
     #[doc(alias = "nm_client_wimax_get_enabled")]
     pub fn wimax_get_enabled(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_client_wimax_get_enabled(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_wimax_get_enabled(self.to_glib_none().0)) }
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
@@ -1266,7 +1702,9 @@ impl Client {
     #[doc(alias = "nm_client_wimax_hardware_get_enabled")]
     pub fn wimax_hardware_get_enabled(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_client_wimax_hardware_get_enabled(self.to_glib_none().0))
+            from_glib(ffi::nm_client_wimax_hardware_get_enabled(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -1281,15 +1719,15 @@ impl Client {
 
     #[doc(alias = "nm_client_wireless_get_enabled")]
     pub fn wireless_get_enabled(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_client_wireless_get_enabled(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_wireless_get_enabled(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_client_wireless_hardware_get_enabled")]
     pub fn wireless_hardware_get_enabled(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_client_wireless_hardware_get_enabled(self.to_glib_none().0))
+            from_glib(ffi::nm_client_wireless_hardware_get_enabled(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -1304,15 +1742,15 @@ impl Client {
 
     #[doc(alias = "nm_client_wwan_get_enabled")]
     pub fn wwan_get_enabled(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_client_wwan_get_enabled(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_client_wwan_get_enabled(self.to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_client_wwan_hardware_get_enabled")]
     pub fn wwan_hardware_get_enabled(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_client_wwan_hardware_get_enabled(self.to_glib_none().0))
+            from_glib(ffi::nm_client_wwan_hardware_get_enabled(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -1342,7 +1780,11 @@ impl Client {
 
     #[doc(alias = "connectivity-check-enabled")]
     pub fn set_connectivity_check_enabled(&self, connectivity_check_enabled: bool) {
-        ObjectExt::set_property(self,"connectivity-check-enabled", connectivity_check_enabled)
+        ObjectExt::set_property(
+            self,
+            "connectivity-check-enabled",
+            connectivity_check_enabled,
+        )
     }
 
     #[cfg(feature = "v1_22")]
@@ -1360,7 +1802,7 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "instance-flags")]
     pub fn set_instance_flags(&self, instance_flags: u32) {
-        ObjectExt::set_property(self,"instance-flags", instance_flags)
+        ObjectExt::set_property(self, "instance-flags", instance_flags)
     }
 
     #[cfg(not(feature = "v1_22"))]
@@ -1376,7 +1818,7 @@ impl Client {
 
     #[doc(alias = "networking-enabled")]
     pub fn set_networking_enabled(&self, networking_enabled: bool) {
-        ObjectExt::set_property(self,"networking-enabled", networking_enabled)
+        ObjectExt::set_property(self, "networking-enabled", networking_enabled)
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
@@ -1388,7 +1830,7 @@ impl Client {
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[doc(alias = "wimax-enabled")]
     pub fn set_wimax_enabled(&self, wimax_enabled: bool) {
-        ObjectExt::set_property(self,"wimax-enabled", wimax_enabled)
+        ObjectExt::set_property(self, "wimax-enabled", wimax_enabled)
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
@@ -1404,7 +1846,7 @@ impl Client {
 
     #[doc(alias = "wireless-enabled")]
     pub fn set_wireless_enabled(&self, wireless_enabled: bool) {
-        ObjectExt::set_property(self,"wireless-enabled", wireless_enabled)
+        ObjectExt::set_property(self, "wireless-enabled", wireless_enabled)
     }
 
     #[doc(alias = "wireless-hardware-enabled")]
@@ -1419,7 +1861,7 @@ impl Client {
 
     #[doc(alias = "wwan-enabled")]
     pub fn set_wwan_enabled(&self, wwan_enabled: bool) {
-        ObjectExt::set_property(self,"wwan-enabled", wwan_enabled)
+        ObjectExt::set_property(self, "wwan-enabled", wwan_enabled)
     }
 
     #[doc(alias = "wwan-hardware-enabled")]
@@ -1428,188 +1870,355 @@ impl Client {
     }
 
     #[doc(alias = "nm_client_new_async")]
-    pub fn new_async<P: FnOnce(Result<Client, glib::Error>) + 'static>(cancellable: Option<&impl IsA<gio::Cancellable>>, callback: P) {
+    pub fn new_async<P: FnOnce(Result<Client, glib::Error>) + 'static>(
+        cancellable: Option<&impl IsA<gio::Cancellable>>,
+        callback: P,
+    ) {
         assert_initialized_main_thread!();
-        
-                let main_context = glib::MainContext::ref_thread_default();
-                let is_main_context_owner = main_context.is_owner();
-                let has_acquired_main_context = (!is_main_context_owner)
-                    .then(|| main_context.acquire().ok())
-                    .flatten();
-                assert!(
-                    is_main_context_owner || has_acquired_main_context.is_some(),
-                    "Async operations only allowed if the thread is owning the MainContext"
-                );
-        
-        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::new(glib::thread_guard::ThreadGuard::new(callback));
-        unsafe extern "C" fn new_async_trampoline<P: FnOnce(Result<Client, glib::Error>) + 'static>(_source_object: *mut glib::gobject_ffi::GObject, res: *mut gio::ffi::GAsyncResult, user_data: glib::ffi::gpointer) {
+
+        let main_context = glib::MainContext::ref_thread_default();
+        let is_main_context_owner = main_context.is_owner();
+        let has_acquired_main_context = (!is_main_context_owner)
+            .then(|| main_context.acquire().ok())
+            .flatten();
+        assert!(
+            is_main_context_owner || has_acquired_main_context.is_some(),
+            "Async operations only allowed if the thread is owning the MainContext"
+        );
+
+        let user_data: Box_<glib::thread_guard::ThreadGuard<P>> =
+            Box_::new(glib::thread_guard::ThreadGuard::new(callback));
+        unsafe extern "C" fn new_async_trampoline<
+            P: FnOnce(Result<Client, glib::Error>) + 'static,
+        >(
+            _source_object: *mut glib::gobject_ffi::GObject,
+            res: *mut gio::ffi::GAsyncResult,
+            user_data: glib::ffi::gpointer,
+        ) {
             let mut error = std::ptr::null_mut();
             let ret = ffi::nm_client_new_finish(res, &mut error);
-            let result = if error.is_null() { Ok(from_glib_full(ret)) } else { Err(from_glib_full(error)) };
-            let callback: Box_<glib::thread_guard::ThreadGuard<P>> = Box_::from_raw(user_data as *mut _);
+            let result = if error.is_null() {
+                Ok(from_glib_full(ret))
+            } else {
+                Err(from_glib_full(error))
+            };
+            let callback: Box_<glib::thread_guard::ThreadGuard<P>> =
+                Box_::from_raw(user_data as *mut _);
             let callback: P = callback.into_inner();
             callback(result);
         }
         let callback = new_async_trampoline::<P>;
         unsafe {
-            ffi::nm_client_new_async(cancellable.map(|p| p.as_ref()).to_glib_none().0, Some(callback), Box_::into_raw(user_data) as *mut _);
+            ffi::nm_client_new_async(
+                cancellable.map(|p| p.as_ref()).to_glib_none().0,
+                Some(callback),
+                Box_::into_raw(user_data) as *mut _,
+            );
         }
     }
 
-    
-    pub fn new_future() -> Pin<Box_<dyn std::future::Future<Output = Result<Client, glib::Error>> + 'static>> {
-
+    pub fn new_future()
+    -> Pin<Box_<dyn std::future::Future<Output = Result<Client, glib::Error>> + 'static>> {
         skip_assert_initialized!();
         Box_::pin(gio::GioFuture::new(&(), move |_obj, cancellable, send| {
-            Self::new_async(
-                Some(cancellable),
-                move |res| {
-                    send.resolve(res);
-                },
-            );
+            Self::new_async(Some(cancellable), move |res| {
+                send.resolve(res);
+            });
         }))
     }
 
     #[doc(alias = "active-connection-added")]
-    pub fn connect_active_connection_added<F: Fn(&Self, &ActiveConnection) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn active_connection_added_trampoline<F: Fn(&Client, &ActiveConnection) + 'static>(this: *mut ffi::NMClient, active_connection: *mut ffi::NMActiveConnection, f: glib::ffi::gpointer) {
+    pub fn connect_active_connection_added<F: Fn(&Self, &ActiveConnection) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn active_connection_added_trampoline<
+            F: Fn(&Client, &ActiveConnection) + 'static,
+        >(
+            this: *mut ffi::NMClient,
+            active_connection: *mut ffi::NMActiveConnection,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
-            f(&from_glib_borrow(this), &from_glib_borrow(active_connection))
+            f(
+                &from_glib_borrow(this),
+                &from_glib_borrow(active_connection),
+            )
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"active-connection-added".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(active_connection_added_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"active-connection-added".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    active_connection_added_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "active-connection-removed")]
-    pub fn connect_active_connection_removed<F: Fn(&Self, &ActiveConnection) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn active_connection_removed_trampoline<F: Fn(&Client, &ActiveConnection) + 'static>(this: *mut ffi::NMClient, active_connection: *mut ffi::NMActiveConnection, f: glib::ffi::gpointer) {
+    pub fn connect_active_connection_removed<F: Fn(&Self, &ActiveConnection) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn active_connection_removed_trampoline<
+            F: Fn(&Client, &ActiveConnection) + 'static,
+        >(
+            this: *mut ffi::NMClient,
+            active_connection: *mut ffi::NMActiveConnection,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
-            f(&from_glib_borrow(this), &from_glib_borrow(active_connection))
+            f(
+                &from_glib_borrow(this),
+                &from_glib_borrow(active_connection),
+            )
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"active-connection-removed".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(active_connection_removed_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"active-connection-removed".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    active_connection_removed_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "any-device-added")]
-    pub fn connect_any_device_added<F: Fn(&Self, &Device) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn any_device_added_trampoline<F: Fn(&Client, &Device) + 'static>(this: *mut ffi::NMClient, device: *mut ffi::NMDevice, f: glib::ffi::gpointer) {
+    pub fn connect_any_device_added<F: Fn(&Self, &Device) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn any_device_added_trampoline<F: Fn(&Client, &Device) + 'static>(
+            this: *mut ffi::NMClient,
+            device: *mut ffi::NMDevice,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this), &from_glib_borrow(device))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"any-device-added".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(any_device_added_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"any-device-added".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    any_device_added_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "any-device-removed")]
-    pub fn connect_any_device_removed<F: Fn(&Self, &Device) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn any_device_removed_trampoline<F: Fn(&Client, &Device) + 'static>(this: *mut ffi::NMClient, device: *mut ffi::NMDevice, f: glib::ffi::gpointer) {
+    pub fn connect_any_device_removed<F: Fn(&Self, &Device) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn any_device_removed_trampoline<F: Fn(&Client, &Device) + 'static>(
+            this: *mut ffi::NMClient,
+            device: *mut ffi::NMDevice,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this), &from_glib_borrow(device))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"any-device-removed".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(any_device_removed_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"any-device-removed".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    any_device_removed_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "connection-added")]
-    pub fn connect_connection_added<F: Fn(&Self, &RemoteConnection) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn connection_added_trampoline<F: Fn(&Client, &RemoteConnection) + 'static>(this: *mut ffi::NMClient, connection: *mut ffi::NMRemoteConnection, f: glib::ffi::gpointer) {
+    pub fn connect_connection_added<F: Fn(&Self, &RemoteConnection) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn connection_added_trampoline<
+            F: Fn(&Client, &RemoteConnection) + 'static,
+        >(
+            this: *mut ffi::NMClient,
+            connection: *mut ffi::NMRemoteConnection,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this), &from_glib_borrow(connection))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"connection-added".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(connection_added_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"connection-added".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    connection_added_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "connection-removed")]
-    pub fn connect_connection_removed<F: Fn(&Self, &RemoteConnection) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn connection_removed_trampoline<F: Fn(&Client, &RemoteConnection) + 'static>(this: *mut ffi::NMClient, connection: *mut ffi::NMRemoteConnection, f: glib::ffi::gpointer) {
+    pub fn connect_connection_removed<F: Fn(&Self, &RemoteConnection) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn connection_removed_trampoline<
+            F: Fn(&Client, &RemoteConnection) + 'static,
+        >(
+            this: *mut ffi::NMClient,
+            connection: *mut ffi::NMRemoteConnection,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this), &from_glib_borrow(connection))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"connection-removed".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(connection_removed_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"connection-removed".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    connection_removed_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "device-added")]
     pub fn connect_device_added<F: Fn(&Self, &Device) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn device_added_trampoline<F: Fn(&Client, &Device) + 'static>(this: *mut ffi::NMClient, device: *mut ffi::NMDevice, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn device_added_trampoline<F: Fn(&Client, &Device) + 'static>(
+            this: *mut ffi::NMClient,
+            device: *mut ffi::NMDevice,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this), &from_glib_borrow(device))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"device-added".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(device_added_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"device-added".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    device_added_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "device-removed")]
     pub fn connect_device_removed<F: Fn(&Self, &Device) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn device_removed_trampoline<F: Fn(&Client, &Device) + 'static>(this: *mut ffi::NMClient, device: *mut ffi::NMDevice, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn device_removed_trampoline<F: Fn(&Client, &Device) + 'static>(
+            this: *mut ffi::NMClient,
+            device: *mut ffi::NMDevice,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this), &from_glib_borrow(device))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"device-removed".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(device_removed_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"device-removed".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    device_removed_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "permission-changed")]
-    pub fn connect_permission_changed<F: Fn(&Self, u32, u32) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn permission_changed_trampoline<F: Fn(&Client, u32, u32) + 'static>(this: *mut ffi::NMClient, permission: std::ffi::c_uint, result: std::ffi::c_uint, f: glib::ffi::gpointer) {
+    pub fn connect_permission_changed<F: Fn(&Self, u32, u32) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn permission_changed_trampoline<F: Fn(&Client, u32, u32) + 'static>(
+            this: *mut ffi::NMClient,
+            permission: std::ffi::c_uint,
+            result: std::ffi::c_uint,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this), permission, result)
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"permission-changed".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(permission_changed_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"permission-changed".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    permission_changed_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "activating-connection")]
-    pub fn connect_activating_connection_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_activating_connection_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_activating_connection_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_activating_connection_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::activating-connection".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_activating_connection_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::activating-connection".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_activating_connection_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "active-connections")]
-    pub fn connect_active_connections_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_active_connections_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_active_connections_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_active_connections_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::active-connections".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_active_connections_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::active-connections".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_active_connections_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1617,27 +2226,47 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "all-devices")]
     pub fn connect_all_devices_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_all_devices_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_all_devices_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::all-devices".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_all_devices_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::all-devices".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_all_devices_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "can-modify")]
     pub fn connect_can_modify_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_can_modify_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_can_modify_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::can-modify".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_can_modify_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::can-modify".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_can_modify_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1645,14 +2274,24 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "capabilities")]
     pub fn connect_capabilities_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_capabilities_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_capabilities_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::capabilities".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_capabilities_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::capabilities".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_capabilities_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1660,81 +2299,154 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
     #[doc(alias = "checkpoints")]
     pub fn connect_checkpoints_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_checkpoints_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_checkpoints_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::checkpoints".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_checkpoints_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::checkpoints".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_checkpoints_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "connections")]
     pub fn connect_connections_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_connections_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_connections_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::connections".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_connections_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::connections".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_connections_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "connectivity")]
     pub fn connect_connectivity_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_connectivity_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_connectivity_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::connectivity".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_connectivity_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::connectivity".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_connectivity_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "connectivity-check-available")]
-    pub fn connect_connectivity_check_available_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_connectivity_check_available_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_connectivity_check_available_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_connectivity_check_available_trampoline<
+            F: Fn(&Client) + 'static,
+        >(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::connectivity-check-available".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_connectivity_check_available_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::connectivity-check-available".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_connectivity_check_available_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "connectivity-check-enabled")]
-    pub fn connect_connectivity_check_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_connectivity_check_enabled_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_connectivity_check_enabled_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_connectivity_check_enabled_trampoline<
+            F: Fn(&Client) + 'static,
+        >(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::connectivity-check-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_connectivity_check_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::connectivity-check-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_connectivity_check_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "connectivity-check-uri")]
-    pub fn connect_connectivity_check_uri_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_connectivity_check_uri_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_connectivity_check_uri_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_connectivity_check_uri_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::connectivity-check-uri".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_connectivity_check_uri_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::connectivity-check-uri".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_connectivity_check_uri_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1742,42 +2454,75 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     #[doc(alias = "dbus-name-owner")]
     pub fn connect_dbus_name_owner_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dbus_name_owner_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dbus_name_owner_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dbus-name-owner".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dbus_name_owner_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dbus-name-owner".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dbus_name_owner_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "devices")]
     pub fn connect_devices_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_devices_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_devices_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::devices".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_devices_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::devices".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_devices_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_6")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "dns-configuration")]
-    pub fn connect_dns_configuration_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dns_configuration_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_dns_configuration_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_dns_configuration_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dns-configuration".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dns_configuration_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dns-configuration".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dns_configuration_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1785,14 +2530,24 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "dns-mode")]
     pub fn connect_dns_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dns_mode_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dns_mode_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dns-mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dns_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dns-mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dns_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1800,27 +2555,47 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
     #[doc(alias = "dns-rc-manager")]
     pub fn connect_dns_rc_manager_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_dns_rc_manager_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_dns_rc_manager_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::dns-rc-manager".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_dns_rc_manager_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::dns-rc-manager".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_dns_rc_manager_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "hostname")]
     pub fn connect_hostname_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_hostname_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_hostname_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::hostname".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_hostname_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::hostname".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_hostname_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1828,14 +2603,24 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "instance-flags")]
     pub fn connect_instance_flags_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_instance_flags_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_instance_flags_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::instance-flags".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_instance_flags_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::instance-flags".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_instance_flags_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1843,68 +2628,127 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "metered")]
     pub fn connect_metered_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_metered_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_metered_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::metered".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_metered_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::metered".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_metered_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "networking-enabled")]
-    pub fn connect_networking_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_networking_enabled_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_networking_enabled_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_networking_enabled_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::networking-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_networking_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::networking-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_networking_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "nm-running")]
     pub fn connect_nm_running_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_nm_running_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_nm_running_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::nm-running".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_nm_running_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::nm-running".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_nm_running_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "permissions-state")]
-    pub fn connect_permissions_state_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_permissions_state_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_permissions_state_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_permissions_state_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::permissions-state".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_permissions_state_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::permissions-state".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_permissions_state_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "primary-connection")]
-    pub fn connect_primary_connection_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_primary_connection_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_primary_connection_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_primary_connection_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::primary-connection".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_primary_connection_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::primary-connection".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_primary_connection_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1912,53 +2756,93 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_38")))]
     #[doc(alias = "radio-flags")]
     pub fn connect_radio_flags_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_radio_flags_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_radio_flags_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::radio-flags".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_radio_flags_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::radio-flags".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_radio_flags_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "startup")]
     pub fn connect_startup_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_startup_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_startup_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::startup".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_startup_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::startup".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_startup_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "state")]
     pub fn connect_state_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_state_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_state_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::state".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_state_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::state".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_state_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "version")]
     pub fn connect_version_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_version_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_version_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::version".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_version_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::version".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_version_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -1966,155 +2850,254 @@ impl Client {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "version-info")]
     pub fn connect_version_info_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_version_info_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_version_info_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::version-info".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_version_info_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::version-info".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_version_info_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[doc(alias = "wimax-enabled")]
     pub fn connect_wimax_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wimax_enabled_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_wimax_enabled_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wimax-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wimax_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wimax-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wimax_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     #[doc(alias = "wimax-hardware-enabled")]
-    pub fn connect_wimax_hardware_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wimax_hardware_enabled_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_wimax_hardware_enabled_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_wimax_hardware_enabled_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wimax-hardware-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wimax_hardware_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wimax-hardware-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wimax_hardware_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "wireless-enabled")]
     pub fn connect_wireless_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wireless_enabled_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_wireless_enabled_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wireless-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wireless_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wireless-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wireless_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "wireless-hardware-enabled")]
-    pub fn connect_wireless_hardware_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wireless_hardware_enabled_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_wireless_hardware_enabled_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_wireless_hardware_enabled_trampoline<
+            F: Fn(&Client) + 'static,
+        >(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wireless-hardware-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wireless_hardware_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wireless-hardware-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wireless_hardware_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "wwan-enabled")]
     pub fn connect_wwan_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wwan_enabled_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_wwan_enabled_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wwan-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wwan_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wwan-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wwan_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "wwan-hardware-enabled")]
-    pub fn connect_wwan_hardware_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_wwan_hardware_enabled_trampoline<F: Fn(&Client) + 'static>(this: *mut ffi::NMClient, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_wwan_hardware_enabled_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_wwan_hardware_enabled_trampoline<F: Fn(&Client) + 'static>(
+            this: *mut ffi::NMClient,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::wwan-hardware-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_wwan_hardware_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::wwan-hardware-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_wwan_hardware_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
 
 impl Default for Client {
-                     fn default() -> Self {
-                         glib::object::Object::new::<Self>()
-                     }
-                 }
+    fn default() -> Self {
+        glib::object::Object::new::<Self>()
+    }
+}
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`Client`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`Client`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct ClientBuilder {
-            builder: glib::object::ObjectBuilder<'static, Client>,
+    builder: glib::object::ObjectBuilder<'static, Client>,
+}
+
+impl ClientBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-        impl ClientBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+    pub fn connectivity_check_enabled(self, connectivity_check_enabled: bool) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("connectivity-check-enabled", connectivity_check_enabled),
         }
+    }
 
-                            pub fn connectivity_check_enabled(self, connectivity_check_enabled: bool) -> Self {
-                            Self { builder: self.builder.property("connectivity-check-enabled", connectivity_check_enabled), }
-                        }
-
-                        //    #[cfg(feature = "v1_22")]
+    //    #[cfg(feature = "v1_22")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_22")))]
     //pub fn dbus_connection(self, dbus_connection: /*Ignored*/&gio::DBusConnection) -> Self {
-                        //    Self { builder: self.builder.property("dbus-connection", dbus_connection), }
-                        //}
-
-                            #[cfg(feature = "v1_24")]
+    //    Self { builder: self.builder.property("dbus-connection", dbus_connection), }
+    //}
+    #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn instance_flags(self, instance_flags: u32) -> Self {
-                            Self { builder: self.builder.property("instance-flags", instance_flags), }
-                        }
+        Self {
+            builder: self.builder.property("instance-flags", instance_flags),
+        }
+    }
 
-                            pub fn networking_enabled(self, networking_enabled: bool) -> Self {
-                            Self { builder: self.builder.property("networking-enabled", networking_enabled), }
-                        }
+    pub fn networking_enabled(self, networking_enabled: bool) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("networking-enabled", networking_enabled),
+        }
+    }
 
-                            #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
+    #[cfg_attr(feature = "v1_22", deprecated = "Since 1.22")]
     pub fn wimax_enabled(self, wimax_enabled: bool) -> Self {
-                            Self { builder: self.builder.property("wimax-enabled", wimax_enabled), }
-                        }
+        Self {
+            builder: self.builder.property("wimax-enabled", wimax_enabled),
+        }
+    }
 
-                            pub fn wireless_enabled(self, wireless_enabled: bool) -> Self {
-                            Self { builder: self.builder.property("wireless-enabled", wireless_enabled), }
-                        }
+    pub fn wireless_enabled(self, wireless_enabled: bool) -> Self {
+        Self {
+            builder: self.builder.property("wireless-enabled", wireless_enabled),
+        }
+    }
 
-                            pub fn wwan_enabled(self, wwan_enabled: bool) -> Self {
-                            Self { builder: self.builder.property("wwan-enabled", wwan_enabled), }
-                        }
+    pub fn wwan_enabled(self, wwan_enabled: bool) -> Self {
+        Self {
+            builder: self.builder.property("wwan-enabled", wwan_enabled),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`Client`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> Client {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

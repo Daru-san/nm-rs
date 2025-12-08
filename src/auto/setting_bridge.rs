@@ -3,12 +3,16 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Setting};
 #[cfg(feature = "v1_18")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-use crate::{BridgeVlan};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::BridgeVlan;
+use crate::{Setting, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSettingBridge")]
@@ -23,19 +27,16 @@ impl SettingBridge {
     #[doc(alias = "nm_setting_bridge_new")]
     pub fn new() -> SettingBridge {
         assert_initialized_main_thread!();
-        unsafe {
-            Setting::from_glib_full(ffi::nm_setting_bridge_new()).unsafe_cast()
-        }
+        unsafe { Setting::from_glib_full(ffi::nm_setting_bridge_new()).unsafe_cast() }
     }
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`SettingBridge`] objects.
-            ///
-            /// This method returns an instance of [`SettingBridgeBuilder`](crate::builders::SettingBridgeBuilder) which can be used to create [`SettingBridge`] objects.
-            pub fn builder() -> SettingBridgeBuilder {
-                SettingBridgeBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`SettingBridge`] objects.
+    ///
+    /// This method returns an instance of [`SettingBridgeBuilder`](crate::builders::SettingBridgeBuilder) which can be used to create [`SettingBridge`] objects.
+    pub fn builder() -> SettingBridgeBuilder {
+        SettingBridgeBuilder::new()
+    }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
@@ -59,18 +60,14 @@ impl SettingBridge {
     #[doc(alias = "get_ageing_time")]
     #[doc(alias = "ageing-time")]
     pub fn ageing_time(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_bridge_get_ageing_time(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_ageing_time(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_bridge_get_forward_delay")]
     #[doc(alias = "get_forward_delay")]
     #[doc(alias = "forward-delay")]
     pub fn forward_delay(&self) -> u16 {
-        unsafe {
-            ffi::nm_setting_bridge_get_forward_delay(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_forward_delay(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_24")]
@@ -80,7 +77,9 @@ impl SettingBridge {
     #[doc(alias = "group-address")]
     pub fn group_address(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_bridge_get_group_address(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_bridge_get_group_address(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -90,18 +89,14 @@ impl SettingBridge {
     #[doc(alias = "get_group_forward_mask")]
     #[doc(alias = "group-forward-mask")]
     pub fn group_forward_mask(&self) -> u16 {
-        unsafe {
-            ffi::nm_setting_bridge_get_group_forward_mask(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_group_forward_mask(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_bridge_get_hello_time")]
     #[doc(alias = "get_hello_time")]
     #[doc(alias = "hello-time")]
     pub fn hello_time(&self) -> u16 {
-        unsafe {
-            ffi::nm_setting_bridge_get_hello_time(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_hello_time(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_bridge_get_mac_address")]
@@ -109,7 +104,9 @@ impl SettingBridge {
     #[doc(alias = "mac-address")]
     pub fn mac_address(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_bridge_get_mac_address(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_bridge_get_mac_address(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -117,9 +114,7 @@ impl SettingBridge {
     #[doc(alias = "get_max_age")]
     #[doc(alias = "max-age")]
     pub fn max_age(&self) -> u16 {
-        unsafe {
-            ffi::nm_setting_bridge_get_max_age(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_max_age(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_26")]
@@ -128,9 +123,7 @@ impl SettingBridge {
     #[doc(alias = "get_multicast_hash_max")]
     #[doc(alias = "multicast-hash-max")]
     pub fn multicast_hash_max(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_bridge_get_multicast_hash_max(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_multicast_hash_max(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_26")]
@@ -139,9 +132,7 @@ impl SettingBridge {
     #[doc(alias = "get_multicast_last_member_count")]
     #[doc(alias = "multicast-last-member-count")]
     pub fn multicast_last_member_count(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_bridge_get_multicast_last_member_count(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_multicast_last_member_count(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_26")]
@@ -150,9 +141,7 @@ impl SettingBridge {
     #[doc(alias = "get_multicast_last_member_interval")]
     #[doc(alias = "multicast-last-member-interval")]
     pub fn multicast_last_member_interval(&self) -> u64 {
-        unsafe {
-            ffi::nm_setting_bridge_get_multicast_last_member_interval(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_multicast_last_member_interval(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_26")]
@@ -161,9 +150,7 @@ impl SettingBridge {
     #[doc(alias = "get_multicast_membership_interval")]
     #[doc(alias = "multicast-membership-interval")]
     pub fn multicast_membership_interval(&self) -> u64 {
-        unsafe {
-            ffi::nm_setting_bridge_get_multicast_membership_interval(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_multicast_membership_interval(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_24")]
@@ -173,7 +160,9 @@ impl SettingBridge {
     #[doc(alias = "multicast-querier")]
     pub fn is_multicast_querier(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_bridge_get_multicast_querier(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_bridge_get_multicast_querier(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -183,9 +172,7 @@ impl SettingBridge {
     #[doc(alias = "get_multicast_querier_interval")]
     #[doc(alias = "multicast-querier-interval")]
     pub fn multicast_querier_interval(&self) -> u64 {
-        unsafe {
-            ffi::nm_setting_bridge_get_multicast_querier_interval(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_multicast_querier_interval(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_26")]
@@ -194,9 +181,7 @@ impl SettingBridge {
     #[doc(alias = "get_multicast_query_interval")]
     #[doc(alias = "multicast-query-interval")]
     pub fn multicast_query_interval(&self) -> u64 {
-        unsafe {
-            ffi::nm_setting_bridge_get_multicast_query_interval(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_multicast_query_interval(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_26")]
@@ -217,7 +202,9 @@ impl SettingBridge {
     #[doc(alias = "multicast-query-use-ifaddr")]
     pub fn is_multicast_query_use_ifaddr(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_bridge_get_multicast_query_use_ifaddr(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_bridge_get_multicast_query_use_ifaddr(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -228,7 +215,9 @@ impl SettingBridge {
     #[doc(alias = "multicast-router")]
     pub fn multicast_router(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_bridge_get_multicast_router(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_bridge_get_multicast_router(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -239,7 +228,9 @@ impl SettingBridge {
     #[doc(alias = "multicast-snooping")]
     pub fn is_multicast_snooping(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_bridge_get_multicast_snooping(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_bridge_get_multicast_snooping(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -249,9 +240,7 @@ impl SettingBridge {
     #[doc(alias = "get_multicast_startup_query_count")]
     #[doc(alias = "multicast-startup-query-count")]
     pub fn multicast_startup_query_count(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_bridge_get_multicast_startup_query_count(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_multicast_startup_query_count(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_26")]
@@ -270,26 +259,20 @@ impl SettingBridge {
     #[doc(alias = "nm_setting_bridge_get_num_vlans")]
     #[doc(alias = "get_num_vlans")]
     pub fn num_vlans(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_bridge_get_num_vlans(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_num_vlans(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_bridge_get_priority")]
     #[doc(alias = "get_priority")]
     pub fn priority(&self) -> u16 {
-        unsafe {
-            ffi::nm_setting_bridge_get_priority(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_priority(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_bridge_get_stp")]
     #[doc(alias = "get_stp")]
     #[doc(alias = "stp")]
     pub fn is_stp(&self) -> bool {
-        unsafe {
-            from_glib(ffi::nm_setting_bridge_get_stp(self.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_setting_bridge_get_stp(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -297,9 +280,7 @@ impl SettingBridge {
     #[doc(alias = "nm_setting_bridge_get_vlan")]
     #[doc(alias = "get_vlan")]
     pub fn vlan(&self, idx: u32) -> BridgeVlan {
-        unsafe {
-            from_glib_none(ffi::nm_setting_bridge_get_vlan(self.to_glib_none().0, idx))
-        }
+        unsafe { from_glib_none(ffi::nm_setting_bridge_get_vlan(self.to_glib_none().0, idx)) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -308,9 +289,7 @@ impl SettingBridge {
     #[doc(alias = "get_vlan_default_pvid")]
     #[doc(alias = "vlan-default-pvid")]
     pub fn vlan_default_pvid(&self) -> u16 {
-        unsafe {
-            ffi::nm_setting_bridge_get_vlan_default_pvid(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_get_vlan_default_pvid(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -320,7 +299,9 @@ impl SettingBridge {
     #[doc(alias = "vlan-filtering")]
     pub fn is_vlan_filtering(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_bridge_get_vlan_filtering(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_bridge_get_vlan_filtering(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -331,7 +312,9 @@ impl SettingBridge {
     #[doc(alias = "vlan-protocol")]
     pub fn vlan_protocol(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_bridge_get_vlan_protocol(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_bridge_get_vlan_protocol(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -342,7 +325,9 @@ impl SettingBridge {
     #[doc(alias = "vlan-stats-enabled")]
     pub fn is_vlan_stats_enabled(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_bridge_get_vlan_stats_enabled(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_bridge_get_vlan_stats_enabled(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -360,48 +345,52 @@ impl SettingBridge {
     #[doc(alias = "nm_setting_bridge_remove_vlan_by_vid")]
     pub fn remove_vlan_by_vid(&self, vid_start: u16, vid_end: u16) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_bridge_remove_vlan_by_vid(self.to_glib_none().0, vid_start, vid_end))
+            from_glib(ffi::nm_setting_bridge_remove_vlan_by_vid(
+                self.to_glib_none().0,
+                vid_start,
+                vid_end,
+            ))
         }
     }
 
     #[doc(alias = "ageing-time")]
     pub fn set_ageing_time(&self, ageing_time: u32) {
-        ObjectExt::set_property(self,"ageing-time", ageing_time)
+        ObjectExt::set_property(self, "ageing-time", ageing_time)
     }
 
     #[doc(alias = "forward-delay")]
     pub fn set_forward_delay(&self, forward_delay: u32) {
-        ObjectExt::set_property(self,"forward-delay", forward_delay)
+        ObjectExt::set_property(self, "forward-delay", forward_delay)
     }
 
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "group-address")]
     pub fn set_group_address(&self, group_address: Option<&str>) {
-        ObjectExt::set_property(self,"group-address", group_address)
+        ObjectExt::set_property(self, "group-address", group_address)
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "group-forward-mask")]
     pub fn set_group_forward_mask(&self, group_forward_mask: u32) {
-        ObjectExt::set_property(self,"group-forward-mask", group_forward_mask)
+        ObjectExt::set_property(self, "group-forward-mask", group_forward_mask)
     }
 
     #[doc(alias = "hello-time")]
     pub fn set_hello_time(&self, hello_time: u32) {
-        ObjectExt::set_property(self,"hello-time", hello_time)
+        ObjectExt::set_property(self, "hello-time", hello_time)
     }
 
     #[cfg_attr(feature = "v1_12", deprecated = "Since 1.12")]
     #[doc(alias = "mac-address")]
     pub fn set_mac_address(&self, mac_address: Option<&str>) {
-        ObjectExt::set_property(self,"mac-address", mac_address)
+        ObjectExt::set_property(self, "mac-address", mac_address)
     }
 
     #[doc(alias = "max-age")]
     pub fn set_max_age(&self, max_age: u32) {
-        ObjectExt::set_property(self,"max-age", max_age)
+        ObjectExt::set_property(self, "max-age", max_age)
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -413,7 +402,7 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-hash-max")]
     pub fn set_multicast_hash_max(&self, multicast_hash_max: u32) {
-        ObjectExt::set_property(self,"multicast-hash-max", multicast_hash_max)
+        ObjectExt::set_property(self, "multicast-hash-max", multicast_hash_max)
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -425,7 +414,11 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-last-member-count")]
     pub fn set_multicast_last_member_count(&self, multicast_last_member_count: u32) {
-        ObjectExt::set_property(self,"multicast-last-member-count", multicast_last_member_count)
+        ObjectExt::set_property(
+            self,
+            "multicast-last-member-count",
+            multicast_last_member_count,
+        )
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -437,7 +430,11 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-last-member-interval")]
     pub fn set_multicast_last_member_interval(&self, multicast_last_member_interval: u64) {
-        ObjectExt::set_property(self,"multicast-last-member-interval", multicast_last_member_interval)
+        ObjectExt::set_property(
+            self,
+            "multicast-last-member-interval",
+            multicast_last_member_interval,
+        )
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -449,7 +446,11 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-membership-interval")]
     pub fn set_multicast_membership_interval(&self, multicast_membership_interval: u64) {
-        ObjectExt::set_property(self,"multicast-membership-interval", multicast_membership_interval)
+        ObjectExt::set_property(
+            self,
+            "multicast-membership-interval",
+            multicast_membership_interval,
+        )
     }
 
     #[cfg(not(feature = "v1_24"))]
@@ -461,7 +462,7 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-querier")]
     pub fn set_multicast_querier(&self, multicast_querier: bool) {
-        ObjectExt::set_property(self,"multicast-querier", multicast_querier)
+        ObjectExt::set_property(self, "multicast-querier", multicast_querier)
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -473,7 +474,11 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-querier-interval")]
     pub fn set_multicast_querier_interval(&self, multicast_querier_interval: u64) {
-        ObjectExt::set_property(self,"multicast-querier-interval", multicast_querier_interval)
+        ObjectExt::set_property(
+            self,
+            "multicast-querier-interval",
+            multicast_querier_interval,
+        )
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -485,7 +490,7 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-query-interval")]
     pub fn set_multicast_query_interval(&self, multicast_query_interval: u64) {
-        ObjectExt::set_property(self,"multicast-query-interval", multicast_query_interval)
+        ObjectExt::set_property(self, "multicast-query-interval", multicast_query_interval)
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -497,7 +502,11 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-query-response-interval")]
     pub fn set_multicast_query_response_interval(&self, multicast_query_response_interval: u64) {
-        ObjectExt::set_property(self,"multicast-query-response-interval", multicast_query_response_interval)
+        ObjectExt::set_property(
+            self,
+            "multicast-query-response-interval",
+            multicast_query_response_interval,
+        )
     }
 
     #[cfg(not(feature = "v1_24"))]
@@ -509,7 +518,11 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-query-use-ifaddr")]
     pub fn set_multicast_query_use_ifaddr(&self, multicast_query_use_ifaddr: bool) {
-        ObjectExt::set_property(self,"multicast-query-use-ifaddr", multicast_query_use_ifaddr)
+        ObjectExt::set_property(
+            self,
+            "multicast-query-use-ifaddr",
+            multicast_query_use_ifaddr,
+        )
     }
 
     #[cfg(not(feature = "v1_24"))]
@@ -521,14 +534,14 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-router")]
     pub fn set_multicast_router(&self, multicast_router: Option<&str>) {
-        ObjectExt::set_property(self,"multicast-router", multicast_router)
+        ObjectExt::set_property(self, "multicast-router", multicast_router)
     }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "multicast-snooping")]
     pub fn set_multicast_snooping(&self, multicast_snooping: bool) {
-        ObjectExt::set_property(self,"multicast-snooping", multicast_snooping)
+        ObjectExt::set_property(self, "multicast-snooping", multicast_snooping)
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -540,7 +553,11 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-startup-query-count")]
     pub fn set_multicast_startup_query_count(&self, multicast_startup_query_count: u32) {
-        ObjectExt::set_property(self,"multicast-startup-query-count", multicast_startup_query_count)
+        ObjectExt::set_property(
+            self,
+            "multicast-startup-query-count",
+            multicast_startup_query_count,
+        )
     }
 
     #[cfg(not(feature = "v1_26"))]
@@ -552,36 +569,40 @@ impl SettingBridge {
 
     #[doc(alias = "multicast-startup-query-interval")]
     pub fn set_multicast_startup_query_interval(&self, multicast_startup_query_interval: u64) {
-        ObjectExt::set_property(self,"multicast-startup-query-interval", multicast_startup_query_interval)
+        ObjectExt::set_property(
+            self,
+            "multicast-startup-query-interval",
+            multicast_startup_query_interval,
+        )
     }
 
     pub fn set_priority(&self, priority: u32) {
-        ObjectExt::set_property(self,"priority", priority)
+        ObjectExt::set_property(self, "priority", priority)
     }
 
     pub fn set_stp(&self, stp: bool) {
-        ObjectExt::set_property(self,"stp", stp)
+        ObjectExt::set_property(self, "stp", stp)
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "vlan-default-pvid")]
     pub fn set_vlan_default_pvid(&self, vlan_default_pvid: u32) {
-        ObjectExt::set_property(self,"vlan-default-pvid", vlan_default_pvid)
+        ObjectExt::set_property(self, "vlan-default-pvid", vlan_default_pvid)
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "vlan-filtering")]
     pub fn set_vlan_filtering(&self, vlan_filtering: bool) {
-        ObjectExt::set_property(self,"vlan-filtering", vlan_filtering)
+        ObjectExt::set_property(self, "vlan-filtering", vlan_filtering)
     }
 
     #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "vlan-protocol")]
     pub fn set_vlan_protocol(&self, vlan_protocol: Option<&str>) {
-        ObjectExt::set_property(self,"vlan-protocol", vlan_protocol)
+        ObjectExt::set_property(self, "vlan-protocol", vlan_protocol)
     }
 
     #[cfg(not(feature = "v1_24"))]
@@ -593,44 +614,78 @@ impl SettingBridge {
 
     #[doc(alias = "vlan-stats-enabled")]
     pub fn set_vlan_stats_enabled(&self, vlan_stats_enabled: bool) {
-        ObjectExt::set_property(self,"vlan-stats-enabled", vlan_stats_enabled)
+        ObjectExt::set_property(self, "vlan-stats-enabled", vlan_stats_enabled)
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlans(&self) -> Vec<BridgeVlan> {
-        ObjectExt::property(self, "vlans")
+        let vals = ObjectExt::property::<glib::ValueArray>(self, "vlans");
+        vals.into_iter()
+            .map(|v| unsafe {
+                use glib::value::FromValue;
+
+                BridgeVlan::from_value(v)
+            })
+            .collect()
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn set_vlans(&self, vlans: &[&BridgeVlan]) {
-        ObjectExt::set_property(self,"vlans", vlans)
+        ObjectExt::set_property(
+            self,
+            "vlans",
+            vlans
+                .iter()
+                .map(|vlan| vlan.to_value())
+                .collect::<glib::ValueArray>(),
+        )
     }
 
     #[doc(alias = "ageing-time")]
     pub fn connect_ageing_time_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_ageing_time_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_ageing_time_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::ageing-time".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_ageing_time_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::ageing-time".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_ageing_time_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "forward-delay")]
     pub fn connect_forward_delay_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_forward_delay_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_forward_delay_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::forward-delay".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_forward_delay_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::forward-delay".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_forward_delay_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -638,281 +693,561 @@ impl SettingBridge {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "group-address")]
     pub fn connect_group_address_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_group_address_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_group_address_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::group-address".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_group_address_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::group-address".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_group_address_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "group-forward-mask")]
-    pub fn connect_group_forward_mask_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_group_forward_mask_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_group_forward_mask_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_group_forward_mask_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::group-forward-mask".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_group_forward_mask_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::group-forward-mask".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_group_forward_mask_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "hello-time")]
     pub fn connect_hello_time_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_hello_time_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_hello_time_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::hello-time".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_hello_time_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::hello-time".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_hello_time_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg_attr(feature = "v1_12", deprecated = "Since 1.12")]
     #[doc(alias = "mac-address")]
     pub fn connect_mac_address_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_mac_address_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_mac_address_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::mac-address".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mac_address_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::mac-address".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_mac_address_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "max-age")]
     pub fn connect_max_age_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_max_age_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_max_age_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::max-age".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_max_age_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::max-age".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_max_age_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-hash-max")]
-    pub fn connect_multicast_hash_max_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_hash_max_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_hash_max_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_hash_max_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-hash-max".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_hash_max_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-hash-max".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_hash_max_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-last-member-count")]
-    pub fn connect_multicast_last_member_count_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_last_member_count_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_last_member_count_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_last_member_count_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-last-member-count".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_last_member_count_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-last-member-count".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_last_member_count_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-last-member-interval")]
-    pub fn connect_multicast_last_member_interval_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_last_member_interval_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_last_member_interval_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_last_member_interval_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-last-member-interval".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_last_member_interval_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-last-member-interval".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_last_member_interval_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-membership-interval")]
-    pub fn connect_multicast_membership_interval_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_membership_interval_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_membership_interval_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_membership_interval_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-membership-interval".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_membership_interval_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-membership-interval".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_membership_interval_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-querier")]
-    pub fn connect_multicast_querier_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_querier_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_querier_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_querier_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-querier".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_querier_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-querier".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_querier_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-querier-interval")]
-    pub fn connect_multicast_querier_interval_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_querier_interval_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_querier_interval_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_querier_interval_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-querier-interval".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_querier_interval_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-querier-interval".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_querier_interval_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-query-interval")]
-    pub fn connect_multicast_query_interval_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_query_interval_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_query_interval_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_query_interval_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-query-interval".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_query_interval_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-query-interval".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_query_interval_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-query-response-interval")]
-    pub fn connect_multicast_query_response_interval_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_query_response_interval_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_query_response_interval_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_query_response_interval_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-query-response-interval".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_query_response_interval_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-query-response-interval".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_query_response_interval_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-query-use-ifaddr")]
-    pub fn connect_multicast_query_use_ifaddr_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_query_use_ifaddr_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_query_use_ifaddr_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_query_use_ifaddr_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-query-use-ifaddr".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_query_use_ifaddr_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-query-use-ifaddr".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_query_use_ifaddr_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-router")]
     pub fn connect_multicast_router_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_router_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_multicast_router_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-router".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_router_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-router".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_router_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     #[doc(alias = "multicast-snooping")]
-    pub fn connect_multicast_snooping_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_snooping_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_snooping_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_snooping_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-snooping".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_snooping_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-snooping".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_snooping_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-startup-query-count")]
-    pub fn connect_multicast_startup_query_count_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_startup_query_count_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_startup_query_count_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_startup_query_count_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-startup-query-count".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_startup_query_count_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-startup-query-count".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_startup_query_count_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "multicast-startup-query-interval")]
-    pub fn connect_multicast_startup_query_interval_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_multicast_startup_query_interval_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_multicast_startup_query_interval_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_multicast_startup_query_interval_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::multicast-startup-query-interval".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_multicast_startup_query_interval_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::multicast-startup-query-interval".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_multicast_startup_query_interval_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "priority")]
     pub fn connect_priority_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_priority_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_priority_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::priority".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_priority_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::priority".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_priority_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "stp")]
     pub fn connect_stp_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_stp_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_stp_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::stp".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_stp_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::stp".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_stp_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "vlan-default-pvid")]
-    pub fn connect_vlan_default_pvid_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_vlan_default_pvid_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_vlan_default_pvid_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_vlan_default_pvid_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::vlan-default-pvid".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_vlan_default_pvid_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::vlan-default-pvid".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_vlan_default_pvid_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -920,14 +1255,24 @@ impl SettingBridge {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "vlan-filtering")]
     pub fn connect_vlan_filtering_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_vlan_filtering_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_vlan_filtering_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::vlan-filtering".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_vlan_filtering_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::vlan-filtering".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_vlan_filtering_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -935,27 +1280,52 @@ impl SettingBridge {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     #[doc(alias = "vlan-protocol")]
     pub fn connect_vlan_protocol_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_vlan_protocol_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_vlan_protocol_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::vlan-protocol".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_vlan_protocol_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::vlan-protocol".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_vlan_protocol_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "vlan-stats-enabled")]
-    pub fn connect_vlan_stats_enabled_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_vlan_stats_enabled_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_vlan_stats_enabled_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_vlan_stats_enabled_trampoline<
+            F: Fn(&SettingBridge) + 'static,
+        >(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::vlan-stats-enabled".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_vlan_stats_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::vlan-stats-enabled".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_vlan_stats_enabled_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -963,165 +1333,275 @@ impl SettingBridge {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "vlans")]
     pub fn connect_vlans_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_vlans_trampoline<F: Fn(&SettingBridge) + 'static>(this: *mut ffi::NMSettingBridge, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_vlans_trampoline<F: Fn(&SettingBridge) + 'static>(
+            this: *mut ffi::NMSettingBridge,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::vlans".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_vlans_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::vlans".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_vlans_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
 
 impl Default for SettingBridge {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`SettingBridge`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`SettingBridge`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct SettingBridgeBuilder {
-            builder: glib::object::ObjectBuilder<'static, SettingBridge>,
+    builder: glib::object::ObjectBuilder<'static, SettingBridge>,
+}
+
+impl SettingBridgeBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-        impl SettingBridgeBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+    pub fn ageing_time(self, ageing_time: u32) -> Self {
+        Self {
+            builder: self.builder.property("ageing-time", ageing_time),
         }
+    }
 
-                            pub fn ageing_time(self, ageing_time: u32) -> Self {
-                            Self { builder: self.builder.property("ageing-time", ageing_time), }
-                        }
+    pub fn forward_delay(self, forward_delay: u32) -> Self {
+        Self {
+            builder: self.builder.property("forward-delay", forward_delay),
+        }
+    }
 
-                            pub fn forward_delay(self, forward_delay: u32) -> Self {
-                            Self { builder: self.builder.property("forward-delay", forward_delay), }
-                        }
-
-                            #[cfg(feature = "v1_24")]
+    #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn group_address(self, group_address: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("group-address", group_address.into()), }
-                        }
+        Self {
+            builder: self.builder.property("group-address", group_address.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_10")]
+    #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn group_forward_mask(self, group_forward_mask: u32) -> Self {
-                            Self { builder: self.builder.property("group-forward-mask", group_forward_mask), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("group-forward-mask", group_forward_mask),
+        }
+    }
 
-                            pub fn hello_time(self, hello_time: u32) -> Self {
-                            Self { builder: self.builder.property("hello-time", hello_time), }
-                        }
+    pub fn hello_time(self, hello_time: u32) -> Self {
+        Self {
+            builder: self.builder.property("hello-time", hello_time),
+        }
+    }
 
-                            #[cfg_attr(feature = "v1_12", deprecated = "Since 1.12")]
+    #[cfg_attr(feature = "v1_12", deprecated = "Since 1.12")]
     pub fn mac_address(self, mac_address: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("mac-address", mac_address.into()), }
-                        }
+        Self {
+            builder: self.builder.property("mac-address", mac_address.into()),
+        }
+    }
 
-                            pub fn max_age(self, max_age: u32) -> Self {
-                            Self { builder: self.builder.property("max-age", max_age), }
-                        }
+    pub fn max_age(self, max_age: u32) -> Self {
+        Self {
+            builder: self.builder.property("max-age", max_age),
+        }
+    }
 
-                            pub fn multicast_hash_max(self, multicast_hash_max: u32) -> Self {
-                            Self { builder: self.builder.property("multicast-hash-max", multicast_hash_max), }
-                        }
+    pub fn multicast_hash_max(self, multicast_hash_max: u32) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("multicast-hash-max", multicast_hash_max),
+        }
+    }
 
-                            pub fn multicast_last_member_count(self, multicast_last_member_count: u32) -> Self {
-                            Self { builder: self.builder.property("multicast-last-member-count", multicast_last_member_count), }
-                        }
+    pub fn multicast_last_member_count(self, multicast_last_member_count: u32) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("multicast-last-member-count", multicast_last_member_count),
+        }
+    }
 
-                            pub fn multicast_last_member_interval(self, multicast_last_member_interval: u64) -> Self {
-                            Self { builder: self.builder.property("multicast-last-member-interval", multicast_last_member_interval), }
-                        }
+    pub fn multicast_last_member_interval(self, multicast_last_member_interval: u64) -> Self {
+        Self {
+            builder: self.builder.property(
+                "multicast-last-member-interval",
+                multicast_last_member_interval,
+            ),
+        }
+    }
 
-                            pub fn multicast_membership_interval(self, multicast_membership_interval: u64) -> Self {
-                            Self { builder: self.builder.property("multicast-membership-interval", multicast_membership_interval), }
-                        }
+    pub fn multicast_membership_interval(self, multicast_membership_interval: u64) -> Self {
+        Self {
+            builder: self.builder.property(
+                "multicast-membership-interval",
+                multicast_membership_interval,
+            ),
+        }
+    }
 
-                            pub fn multicast_querier(self, multicast_querier: bool) -> Self {
-                            Self { builder: self.builder.property("multicast-querier", multicast_querier), }
-                        }
+    pub fn multicast_querier(self, multicast_querier: bool) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("multicast-querier", multicast_querier),
+        }
+    }
 
-                            pub fn multicast_querier_interval(self, multicast_querier_interval: u64) -> Self {
-                            Self { builder: self.builder.property("multicast-querier-interval", multicast_querier_interval), }
-                        }
+    pub fn multicast_querier_interval(self, multicast_querier_interval: u64) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("multicast-querier-interval", multicast_querier_interval),
+        }
+    }
 
-                            pub fn multicast_query_interval(self, multicast_query_interval: u64) -> Self {
-                            Self { builder: self.builder.property("multicast-query-interval", multicast_query_interval), }
-                        }
+    pub fn multicast_query_interval(self, multicast_query_interval: u64) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("multicast-query-interval", multicast_query_interval),
+        }
+    }
 
-                            pub fn multicast_query_response_interval(self, multicast_query_response_interval: u64) -> Self {
-                            Self { builder: self.builder.property("multicast-query-response-interval", multicast_query_response_interval), }
-                        }
+    pub fn multicast_query_response_interval(self, multicast_query_response_interval: u64) -> Self {
+        Self {
+            builder: self.builder.property(
+                "multicast-query-response-interval",
+                multicast_query_response_interval,
+            ),
+        }
+    }
 
-                            pub fn multicast_query_use_ifaddr(self, multicast_query_use_ifaddr: bool) -> Self {
-                            Self { builder: self.builder.property("multicast-query-use-ifaddr", multicast_query_use_ifaddr), }
-                        }
+    pub fn multicast_query_use_ifaddr(self, multicast_query_use_ifaddr: bool) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("multicast-query-use-ifaddr", multicast_query_use_ifaddr),
+        }
+    }
 
-                            pub fn multicast_router(self, multicast_router: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("multicast-router", multicast_router.into()), }
-                        }
+    pub fn multicast_router(self, multicast_router: impl Into<glib::GString>) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("multicast-router", multicast_router.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_2")]
+    #[cfg(feature = "v1_2")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
     pub fn multicast_snooping(self, multicast_snooping: bool) -> Self {
-                            Self { builder: self.builder.property("multicast-snooping", multicast_snooping), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("multicast-snooping", multicast_snooping),
+        }
+    }
 
-                            pub fn multicast_startup_query_count(self, multicast_startup_query_count: u32) -> Self {
-                            Self { builder: self.builder.property("multicast-startup-query-count", multicast_startup_query_count), }
-                        }
+    pub fn multicast_startup_query_count(self, multicast_startup_query_count: u32) -> Self {
+        Self {
+            builder: self.builder.property(
+                "multicast-startup-query-count",
+                multicast_startup_query_count,
+            ),
+        }
+    }
 
-                            pub fn multicast_startup_query_interval(self, multicast_startup_query_interval: u64) -> Self {
-                            Self { builder: self.builder.property("multicast-startup-query-interval", multicast_startup_query_interval), }
-                        }
+    pub fn multicast_startup_query_interval(self, multicast_startup_query_interval: u64) -> Self {
+        Self {
+            builder: self.builder.property(
+                "multicast-startup-query-interval",
+                multicast_startup_query_interval,
+            ),
+        }
+    }
 
-                            pub fn priority(self, priority: u32) -> Self {
-                            Self { builder: self.builder.property("priority", priority), }
-                        }
+    pub fn priority(self, priority: u32) -> Self {
+        Self {
+            builder: self.builder.property("priority", priority),
+        }
+    }
 
-                            pub fn stp(self, stp: bool) -> Self {
-                            Self { builder: self.builder.property("stp", stp), }
-                        }
+    pub fn stp(self, stp: bool) -> Self {
+        Self {
+            builder: self.builder.property("stp", stp),
+        }
+    }
 
-                            #[cfg(feature = "v1_18")]
+    #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlan_default_pvid(self, vlan_default_pvid: u32) -> Self {
-                            Self { builder: self.builder.property("vlan-default-pvid", vlan_default_pvid), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("vlan-default-pvid", vlan_default_pvid),
+        }
+    }
 
-                            #[cfg(feature = "v1_18")]
+    #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlan_filtering(self, vlan_filtering: bool) -> Self {
-                            Self { builder: self.builder.property("vlan-filtering", vlan_filtering), }
-                        }
+        Self {
+            builder: self.builder.property("vlan-filtering", vlan_filtering),
+        }
+    }
 
-                            #[cfg(feature = "v1_24")]
+    #[cfg(feature = "v1_24")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_24")))]
     pub fn vlan_protocol(self, vlan_protocol: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("vlan-protocol", vlan_protocol.into()), }
-                        }
+        Self {
+            builder: self.builder.property("vlan-protocol", vlan_protocol.into()),
+        }
+    }
 
-                            pub fn vlan_stats_enabled(self, vlan_stats_enabled: bool) -> Self {
-                            Self { builder: self.builder.property("vlan-stats-enabled", vlan_stats_enabled), }
-                        }
+    pub fn vlan_stats_enabled(self, vlan_stats_enabled: bool) -> Self {
+        Self {
+            builder: self
+                .builder
+                .property("vlan-stats-enabled", vlan_stats_enabled),
+        }
+    }
 
-                            #[cfg(feature = "v1_18")]
+    #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlans(self, vlans: &[&BridgeVlan]) -> Self {
-                            Self { builder: self.builder.property("vlans", vlans.clone()), }
-                        }
+        Self {
+            builder: self.builder.property(
+                "vlans",
+                vlans
+                    .iter()
+                    .map(|vlan| vlan.to_value())
+                    .collect::<glib::ValueArray>(),
+            ),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`SettingBridge`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> SettingBridge {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

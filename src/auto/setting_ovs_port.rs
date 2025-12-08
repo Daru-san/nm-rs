@@ -3,17 +3,20 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Setting};
 #[cfg(feature = "v1_42")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
-use crate::{Range};
-use glib::{prelude::*};
+use crate::Range;
+use crate::{Setting, ffi};
+use glib::prelude::*;
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-use glib::{signal::{connect_raw, SignalHandlerId},translate::*};
+use glib::{
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
-use std::{boxed::Box as Box_};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSettingOvsPort")]
@@ -30,19 +33,16 @@ impl SettingOvsPort {
     #[doc(alias = "nm_setting_ovs_port_new")]
     pub fn new() -> SettingOvsPort {
         assert_initialized_main_thread!();
-        unsafe {
-            Setting::from_glib_full(ffi::nm_setting_ovs_port_new()).unsafe_cast()
-        }
+        unsafe { Setting::from_glib_full(ffi::nm_setting_ovs_port_new()).unsafe_cast() }
     }
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`SettingOvsPort`] objects.
-            ///
-            /// This method returns an instance of [`SettingOvsPortBuilder`](crate::builders::SettingOvsPortBuilder) which can be used to create [`SettingOvsPort`] objects.
-            pub fn builder() -> SettingOvsPortBuilder {
-                SettingOvsPortBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`SettingOvsPort`] objects.
+    ///
+    /// This method returns an instance of [`SettingOvsPortBuilder`](crate::builders::SettingOvsPortBuilder) which can be used to create [`SettingOvsPort`] objects.
+    pub fn builder() -> SettingOvsPortBuilder {
+        SettingOvsPortBuilder::new()
+    }
 
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
@@ -68,9 +68,7 @@ impl SettingOvsPort {
     #[doc(alias = "get_bond_downdelay")]
     #[doc(alias = "bond-downdelay")]
     pub fn bond_downdelay(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ovs_port_get_bond_downdelay(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ovs_port_get_bond_downdelay(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_10")]
@@ -80,7 +78,9 @@ impl SettingOvsPort {
     #[doc(alias = "bond-mode")]
     pub fn bond_mode(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ovs_port_get_bond_mode(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ovs_port_get_bond_mode(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -90,9 +90,7 @@ impl SettingOvsPort {
     #[doc(alias = "get_bond_updelay")]
     #[doc(alias = "bond-updelay")]
     pub fn bond_updelay(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ovs_port_get_bond_updelay(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ovs_port_get_bond_updelay(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_10")]
@@ -100,9 +98,7 @@ impl SettingOvsPort {
     #[doc(alias = "nm_setting_ovs_port_get_lacp")]
     #[doc(alias = "get_lacp")]
     pub fn lacp(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_setting_ovs_port_get_lacp(self.to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_setting_ovs_port_get_lacp(self.to_glib_none().0)) }
     }
 
     #[cfg(feature = "v1_42")]
@@ -110,9 +106,7 @@ impl SettingOvsPort {
     #[doc(alias = "nm_setting_ovs_port_get_num_trunks")]
     #[doc(alias = "get_num_trunks")]
     pub fn num_trunks(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ovs_port_get_num_trunks(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ovs_port_get_num_trunks(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_10")]
@@ -120,9 +114,7 @@ impl SettingOvsPort {
     #[doc(alias = "nm_setting_ovs_port_get_tag")]
     #[doc(alias = "get_tag")]
     pub fn tag(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_ovs_port_get_tag(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_ovs_port_get_tag(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_42")]
@@ -131,7 +123,10 @@ impl SettingOvsPort {
     #[doc(alias = "get_trunk")]
     pub fn trunk(&self, idx: u32) -> Range {
         unsafe {
-            from_glib_none(ffi::nm_setting_ovs_port_get_trunk(self.to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_ovs_port_get_trunk(
+                self.to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -142,7 +137,9 @@ impl SettingOvsPort {
     #[doc(alias = "vlan-mode")]
     pub fn vlan_mode(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_setting_ovs_port_get_vlan_mode(self.to_glib_none().0))
+            from_glib_none(ffi::nm_setting_ovs_port_get_vlan_mode(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -160,7 +157,11 @@ impl SettingOvsPort {
     #[doc(alias = "nm_setting_ovs_port_remove_trunk_by_value")]
     pub fn remove_trunk_by_value(&self, start: u32, end: u32) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_ovs_port_remove_trunk_by_value(self.to_glib_none().0, start, end))
+            from_glib(ffi::nm_setting_ovs_port_remove_trunk_by_value(
+                self.to_glib_none().0,
+                start,
+                end,
+            ))
         }
     }
 
@@ -168,66 +169,90 @@ impl SettingOvsPort {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-downdelay")]
     pub fn set_bond_downdelay(&self, bond_downdelay: u32) {
-        ObjectExt::set_property(self,"bond-downdelay", bond_downdelay)
+        ObjectExt::set_property(self, "bond-downdelay", bond_downdelay)
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-mode")]
     pub fn set_bond_mode(&self, bond_mode: Option<&str>) {
-        ObjectExt::set_property(self,"bond-mode", bond_mode)
+        ObjectExt::set_property(self, "bond-mode", bond_mode)
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-updelay")]
     pub fn set_bond_updelay(&self, bond_updelay: u32) {
-        ObjectExt::set_property(self,"bond-updelay", bond_updelay)
+        ObjectExt::set_property(self, "bond-updelay", bond_updelay)
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn set_lacp(&self, lacp: Option<&str>) {
-        ObjectExt::set_property(self,"lacp", lacp)
+        ObjectExt::set_property(self, "lacp", lacp)
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn set_tag(&self, tag: u32) {
-        ObjectExt::set_property(self,"tag", tag)
+        ObjectExt::set_property(self, "tag", tag)
     }
 
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn trunks(&self) -> Vec<Range> {
-        ObjectExt::property(self, "trunks")
+        let vals = ObjectExt::property::<glib::ValueArray>(self, "trunks");
+        vals.iter()
+            .map(|value| {
+                use glib::value::FromValue;
+
+                unsafe { Range::from_value(value) }
+            })
+            .collect()
     }
 
     #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn set_trunks(&self, trunks: &[&Range]) {
-        ObjectExt::set_property(self,"trunks", trunks)
+        ObjectExt::set_property(
+            self,
+            "trunks",
+            trunks
+                .iter()
+                .map(|trunk| trunk.to_value())
+                .collect::<glib::ValueArray>(),
+        )
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "vlan-mode")]
     pub fn set_vlan_mode(&self, vlan_mode: Option<&str>) {
-        ObjectExt::set_property(self,"vlan-mode", vlan_mode)
+        ObjectExt::set_property(self, "vlan-mode", vlan_mode)
     }
 
     #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-downdelay")]
     pub fn connect_bond_downdelay_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_bond_downdelay_trampoline<F: Fn(&SettingOvsPort) + 'static>(this: *mut ffi::NMSettingOvsPort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_bond_downdelay_trampoline<F: Fn(&SettingOvsPort) + 'static>(
+            this: *mut ffi::NMSettingOvsPort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::bond-downdelay".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_bond_downdelay_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::bond-downdelay".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_bond_downdelay_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -235,14 +260,24 @@ impl SettingOvsPort {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-mode")]
     pub fn connect_bond_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_bond_mode_trampoline<F: Fn(&SettingOvsPort) + 'static>(this: *mut ffi::NMSettingOvsPort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_bond_mode_trampoline<F: Fn(&SettingOvsPort) + 'static>(
+            this: *mut ffi::NMSettingOvsPort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::bond-mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_bond_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::bond-mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_bond_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -250,14 +285,24 @@ impl SettingOvsPort {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "bond-updelay")]
     pub fn connect_bond_updelay_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_bond_updelay_trampoline<F: Fn(&SettingOvsPort) + 'static>(this: *mut ffi::NMSettingOvsPort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_bond_updelay_trampoline<F: Fn(&SettingOvsPort) + 'static>(
+            this: *mut ffi::NMSettingOvsPort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::bond-updelay".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_bond_updelay_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::bond-updelay".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_bond_updelay_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -265,14 +310,24 @@ impl SettingOvsPort {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "lacp")]
     pub fn connect_lacp_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_lacp_trampoline<F: Fn(&SettingOvsPort) + 'static>(this: *mut ffi::NMSettingOvsPort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_lacp_trampoline<F: Fn(&SettingOvsPort) + 'static>(
+            this: *mut ffi::NMSettingOvsPort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::lacp".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_lacp_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::lacp".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_lacp_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -280,14 +335,24 @@ impl SettingOvsPort {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "tag")]
     pub fn connect_tag_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_tag_trampoline<F: Fn(&SettingOvsPort) + 'static>(this: *mut ffi::NMSettingOvsPort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_tag_trampoline<F: Fn(&SettingOvsPort) + 'static>(
+            this: *mut ffi::NMSettingOvsPort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::tag".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_tag_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::tag".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_tag_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -295,14 +360,24 @@ impl SettingOvsPort {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     #[doc(alias = "trunks")]
     pub fn connect_trunks_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_trunks_trampoline<F: Fn(&SettingOvsPort) + 'static>(this: *mut ffi::NMSettingOvsPort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_trunks_trampoline<F: Fn(&SettingOvsPort) + 'static>(
+            this: *mut ffi::NMSettingOvsPort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::trunks".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_trunks_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::trunks".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_trunks_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -310,14 +385,24 @@ impl SettingOvsPort {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     #[doc(alias = "vlan-mode")]
     pub fn connect_vlan_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_vlan_mode_trampoline<F: Fn(&SettingOvsPort) + 'static>(this: *mut ffi::NMSettingOvsPort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_vlan_mode_trampoline<F: Fn(&SettingOvsPort) + 'static>(
+            this: *mut ffi::NMSettingOvsPort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::vlan-mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_vlan_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::vlan-mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_vlan_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
@@ -325,71 +410,94 @@ impl SettingOvsPort {
 #[cfg(feature = "v1_10")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
 impl Default for SettingOvsPort {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`SettingOvsPort`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`SettingOvsPort`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct SettingOvsPortBuilder {
-            builder: glib::object::ObjectBuilder<'static, SettingOvsPort>,
-        }
+    builder: glib::object::ObjectBuilder<'static, SettingOvsPort>,
+}
 
-        impl SettingOvsPortBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+impl SettingOvsPortBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-                            #[cfg(feature = "v1_10")]
+    #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn bond_downdelay(self, bond_downdelay: u32) -> Self {
-                            Self { builder: self.builder.property("bond-downdelay", bond_downdelay), }
-                        }
+        Self {
+            builder: self.builder.property("bond-downdelay", bond_downdelay),
+        }
+    }
 
-                            #[cfg(feature = "v1_10")]
+    #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn bond_mode(self, bond_mode: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("bond-mode", bond_mode.into()), }
-                        }
+        Self {
+            builder: self.builder.property("bond-mode", bond_mode.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_10")]
+    #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn bond_updelay(self, bond_updelay: u32) -> Self {
-                            Self { builder: self.builder.property("bond-updelay", bond_updelay), }
-                        }
+        Self {
+            builder: self.builder.property("bond-updelay", bond_updelay),
+        }
+    }
 
-                            #[cfg(feature = "v1_10")]
+    #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn lacp(self, lacp: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("lacp", lacp.into()), }
-                        }
+        Self {
+            builder: self.builder.property("lacp", lacp.into()),
+        }
+    }
 
-                            #[cfg(feature = "v1_10")]
+    #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn tag(self, tag: u32) -> Self {
-                            Self { builder: self.builder.property("tag", tag), }
-                        }
+        Self {
+            builder: self.builder.property("tag", tag),
+        }
+    }
 
-                            #[cfg(feature = "v1_42")]
+    #[cfg(feature = "v1_42")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_42")))]
     pub fn trunks(self, trunks: &[&Range]) -> Self {
-                            Self { builder: self.builder.property("trunks", trunks.clone()), }
-                        }
+        Self {
+            builder: self.builder.property(
+                "trunks",
+                trunks
+                    .iter()
+                    .map(|trunk| trunk.to_value())
+                    .collect::<glib::ValueArray>(),
+            ),
+        }
+    }
 
-                            #[cfg(feature = "v1_10")]
+    #[cfg(feature = "v1_10")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_10")))]
     pub fn vlan_mode(self, vlan_mode: impl Into<glib::GString>) -> Self {
-                            Self { builder: self.builder.property("vlan-mode", vlan_mode.into()), }
-                        }
+        Self {
+            builder: self.builder.property("vlan-mode", vlan_mode.into()),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`SettingOvsPort`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> SettingOvsPort {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

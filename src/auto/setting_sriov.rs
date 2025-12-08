@@ -3,15 +3,19 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Setting,SriovVF,Ternary};
-#[cfg(feature = "v1_46")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
-use crate::{SriovEswitchEncapMode,SriovEswitchInlineMode,SriovEswitchMode};
 #[cfg(feature = "v1_54")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
-use crate::{SriovPreserveOnDown};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::SriovPreserveOnDown;
+use crate::{Setting, SriovVF, Ternary, ffi};
+#[cfg(feature = "v1_46")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
+use crate::{SriovEswitchEncapMode, SriovEswitchInlineMode, SriovEswitchMode};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSettingSriov")]
@@ -26,19 +30,16 @@ impl SettingSriov {
     #[doc(alias = "nm_setting_sriov_new")]
     pub fn new() -> SettingSriov {
         assert_initialized_main_thread!();
-        unsafe {
-            Setting::from_glib_full(ffi::nm_setting_sriov_new()).unsafe_cast()
-        }
+        unsafe { Setting::from_glib_full(ffi::nm_setting_sriov_new()).unsafe_cast() }
     }
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`SettingSriov`] objects.
-            ///
-            /// This method returns an instance of [`SettingSriovBuilder`](crate::builders::SettingSriovBuilder) which can be used to create [`SettingSriov`] objects.
-            pub fn builder() -> SettingSriovBuilder {
-                SettingSriovBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`SettingSriov`] objects.
+    ///
+    /// This method returns an instance of [`SettingSriovBuilder`](crate::builders::SettingSriovBuilder) which can be used to create [`SettingSriov`] objects.
+    pub fn builder() -> SettingSriovBuilder {
+        SettingSriovBuilder::new()
+    }
 
     #[doc(alias = "nm_setting_sriov_add_vf")]
     pub fn add_vf(&self, vf: &SriovVF) {
@@ -59,7 +60,9 @@ impl SettingSriov {
     #[doc(alias = "autoprobe-drivers")]
     pub fn autoprobe_drivers(&self) -> Ternary {
         unsafe {
-            from_glib(ffi::nm_setting_sriov_get_autoprobe_drivers(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_sriov_get_autoprobe_drivers(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -70,7 +73,9 @@ impl SettingSriov {
     #[doc(alias = "eswitch-encap-mode")]
     pub fn eswitch_encap_mode(&self) -> SriovEswitchEncapMode {
         unsafe {
-            from_glib(ffi::nm_setting_sriov_get_eswitch_encap_mode(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_sriov_get_eswitch_encap_mode(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -81,7 +86,9 @@ impl SettingSriov {
     #[doc(alias = "eswitch-inline-mode")]
     pub fn eswitch_inline_mode(&self) -> SriovEswitchInlineMode {
         unsafe {
-            from_glib(ffi::nm_setting_sriov_get_eswitch_inline_mode(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_sriov_get_eswitch_inline_mode(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -92,16 +99,16 @@ impl SettingSriov {
     #[doc(alias = "eswitch-mode")]
     pub fn eswitch_mode(&self) -> SriovEswitchMode {
         unsafe {
-            from_glib(ffi::nm_setting_sriov_get_eswitch_mode(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_sriov_get_eswitch_mode(
+                self.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_sriov_get_num_vfs")]
     #[doc(alias = "get_num_vfs")]
     pub fn num_vfs(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_sriov_get_num_vfs(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_sriov_get_num_vfs(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_54")]
@@ -111,7 +118,9 @@ impl SettingSriov {
     #[doc(alias = "preserve-on-down")]
     pub fn preserve_on_down(&self) -> SriovPreserveOnDown {
         unsafe {
-            from_glib(ffi::nm_setting_sriov_get_preserve_on_down(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_sriov_get_preserve_on_down(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -119,17 +128,13 @@ impl SettingSriov {
     #[doc(alias = "get_total_vfs")]
     #[doc(alias = "total-vfs")]
     pub fn total_vfs(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_sriov_get_total_vfs(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_sriov_get_total_vfs(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_sriov_get_vf")]
     #[doc(alias = "get_vf")]
     pub fn vf(&self, idx: u32) -> SriovVF {
-        unsafe {
-            from_glib_none(ffi::nm_setting_sriov_get_vf(self.to_glib_none().0, idx))
-        }
+        unsafe { from_glib_none(ffi::nm_setting_sriov_get_vf(self.to_glib_none().0, idx)) }
     }
 
     #[doc(alias = "nm_setting_sriov_remove_vf")]
@@ -142,7 +147,10 @@ impl SettingSriov {
     #[doc(alias = "nm_setting_sriov_remove_vf_by_index")]
     pub fn remove_vf_by_index(&self, index: u32) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_sriov_remove_vf_by_index(self.to_glib_none().0, index))
+            from_glib(ffi::nm_setting_sriov_remove_vf_by_index(
+                self.to_glib_none().0,
+                index,
+            ))
         }
     }
 
@@ -150,98 +158,154 @@ impl SettingSriov {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "autoprobe-drivers")]
     pub fn set_autoprobe_drivers(&self, autoprobe_drivers: Ternary) {
-        ObjectExt::set_property(self,"autoprobe-drivers", autoprobe_drivers)
+        ObjectExt::set_property(self, "autoprobe-drivers", autoprobe_drivers)
     }
 
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-encap-mode")]
     pub fn set_eswitch_encap_mode(&self, eswitch_encap_mode: i32) {
-        ObjectExt::set_property(self,"eswitch-encap-mode", eswitch_encap_mode)
+        ObjectExt::set_property(self, "eswitch-encap-mode", eswitch_encap_mode)
     }
 
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-inline-mode")]
     pub fn set_eswitch_inline_mode(&self, eswitch_inline_mode: i32) {
-        ObjectExt::set_property(self,"eswitch-inline-mode", eswitch_inline_mode)
+        ObjectExt::set_property(self, "eswitch-inline-mode", eswitch_inline_mode)
     }
 
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-mode")]
     pub fn set_eswitch_mode(&self, eswitch_mode: i32) {
-        ObjectExt::set_property(self,"eswitch-mode", eswitch_mode)
+        ObjectExt::set_property(self, "eswitch-mode", eswitch_mode)
     }
 
     #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "preserve-on-down")]
     pub fn set_preserve_on_down(&self, preserve_on_down: i32) {
-        ObjectExt::set_property(self,"preserve-on-down", preserve_on_down)
+        ObjectExt::set_property(self, "preserve-on-down", preserve_on_down)
     }
 
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "total-vfs")]
     pub fn set_total_vfs(&self, total_vfs: u32) {
-        ObjectExt::set_property(self,"total-vfs", total_vfs)
+        ObjectExt::set_property(self, "total-vfs", total_vfs)
     }
 
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn vfs(&self) -> Vec<SriovVF> {
-        ObjectExt::property(self, "vfs")
+        let vals = ObjectExt::property::<glib::ValueArray>(self, "vfs");
+        vals.iter()
+            .map(|value| unsafe {
+                use glib::value::FromValue;
+
+                SriovVF::from_value(value)
+            })
+            .collect()
     }
 
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn set_vfs(&self, vfs: &[&SriovVF]) {
-        ObjectExt::set_property(self,"vfs", vfs)
+        ObjectExt::set_property(
+            self,
+            "vfs",
+            vfs.iter()
+                .map(|sriov_vf| sriov_vf.to_value())
+                .collect::<glib::ValueArray>(),
+        )
     }
 
     #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "autoprobe-drivers")]
-    pub fn connect_autoprobe_drivers_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_autoprobe_drivers_trampoline<F: Fn(&SettingSriov) + 'static>(this: *mut ffi::NMSettingSriov, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_autoprobe_drivers_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_autoprobe_drivers_trampoline<F: Fn(&SettingSriov) + 'static>(
+            this: *mut ffi::NMSettingSriov,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::autoprobe-drivers".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_autoprobe_drivers_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::autoprobe-drivers".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_autoprobe_drivers_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-encap-mode")]
-    pub fn connect_eswitch_encap_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_eswitch_encap_mode_trampoline<F: Fn(&SettingSriov) + 'static>(this: *mut ffi::NMSettingSriov, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_eswitch_encap_mode_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_eswitch_encap_mode_trampoline<
+            F: Fn(&SettingSriov) + 'static,
+        >(
+            this: *mut ffi::NMSettingSriov,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::eswitch-encap-mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_eswitch_encap_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::eswitch-encap-mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_eswitch_encap_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-inline-mode")]
-    pub fn connect_eswitch_inline_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_eswitch_inline_mode_trampoline<F: Fn(&SettingSriov) + 'static>(this: *mut ffi::NMSettingSriov, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+    pub fn connect_eswitch_inline_mode_notify<F: Fn(&Self) + 'static>(
+        &self,
+        f: F,
+    ) -> SignalHandlerId {
+        unsafe extern "C" fn notify_eswitch_inline_mode_trampoline<
+            F: Fn(&SettingSriov) + 'static,
+        >(
+            this: *mut ffi::NMSettingSriov,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::eswitch-inline-mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_eswitch_inline_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::eswitch-inline-mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_eswitch_inline_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -249,14 +313,24 @@ impl SettingSriov {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "eswitch-mode")]
     pub fn connect_eswitch_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_eswitch_mode_trampoline<F: Fn(&SettingSriov) + 'static>(this: *mut ffi::NMSettingSriov, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_eswitch_mode_trampoline<F: Fn(&SettingSriov) + 'static>(
+            this: *mut ffi::NMSettingSriov,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::eswitch-mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_eswitch_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::eswitch-mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_eswitch_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -264,14 +338,24 @@ impl SettingSriov {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     #[doc(alias = "preserve-on-down")]
     pub fn connect_preserve_on_down_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_preserve_on_down_trampoline<F: Fn(&SettingSriov) + 'static>(this: *mut ffi::NMSettingSriov, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_preserve_on_down_trampoline<F: Fn(&SettingSriov) + 'static>(
+            this: *mut ffi::NMSettingSriov,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::preserve-on-down".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_preserve_on_down_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::preserve-on-down".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_preserve_on_down_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -279,14 +363,24 @@ impl SettingSriov {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "total-vfs")]
     pub fn connect_total_vfs_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_total_vfs_trampoline<F: Fn(&SettingSriov) + 'static>(this: *mut ffi::NMSettingSriov, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_total_vfs_trampoline<F: Fn(&SettingSriov) + 'static>(
+            this: *mut ffi::NMSettingSriov,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::total-vfs".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_total_vfs_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::total-vfs".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_total_vfs_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -294,14 +388,24 @@ impl SettingSriov {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     #[doc(alias = "vfs")]
     pub fn connect_vfs_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_vfs_trampoline<F: Fn(&SettingSriov) + 'static>(this: *mut ffi::NMSettingSriov, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_vfs_trampoline<F: Fn(&SettingSriov) + 'static>(
+            this: *mut ffi::NMSettingSriov,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::vfs".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_vfs_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::vfs".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_vfs_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
@@ -309,71 +413,99 @@ impl SettingSriov {
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
 impl Default for SettingSriov {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`SettingSriov`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`SettingSriov`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct SettingSriovBuilder {
-            builder: glib::object::ObjectBuilder<'static, SettingSriov>,
-        }
+    builder: glib::object::ObjectBuilder<'static, SettingSriov>,
+}
 
-        impl SettingSriovBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+impl SettingSriovBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-                            #[cfg(feature = "v1_14")]
+    #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn autoprobe_drivers(self, autoprobe_drivers: Ternary) -> Self {
-                            Self { builder: self.builder.property("autoprobe-drivers", autoprobe_drivers), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("autoprobe-drivers", autoprobe_drivers),
+        }
+    }
 
-                            #[cfg(feature = "v1_46")]
+    #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn eswitch_encap_mode(self, eswitch_encap_mode: i32) -> Self {
-                            Self { builder: self.builder.property("eswitch-encap-mode", eswitch_encap_mode), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("eswitch-encap-mode", eswitch_encap_mode),
+        }
+    }
 
-                            #[cfg(feature = "v1_46")]
+    #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn eswitch_inline_mode(self, eswitch_inline_mode: i32) -> Self {
-                            Self { builder: self.builder.property("eswitch-inline-mode", eswitch_inline_mode), }
-                        }
+        Self {
+            builder: self
+                .builder
+                .property("eswitch-inline-mode", eswitch_inline_mode),
+        }
+    }
 
-                            #[cfg(feature = "v1_46")]
+    #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     pub fn eswitch_mode(self, eswitch_mode: i32) -> Self {
-                            Self { builder: self.builder.property("eswitch-mode", eswitch_mode), }
-                        }
+        Self {
+            builder: self.builder.property("eswitch-mode", eswitch_mode),
+        }
+    }
 
-                            #[cfg(feature = "v1_54")]
+    #[cfg(feature = "v1_54")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_54")))]
     pub fn preserve_on_down(self, preserve_on_down: i32) -> Self {
-                            Self { builder: self.builder.property("preserve-on-down", preserve_on_down), }
-                        }
+        Self {
+            builder: self.builder.property("preserve-on-down", preserve_on_down),
+        }
+    }
 
-                            #[cfg(feature = "v1_14")]
+    #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn total_vfs(self, total_vfs: u32) -> Self {
-                            Self { builder: self.builder.property("total-vfs", total_vfs), }
-                        }
+        Self {
+            builder: self.builder.property("total-vfs", total_vfs),
+        }
+    }
 
-                            #[cfg(feature = "v1_14")]
+    #[cfg(feature = "v1_14")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
     pub fn vfs(self, vfs: &[&SriovVF]) -> Self {
-                            Self { builder: self.builder.property("vfs", vfs.clone()), }
-                        }
+        Self {
+            builder: self.builder.property(
+                "vfs",
+                vfs.iter()
+                    .map(|sriov_vf| sriov_vf.to_value())
+                    .collect::<glib::ValueArray>(),
+            ),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`SettingSriov`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> SettingSriov {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

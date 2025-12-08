@@ -3,24 +3,36 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Setting,Setting8021x,SettingAdsl,SettingBluetooth,SettingBond,SettingBridge,SettingBridgePort,SettingCdma,SettingCompareFlags,SettingConnection,SettingDcb,SettingGeneric,SettingGsm,SettingIP4Config,SettingIP6Config,SettingInfiniband,SettingOlpcMesh,SettingPpp,SettingPppoe,SettingSecretFlags,SettingSerial,SettingTeam,SettingTeamPort,SettingVlan,SettingVpn,SettingWimax,SettingWired,SettingWireless,SettingWirelessSecurity};
-#[cfg(feature = "v1_2")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
-use crate::{SettingIPTunnel,SettingMacvlan,SettingVxlan};
-#[cfg(feature = "v1_6")]
-#[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
-use crate::{SettingMacsec,SettingProxy};
 #[cfg(feature = "v1_8")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_8")))]
-use crate::{SettingDummy};
+use crate::SettingDummy;
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
-use crate::{SettingTCConfig};
+use crate::SettingTCConfig;
+use crate::{
+    Setting, Setting8021x, SettingAdsl, SettingBluetooth, SettingBond, SettingBridge,
+    SettingBridgePort, SettingCdma, SettingCompareFlags, SettingConnection, SettingDcb,
+    SettingGeneric, SettingGsm, SettingIP4Config, SettingIP6Config, SettingInfiniband,
+    SettingOlpcMesh, SettingPpp, SettingPppoe, SettingSecretFlags, SettingSerial, SettingTeam,
+    SettingTeamPort, SettingVlan, SettingVpn, SettingWimax, SettingWired, SettingWireless,
+    SettingWirelessSecurity, ffi,
+};
+#[cfg(feature = "v1_2")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_2")))]
+use crate::{SettingIPTunnel, SettingMacvlan, SettingVxlan};
+#[cfg(feature = "v1_6")]
+#[cfg_attr(docsrs, doc(cfg(feature = "v1_6")))]
+use crate::{SettingMacsec, SettingProxy};
 #[cfg(feature = "v1_14")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_14")))]
-use crate::{SettingOvsBridge,SettingOvsPatch,SettingOvsPort,SettingTun};
-use glib::{object::ObjectType as _,prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::{SettingOvsBridge, SettingOvsPatch, SettingOvsPort, SettingTun};
+use glib::{
+    object::ObjectType as _,
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMConnection")]
@@ -32,15 +44,17 @@ glib::wrapper! {
 }
 
 impl Connection {
-        pub const NONE: Option<&'static Connection> = None;
-    
+    pub const NONE: Option<&'static Connection> = None;
 }
 
 pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "nm_connection_add_setting")]
     fn add_setting(&self, setting: impl IsA<Setting>) {
         unsafe {
-            ffi::nm_connection_add_setting(self.as_ref().to_glib_none().0, setting.upcast().into_glib_ptr());
+            ffi::nm_connection_add_setting(
+                self.as_ref().to_glib_none().0,
+                setting.upcast().into_glib_ptr(),
+            );
         }
     }
 
@@ -52,13 +66,25 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     }
 
     #[doc(alias = "nm_connection_clear_secrets_with_flags")]
-    fn clear_secrets_with_flags(&self, func: Option<&mut dyn FnMut(&Setting, &str, &SettingSecretFlags) -> bool>) {
-        let mut func_data: Option<&mut dyn FnMut(&Setting, &str, &SettingSecretFlags) -> bool> = func;
-        unsafe extern "C" fn func_func(setting: *mut ffi::NMSetting, secret: *const std::ffi::c_char, flags: ffi::NMSettingSecretFlags, user_data: glib::ffi::gpointer) -> glib::ffi::gboolean {
+    fn clear_secrets_with_flags(
+        &self,
+        func: Option<&mut dyn FnMut(&Setting, &str, &SettingSecretFlags) -> bool>,
+    ) {
+        let mut func_data: Option<&mut dyn FnMut(&Setting, &str, &SettingSecretFlags) -> bool> =
+            func;
+        unsafe extern "C" fn func_func(
+            setting: *mut ffi::NMSetting,
+            secret: *const std::ffi::c_char,
+            flags: ffi::NMSettingSecretFlags,
+            user_data: glib::ffi::gpointer,
+        ) -> glib::ffi::gboolean {
             let setting = from_glib_borrow(setting);
             let secret: Borrowed<glib::GString> = from_glib_borrow(secret);
-            let flags = from_glib_borrow(flags);
-            let callback = user_data as *mut Option<&mut dyn FnMut(&Setting, &str, &SettingSecretFlags) -> bool>;
+            let Some(flags) = SettingSecretFlags::from_bits(flags) else {
+                panic!("SettingsSecretFlags got invalid arguments");
+            };
+            let callback = user_data
+                as *mut Option<&mut dyn FnMut(&Setting, &str, &SettingSecretFlags) -> bool>;
             if let Some(ref mut callback) = *callback {
                 callback(&setting, secret.as_str(), &flags)
             } else {
@@ -66,10 +92,20 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
             }
             .into_glib()
         }
-        let func = if func_data.is_some() { Some(func_func as _) } else { None };
-        let super_callback0: &mut Option<&mut dyn FnMut(&Setting, &str, &SettingSecretFlags) -> bool> = &mut func_data;
+        let func = if func_data.is_some() {
+            Some(func_func as _)
+        } else {
+            None
+        };
+        let super_callback0: &mut Option<
+            &mut dyn FnMut(&Setting, &str, &SettingSecretFlags) -> bool,
+        > = &mut func_data;
         unsafe {
-            ffi::nm_connection_clear_secrets_with_flags(self.as_ref().to_glib_none().0, func, super_callback0 as *mut _ as *mut _);
+            ffi::nm_connection_clear_secrets_with_flags(
+                self.as_ref().to_glib_none().0,
+                func,
+                super_callback0 as *mut _ as *mut _,
+            );
         }
     }
 
@@ -83,7 +119,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "nm_connection_compare")]
     fn compare(&self, b: &impl IsA<Connection>, flags: SettingCompareFlags) -> bool {
         unsafe {
-            from_glib(ffi::nm_connection_compare(self.as_ref().to_glib_none().0, b.as_ref().to_glib_none().0, flags.into_glib()))
+            from_glib(ffi::nm_connection_compare(
+                self.as_ref().to_glib_none().0,
+                b.as_ref().to_glib_none().0,
+                flags.into_glib(),
+            ))
         }
     }
 
@@ -108,39 +148,42 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_connection_type")]
     fn connection_type(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_connection_type(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_connection_type(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_connection_get_id")]
     #[doc(alias = "get_id")]
     fn id(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_connection_get_id(self.as_ref().to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_connection_get_id(self.as_ref().to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_connection_get_interface_name")]
     #[doc(alias = "get_interface_name")]
     fn interface_name(&self) -> glib::GString {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_interface_name(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_interface_name(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_connection_get_path")]
     #[doc(alias = "get_path")]
     fn path(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_connection_get_path(self.as_ref().to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_connection_get_path(self.as_ref().to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_connection_get_setting")]
     #[doc(alias = "get_setting")]
     fn setting(&self, setting_type: glib::types::Type) -> Setting {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting(self.as_ref().to_glib_none().0, setting_type.into_glib()))
+            from_glib_none(ffi::nm_connection_get_setting(
+                self.as_ref().to_glib_none().0,
+                setting_type.into_glib(),
+            ))
         }
     }
 
@@ -148,7 +191,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_802_1x")]
     fn setting_802_1x(&self) -> Setting8021x {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_802_1x(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_802_1x(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -156,7 +201,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_adsl")]
     fn setting_adsl(&self) -> SettingAdsl {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_adsl(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_adsl(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -164,7 +211,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_bluetooth")]
     fn setting_bluetooth(&self) -> SettingBluetooth {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_bluetooth(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_bluetooth(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -172,7 +221,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_bond")]
     fn setting_bond(&self) -> SettingBond {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_bond(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_bond(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -180,7 +231,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_bridge")]
     fn setting_bridge(&self) -> SettingBridge {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_bridge(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_bridge(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -188,7 +241,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_bridge_port")]
     fn setting_bridge_port(&self) -> SettingBridgePort {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_bridge_port(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_bridge_port(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -196,7 +251,10 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_by_name")]
     fn setting_by_name(&self, name: &str) -> Setting {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_by_name(self.as_ref().to_glib_none().0, name.to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_by_name(
+                self.as_ref().to_glib_none().0,
+                name.to_glib_none().0,
+            ))
         }
     }
 
@@ -204,7 +262,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_cdma")]
     fn setting_cdma(&self) -> SettingCdma {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_cdma(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_cdma(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -212,7 +272,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_connection")]
     fn setting_connection(&self) -> SettingConnection {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_connection(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_connection(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -220,7 +282,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_dcb")]
     fn setting_dcb(&self) -> SettingDcb {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_dcb(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_dcb(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -230,7 +294,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_dummy")]
     fn setting_dummy(&self) -> SettingDummy {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_dummy(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_dummy(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -238,7 +304,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_generic")]
     fn setting_generic(&self) -> SettingGeneric {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_generic(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_generic(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -246,7 +314,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_gsm")]
     fn setting_gsm(&self) -> SettingGsm {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_gsm(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_gsm(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -254,7 +324,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_infiniband")]
     fn setting_infiniband(&self) -> SettingInfiniband {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_infiniband(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_infiniband(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -262,7 +334,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_ip4_config")]
     fn setting_ip4_config(&self) -> SettingIP4Config {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_ip4_config(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_ip4_config(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -270,7 +344,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_ip6_config")]
     fn setting_ip6_config(&self) -> SettingIP6Config {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_ip6_config(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_ip6_config(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -280,7 +356,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_ip_tunnel")]
     fn setting_ip_tunnel(&self) -> SettingIPTunnel {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_ip_tunnel(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_ip_tunnel(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -290,7 +368,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_macsec")]
     fn setting_macsec(&self) -> SettingMacsec {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_macsec(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_macsec(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -300,7 +380,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_macvlan")]
     fn setting_macvlan(&self) -> SettingMacvlan {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_macvlan(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_macvlan(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -308,7 +390,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_olpc_mesh")]
     fn setting_olpc_mesh(&self) -> SettingOlpcMesh {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_olpc_mesh(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_olpc_mesh(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -318,7 +402,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_ovs_bridge")]
     fn setting_ovs_bridge(&self) -> SettingOvsBridge {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_ovs_bridge(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_ovs_bridge(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -336,7 +422,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_ovs_patch")]
     fn setting_ovs_patch(&self) -> SettingOvsPatch {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_ovs_patch(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_ovs_patch(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -346,7 +434,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_ovs_port")]
     fn setting_ovs_port(&self) -> SettingOvsPort {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_ovs_port(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_ovs_port(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -354,7 +444,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_ppp")]
     fn setting_ppp(&self) -> SettingPpp {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_ppp(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_ppp(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -362,7 +454,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_pppoe")]
     fn setting_pppoe(&self) -> SettingPppoe {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_pppoe(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_pppoe(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -372,7 +466,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_proxy")]
     fn setting_proxy(&self) -> SettingProxy {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_proxy(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_proxy(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -380,7 +476,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_serial")]
     fn setting_serial(&self) -> SettingSerial {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_serial(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_serial(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -390,7 +488,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_tc_config")]
     fn setting_tc_config(&self) -> SettingTCConfig {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_tc_config(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_tc_config(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -398,7 +498,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_team")]
     fn setting_team(&self) -> SettingTeam {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_team(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_team(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -406,7 +508,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_team_port")]
     fn setting_team_port(&self) -> SettingTeamPort {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_team_port(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_team_port(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -416,7 +520,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_tun")]
     fn setting_tun(&self) -> SettingTun {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_tun(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_tun(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -424,7 +530,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_vlan")]
     fn setting_vlan(&self) -> SettingVlan {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_vlan(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_vlan(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -432,7 +540,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_vpn")]
     fn setting_vpn(&self) -> SettingVpn {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_vpn(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_vpn(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -442,7 +552,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_vxlan")]
     fn setting_vxlan(&self) -> SettingVxlan {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_vxlan(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_vxlan(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -450,7 +562,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_wimax")]
     fn setting_wimax(&self) -> SettingWimax {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_wimax(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_wimax(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -458,7 +572,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_wired")]
     fn setting_wired(&self) -> SettingWired {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_wired(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_wired(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -466,7 +582,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_wireless")]
     fn setting_wireless(&self) -> SettingWireless {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_wireless(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_wireless(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -474,7 +592,9 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "get_setting_wireless_security")]
     fn setting_wireless_security(&self) -> SettingWirelessSecurity {
         unsafe {
-            from_glib_none(ffi::nm_connection_get_setting_wireless_security(self.as_ref().to_glib_none().0))
+            from_glib_none(ffi::nm_connection_get_setting_wireless_security(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -485,7 +605,13 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     fn settings(&self) -> Vec<Setting> {
         unsafe {
             let mut out_length = std::mem::MaybeUninit::uninit();
-            let ret = FromGlibContainer::from_glib_container_num(ffi::nm_connection_get_settings(self.as_ref().to_glib_none().0, out_length.as_mut_ptr()), out_length.assume_init() as _);
+            let ret = FromGlibContainer::from_glib_container_num(
+                ffi::nm_connection_get_settings(
+                    self.as_ref().to_glib_none().0,
+                    out_length.as_mut_ptr(),
+                ),
+                out_length.assume_init() as _,
+            );
             ret
         }
     }
@@ -493,30 +619,35 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "nm_connection_get_uuid")]
     #[doc(alias = "get_uuid")]
     fn uuid(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_connection_get_uuid(self.as_ref().to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_connection_get_uuid(self.as_ref().to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_connection_get_virtual_device_description")]
     #[doc(alias = "get_virtual_device_description")]
     fn virtual_device_description(&self) -> glib::GString {
         unsafe {
-            from_glib_full(ffi::nm_connection_get_virtual_device_description(self.as_ref().to_glib_none().0))
+            from_glib_full(ffi::nm_connection_get_virtual_device_description(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_connection_is_type")]
     fn is_type(&self, type_: &str) -> bool {
         unsafe {
-            from_glib(ffi::nm_connection_is_type(self.as_ref().to_glib_none().0, type_.to_glib_none().0))
+            from_glib(ffi::nm_connection_is_type(
+                self.as_ref().to_glib_none().0,
+                type_.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_connection_is_virtual")]
     fn is_virtual(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_connection_is_virtual(self.as_ref().to_glib_none().0))
+            from_glib(ffi::nm_connection_is_virtual(
+                self.as_ref().to_glib_none().0,
+            ))
         }
     }
 
@@ -524,7 +655,10 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     fn need_secrets(&self) -> (Option<glib::GString>, Vec<glib::GString>) {
         unsafe {
             let mut hints = std::ptr::null_mut();
-            let ret = from_glib_none(ffi::nm_connection_need_secrets(self.as_ref().to_glib_none().0, &mut hints));
+            let ret = from_glib_none(ffi::nm_connection_need_secrets(
+                self.as_ref().to_glib_none().0,
+                &mut hints,
+            ));
             (ret, FromGlibPtrContainer::from_glib_container(hints))
         }
     }
@@ -537,7 +671,10 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "nm_connection_remove_setting")]
     fn remove_setting(&self, setting_type: glib::types::Type) {
         unsafe {
-            ffi::nm_connection_remove_setting(self.as_ref().to_glib_none().0, setting_type.into_glib());
+            ffi::nm_connection_remove_setting(
+                self.as_ref().to_glib_none().0,
+                setting_type.into_glib(),
+            );
         }
     }
 
@@ -549,7 +686,10 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     #[doc(alias = "nm_connection_replace_settings_from_connection")]
     fn replace_settings_from_connection(&self, new_connection: &impl IsA<Connection>) {
         unsafe {
-            ffi::nm_connection_replace_settings_from_connection(self.as_ref().to_glib_none().0, new_connection.as_ref().to_glib_none().0);
+            ffi::nm_connection_replace_settings_from_connection(
+                self.as_ref().to_glib_none().0,
+                new_connection.as_ref().to_glib_none().0,
+            );
         }
     }
 
@@ -576,7 +716,11 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
             let mut error = std::ptr::null_mut();
             let is_ok = ffi::nm_connection_verify(self.as_ref().to_glib_none().0, &mut error);
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -586,48 +730,87 @@ pub trait ConnectionExt: IsA<Connection> + 'static {
     fn verify_secrets(&self) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_connection_verify_secrets(self.as_ref().to_glib_none().0, &mut error);
+            let is_ok =
+                ffi::nm_connection_verify_secrets(self.as_ref().to_glib_none().0, &mut error);
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "changed")]
     fn connect_changed<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn changed_trampoline<P: IsA<Connection>, F: Fn(&P) + 'static>(this: *mut ffi::NMConnection, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn changed_trampoline<P: IsA<Connection>, F: Fn(&P) + 'static>(
+            this: *mut ffi::NMConnection,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(Connection::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"changed".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(changed_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"changed".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    changed_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "secrets-cleared")]
     fn connect_secrets_cleared<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn secrets_cleared_trampoline<P: IsA<Connection>, F: Fn(&P) + 'static>(this: *mut ffi::NMConnection, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn secrets_cleared_trampoline<P: IsA<Connection>, F: Fn(&P) + 'static>(
+            this: *mut ffi::NMConnection,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(Connection::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"secrets-cleared".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(secrets_cleared_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"secrets-cleared".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    secrets_cleared_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "secrets-updated")]
     fn connect_secrets_updated<F: Fn(&Self, &str) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn secrets_updated_trampoline<P: IsA<Connection>, F: Fn(&P, &str) + 'static>(this: *mut ffi::NMConnection, setting_name: *mut std::ffi::c_char, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn secrets_updated_trampoline<
+            P: IsA<Connection>,
+            F: Fn(&P, &str) + 'static,
+        >(
+            this: *mut ffi::NMConnection,
+            setting_name: *mut std::ffi::c_char,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
-            f(Connection::from_glib_borrow(this).unsafe_cast_ref(), &glib::GString::from_glib_borrow(setting_name))
+            f(
+                Connection::from_glib_borrow(this).unsafe_cast_ref(),
+                &glib::GString::from_glib_borrow(setting_name),
+            )
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"secrets-updated".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(secrets_updated_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"secrets-updated".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    secrets_updated_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }

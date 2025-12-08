@@ -3,12 +3,16 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Setting};
 #[cfg(feature = "v1_18")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
-use crate::{BridgeVlan};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::BridgeVlan;
+use crate::{Setting, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSettingBridgePort")]
@@ -23,19 +27,16 @@ impl SettingBridgePort {
     #[doc(alias = "nm_setting_bridge_port_new")]
     pub fn new() -> SettingBridgePort {
         assert_initialized_main_thread!();
-        unsafe {
-            Setting::from_glib_full(ffi::nm_setting_bridge_port_new()).unsafe_cast()
-        }
+        unsafe { Setting::from_glib_full(ffi::nm_setting_bridge_port_new()).unsafe_cast() }
     }
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`SettingBridgePort`] objects.
-            ///
-            /// This method returns an instance of [`SettingBridgePortBuilder`](crate::builders::SettingBridgePortBuilder) which can be used to create [`SettingBridgePort`] objects.
-            pub fn builder() -> SettingBridgePortBuilder {
-                SettingBridgePortBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`SettingBridgePort`] objects.
+    ///
+    /// This method returns an instance of [`SettingBridgePortBuilder`](crate::builders::SettingBridgePortBuilder) which can be used to create [`SettingBridgePort`] objects.
+    pub fn builder() -> SettingBridgePortBuilder {
+        SettingBridgePortBuilder::new()
+    }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
@@ -60,7 +61,9 @@ impl SettingBridgePort {
     #[doc(alias = "hairpin-mode")]
     pub fn is_hairpin_mode(&self) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_bridge_port_get_hairpin_mode(self.to_glib_none().0))
+            from_glib(ffi::nm_setting_bridge_port_get_hairpin_mode(
+                self.to_glib_none().0,
+            ))
         }
     }
 
@@ -69,26 +72,20 @@ impl SettingBridgePort {
     #[doc(alias = "nm_setting_bridge_port_get_num_vlans")]
     #[doc(alias = "get_num_vlans")]
     pub fn num_vlans(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_bridge_port_get_num_vlans(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_port_get_num_vlans(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_bridge_port_get_path_cost")]
     #[doc(alias = "get_path_cost")]
     #[doc(alias = "path-cost")]
     pub fn path_cost(&self) -> u16 {
-        unsafe {
-            ffi::nm_setting_bridge_port_get_path_cost(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_port_get_path_cost(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_bridge_port_get_priority")]
     #[doc(alias = "get_priority")]
     pub fn priority(&self) -> u16 {
-        unsafe {
-            ffi::nm_setting_bridge_port_get_priority(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_bridge_port_get_priority(self.to_glib_none().0) }
     }
 
     #[cfg(feature = "v1_18")]
@@ -97,7 +94,10 @@ impl SettingBridgePort {
     #[doc(alias = "get_vlan")]
     pub fn vlan(&self, idx: u32) -> BridgeVlan {
         unsafe {
-            from_glib_none(ffi::nm_setting_bridge_port_get_vlan(self.to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_bridge_port_get_vlan(
+                self.to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -115,72 +115,117 @@ impl SettingBridgePort {
     #[doc(alias = "nm_setting_bridge_port_remove_vlan_by_vid")]
     pub fn remove_vlan_by_vid(&self, vid_start: u16, vid_end: u16) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_bridge_port_remove_vlan_by_vid(self.to_glib_none().0, vid_start, vid_end))
+            from_glib(ffi::nm_setting_bridge_port_remove_vlan_by_vid(
+                self.to_glib_none().0,
+                vid_start,
+                vid_end,
+            ))
         }
     }
 
     #[doc(alias = "hairpin-mode")]
     pub fn set_hairpin_mode(&self, hairpin_mode: bool) {
-        ObjectExt::set_property(self,"hairpin-mode", hairpin_mode)
+        ObjectExt::set_property(self, "hairpin-mode", hairpin_mode)
     }
 
     #[doc(alias = "path-cost")]
     pub fn set_path_cost(&self, path_cost: u32) {
-        ObjectExt::set_property(self,"path-cost", path_cost)
+        ObjectExt::set_property(self, "path-cost", path_cost)
     }
 
     pub fn set_priority(&self, priority: u32) {
-        ObjectExt::set_property(self,"priority", priority)
+        ObjectExt::set_property(self, "priority", priority)
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlans(&self) -> Vec<BridgeVlan> {
-        ObjectExt::property(self, "vlans")
+        use glib::value::FromValue;
+        let vals = ObjectExt::property::<glib::ValueArray>(self, "vlans");
+        vals.iter()
+            .map(|value| unsafe { BridgeVlan::from_value(value) })
+            .collect()
     }
 
     #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn set_vlans(&self, vlans: &[&BridgeVlan]) {
-        ObjectExt::set_property(self,"vlans", vlans)
+        ObjectExt::set_property(
+            self,
+            "vlans",
+            vlans
+                .iter()
+                .map(|vlan| vlan.to_value())
+                .collect::<glib::ValueArray>(),
+        )
     }
 
     #[doc(alias = "hairpin-mode")]
     pub fn connect_hairpin_mode_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_hairpin_mode_trampoline<F: Fn(&SettingBridgePort) + 'static>(this: *mut ffi::NMSettingBridgePort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_hairpin_mode_trampoline<F: Fn(&SettingBridgePort) + 'static>(
+            this: *mut ffi::NMSettingBridgePort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::hairpin-mode".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_hairpin_mode_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::hairpin-mode".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_hairpin_mode_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "path-cost")]
     pub fn connect_path_cost_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_path_cost_trampoline<F: Fn(&SettingBridgePort) + 'static>(this: *mut ffi::NMSettingBridgePort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_path_cost_trampoline<F: Fn(&SettingBridgePort) + 'static>(
+            this: *mut ffi::NMSettingBridgePort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::path-cost".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_path_cost_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::path-cost".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_path_cost_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "priority")]
     pub fn connect_priority_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_priority_trampoline<F: Fn(&SettingBridgePort) + 'static>(this: *mut ffi::NMSettingBridgePort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_priority_trampoline<F: Fn(&SettingBridgePort) + 'static>(
+            this: *mut ffi::NMSettingBridgePort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::priority".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_priority_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::priority".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_priority_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
@@ -188,60 +233,87 @@ impl SettingBridgePort {
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     #[doc(alias = "vlans")]
     pub fn connect_vlans_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_vlans_trampoline<F: Fn(&SettingBridgePort) + 'static>(this: *mut ffi::NMSettingBridgePort, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_vlans_trampoline<F: Fn(&SettingBridgePort) + 'static>(
+            this: *mut ffi::NMSettingBridgePort,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::vlans".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_vlans_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::vlans".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_vlans_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
 
 impl Default for SettingBridgePort {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`SettingBridgePort`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`SettingBridgePort`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct SettingBridgePortBuilder {
-            builder: glib::object::ObjectBuilder<'static, SettingBridgePort>,
+    builder: glib::object::ObjectBuilder<'static, SettingBridgePort>,
+}
+
+impl SettingBridgePortBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-        impl SettingBridgePortBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+    pub fn hairpin_mode(self, hairpin_mode: bool) -> Self {
+        Self {
+            builder: self.builder.property("hairpin-mode", hairpin_mode),
         }
+    }
 
-                            pub fn hairpin_mode(self, hairpin_mode: bool) -> Self {
-                            Self { builder: self.builder.property("hairpin-mode", hairpin_mode), }
-                        }
+    pub fn path_cost(self, path_cost: u32) -> Self {
+        Self {
+            builder: self.builder.property("path-cost", path_cost),
+        }
+    }
 
-                            pub fn path_cost(self, path_cost: u32) -> Self {
-                            Self { builder: self.builder.property("path-cost", path_cost), }
-                        }
+    pub fn priority(self, priority: u32) -> Self {
+        Self {
+            builder: self.builder.property("priority", priority),
+        }
+    }
 
-                            pub fn priority(self, priority: u32) -> Self {
-                            Self { builder: self.builder.property("priority", priority), }
-                        }
-
-                            #[cfg(feature = "v1_18")]
+    #[cfg(feature = "v1_18")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_18")))]
     pub fn vlans(self, vlans: &[&BridgeVlan]) -> Self {
-                            Self { builder: self.builder.property("vlans", vlans.clone()), }
-                        }
+        Self {
+            builder: self.builder.property(
+                "vlans",
+                vlans
+                    .iter()
+                    .map(|vlan| vlan.to_value())
+                    .collect::<glib::ValueArray>(),
+            ),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`SettingBridgePort`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> SettingBridgePort {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

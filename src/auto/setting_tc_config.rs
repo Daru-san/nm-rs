@@ -3,9 +3,14 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Setting,TCQdisc,TCTfilter};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::{Setting, TCQdisc, TCTfilter, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+    value::FromValue,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSettingTCConfig")]
@@ -20,31 +25,34 @@ impl SettingTCConfig {
     #[doc(alias = "nm_setting_tc_config_new")]
     pub fn new() -> SettingTCConfig {
         assert_initialized_main_thread!();
-        unsafe {
-            Setting::from_glib_full(ffi::nm_setting_tc_config_new()).unsafe_cast()
-        }
+        unsafe { Setting::from_glib_full(ffi::nm_setting_tc_config_new()).unsafe_cast() }
     }
 
-            // rustdoc-stripper-ignore-next
-            /// Creates a new builder-pattern struct instance to construct [`SettingTCConfig`] objects.
-            ///
-            /// This method returns an instance of [`SettingTCConfigBuilder`](crate::builders::SettingTCConfigBuilder) which can be used to create [`SettingTCConfig`] objects.
-            pub fn builder() -> SettingTCConfigBuilder {
-                SettingTCConfigBuilder::new()
-            }
-        
+    // rustdoc-stripper-ignore-next
+    /// Creates a new builder-pattern struct instance to construct [`SettingTCConfig`] objects.
+    ///
+    /// This method returns an instance of [`SettingTCConfigBuilder`](crate::builders::SettingTCConfigBuilder) which can be used to create [`SettingTCConfig`] objects.
+    pub fn builder() -> SettingTCConfigBuilder {
+        SettingTCConfigBuilder::new()
+    }
 
     #[doc(alias = "nm_setting_tc_config_add_qdisc")]
     pub fn add_qdisc(&self, qdisc: &TCQdisc) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_tc_config_add_qdisc(self.to_glib_none().0, qdisc.to_glib_none().0))
+            from_glib(ffi::nm_setting_tc_config_add_qdisc(
+                self.to_glib_none().0,
+                qdisc.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_tc_config_add_tfilter")]
     pub fn add_tfilter(&self, tfilter: &TCTfilter) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_tc_config_add_tfilter(self.to_glib_none().0, tfilter.to_glib_none().0))
+            from_glib(ffi::nm_setting_tc_config_add_tfilter(
+                self.to_glib_none().0,
+                tfilter.to_glib_none().0,
+            ))
         }
     }
 
@@ -65,24 +73,23 @@ impl SettingTCConfig {
     #[doc(alias = "nm_setting_tc_config_get_num_qdiscs")]
     #[doc(alias = "get_num_qdiscs")]
     pub fn num_qdiscs(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_tc_config_get_num_qdiscs(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_tc_config_get_num_qdiscs(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_tc_config_get_num_tfilters")]
     #[doc(alias = "get_num_tfilters")]
     pub fn num_tfilters(&self) -> u32 {
-        unsafe {
-            ffi::nm_setting_tc_config_get_num_tfilters(self.to_glib_none().0)
-        }
+        unsafe { ffi::nm_setting_tc_config_get_num_tfilters(self.to_glib_none().0) }
     }
 
     #[doc(alias = "nm_setting_tc_config_get_qdisc")]
     #[doc(alias = "get_qdisc")]
     pub fn qdisc(&self, idx: u32) -> TCQdisc {
         unsafe {
-            from_glib_none(ffi::nm_setting_tc_config_get_qdisc(self.to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_tc_config_get_qdisc(
+                self.to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -90,7 +97,10 @@ impl SettingTCConfig {
     #[doc(alias = "get_tfilter")]
     pub fn tfilter(&self, idx: u32) -> TCTfilter {
         unsafe {
-            from_glib_none(ffi::nm_setting_tc_config_get_tfilter(self.to_glib_none().0, idx))
+            from_glib_none(ffi::nm_setting_tc_config_get_tfilter(
+                self.to_glib_none().0,
+                idx,
+            ))
         }
     }
 
@@ -104,7 +114,10 @@ impl SettingTCConfig {
     #[doc(alias = "nm_setting_tc_config_remove_qdisc_by_value")]
     pub fn remove_qdisc_by_value(&self, qdisc: &TCQdisc) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_tc_config_remove_qdisc_by_value(self.to_glib_none().0, qdisc.to_glib_none().0))
+            from_glib(ffi::nm_setting_tc_config_remove_qdisc_by_value(
+                self.to_glib_none().0,
+                qdisc.to_glib_none().0,
+            ))
         }
     }
 
@@ -118,49 +131,92 @@ impl SettingTCConfig {
     #[doc(alias = "nm_setting_tc_config_remove_tfilter_by_value")]
     pub fn remove_tfilter_by_value(&self, tfilter: &TCTfilter) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_tc_config_remove_tfilter_by_value(self.to_glib_none().0, tfilter.to_glib_none().0))
+            from_glib(ffi::nm_setting_tc_config_remove_tfilter_by_value(
+                self.to_glib_none().0,
+                tfilter.to_glib_none().0,
+            ))
         }
     }
 
     pub fn qdiscs(&self) -> Vec<TCQdisc> {
-        ObjectExt::property(self, "qdiscs")
+        let vals = ObjectExt::property::<glib::ValueArray>(self, "qdiscs");
+        vals.iter()
+            .map(|value| unsafe { TCQdisc::from_value(value) })
+            .collect()
     }
 
     pub fn set_qdiscs(&self, qdiscs: &[&TCQdisc]) {
-        ObjectExt::set_property(self,"qdiscs", qdiscs)
+        ObjectExt::set_property(
+            self,
+            "qdiscs",
+            qdiscs
+                .iter()
+                .map(|tcqdisc| tcqdisc.to_value())
+                .collect::<glib::ValueArray>(),
+        )
     }
 
     pub fn tfilters(&self) -> Vec<TCTfilter> {
-        ObjectExt::property(self, "tfilters")
+        let vals = ObjectExt::property::<glib::ValueArray>(self, "tfilters");
+        vals.iter()
+            .map(|value| unsafe { TCTfilter::from_value(value) })
+            .collect()
     }
 
     pub fn set_tfilters(&self, tfilters: &[&TCTfilter]) {
-        ObjectExt::set_property(self,"tfilters", tfilters)
+        ObjectExt::set_property(
+            self,
+            "tfilters",
+            tfilters
+                .iter()
+                .map(|tctfilter| tctfilter.to_value())
+                .collect::<glib::ValueArray>(),
+        )
     }
 
     #[doc(alias = "qdiscs")]
     pub fn connect_qdiscs_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_qdiscs_trampoline<F: Fn(&SettingTCConfig) + 'static>(this: *mut ffi::NMSettingTCConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_qdiscs_trampoline<F: Fn(&SettingTCConfig) + 'static>(
+            this: *mut ffi::NMSettingTCConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::qdiscs".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_qdiscs_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::qdiscs".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_qdiscs_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 
     #[doc(alias = "tfilters")]
     pub fn connect_tfilters_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_tfilters_trampoline<F: Fn(&SettingTCConfig) + 'static>(this: *mut ffi::NMSettingTCConfig, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_tfilters_trampoline<F: Fn(&SettingTCConfig) + 'static>(
+            this: *mut ffi::NMSettingTCConfig,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(&from_glib_borrow(this))
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::tfilters".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_tfilters_trampoline::<F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::tfilters".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_tfilters_trampoline::<F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
@@ -168,37 +224,56 @@ impl SettingTCConfig {
 #[cfg(feature = "v1_12")]
 #[cfg_attr(docsrs, doc(cfg(feature = "v1_12")))]
 impl Default for SettingTCConfig {
-                     fn default() -> Self {
-                         Self::new()
-                     }
-                 }
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 // rustdoc-stripper-ignore-next
-        /// A [builder-pattern] type to construct [`SettingTCConfig`] objects.
-        ///
-        /// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+/// A [builder-pattern] type to construct [`SettingTCConfig`] objects.
+///
+/// [builder-pattern]: https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
 #[must_use = "The builder must be built to be used"]
 pub struct SettingTCConfigBuilder {
-            builder: glib::object::ObjectBuilder<'static, SettingTCConfig>,
+    builder: glib::object::ObjectBuilder<'static, SettingTCConfig>,
+}
+
+impl SettingTCConfigBuilder {
+    fn new() -> Self {
+        Self {
+            builder: glib::object::Object::builder(),
         }
+    }
 
-        impl SettingTCConfigBuilder {
-        fn new() -> Self {
-            Self { builder: glib::object::Object::builder() }
+    pub fn qdiscs(self, qdiscs: &[&TCQdisc]) -> Self {
+        Self {
+            builder: self.builder.property(
+                "qdiscs",
+                qdiscs
+                    .iter()
+                    .map(|tcqdisc| tcqdisc.to_value())
+                    .collect::<glib::ValueArray>(),
+            ),
         }
+    }
 
-                            pub fn qdiscs(self, qdiscs: &[&TCQdisc]) -> Self {
-                            Self { builder: self.builder.property("qdiscs", qdiscs.clone()), }
-                        }
-
-                            pub fn tfilters(self, tfilters: &[&TCTfilter]) -> Self {
-                            Self { builder: self.builder.property("tfilters", tfilters.clone()), }
-                        }
+    pub fn tfilters(self, tfilters: &[&TCTfilter]) -> Self {
+        Self {
+            builder: self.builder.property(
+                "tfilters",
+                tfilters
+                    .iter()
+                    .map(|tctfilter| tctfilter.to_value())
+                    .collect::<glib::ValueArray>(),
+            ),
+        }
+    }
 
     // rustdoc-stripper-ignore-next
     /// Build the [`SettingTCConfig`].
     #[must_use = "Building the object from the builder is usually expensive and is not expected to have side effects"]
     pub fn build(self) -> SettingTCConfig {
-assert_initialized_main_thread!();
-    self.builder.build() }
+        assert_initialized_main_thread!();
+        self.builder.build()
+    }
 }

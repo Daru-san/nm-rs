@@ -3,9 +3,13 @@
 // from gtk-girs (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use crate::{ffi,Connection,SettingCompareFlags,SettingSecretFlags};
-use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use crate::{Connection, SettingCompareFlags, SettingSecretFlags, ffi};
+use glib::{
+    prelude::*,
+    signal::{SignalHandlerId, connect_raw},
+    translate::*,
+};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "NMSetting")]
@@ -17,26 +21,29 @@ glib::wrapper! {
 }
 
 impl Setting {
-        pub const NONE: Option<&'static Setting> = None;
-    
+    pub const NONE: Option<&'static Setting> = None;
 
     #[cfg(feature = "v1_46")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_46")))]
     #[doc(alias = "nm_setting_get_enum_property_type")]
     #[doc(alias = "get_enum_property_type")]
-    pub fn enum_property_type(setting_type: glib::types::Type, property_name: &str) -> glib::types::Type {
+    pub fn enum_property_type(
+        setting_type: glib::types::Type,
+        property_name: &str,
+    ) -> glib::types::Type {
         assert_initialized_main_thread!();
         unsafe {
-            from_glib(ffi::nm_setting_get_enum_property_type(setting_type.into_glib(), property_name.to_glib_none().0))
+            from_glib(ffi::nm_setting_get_enum_property_type(
+                setting_type.into_glib(),
+                property_name.to_glib_none().0,
+            ))
         }
     }
 
     #[doc(alias = "nm_setting_lookup_type")]
     pub fn lookup_type(name: &str) -> glib::types::Type {
         assert_initialized_main_thread!();
-        unsafe {
-            from_glib(ffi::nm_setting_lookup_type(name.to_glib_none().0))
-        }
+        unsafe { from_glib(ffi::nm_setting_lookup_type(name.to_glib_none().0)) }
     }
 }
 
@@ -51,7 +58,11 @@ pub trait SettingExt: IsA<Setting> + 'static {
     #[doc(alias = "nm_setting_compare")]
     fn compare(&self, b: &impl IsA<Setting>, flags: SettingCompareFlags) -> bool {
         unsafe {
-            from_glib(ffi::nm_setting_compare(self.as_ref().to_glib_none().0, b.as_ref().to_glib_none().0, flags.into_glib()))
+            from_glib(ffi::nm_setting_compare(
+                self.as_ref().to_glib_none().0,
+                b.as_ref().to_glib_none().0,
+                flags.into_glib(),
+            ))
         }
     }
 
@@ -61,11 +72,9 @@ pub trait SettingExt: IsA<Setting> + 'static {
     //}
 
     #[doc(alias = "nm_setting_duplicate")]
-#[must_use]
+    #[must_use]
     fn duplicate(&self) -> Setting {
-        unsafe {
-            from_glib_full(ffi::nm_setting_duplicate(self.as_ref().to_glib_none().0))
-        }
+        unsafe { from_glib_full(ffi::nm_setting_duplicate(self.as_ref().to_glib_none().0)) }
     }
 
     //#[doc(alias = "nm_setting_enumerate_values")]
@@ -82,19 +91,30 @@ pub trait SettingExt: IsA<Setting> + 'static {
     #[doc(alias = "nm_setting_get_name")]
     #[doc(alias = "get_name")]
     fn name(&self) -> glib::GString {
-        unsafe {
-            from_glib_none(ffi::nm_setting_get_name(self.as_ref().to_glib_none().0))
-        }
+        unsafe { from_glib_none(ffi::nm_setting_get_name(self.as_ref().to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_setting_get_secret_flags")]
     #[doc(alias = "get_secret_flags")]
-    fn secret_flags(&self, secret_name: &str, out_flags: SettingSecretFlags) -> Result<(), glib::Error> {
+    fn secret_flags(
+        &self,
+        secret_name: &str,
+        out_flags: SettingSecretFlags,
+    ) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_setting_get_secret_flags(self.as_ref().to_glib_none().0, secret_name.to_glib_none().0, out_flags.into_glib(), &mut error);
+            let is_ok = ffi::nm_setting_get_secret_flags(
+                self.as_ref().to_glib_none().0,
+                secret_name.to_glib_none().0,
+                &mut out_flags.into_glib(),
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -118,7 +138,13 @@ pub trait SettingExt: IsA<Setting> + 'static {
     fn option_get_all_names(&self) -> Vec<glib::GString> {
         unsafe {
             let mut out_len = std::mem::MaybeUninit::uninit();
-            let ret = FromGlibContainer::from_glib_none_num(ffi::nm_setting_option_get_all_names(self.as_ref().to_glib_none().0, out_len.as_mut_ptr()), out_len.assume_init() as _);
+            let ret = FromGlibContainer::from_glib_none_num(
+                ffi::nm_setting_option_get_all_names(
+                    self.as_ref().to_glib_none().0,
+                    out_len.as_mut_ptr(),
+                ),
+                out_len.assume_init() as _,
+            );
             ret
         }
     }
@@ -126,11 +152,15 @@ pub trait SettingExt: IsA<Setting> + 'static {
     #[cfg(feature = "v1_26")]
     #[cfg_attr(docsrs, doc(cfg(feature = "v1_26")))]
     #[doc(alias = "nm_setting_option_get_boolean")]
-    fn option_get_boolean(&self, opt_name: &str) -> Option<Option<bool>> {
+    fn option_get_boolean(&self, opt_name: &str) -> Option<bool> {
         unsafe {
             let mut out_value = std::mem::MaybeUninit::uninit();
-            let ret = from_glib(ffi::nm_setting_option_get_boolean(self.as_ref().to_glib_none().0, opt_name.to_glib_none().0, out_value.as_mut_ptr()));
-            if ret { Some(from_glib(out_value.assume_init())) } else { None }
+            let ret = from_glib(ffi::nm_setting_option_get_boolean(
+                self.as_ref().to_glib_none().0,
+                opt_name.to_glib_none().0,
+                out_value.as_mut_ptr(),
+            ));
+            if ret { Some(true) } else { None }
         }
     }
 
@@ -140,8 +170,16 @@ pub trait SettingExt: IsA<Setting> + 'static {
     fn option_get_uint32(&self, opt_name: &str) -> Option<u32> {
         unsafe {
             let mut out_value = std::mem::MaybeUninit::uninit();
-            let ret = from_glib(ffi::nm_setting_option_get_uint32(self.as_ref().to_glib_none().0, opt_name.to_glib_none().0, out_value.as_mut_ptr()));
-            if ret { Some(out_value.assume_init()) } else { None }
+            let ret = from_glib(ffi::nm_setting_option_get_uint32(
+                self.as_ref().to_glib_none().0,
+                opt_name.to_glib_none().0,
+                out_value.as_mut_ptr(),
+            ));
+            if ret {
+                Some(out_value.assume_init())
+            } else {
+                None
+            }
         }
     }
 
@@ -157,7 +195,11 @@ pub trait SettingExt: IsA<Setting> + 'static {
     #[doc(alias = "nm_setting_option_set_boolean")]
     fn option_set_boolean(&self, opt_name: &str, value: bool) {
         unsafe {
-            ffi::nm_setting_option_set_boolean(self.as_ref().to_glib_none().0, opt_name.to_glib_none().0, value.into_glib());
+            ffi::nm_setting_option_set_boolean(
+                self.as_ref().to_glib_none().0,
+                opt_name.to_glib_none().0,
+                value.into_glib(),
+            );
         }
     }
 
@@ -166,35 +208,58 @@ pub trait SettingExt: IsA<Setting> + 'static {
     #[doc(alias = "nm_setting_option_set_uint32")]
     fn option_set_uint32(&self, opt_name: &str, value: u32) {
         unsafe {
-            ffi::nm_setting_option_set_uint32(self.as_ref().to_glib_none().0, opt_name.to_glib_none().0, value);
+            ffi::nm_setting_option_set_uint32(
+                self.as_ref().to_glib_none().0,
+                opt_name.to_glib_none().0,
+                value,
+            );
         }
     }
 
     #[doc(alias = "nm_setting_set_secret_flags")]
-    fn set_secret_flags(&self, secret_name: &str, flags: SettingSecretFlags) -> Result<(), glib::Error> {
+    fn set_secret_flags(
+        &self,
+        secret_name: &str,
+        flags: SettingSecretFlags,
+    ) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_setting_set_secret_flags(self.as_ref().to_glib_none().0, secret_name.to_glib_none().0, flags.into_glib(), &mut error);
+            let is_ok = ffi::nm_setting_set_secret_flags(
+                self.as_ref().to_glib_none().0,
+                secret_name.to_glib_none().0,
+                flags.into_glib(),
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "nm_setting_to_string")]
     #[doc(alias = "to_string")]
     fn to_str(&self) -> glib::GString {
-        unsafe {
-            from_glib_full(ffi::nm_setting_to_string(self.as_ref().to_glib_none().0))
-        }
+        unsafe { from_glib_full(ffi::nm_setting_to_string(self.as_ref().to_glib_none().0)) }
     }
 
     #[doc(alias = "nm_setting_verify")]
     fn verify(&self, connection: Option<&impl IsA<Connection>>) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_setting_verify(self.as_ref().to_glib_none().0, connection.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_setting_verify(
+                self.as_ref().to_glib_none().0,
+                connection.map(|p| p.as_ref()).to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
@@ -204,22 +269,40 @@ pub trait SettingExt: IsA<Setting> + 'static {
     fn verify_secrets(&self, connection: Option<&impl IsA<Connection>>) -> Result<(), glib::Error> {
         unsafe {
             let mut error = std::ptr::null_mut();
-            let is_ok = ffi::nm_setting_verify_secrets(self.as_ref().to_glib_none().0, connection.map(|p| p.as_ref()).to_glib_none().0, &mut error);
+            let is_ok = ffi::nm_setting_verify_secrets(
+                self.as_ref().to_glib_none().0,
+                connection.map(|p| p.as_ref()).to_glib_none().0,
+                &mut error,
+            );
             debug_assert_eq!(is_ok == glib::ffi::GFALSE, !error.is_null());
-            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+            if error.is_null() {
+                Ok(())
+            } else {
+                Err(from_glib_full(error))
+            }
         }
     }
 
     #[doc(alias = "name")]
     fn connect_name_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {
-        unsafe extern "C" fn notify_name_trampoline<P: IsA<Setting>, F: Fn(&P) + 'static>(this: *mut ffi::NMSetting, _param_spec: glib::ffi::gpointer, f: glib::ffi::gpointer) {
+        unsafe extern "C" fn notify_name_trampoline<P: IsA<Setting>, F: Fn(&P) + 'static>(
+            this: *mut ffi::NMSetting,
+            _param_spec: glib::ffi::gpointer,
+            f: glib::ffi::gpointer,
+        ) {
             let f: &F = &*(f as *const F);
             f(Setting::from_glib_borrow(this).unsafe_cast_ref())
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
-            connect_raw(self.as_ptr() as *mut _, c"notify::name".as_ptr() as *const _,
-                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_name_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+            connect_raw(
+                self.as_ptr() as *mut _,
+                c"notify::name".as_ptr() as *const _,
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(
+                    notify_name_trampoline::<Self, F> as *const (),
+                )),
+                Box_::into_raw(f),
+            )
         }
     }
 }
