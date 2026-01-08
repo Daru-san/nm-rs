@@ -101,7 +101,7 @@ rustdoc-args = ["--cfg", "docsrs", "--generate-link-to-definition"]
 all-features = true
 
 [lib]
-name = "libnm_api_sys"
+name = "nm_rs_sys"
 
 [dependencies]
 gio-sys = "0.21.5"

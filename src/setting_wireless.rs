@@ -2,10 +2,10 @@ use std::borrow::Borrow;
 
 use glib::object::{IsA, ObjectExt};
 use glib::translate::*;
-use libnm_api_sys as ffi;
 
 use crate::SettingWireless;
 use crate::builders::SettingWirelessBuilder;
+use crate::ffi;
 
 pub trait SettingWirelessExtManual:
     IsA<SettingWireless, GlibType = ffi::NMSettingWireless>
