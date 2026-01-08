@@ -1,4 +1,4 @@
-# libnm
+# Network Manager Rust bindings
 
 NetworkManager bindings for Rust.
 
