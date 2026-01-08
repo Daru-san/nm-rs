@@ -70,7 +70,7 @@ fn main() {
 ```
 
 More examples are available in the
-[examples directory](https://github.com/Daru-san/nm-rs/examples).
+[examples directory](https://github.com/Daru-san/nm-rs/tree/master/examples).
 
 ## Useful links
 
