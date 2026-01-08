@@ -235,19 +235,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "37c93d8daa9d8a012fd8ab92f088405fb202ea0b6ab73ee2482ae66af4f42091"
 
 [[package]]
-name = "libnm-api-sys"
-version = "0.1.0"
-dependencies = [
- "gio-sys",
- "glib-sys",
- "gobject-sys",
- "libc",
- "shell-words",
- "system-deps",
- "tempfile",
-]
-
-[[package]]
 name = "linux-raw-sys"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -265,7 +252,20 @@ version = "0.1.0"
 dependencies = [
  "gio",
  "glib",
- "libnm-api-sys",
+ "nm-rs-sys",
+]
+
+[[package]]
+name = "nm-rs-sys"
+version = "0.1.0"
+dependencies = [
+ "gio-sys",
+ "glib-sys",
+ "gobject-sys",
+ "libc",
+ "shell-words",
+ "system-deps",
+ "tempfile",
 ]
 
 [[package]]
