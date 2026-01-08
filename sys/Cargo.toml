@@ -1,6 +1,6 @@
 [package]
 name = "nm-rs-sys"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Daru-san"]
 categories = ["api-bindings"]
