@@ -19,6 +19,7 @@ pub mod prelude;
 
 mod variant_attribute_spec;
 pub use variant_attribute_spec::VariantAttributeSpec;
+mod setting_wireless;
 mod vpn_editor_plugin_vt;
 pub use vpn_editor_plugin_vt::VpnEditorPluginVT;
 

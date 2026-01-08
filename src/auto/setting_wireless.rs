@@ -24,7 +24,7 @@ use glib::{
     signal::{SignalHandlerId, connect_raw},
     translate::*,
 };
-use std::boxed::Box as Box_;
+use std::{borrow::Borrow, boxed::Box as Box_};
 
 glib::wrapper! {
     /// Wi-Fi Settings
@@ -785,12 +785,6 @@ impl SettingWireless {
             ))
         }
     }
-
-    //#[doc(alias = "nm_setting_wireless_get_ssid")]
-    //#[doc(alias = "get_ssid")]
-    //pub fn ssid(&self) -> /*Ignored*/glib::Bytes {
-    //    unsafe { TODO: call ffi:nm_setting_wireless_get_ssid() }
-    //}
 
     ///
     /// # Deprecated since 1.44
@@ -1988,9 +1982,13 @@ impl SettingWirelessBuilder {
         }
     }
 
-    //pub fn ssid(self, ssid: /*Ignored*/&glib::Bytes) -> Self {
-    //    Self { builder: self.builder.property("ssid", ssid), }
-    //}
+    /// SSID of the Wi-Fi network. Must be specified.
+    pub fn ssid<B: Borrow<[u8]> + ?Sized>(self, ssid: &B) -> Self {
+        let bytes = glib::Bytes::from(ssid);
+        Self {
+            builder: self.builder.property("ssid", bytes),
+        }
+    }
 
     /// This property is not implemented and has no effect.
     /// This property is not implemented and has no effect.
