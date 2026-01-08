@@ -9,6 +9,7 @@ license = "MIT"
 repository = "https://github.com/Daru-san/nm-rs"
 description = "FFI bindings for NetworkManager"
 build = "build.rs"
+links = "libnm"
 
 [package.metadata.system-deps.libnm]
 name = "libnm"
