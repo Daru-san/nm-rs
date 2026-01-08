@@ -2,6 +2,7 @@
 #![allow(unsafe_op_in_unsafe_fn)]
 #![allow(deprecated)]
 #![allow(unused_imports)]
+#![doc = include_str!("../README.md")]
 
 macro_rules! assert_initialized_main_thread {
     () => {};
