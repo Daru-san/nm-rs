@@ -1,4 +1,4 @@
-# Network Manager Rust bindings
+# Network Manager Rust bindings [![][img_crates]][crates] [![][img_doc]][doc]
 
 NetworkManager bindings for Rust.
 
@@ -76,3 +76,8 @@ More examples are available in the
 
 - <https://github.com/gtk-rs/gir>
 - <https://networkmanager.dev/docs/libnm/latest/>
+
+[img_crates]: https://img.shields.io/crates/v/nm-rs.svg
+[img_doc]: https://img.shields.io/badge/rust-documentation-blue.svg
+[crates]: https://crates.io/crates/nm-rs
+[doc]: https://docs.rs/nm-rs/
