@@ -60,3 +60,11 @@ gio_v2_22 = []
 
 [workspace]
 members = ["sys"]
+
+[[example]]
+name = "get_password"
+crate-type = ["bin"]
+
+[[example]]
+name = "get_device_type"
+crate-type = ["bin"]
